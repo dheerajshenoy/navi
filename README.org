@@ -3,6 +3,8 @@
 
 A file manager for the minimalist & impatient
 
+[[./screenshot/1.png]]
+
 * Table of Contents :toc:
 - [[#introduction][Introduction]]
 - [[#why-another-file-manager-][Why another file manager ?]]
