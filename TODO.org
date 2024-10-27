@@ -7,33 +7,36 @@
    - [X] Edit Menu
    - [X] View Menu
    - [X] Tools Menu
-4. [-] Preview
-   - [X] Image
-   - [X] Documents
-   - [ ] Syntax highlighting for the text document preview
-5. [X] Minibuffer (statusbar)
+4. [X] Minibuffer (statusbar)
    - [X] Commands
-6. [X] Async File Preview
-7. [X] Focus first file after loading a directory
-8. [X] Regex Search
-9. [-] Operations
+5. [X] Async File Preview
+6. [X] Focus first file after loading a directory
+7. [X] Regex Search
+8. [-] Operations
    - [X] Rename
    - [X] Copy
    - [X] Cut
    - [X] Paste
    - [X] Delete
    - [ ] Trash
-10. [X] Bulk Operations
-11. [ ] Lua Integration for configuration
-12. [X] File Permission
-13. [X] Chmod
-14. [ ] Wonky file completion in the file path widget when "~" is present
-15. [ ] Bookmarks
-16. [X] Messages Buffer (Pane)
-17. [X] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
-18. [X] Drag event
-19. [X] Drop event
-20. [X] Fix CHMOD errors
-21. [X] Terminal at point
-22. [X] Result class
-23. [X] Use ImageMagick for image previews
+9. [X] Bulk Operations
+10. [X] File Permission
+11. [X] Chmod
+12. [X] Messages Buffer (Pane)
+13. [X] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
+14. [X] Drag event
+15. [X] Drop event
+16. [X] Fix CHMOD errors
+17. [X] Terminal at point
+18. [X] Result class
+19. [X] Use ImageMagick for image previews
+20. [-] Preview
+    - [X] Image
+    - [X] Documents
+    - [ ] Syntax highlighting for the text document preview
+21. [ ] Lua Integration for configuration
+22. [ ] Wonky file completion in the file path widget when "~" is present
+23. [ ] Bookmarks
+24. [ ] Icons
+25. [X] Total number of items
+26. [ ] Dual Pane

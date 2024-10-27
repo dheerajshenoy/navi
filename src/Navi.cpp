@@ -39,6 +39,8 @@ void Navi::initSignalsSlots() noexcept {
           });
 
   connect(m_statusbar, &Statusbar::logMessage, this, &Navi::LogMessage);
+
+  connect(m_file_panel->model(), &FileSystemModel::marksListChanged, m_marks_buffer, &MarksBuffer::refreshMarksList);
 }
 
 // Help for HELP interactive function
@@ -63,6 +65,8 @@ void Navi::setupCommandMap() noexcept {
   commandMap["toggle-mark"] = [this]() { m_file_panel->MarkOrUnmarkItems(); };
 
   commandMap["unmark"] = [this]() { m_file_panel->UnmarkItems(); };
+
+  commandMap["unmark-all"] = [this]() { UnmarkAllItems(); };
 
   commandMap["new-file"] = [this]() { NewFile(); };
 
@@ -90,6 +94,8 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["chmod"] = [this]() { Chmod(); };
 
+  commandMap["show-marks"] = [this]() { ToggleMarksBuffer(); };
+
   m_input_completion_model = new QStringListModel(m_valid_command_list);
   m_inputbar->setCompleterModel(m_input_completion_model);
 }
@@ -106,6 +112,20 @@ void Navi::ToggleMessagesBuffer(const bool &state) noexcept {
     m_log_buffer->show();
   else
     m_log_buffer->hide();
+}
+
+void Navi::ToggleMarksBuffer() noexcept {
+  if (m_marks_buffer->isVisible())
+    m_marks_buffer->hide();
+  else
+    m_marks_buffer->show();
+}
+
+void Navi::ToggleMarksBuffer(const bool &state) noexcept {
+  if (state)
+    m_marks_buffer->show();
+  else
+    m_marks_buffer->hide();
 }
 
 // Minibuffer process commands
@@ -168,6 +188,9 @@ void Navi::initLayout() noexcept {
   m_statusbar = new Statusbar();
   m_inputbar = new Inputbar();
   m_log_buffer = new MessagesBuffer();
+  m_marks_buffer = new MarksBuffer();
+
+  m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
   m_log_buffer->setAcceptRichText(true);
   m_log_buffer->setReadOnly(true);
@@ -323,6 +346,9 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__messages = new QAction("Messages");
   m_viewmenu__messages->setCheckable(true);
 
+  m_viewmenu__marks_buffer = new QAction("Marks List");
+  m_viewmenu__marks_buffer ->setCheckable(true);
+
   m_viewmenu__files_menu = new QMenu("Files");
 
   m_viewmenu__files_menu__hidden = new QAction("Hidden");
@@ -338,6 +364,7 @@ void Navi::initMenubar() noexcept {
   m_viewmenu->addAction(m_viewmenu__preview_panel);
   m_viewmenu->addAction(m_viewmenu__menubar);
   m_viewmenu->addAction(m_viewmenu__messages);
+  m_viewmenu->addAction(m_viewmenu__marks_buffer);
 
   m_tools_menu = new QMenu("Tools");
 
@@ -368,6 +395,7 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
+  connect(m_viewmenu__marks_buffer, &QAction::triggered, this, [&](const bool &state) { ToggleMarksBuffer(state); });
   connect(m_viewmenu__preview_panel, &QAction::triggered, this,
           [&](const bool &state) { TogglePreviewPanel(state); });
 
@@ -404,6 +432,9 @@ void Navi::initMenubar() noexcept {
 
   connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
           [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
+
+  connect(m_marks_buffer, &MarksBuffer::visibilityChanged, this,
+          [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {
@@ -524,3 +555,12 @@ void Navi::Chmod() noexcept {
 }
 
 void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
+
+void Navi::UnmarkAllItems() noexcept {
+    int marksCount = m_file_panel->model()->getMarkedFilesCount();
+    QString input = m_inputbar->getInput(QString("Do you want to delete all %1 marks (Y/n) ?")
+          .arg(marksCount));
+    if (input == "y" || input.isNull() || input.isEmpty())
+        m_file_panel->UnmarkAllItems();
+    m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
+}

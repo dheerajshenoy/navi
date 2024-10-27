@@ -30,6 +30,10 @@ public:
       FilePermission,
     };
 
+    QSet<QString> m_markedFiles;
+
+    int getMarkedFilesCount() noexcept;
+    void clearMarkedFilesList() noexcept;
     void setNameFilters(const QStringList &filters) noexcept;
     void setColumnList(const QList<FileSystemModel::ColumnType> &cols) noexcept;
     QString filePath(const QModelIndex &index) noexcept;
@@ -60,6 +64,7 @@ public:
     signals:
     void directoryLoaded(const QString &path);
     void directoryLoadProgress(const int &progress);
+    void marksListChanged();
 
 private:
     void initDefaults() noexcept;
@@ -74,7 +79,6 @@ private:
 
     QList<QFileInfo> m_fileInfoList;
     QString m_root_path;
-    QSet<QString> m_markedFiles;
     QHash<QString, int> m_path_row_hash;
 
     QDir::Filters m_dir_filters;

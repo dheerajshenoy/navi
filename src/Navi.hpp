@@ -25,6 +25,7 @@
 #include "FilePanel.hpp"
 #include "PreviewPanel.hpp"
 #include "Statusbar.hpp"
+#include "MarksBuffer.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -53,6 +54,8 @@ public:
     ~Navi();
 
     void setCurrentDir(const QString &path) noexcept;
+
+    // Interactive Functions
     void TogglePreviewPanel(const bool &state) noexcept;
     void TogglePreviewPanel() noexcept;
     void ExecuteExtendedCommand() noexcept;
@@ -63,7 +66,6 @@ public:
     void CopyItems() noexcept;
     void DeleteItems() noexcept;
     void TrashItems() noexcept;
-    void ProcessCommand(const QString &commandtext) noexcept;
     void ShowHelp() noexcept;
     void Search() noexcept;
     void SearchNext() noexcept;
@@ -78,6 +80,9 @@ public:
     void LogMessage(const QString &message, const MessageType &type) noexcept;
     void ToggleMessagesBuffer(const bool &state) noexcept;
     void ToggleMessagesBuffer() noexcept;
+    void ToggleMarksBuffer(const bool &state) noexcept;
+    void ToggleMarksBuffer() noexcept;
+    void UnmarkAllItems() noexcept;
 
 private:
     void initLayout() noexcept;
@@ -88,6 +93,7 @@ private:
     void initKeybinds() noexcept;
     bool createEmptyFile(const QString &filename) noexcept;
     QString getCurrentFile() noexcept;
+    void ProcessCommand(const QString &commandtext) noexcept;
 
 
     QWidget *m_widget = new QWidget();
@@ -111,6 +117,7 @@ private:
     QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
     QAction *m_viewmenu__messages = nullptr;
+    QAction *m_viewmenu__marks_buffer = nullptr;
 
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
@@ -138,6 +145,7 @@ private:
     QStringList m_valid_command_list = {
         "mark",
         "unmark",
+        "unmark-all",
         "chmod",
         "toggle-mark",
         "rename",
@@ -159,4 +167,5 @@ private:
     QStringListModel *m_input_completion_model = nullptr;
 
     MessagesBuffer *m_log_buffer = nullptr;
+    MarksBuffer *m_marks_buffer = nullptr;
 };

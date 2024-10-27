@@ -15,14 +15,12 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-# configure the Qt 6 modules core and widgets
-find_package(Qt6 COMPONENTS Core REQUIRED)
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
 add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
-# find imagemagick
+find_package(Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 
 qt_standard_project_setup()
@@ -37,16 +35,18 @@ qt_add_executable(${PROJECT_NAME}
     src/Statusbar.cpp
     src/Inputbar.cpp
     src/utils.cpp
+    src/TreeSitterTextEdit.cpp
 
     src/FileWorker.hpp
     src/FileSystemModel.cpp
     src/MessagesBuffer.hpp
     src/FilePreviewWorker.hpp
+    src/MarksBuffer.hpp
     src/Result.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-python)
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS})

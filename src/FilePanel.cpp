@@ -307,6 +307,7 @@ void FilePanel::MarkOrUnmarkItems() noexcept {
             m_model->setData(currentIndex, true,
                              static_cast<int>(Role::Marked));
     }
+
 }
 
 void FilePanel::MarkItems() noexcept {
@@ -334,6 +335,10 @@ void FilePanel::UnmarkItems() noexcept {
         m_model->setData(currentIndex, false, static_cast<int>(Role::Marked));
         m_model->removeMarkedFile(currentIndex);
     }
+}
+
+void FilePanel::UnmarkAllItems() noexcept {
+    m_model->clearMarkedFilesList();
 }
 
 void FilePanel::GotoFirstItem() noexcept {

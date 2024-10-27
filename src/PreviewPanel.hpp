@@ -13,6 +13,7 @@
 #include <QStackedWidget>
 
 #include "FilePreviewWorker.hpp"
+#include "TreeSitterTextEdit.hpp"
 
 class PreviewPanel : public QStackedWidget {
     Q_OBJECT
@@ -45,7 +46,7 @@ private:
     }
 
     QLabel *m_img_preview_widget = new QLabel();
-    QTextEdit *m_text_preview_widget = new QTextEdit();
+    TreeSitterTextEdit *m_text_preview_widget = new TreeSitterTextEdit();
     QWidget *m_empty_widget = new QWidget();
 
     FilePreviewWorker *m_worker;

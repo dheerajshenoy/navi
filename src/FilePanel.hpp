@@ -33,6 +33,10 @@ public:
     void setCurrentDir(QString path) noexcept;
     QString getCurrentDir() noexcept;
 
+    QSet<QString> *getMarksSetPTR() noexcept { return &m_model->m_markedFiles; }
+
+    FileSystemModel* model() noexcept { return m_model; }
+
     QString getCurrentItem() noexcept;
     void UpDirectory() noexcept;
     void SelectItem() noexcept;
@@ -41,6 +45,7 @@ public:
     void MarkOrUnmarkItems() noexcept;
     void MarkItems() noexcept;
     void UnmarkItems() noexcept;
+    void UnmarkAllItems() noexcept;
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
