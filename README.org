@@ -10,6 +10,7 @@ A file manager for the minimalist & impatient
 - [[#why-another-file-manager-][Why another file manager ?]]
 - [[#features][Features]]
 - [[#todos][TODOs]]
+- [[#wiki][Wiki]]
 
 * Introduction
 
@@ -28,3 +29,7 @@ The file managers for linux aren’t that great for me. So I decided to write my
 * TODOs
 
 Please refer to [[./TODO.org][this file]]
+
+* Wiki
+
+Please refer to [[./wiki.org][this file]]

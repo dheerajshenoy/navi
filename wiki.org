@@ -1,0 +1,164 @@
+#+TITLE: Wiki for Navi
+#+AUTHOR: Dheeraj Vittal Shenoy <dheerajshenoy22@gmail.com>
+
+*NOTE: This page is still a work in progress.*
+
+* Table of Contents :toc:
+- [[#introduction][Introduction]]
+- [[#naming-conventions][Naming Conventions]]
+- [[#interactive-commands][Interactive Commands]]
+- [[#commands-list][Commands List]]
+  - [[#mark][mark]]
+  - [[#unmark][unmark]]
+  - [[#unmark-all-here][unmark-all-here]]
+  - [[#unmark-all][unmark-all]]
+  - [[#chmod][chmod]]
+  - [[#toggle-mark][toggle-mark]]
+  - [[#rename][rename]]
+  - [[#cut][cut]]
+  - [[#copy][copy]]
+  - [[#paste][paste]]
+  - [[#delete][delete]]
+  - [[#trash][trash]]
+  - [[#messages][messages]]
+  - [[#filter][filter]]
+  - [[#unfilter][unfilter]]
+  - [[#refresh][refresh]]
+  - [[#toggle-hidden-files][toggle-hidden-files]]
+  - [[#toggle-preview-pane][toggle-preview-pane]]
+  - [[#toggle-menu-bar][toggle-menu-bar]]
+
+* Introduction
+
+* Naming Conventions
+
+1. =Item= refers to a file or a directory.
+
+2. =Highlighting= refers to the action of clicking a directory item (one or more than one) once. This means that you can use your mouse to select and highlight multiple items in the directory.
+
+   #+begin_comment
+   *NOTE: Currently, highlighting using the keyboard is not possible as the function is not implemented yet*.
+   #+end_comment
+
+3. =Marking= refers to the action of the =mark= or =toggle-mark= command to "select" one or more currently highlighted directory items. You can see the list of all the files that you have marked in the =Marks List= using =View -> Marks List= or by using the =show-marks= command. When you call any of the commands, the commands will be aware of these markings and do the action accordingly. For example, if we use the =rename= command and if there are marked files, your choice of text editor is opened with the list of all the file names. You can change these and write to the file to rename them accordingly.
+
+* Interactive Commands
+
+These are commands that can be executed using the =inputbar= UI component. By default, pressing =: (colon)= key pops up the inputbar. You can type a name of the command in this bar or a line number to go to in the current directory of the focused pane. Example: =mark= or =42=, where =mark= would mark the current item under focus or highlighted items (more than one items).
+
+Below is an exhaustive list of commands that are currently available in Navi
+
+* Commands List
+
+In the following commands, the default keybindings associated with them are mentioned. Below is a mapping of what some keys mean.
+
+1. =C= - Control
+2. =M= - Meta (Alt Key)
+3. =S= - Shift
+4. =SPC= - Space
+
+** mark
+
+Marks the highlighted item(s).
+
+** unmark
+
+Unmarks the highlighted item(s).
+
+** unmark-all-here
+
+Unmarks all the highlighted item(s) in the current directory.
+
+** unmark-all
+
+Unmark all the marks everywhere.
+
+Default keybinding: =S-u=
+
+** chmod
+
+Change the permission of the highlighted item(s) using three digit numbers
+
+Example: 777, 666, 000 etc.
+
+** toggle-mark
+
+Toggle the mark of the highlighted item(s).
+
+Default keybinding: =SPC=
+
+** rename
+
+Rename the highlighted item(s).
+
+Default keybinding: =S-r=
+
+** cut
+
+Cut (prepare for moving) the highlighted item(s).
+
+Default keybinding: =C-x=
+
+** copy
+
+Copy the highlighted item(s).
+
+Default keybinding: =C-c=
+
+** paste
+
+Paste (Move) the highlighted item(s).
+
+Default keybinding: =p=
+
+** delete
+
+Delete the highlighted items(s).
+
+*WARNING: Please be careful when using this command, this does not trash the items, it directly deletes them. If you want to trash use the =trash= command*
+
+** trash
+
+Trash the highlighted item(s).
+
+** messages
+
+Opens the messages list.
+
+** filter
+
+Set a filter to directory.
+
+Example: =*= displays everything, =*.csv= displays only the csv files, =*.png= displays only the png files
+
+** unfilter
+
+Reset the appplied filter.
+
+** refresh
+
+Force refresh the current directory.
+
+*NOTE: By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.*
+
+** toggle-hidden-files
+
+Toggles the hidden files.
+
+Default keybinding: =C-h=
+
+NOTE: Hidden files are those items whose name start with a period like =.config=, =.gitignore= etc.
+
+** toggle-preview-pane
+
+Toggles the preview pane.
+
+Default keybinding: =C-p=
+
+The preview pane handles previewing images (good number of formats) and PDF documents (first page) =asynchronously=. This means that the previewing experience will be seamless and without any lag. Navi uses =ImageMagick= library under the hood for previewing images and therefore any image formats supported my ImageMagick is supported by Navi.
+
+** toggle-menu-bar
+
+Toggles the menu bar.
+
+Default keybinding: =C-m=
