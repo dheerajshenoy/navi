@@ -9,9 +9,9 @@ FilePanel::FilePanel(QWidget *parent) : QWidget(parent) {
     // m_model->setNameFilterDisables(false);
 
     if (m_terminal.isEmpty() || m_terminal.isNull())
-        m_terminal = "/usr/bin/kitty";
+        m_terminal = "alacritty";
 
-    m_terminal_args = QStringList() << "%d";
+    m_terminal_args = QStringList() << "--working-directory" << "%d";
 
     initSignalsSlots();
     initKeybinds();
@@ -56,10 +56,9 @@ void FilePanel::initContextMenu() noexcept {
 Result<bool> FilePanel::OpenTerminal(const QString &directory) noexcept {
 
     if (directory.isEmpty()) {
-        // m_terminal_arg.replace("%d", directory);
-        m_terminal_args[0].replace("%d", m_current_dir);
-        qDebug() << m_terminal_args;
-        bool res = QProcess::startDetached(m_terminal, m_terminal_args);
+        QStringList args = m_terminal_args;
+        bool res = QProcess::startDetached(m_terminal,
+                                           args.replaceInStrings("%d", m_current_dir));
         return Result(res);
     } else {
         if (QDir(directory).exists()) {
@@ -180,19 +179,7 @@ void FilePanel::selectFirstItem() noexcept {
 }
 
 void FilePanel::handleItemDoubleClicked(const QModelIndex &index) noexcept {
-    QModelIndex currentIndex = m_table_view->currentIndex();
-    QString filepath = m_model->filePath(currentIndex);
-    if (m_model->isDir(index)) {
-        setCurrentDir(filepath);
-        selectFirstItem();
-    } else {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(filepath));
-    }
-}
-
-bool FilePanel::isValidPath(QString path) noexcept {
-    QFileInfo file(path);
-    return file.exists() && file.isReadable();
+    selectHelper(index);
 }
 
 void FilePanel::setCurrentDir(QString path) noexcept {
@@ -203,12 +190,10 @@ void FilePanel::setCurrentDir(QString path) noexcept {
         path = path.replace("~", QDir::homePath());
     }
 
-    if (isValidPath(path)) {
+    if (utils::isValidPath(path)) {
         m_model->setRootPath(path);
-        m_table_view->setRootIndex(m_model->index(path));
         m_current_dir = path;
         emit afterDirChange(m_current_dir);
-        selectFirstItem();
     }
 }
 
@@ -253,16 +238,11 @@ void FilePanel::PrevItem() noexcept {
     // TODO: Add hook
 }
 
-void FilePanel::SelectItem() noexcept {
-    QModelIndex currentIndex = m_table_view->currentIndex();
-    QString filepath = m_model->filePath(currentIndex);
-    if (m_model->isDir(currentIndex)) {
+void FilePanel::selectHelper(const QModelIndex &index) noexcept {
+    QString filepath = m_model->filePath(index);
+    if (m_model->isDir(index)) {
         setCurrentDir(filepath);
-
-        // Ufff.. we have to add a buffer time of 100ms or so to select the first
-        // item after the directory has finished loading.
         selectFirstItem();
-
     } else {
         // TODO: handle File
         QDesktopServices::openUrl(QUrl::fromLocalFile(filepath));
@@ -270,15 +250,20 @@ void FilePanel::SelectItem() noexcept {
     // TODO: Add hook
 }
 
+void FilePanel::SelectItem() noexcept {
+    QModelIndex currentIndex = m_table_view->currentIndex();
+    selectHelper(currentIndex);
+}
+
 void FilePanel::UpDirectory() noexcept {
     QString old_dir = m_current_dir;
     QDir currentDir(old_dir);
 
     if (currentDir.cdUp()) {
-        m_current_dir = currentDir.absolutePath();
-        // m_table_view->setRootIndex(m_model->index(m_current_dir));
-        m_model->setRootPath(m_current_dir);
-        m_table_view->setCurrentIndex(m_model->index(old_dir));
+        setCurrentDir(currentDir.absolutePath());
+        QModelIndex oldDirIndex = m_model->index(old_dir);
+        m_table_view->setCurrentIndex(oldDirIndex);
+        m_table_view->scrollTo(oldDirIndex);
         emit afterDirChange(m_current_dir);
     }
     // TODO: Add hook
@@ -399,9 +384,9 @@ bool FilePanel::DeleteItems() noexcept {
                                                 this, "Delete", "Do you really want to delete ?",
                                                 QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
                                                 QMessageBox::StandardButton::No);
-
             switch (confirm) {
             case QMessageBox::Yes:
+                m_model->removeMarkedFile(dir.absolutePath());
                 return dir.removeRecursively();
                 break;
 
@@ -415,8 +400,11 @@ bool FilePanel::DeleteItems() noexcept {
                                                 QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
                                                 QMessageBox::StandardButton::No);
             switch (confirm) {
-            case QMessageBox::Yes:
-                return QFile::remove(getCurrentItem());
+            case QMessageBox::Yes: {
+                auto currentItem = getCurrentItem();
+                m_model->removeMarkedFile(currentItem);
+                return QFile::remove(currentItem);
+            }
                 break;
 
             case QMessageBox::No | QMessageBox::Cancel:

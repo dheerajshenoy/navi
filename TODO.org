@@ -41,3 +41,4 @@
 25. [X] Total number of items
 26. [ ] Dual Pane
 27. [X] FileWatcher
+28. [X] Add file operation cancel UI

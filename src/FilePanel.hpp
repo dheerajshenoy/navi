@@ -81,13 +81,13 @@ protected:
     void contextMenuEvent(QContextMenuEvent *e) override;
 
 private:
+    void selectHelper(const QModelIndex &index) noexcept;
     void selectFirstItem() noexcept;
     QString currentItem() noexcept;
     void initKeybinds() noexcept;
     void initContextMenu() noexcept;
     void handleItemDoubleClicked(const QModelIndex &index) noexcept;
     void initSignalsSlots() noexcept;
-    bool isValidPath(QString path) noexcept;
 
     QVBoxLayout *m_layout = new QVBoxLayout();
     TableView *m_table_view = new TableView();

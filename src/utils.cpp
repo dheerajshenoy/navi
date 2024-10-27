@@ -30,3 +30,8 @@ std::tuple<bool, uint> utils::isNumber(const QString &numString) noexcept {
     auto num = numString.toUInt(&ok);
     return std::tuple<bool, uint>(ok, num);
 }
+
+bool utils::isValidPath(const QString &path) noexcept {
+    QFileInfo file(path);
+    return file.exists() && file.isReadable();
+}
