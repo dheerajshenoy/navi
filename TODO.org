@@ -1,0 +1,39 @@
+#+TITLE: TODOs for Navi
+
+1. [X] List contents of directory
+2. [X] Vim bindings for navigation
+3. [X] Menubar
+   - [X] File Menu
+   - [X] Edit Menu
+   - [X] View Menu
+   - [X] Tools Menu
+4. [-] Preview
+   - [X] Image
+   - [X] Documents
+   - [ ] Syntax highlighting for the text document preview
+5. [X] Minibuffer (statusbar)
+   - [X] Commands
+6. [X] Async File Preview
+7. [X] Focus first file after loading a directory
+8. [X] Regex Search
+9. [-] Operations
+   - [X] Rename
+   - [X] Copy
+   - [X] Cut
+   - [X] Paste
+   - [X] Delete
+   - [ ] Trash
+10. [X] Bulk Operations
+11. [ ] Lua Integration for configuration
+12. [X] File Permission
+13. [X] Chmod
+14. [ ] Wonky file completion in the file path widget when "~" is present
+15. [ ] Bookmarks
+16. [X] Messages Buffer (Pane)
+17. [X] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
+18. [X] Drag event
+19. [X] Drop event
+20. [X] Fix CHMOD errors
+21. [X] Terminal at point
+22. [X] Result class
+23. [X] Use ImageMagick for image previews

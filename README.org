@@ -1,0 +1,28 @@
+#+TITLE: Navi
+#+AUTHOR: Dheeraj Vittal Shenoy <dheerajshenoy22@gmail.com>
+
+A file manager for the minimalist & impatient
+
+* Table of Contents :toc:
+- [[#introduction][Introduction]]
+- [[#why-another-file-manager-][Why another file manager ?]]
+- [[#features][Features]]
+- [[#todos][TODOs]]
+
+* Introduction
+
+This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++.
+
+* Why another file manager ?
+
+The file managers for linux aren’t that great for me. So I decided to write my own. And this one is inspired by the TUI (terminal UI) keyboard driven file managers like ranger, vifm, lf, yazi etc. I still use them, but I wanted to get past the limitations of the TUI compared to the GUI.
+
+* Features
+
+1. Display Images
+2. Async file Operations
+3. Keyboard driven
+
+* TODOs
+
+Please refer to [[./TODO.org][this file]]
