@@ -23,11 +23,12 @@
 #include "FileSystemModel.hpp"
 #include "FileWorker.hpp"
 #include "TableView.hpp"
+#include "Inputbar.hpp"
 
 class FilePanel : public QWidget {
     Q_OBJECT
 public:
-    FilePanel(QWidget *parent = nullptr);
+    FilePanel(Inputbar *inputWidget = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
     void setCurrentDir(QString path) noexcept;
@@ -38,6 +39,7 @@ public:
     FileSystemModel* model() noexcept { return m_model; }
 
     QString getCurrentItem() noexcept;
+    QString getCurrentItemBaseName() noexcept;
     void UpDirectory() noexcept;
     void SelectItem() noexcept;
     void NextItem() noexcept;
@@ -74,8 +76,7 @@ signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
     void dirItemCount(const int &numItems);
-    void copyPastaDone(const bool &result, const QString &reason = 0);
-    void cutPastaDone(const bool &result, const QString &reason = 0);
+    void fileOperationDone(const bool &result, const QString &reason = 0);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *e) override;
@@ -111,14 +112,12 @@ private:
     int m_search_index_list_index = -1;
     unsigned int m_item_count = 0;
 
-    // This is the register used for storing the files that have been marked
-    // and prepared for operation COPY or PASTE.
-    QSet<QString> m_register_for_files;
-
     // This is for storing the recent file operation action like COPY, PASTE.
     // Depending on which we perform the necessary action.
     FileOPType m_file_op_type;
 
     QString m_terminal = getenv("TERMINAL");
     QStringList m_terminal_args;
+
+    Inputbar *m_inputbar;
 };

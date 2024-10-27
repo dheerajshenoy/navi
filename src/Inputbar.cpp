@@ -26,11 +26,23 @@ void Inputbar::suggestionComplete() noexcept {
         m_line_edit_completer->setCurrentRow(0);
 }
 
-QString Inputbar::getInput(const QString& prompt) noexcept {
+QString Inputbar::getInput(const QString &prompt,
+                           const QString &defaultValue) noexcept {
     this->show();
     m_prompt_label->setText(prompt);
     m_line_edit->setFocus();
     m_line_edit->clear();
+
+    if (!(defaultValue.isNull() && defaultValue.isEmpty())) {
+        m_line_edit->setText(defaultValue);
+        int index = -1;
+        if (defaultValue.contains("."))
+            index = defaultValue.indexOf(".");
+        else
+            index = defaultValue.size();
+
+        m_line_edit->setSelection(0, index);
+    }
 
     QString userInput;
     QEventLoop loop;

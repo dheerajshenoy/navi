@@ -30,13 +30,13 @@ void Navi::initSignalsSlots() noexcept {
   connect(m_file_panel, &FilePanel::dirItemCount, m_statusbar,
           &Statusbar::SetNumItems);
 
-  connect(m_file_panel, &FilePanel::copyPastaDone, this,
+  connect(m_file_panel, &FilePanel::fileOperationDone, this,
           [&](const bool &state, const QString &reason) {
             if (state)
-              m_statusbar->Message("Paste Successful");
+              m_statusbar->Message("Operation Successful");
             else
               m_statusbar->Message(
-                  QString("Error while Pasting! (%1)").arg(reason),
+                  QString("Error during file operation! (%1)").arg(reason),
                   MessageType::ERROR, 5);
           });
 
@@ -198,12 +198,12 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
-  m_file_panel = new FilePanel();
+  m_inputbar = new Inputbar();
+  m_file_panel = new FilePanel(m_inputbar);
 
   m_preview_panel = new PreviewPanel();
   m_file_path_widget = new FilePathWidget();
   m_statusbar = new Statusbar();
-  m_inputbar = new Inputbar();
   m_log_buffer = new MessagesBuffer();
   m_marks_buffer = new MarksBuffer();
 
@@ -243,7 +243,9 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_command = new QShortcut(QKeySequence(":"), this);
   QShortcut *kb_rename_items = new QShortcut(QKeySequence("Shift+r"), this);
   QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
+  QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
   QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
+
   QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
   QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
   QShortcut *kb_search_prev = new QShortcut(QKeySequence("Shift+n"), this);
@@ -282,6 +284,7 @@ void Navi::initKeybinds() noexcept {
           [this]() { m_file_path_widget->FocusLineEdit(); });
 
   connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
+  connect(kb_copy_items, &QShortcut::activated, this, &Navi::CopyItems);
 }
 
 void Navi::Search() noexcept {
@@ -293,14 +296,13 @@ void Navi::SearchNext() noexcept { m_file_panel->SearchNext(); }
 void Navi::SearchPrev() noexcept { m_file_panel->SearchPrev(); }
 
 void Navi::RenameItems() noexcept {
-  Result res = m_file_panel->RenameItems();
-
-  if (res.result())
-    m_statusbar->Message("Rename Successful!");
-  else
-    m_statusbar->Message(
-        QString("Error while renaming! (%1)").arg(res.reason()),
-        MessageType::ERROR, 5);
+    Result res = m_file_panel->RenameItems();
+    if (res.result())
+        m_statusbar->Message("Rename Successful!");
+    else
+      m_statusbar->Message(
+          QString("Error while renaming! (%1)").arg(res.reason()),
+                           MessageType::ERROR, 5);
 }
 
 void Navi::DeleteItems() noexcept {

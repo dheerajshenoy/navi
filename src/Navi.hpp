@@ -136,11 +136,11 @@ private:
     QAction *m_edit_menu__delete = nullptr;
     QAction *m_edit_menu__trash = nullptr;
 
+    Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;
     PreviewPanel *m_preview_panel = nullptr;
     FilePathWidget *m_file_path_widget = nullptr;
     Statusbar *m_statusbar = nullptr;
-    Inputbar *m_inputbar = nullptr;
 
     // Hashmap for storing the commands and the corresponding function calls
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;

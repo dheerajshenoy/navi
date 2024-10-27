@@ -64,6 +64,7 @@ public:
                              int hits = 1, Qt::MatchFlags flags = Qt::MatchFlags()) const override;
 
     bool removeMarkedFile(const QString &path) noexcept;
+    void removeMarkedFiles() noexcept;
     bool removeMarkedFile(const QModelIndex &index) noexcept;
 
     signals:

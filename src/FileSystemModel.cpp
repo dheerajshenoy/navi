@@ -271,6 +271,10 @@ bool FileSystemModel::removeMarkedFile(const QString &path) noexcept {
     return false;
 }
 
+void FileSystemModel::removeMarkedFiles() noexcept {
+    m_markedFiles.clear();
+}
+
   bool FileSystemModel::removeMarkedFile(const QModelIndex &index) noexcept {
     QString path = getPathFromIndex(index);
     return m_markedFiles.contains(path) && m_markedFiles.remove(path);

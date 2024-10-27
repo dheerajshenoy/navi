@@ -1,6 +1,6 @@
 #include "FilePanel.hpp"
 
-FilePanel::FilePanel(QWidget *parent) : QWidget(parent) {
+FilePanel::FilePanel(Inputbar *inputBar, QWidget *parent) : QWidget(parent), m_inputbar(inputBar) {
     this->setLayout(m_layout);
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
@@ -105,13 +105,13 @@ void FilePanel::DropCopyRequested(const QString &sourcePath) noexcept {
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker,
-            &FileWorker::copyFilesWithProgress);
+            &FileWorker::performOperation);
 
     connect(worker, &FileWorker::finished, this,
-            [&]() { emit copyPastaDone(true); });
+            [&]() { emit fileOperationDone(true); });
 
     connect(worker, &FileWorker::error, this,
-            [&](const QString &reason) { emit copyPastaDone(false, reason); });
+            [&](const QString &reason) { emit fileOperationDone(false, reason); });
     // connect(worker, &FileWorker::canceled, this,
     // &FileCopyWidget::handleCanceled);
 
@@ -136,13 +136,13 @@ void FilePanel::DropCutRequested(const QString &sourcePath) noexcept {
     FileWorker *worker = new FileWorker(filesList, destDir, FileOPType::CUT);
     worker->moveToThread(thread);
 
-    connect(thread, &QThread::started, worker, &FileWorker::cutFilesWithProgress);
+    connect(thread, &QThread::started, worker, &FileWorker::performOperation);
 
     connect(worker, &FileWorker::finished, this,
-            [&]() { emit cutPastaDone(true); });
+            [&]() { emit fileOperationDone(true); });
 
     connect(worker, &FileWorker::error, this,
-            [&](const QString &reason) { emit cutPastaDone(false, reason); });
+            [&](const QString &reason) { emit fileOperationDone(false, reason); });
     // connect(worker, &FileWorker::canceled, this,
     // &FileCopyWidget::handleCanceled);
 
@@ -156,6 +156,10 @@ void FilePanel::DropCutRequested(const QString &sourcePath) noexcept {
 QString FilePanel::getCurrentItem() noexcept {
     return m_current_dir + QDir::separator() +
            m_model->data(m_table_view->currentIndex()).toString();
+}
+
+QString FilePanel::getCurrentItemBaseName() noexcept {
+    return m_model->data(m_table_view->currentIndex()).toString();
 }
 
 void FilePanel::selectFirstItem() noexcept {
@@ -363,14 +367,17 @@ Result<bool> FilePanel::RenameItems() noexcept {
         // current selection single rename
         QModelIndex currentIndex = m_table_view->currentIndex();
         QString newFileName =
-            QInputDialog::getText(this, "Rename", "Enter a new name for the file");
+            m_inputbar->getInput(QString("Rename (%1)").arg(getCurrentItemBaseName()),
+                                 getCurrentItemBaseName());
 
         // If user cancels or the new file name is empty
         if (newFileName.isEmpty() || newFileName.isNull())
             return Result(false, "Operation Cancelled");
 
-        return QFile::rename(getCurrentItem(),
-                             m_current_dir + QDir::separator() + newFileName);
+        if (newFileName == getCurrentItem())
+            return Result(false, "File names are same");
+
+        return QFile::rename(getCurrentItem(), m_current_dir + QDir::separator() + newFileName);
     }
 }
 
@@ -535,46 +542,27 @@ bool FilePanel::Chmod(const QString &permString) noexcept {
 }
 
 void FilePanel::PasteItems() noexcept {
-    if (m_register_for_files.size() > 0) {
+    auto markedFiles = m_model->getMarkedFiles();
+    if (markedFiles.count() > 0) {
         QString destDir = m_current_dir;
 
         const QStringList &filesList =
-            QStringList(m_register_for_files.begin(), m_register_for_files.end());
+            QStringList(markedFiles.begin(), markedFiles.end());
 
         QThread *thread = new QThread();
         FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type);
+
+        connect(thread, &QThread::started, worker,
+                &FileWorker::performOperation);
+
+        connect(worker, &FileWorker::finished, this,
+                [&]() { emit fileOperationDone(true); });
+
+        connect(worker, &FileWorker::error, this, [&](const QString &reason) {
+            emit fileOperationDone(false, reason);
+        });
+
         worker->moveToThread(thread);
-
-        switch (m_file_op_type) {
-
-        case FileOPType::COPY: {
-            connect(thread, &QThread::started, worker,
-                    &FileWorker::copyFilesWithProgress);
-
-            connect(worker, &FileWorker::finished, this,
-                    [&]() { emit copyPastaDone(true); });
-
-            connect(worker, &FileWorker::error, this, [&](const QString &reason) {
-                emit copyPastaDone(false, reason);
-            });
-        }
-            // connect(worker, &FileWorker::canceled, this,
-            // &FileCopyWidget::handleCanceled);
-            break;
-
-        case FileOPType::CUT: {
-            connect(thread, &QThread::started, worker,
-                    &FileWorker::cutFilesWithProgress);
-            connect(worker, &FileWorker::finished, this,
-                    [&]() { emit cutPastaDone(true); });
-
-            connect(worker, &FileWorker::error, this,
-                    [&](const QString &reason) { emit cutPastaDone(false, reason); });
-            // connect(worker, &FileWorker::canceled, this,
-            // &FileCopyWidget::handleCanceled);
-        } break;
-        }
-
         // TODO: Add Progress
         // connect(worker, &FileCopyWorker::progress, this,
         // &FileCopyWidget::updateProgress);
@@ -588,15 +576,9 @@ void FilePanel::PasteItems() noexcept {
 }
 
 void FilePanel::CopyItems() noexcept {
-    if (m_model->hasMarks()) {
-        m_register_for_files = m_model->getMarkedFiles();
-    }
     m_file_op_type = FileOPType::COPY;
 }
 
 void FilePanel::CutItems() noexcept {
-    if (m_model->hasMarks()) {
-        m_register_for_files = m_model->getMarkedFiles();
-    }
     m_file_op_type = FileOPType::CUT;
 }

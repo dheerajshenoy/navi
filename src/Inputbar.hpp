@@ -44,7 +44,7 @@ public:
     Inputbar(QWidget *parent = nullptr);
     ~Inputbar();
 
-    QString getInput(const QString& prompt) noexcept;
+    QString getInput(const QString& prompt, const QString &defaultValue = 0) noexcept;
     void setCompleterModel(QAbstractItemModel *model) noexcept;
 
 private:

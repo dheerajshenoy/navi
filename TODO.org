@@ -42,3 +42,4 @@
 26. [ ] Dual Pane
 27. [X] FileWatcher
 28. [X] Add file operation cancel UI
+29. [ ] Select renamed file after renaming
