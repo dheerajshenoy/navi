@@ -27,6 +27,7 @@
   - [[#toggle-hidden-files][toggle-hidden-files]]
   - [[#toggle-preview-pane][toggle-preview-pane]]
   - [[#toggle-menu-bar][toggle-menu-bar]]
+  - [[#focus-path][focus-path]]
 
 * Introduction
 
@@ -162,3 +163,9 @@ The preview pane handles previewing images (good number of formats) and PDF docu
 Toggles the menu bar.
 
 Default keybinding: =C-m=
+
+** focus-path
+
+Focuses the path widget and sets it in edit mode.
+
+Default keybinding: =C-l=

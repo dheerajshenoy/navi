@@ -17,8 +17,23 @@ void FileSystemModel::initDefaults() noexcept {
 
 void FileSystemModel::clearMarkedFilesList() noexcept { m_markedFiles.clear(); }
 
-int FileSystemModel::getMarkedFilesCount() noexcept {
+void FileSystemModel::clearMarkedFilesListHere() noexcept {
+    for (const auto &file : m_markedFiles) {
+        if (file.contains(rootPath()))
+            m_markedFiles.remove(file);
+    }
+}
+
+uint FileSystemModel::getMarkedFilesCount() noexcept {
     return m_markedFiles.size();
+}
+
+uint FileSystemModel::getMarkedFilesCountHere() noexcept {
+    uint count = 0;
+    for (const auto &files : m_markedFiles)
+      if (files.contains(rootPath()))
+          count++;
+    return count;
 }
 
 void FileSystemModel::setRootPath(const QString &path) noexcept {
@@ -114,11 +129,12 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
             return m_markedFiles.contains(getPathFromIndex(index));
             break;
 
-        case Qt::BackgroundRole: {
+        case Qt::ForegroundRole: {
             bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
             if (isMarked) {
                 return QColor("#FF5000");
             }
+            return QVariant();
         } break;
 
         case Qt::DisplayRole: {
@@ -147,24 +163,65 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     return QVariant();
 }
 
-  QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
-                                       int role) const {
-    if (orientation == Qt::Vertical && role == Qt::DisplayRole)
-      return section;
+QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
+                                     int role) const {
+    if (orientation == Qt::Vertical) {
+        switch (role) {
 
-    switch (m_column_list.at(section)) {
-    case ColumnType::FileName:
-      return "Name";
-    case ColumnType::FileSize:
-      return "Size";
-    case ColumnType::FileModifiedDate:
-      return "Last Modified";
-    case ColumnType::FilePermission:
-      return "Permissions";
-    default:
-      return QVariant();
+        case static_cast<int>(Role::Marked):
+            return m_markedFiles.contains(getPathFromRow(section));
+            break;
+
+        case Qt::BackgroundRole: {
+          // QColor color;
+          // bool isMarked = m_markedFiles.contains(getPathFromRow(section));
+          // if (isMarked)
+          //     return color.fromString("#FF5000");
+          // return color;
+          // TODO: Fix this
+        } break;
+
+        case Qt::FontRole: {
+            QFont font;
+            bool isMarked = m_markedFiles.contains(getPathFromRow(section));
+            if (isMarked) {
+                font.setBold(true);
+                font.setItalic(true);
+                return font;
+            }
+            return font;
+        }
+
+        case Qt::DisplayRole:
+            return section;
+            break;
+
+        default:
+            return QVariant();
+            break;
+
+        }
+
+
+
+    } else if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+
+        switch (m_column_list.at(section)) {
+        case ColumnType::FileName:
+            return "Name";
+        case ColumnType::FileSize:
+            return "Size";
+        case ColumnType::FileModifiedDate:
+            return "Last Modified";
+        case ColumnType::FilePermission:
+            return "Permissions";
+        default:
+            return QVariant();
+        }
     }
-  }
+
+    return QVariant();
+}
 
   bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
                                 int role) {

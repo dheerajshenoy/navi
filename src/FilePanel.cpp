@@ -337,8 +337,10 @@ void FilePanel::UnmarkItems() noexcept {
     }
 }
 
-void FilePanel::UnmarkAllItems() noexcept {
-    m_model->clearMarkedFilesList();
+void FilePanel::UnmarkAllItems() noexcept { m_model->clearMarkedFilesList(); }
+
+void FilePanel::UnmarkAllItemsHere() noexcept {
+    m_model->clearMarkedFilesListHere();
 }
 
 void FilePanel::GotoFirstItem() noexcept {

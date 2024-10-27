@@ -9,6 +9,7 @@
 #include <QColor>
 #include <QLocale>
 #include <QRegularExpression>
+#include <QFont>
 #include "utils.hpp"
 
 enum class Role {
@@ -32,8 +33,10 @@ public:
 
     QSet<QString> m_markedFiles;
 
-    int getMarkedFilesCount() noexcept;
+    uint getMarkedFilesCount() noexcept;
+    uint getMarkedFilesCountHere() noexcept;
     void clearMarkedFilesList() noexcept;
+    void clearMarkedFilesListHere() noexcept;
     void setNameFilters(const QStringList &filters) noexcept;
     void setColumnList(const QList<FileSystemModel::ColumnType> &cols) noexcept;
     QString filePath(const QModelIndex &index) noexcept;
@@ -69,12 +72,21 @@ public:
 private:
     void initDefaults() noexcept;
     int findRow(const QFileInfo &fileInfo) const noexcept;
+
     QString getStringFromIndex(const QModelIndex &index) const noexcept {
         return this->data(index, Qt::DisplayRole).toString();
     }
 
+    QString getStringFromRow(const int &row, const int &col = 0) const noexcept {
+        return index(row, col).data().toString();
+    }
+
     QString getPathFromIndex(const QModelIndex &index) const noexcept {
         return rootPath() + QDir::separator() + getStringFromIndex(index);
+    }
+
+    QString getPathFromRow(const int &row) const noexcept {
+        return rootPath() + QDir::separator() + getStringFromRow(row);
     }
 
     QList<QFileInfo> m_fileInfoList;

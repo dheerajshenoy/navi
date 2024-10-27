@@ -46,6 +46,7 @@ public:
     void MarkItems() noexcept;
     void UnmarkItems() noexcept;
     void UnmarkAllItems() noexcept;
+    void UnmarkAllItemsHere() noexcept;
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;

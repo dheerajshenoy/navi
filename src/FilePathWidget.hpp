@@ -10,6 +10,23 @@
 #include <QCompleter>
 #include <QFileSystemModel>
 
+class CustomCompleter : public QCompleter {
+public:
+  explicit CustomCompleter(QAbstractItemModel *model = nullptr,
+                           QWidget *parent = nullptr)
+  : QCompleter(model, parent) {}
+
+protected:
+    QStringList splitPath(const QString &path) const override {
+        QString modifiedPath = path;
+
+        if (path.startsWith("~"))
+            modifiedPath.replace(0, 1, QDir::homePath());
+
+        return QCompleter::splitPath(modifiedPath);
+    }
+};
+
 class FilePathLineEdit : public QLineEdit {
 
 public:
@@ -55,12 +72,12 @@ public:
         m_path_line->Focus();
     }
 
-    signals:
+signals:
     void directoryChangeRequested(const QString& path);
 
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
     FilePathLineEdit *m_path_line = new FilePathLineEdit();
-    QCompleter *m_completer = nullptr;
+    CustomCompleter *m_completer = nullptr;
     QFileSystemModel *m_completer_model = new QFileSystemModel(this);
 };

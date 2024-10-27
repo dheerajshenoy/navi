@@ -1,4 +1,5 @@
 #include "Navi.hpp"
+#include <qregularexpression.h>
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {
 
@@ -8,6 +9,7 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {
   initKeybinds();
   setupCommandMap();
   setCurrentDir("~"); // set the current directory
+
 }
 
 // Handle signals and slots
@@ -48,53 +50,58 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
-  commandMap["rename"] = [this]() { RenameItems(); };
 
-  commandMap["help"] = [this]() { ShowHelp(); };
+  commandMap["rename"] = [this](const QStringList &args) { RenameItems(); };
 
-  commandMap["copy"] = [this]() { CopyItems(); };
+  commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
-  commandMap["cut"] = [this]() { CutItems(); };
+  commandMap["copy"] = [this](const QStringList &args) { CopyItems(); };
 
-  commandMap["paste"] = [this]() { PasteItems(); };
+  commandMap["cut"] = [this](const QStringList &args) { CutItems(); };
 
-  commandMap["delete"] = [this]() { DeleteItems(); };
+  commandMap["paste"] = [this](const QStringList &args) { PasteItems(); };
 
-  commandMap["mark"] = [this]() { m_file_panel->MarkItems(); };
+  commandMap["delete"] = [this](const QStringList &args) { DeleteItems(); };
 
-  commandMap["toggle-mark"] = [this]() { m_file_panel->MarkOrUnmarkItems(); };
+  commandMap["mark"] = [this](const QStringList &args) { m_file_panel->MarkItems(); };
 
-  commandMap["unmark"] = [this]() { m_file_panel->UnmarkItems(); };
+  commandMap["toggle-mark"] = [this](const QStringList &args) { m_file_panel->MarkOrUnmarkItems(); };
 
-  commandMap["unmark-all"] = [this]() { UnmarkAllItems(); };
+  commandMap["unmark"] = [this](const QStringList &args) { m_file_panel->UnmarkItems(); };
 
-  commandMap["new-file"] = [this]() { NewFile(); };
+  commandMap["unmark-all"] = [this](const QStringList &args) { UnmarkAllItems(); };
 
-  commandMap["new-folder"] = [this]() { NewFolder(); };
+  commandMap["unmark-all-here"] = [this](const QStringList &args) { UnmarkAllItemsHere(); };
 
-  commandMap["trash"] = [this]() { TrashItems(); };
+  commandMap["new-file"] = [this](const QStringList &args) { NewFile(); };
 
-  commandMap["exit"] = [this]() { QApplication::quit(); };
+  commandMap["new-folder"] = [this](const QStringList &args) { NewFolder(); };
 
-  commandMap["messages"] = [this]() { ToggleMessagesBuffer(); };
+  commandMap["trash"] = [this](const QStringList &args) { TrashItems(); };
 
-  commandMap["toggle-hidden-files"] = [this]() {
+  commandMap["exit"] = [this](const QStringList &args) { QApplication::quit(); };
+
+  commandMap["toggle-messages-pane"] = [this](const QStringList &args) { ToggleMessagesBuffer(); };
+
+  commandMap["toggle-hidden-files"] = [this](const QStringList &args) {
     m_file_panel->ToggleHiddenFiles();
   };
 
-  commandMap["toggle-preview-pane"] = [this]() { TogglePreviewPanel(); };
+  commandMap["toggle-preview-pane"] = [this](const QStringList &args) { TogglePreviewPanel(); };
 
-  commandMap["toggle-menu-bar"] = [this]() { ToggleMenuBar(); };
+  commandMap["toggle-menu-bar"] = [this](const QStringList &args) { ToggleMenuBar(); };
 
-  commandMap["filter"] = [this]() { Filter(); };
+  commandMap["filter"] = [this](const QStringList &args) { Filter(); };
 
-  commandMap["unfilter"] = [this]() { ResetFilter(); };
+  commandMap["unfilter"] = [this](const QStringList &args) { ResetFilter(); };
 
-  commandMap["refresh"] = [this]() { m_file_panel->ForceUpdate(); };
+  commandMap["refresh"] = [this](const QStringList &args) { m_file_panel->ForceUpdate(); };
 
-  commandMap["chmod"] = [this]() { Chmod(); };
+  commandMap["chmod"] = [this](const QStringList &args) { Chmod(); };
 
-  commandMap["show-marks"] = [this]() { ToggleMarksBuffer(); };
+  commandMap["toggle-marks-pane"] = [this](const QStringList &args) { ToggleMarksBuffer(); };
+
+  commandMap["focus-path"] = [&](const QStringList &args) { m_file_path_widget->FocusLineEdit(); };
 
   m_input_completion_model = new QStringListModel(m_valid_command_list);
   m_inputbar->setCompleterModel(m_input_completion_model);
@@ -130,36 +137,46 @@ void Navi::ToggleMarksBuffer(const bool &state) noexcept {
 
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
-  QStringList commandlist = commandtext.split(" ");
-  if (commandlist.isEmpty())
-    return;
+    // QStringList commandlist = commandtext.split(" && ");
+    QStringList commandlist =
+        commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
 
-  QString command = commandlist[0];
-  // QString arg = (commandlist.size() > 1) ? commandlist[1] : "";
+    if (commandlist.isEmpty())
+        return;
 
-  auto [isNumber, num] = utils::isNumber(command);
-  if (isNumber) {
-      m_file_panel->GotoItem(num);
-      return;
-  }
+    auto [isNumber, num] = utils::isNumber(commandlist[0]);
+    if (isNumber) {
+        m_file_panel->GotoItem(num);
+        return;
+    }
 
-  if (commandMap.contains(command)) {
-    commandMap[command](); // Call the associated function
-  } else {
-  }
+    //        COMMAND1       &&        COMMAND2
+    // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
+
+    for (const auto &commands : commandlist) {
+        QStringList split = commands.split(" ");
+        QString subcommand = split[0];
+        QStringList args = (split.size() > 1) ? split.mid(1) : QStringList();
+
+        if (commandMap.contains(subcommand)) {
+            commandMap[subcommand](args); // Call the associated function
+        } else {
+            m_statusbar->Message(QString("Command %1 is not a valid interactive command").arg(subcommand), MessageType::ERROR, 5);
+        }
+    }
 }
 
 void Navi::TogglePreviewPanel(const bool &state) noexcept {
-  if (state) {
-    m_preview_panel->show();
-    connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-            &PreviewPanel::onFileSelected);
-    m_preview_panel->onFileSelected(getCurrentFile());
-  } else {
-    m_preview_panel->hide();
-    disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-               &PreviewPanel::onFileSelected);
-  }
+    if (state) {
+        m_preview_panel->show();
+        connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+                &PreviewPanel::onFileSelected);
+        m_preview_panel->onFileSelected(getCurrentFile());
+    } else {
+        m_preview_panel->hide();
+        disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+                   &PreviewPanel::onFileSelected);
+    }
 }
 
 void Navi::TogglePreviewPanel() noexcept {
@@ -194,9 +211,6 @@ void Navi::initLayout() noexcept {
 
   m_log_buffer->setAcceptRichText(true);
   m_log_buffer->setReadOnly(true);
-
-  m_file_path_widget->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-  m_file_panel->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 
   m_file_panel->setFocus();
   m_inputbar->hide();
@@ -259,13 +273,13 @@ void Navi::initKeybinds() noexcept {
   connect(kb_search_next, &QShortcut::activated, this, &Navi::SearchNext);
   connect(kb_search_prev, &QShortcut::activated, this, &Navi::SearchPrev);
   connect(kb_toggle_menubar, &QShortcut::activated, this,
-          [&]() { ToggleMenuBar(); });
+          [this]() { ToggleMenuBar(); });
 
   connect(kb_toggle_preview_panel, &QShortcut::activated, this,
-          [&]() { TogglePreviewPanel(); });
+          [this]() { TogglePreviewPanel(); });
 
   connect(kb_focus_file_path_widget, &QShortcut::activated, this,
-          [&]() { m_file_path_widget->FocusLineEdit(); });
+          [this]() { m_file_path_widget->FocusLineEdit(); });
 
   connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
 }
@@ -311,7 +325,7 @@ void Navi::ExecuteExtendedCommand() noexcept {
   // m_minibuffer->ExecuteCommand();
   QString command = m_inputbar->getInput("Command");
   ProcessCommand(command);
-  m_file_panel->setFocus();
+  // m_file_panel->setFocus();
 }
 
 void Navi::initMenubar() noexcept {
@@ -562,5 +576,14 @@ void Navi::UnmarkAllItems() noexcept {
           .arg(marksCount));
     if (input == "y" || input.isNull() || input.isEmpty())
         m_file_panel->UnmarkAllItems();
+    m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
+}
+
+void Navi::UnmarkAllItemsHere() noexcept {
+    uint marksCount = m_file_panel->model()->getMarkedFilesCountHere();
+    QString input = m_inputbar->getInput(QString("Do you want to delete all %1 marks (Y/n) ?")
+          .arg(marksCount));
+    if (input == "y" || input.isNull() || input.isEmpty())
+        m_file_panel->UnmarkAllItemsHere();
     m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
 }

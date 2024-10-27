@@ -7,6 +7,7 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
     m_img_preview_widget->setHidden(true);
     m_text_preview_widget->setHidden(true);
 
+
     m_img_preview_widget->setAlignment(Qt::AlignmentFlag::AlignTop);
     m_img_preview_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_text_preview_widget->setAcceptRichText(true);

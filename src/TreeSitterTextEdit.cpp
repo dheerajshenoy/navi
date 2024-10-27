@@ -3,7 +3,9 @@
 TreeSitterTextEdit::TreeSitterTextEdit(QWidget *parent)
 : QTextEdit(parent), parser(ts_parser_new()), tree(nullptr) {
     // Initialize Tree-sitter with a specific language
-    ts_parser_set_language(parser, tree_sitter_python()); // Replace with your actual language
+
+    ts_parser_set_language(
+                           parser, tree_sitter_python()); // Replace with your actual language
 }
 
 TreeSitterTextEdit::~TreeSitterTextEdit() {

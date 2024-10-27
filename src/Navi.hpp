@@ -17,6 +17,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QRegularExpression>
 
 // Local includes
 #include "FilePathWidget.hpp"
@@ -83,6 +84,8 @@ public:
     void ToggleMarksBuffer(const bool &state) noexcept;
     void ToggleMarksBuffer() noexcept;
     void UnmarkAllItems() noexcept;
+    void UnmarkAllItemsHere() noexcept;
+    void FocusPath() noexcept;
 
 private:
     void initLayout() noexcept;
@@ -140,12 +143,13 @@ private:
     Inputbar *m_inputbar = nullptr;
 
     // Hashmap for storing the commands and the corresponding function calls
-    QHash<QString, std::function<void(void)>> commandMap;
+    QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
     QStringList m_valid_command_list = {
         "mark",
         "unmark",
         "unmark-all",
+        "unmark-all-here",
         "chmod",
         "toggle-mark",
         "rename",
@@ -155,13 +159,15 @@ private:
         "cut",
         "delete",
         "trash",
-        "messages",
         "filter",
         "unfilter",
         "refresh",
         "toggle-hidden-files",
+        "toggle-messages-pane",
         "toggle-preview-pane",
+        "toggle-marks-pane",
         "toggle-menu-bar",
+        "focus-path",
     };
 
     QStringListModel *m_input_completion_model = nullptr;

@@ -6,6 +6,8 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDropIndicatorShown(true);
     setDefaultDropAction(Qt::CopyAction);
 
+    setDragDropMode(QTableView::DragDropMode::DragDrop);
+
     horizontalHeader()->setStretchLastSection(true);
     // horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
     setFrameShadow(QTableView::Shadow::Plain);
@@ -44,10 +46,6 @@ void TableView::dropEvent(QDropEvent *event) {
 
             QString destPath = QFileInfo(model->rootPath()).absoluteFilePath();
 
-            if (QFile::exists(destPath)) {
-                // QFile::remove(destPath);  // Optional: remove if destination exists
-            }
-
             qDebug() << sourcePath << " " << destPath;
 
             qDebug() << event->proposedAction();
@@ -83,6 +81,8 @@ void TableView::startDrag(Qt::DropActions supportedActions) {
                            model->data(index, Qt::DisplayRole).toString();
         urls << QUrl::fromLocalFile(filePath);
     }
+
+    qDebug() << urls;
 
     mimeData->setUrls(urls);
 

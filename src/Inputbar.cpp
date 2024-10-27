@@ -10,9 +10,20 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     m_layout->addWidget(m_line_edit);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
+
+    connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
+
     connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {
         this->hide();
     });
+}
+
+void Inputbar::suggestionComplete() noexcept {
+    auto index = m_line_edit_completer->currentIndex();
+    m_line_edit_completer->popup()->setCurrentIndex(index);
+    auto start = m_line_edit_completer->currentRow();
+    if (!m_line_edit_completer->setCurrentRow(start++))
+        m_line_edit_completer->setCurrentRow(0);
 }
 
 QString Inputbar::getInput(const QString& prompt) noexcept {
@@ -31,7 +42,7 @@ QString Inputbar::getInput(const QString& prompt) noexcept {
     };
 
     // When the user presses Enter (returnPressed), capture the text and exit the loop
-    connect(m_line_edit, &QLineEdit::returnPressed, this, captureInput);
+    connect(m_line_edit, &LineEdit::returnPressed, this, captureInput);
 
     // Start the event loop
     loop.exec();

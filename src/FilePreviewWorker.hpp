@@ -73,8 +73,7 @@ public slots:
 
         QString mimeName = mimeType.name();
 
-        if (mimeName.startsWith("image/") ||
-            mimeName.startsWith("application/pdf")) {
+        if (mimeName.startsWith("image/")) {
 
             Magick::InitializeMagick(nullptr);
             Magick::Image image;

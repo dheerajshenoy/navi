@@ -7,10 +7,11 @@ FilePathWidget::FilePathWidget(QWidget *parent)
     m_path_line->setReadOnly(true);
     m_layout->addWidget(m_path_line);
     m_path_line->setFrame(false);
+
     // Set up file system model for directory completion
     m_completer_model->setFilter(QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot);  // Show only directories
     m_completer_model->setRootPath(QDir::rootPath());
-    m_completer = new QCompleter(m_completer_model, this);
+    m_completer = new CustomCompleter(m_completer_model, this);
     m_path_line->setCompleter(m_completer);
 
     // connect(m_path_line, &FilePathLineEdit::textChanged, this,  [&](const QString &text) {
