@@ -12,14 +12,21 @@ FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
 }
 
 void FileSystemModel::initDefaults() noexcept {
+    m_file_system_watcher = new QFileSystemWatcher(this);
     m_dir_filters = QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries;
+
+    connect(m_file_system_watcher, &QFileSystemWatcher::directoryChanged, this,
+            [&]() {
+                loadDirectory(m_root_path);
+            });
+
 }
 
 void FileSystemModel::clearMarkedFilesList() noexcept { m_markedFiles.clear(); }
 
 void FileSystemModel::clearMarkedFilesListHere() noexcept {
     for (const auto &file : m_markedFiles) {
-        if (file.contains(rootPath()))
+        if (file.contains(m_root_path))
             m_markedFiles.remove(file);
     }
 }
@@ -31,14 +38,17 @@ uint FileSystemModel::getMarkedFilesCount() noexcept {
 uint FileSystemModel::getMarkedFilesCountHere() noexcept {
     uint count = 0;
     for (const auto &files : m_markedFiles)
-      if (files.contains(rootPath()))
+      if (files.contains(m_root_path))
           count++;
     return count;
 }
 
 void FileSystemModel::setRootPath(const QString &path) noexcept {
-  m_root_path = path;
-  loadDirectory(path);
+    m_file_system_watcher->removePath(m_root_path);
+    m_root_path = path;
+    loadDirectory(path);
+    m_file_system_watcher->addPath(path);
+    // TODO: handle bool from this statement
 }
 
 QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
@@ -46,7 +56,7 @@ QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
     return QString();
 
   // Assuming `fileInfoList` holds QFileInfo objects or a similar structure
-  return QFileInfo(rootPath() + QDir::separator() + index.data().toString())
+  return QFileInfo(m_root_path + QDir::separator() + index.data().toString())
       .absoluteFilePath();
 }
 
@@ -55,7 +65,7 @@ bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
     return false;
 
   // Assuming `fileInfoList` holds QFileInfo objects or a similar structure
-  return QFileInfo(rootPath() + QDir::separator() + index.data().toString())
+  return QFileInfo(m_root_path + QDir::separator() + index.data().toString())
       .isDir();
 }
 

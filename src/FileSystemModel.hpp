@@ -10,6 +10,8 @@
 #include <QLocale>
 #include <QRegularExpression>
 #include <QFont>
+#include <QFileSystemWatcher>
+
 #include "utils.hpp"
 
 enum class Role {
@@ -96,5 +98,6 @@ private:
     QDir::Filters m_dir_filters;
     QList<ColumnType> m_column_list = {ColumnType::FileName};
     QLocale m_locale;
-    QStringList m_name_filters = { "*" };
+    QStringList m_name_filters = {"*"};
+    QFileSystemWatcher *m_file_system_watcher = nullptr;
 };
