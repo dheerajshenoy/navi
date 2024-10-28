@@ -18,6 +18,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QProcess>
+#include <QTemporaryFile>
 
 #include "Result.hpp"
 #include "FileSystemModel.hpp"
@@ -39,24 +40,32 @@ public:
 
     FileSystemModel* model() noexcept { return m_model; }
 
+    bool NewFolder(const QString &folderName) noexcept;
+    bool NewFile(const QString &fileName) noexcept;
     QString getCurrentItem() noexcept;
     QString getCurrentItemBaseName() noexcept;
     void UpDirectory() noexcept;
     void SelectItem() noexcept;
+    void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
     void PrevItem() noexcept;
     void MarkOrUnmarkItems() noexcept;
     void MarkItems() noexcept;
-    void UnmarkItems() noexcept;
-    void UnmarkAllItems() noexcept;
-    void UnmarkAllItemsHere() noexcept;
+    void MarkInverse() noexcept;
+    void MarkAllItems() noexcept;
+    void UnmarkItem() noexcept;
+    void UnmarkItemsLocal() noexcept;
+    void UnmarkItemsGlobal() noexcept;
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
-    Result<bool> RenameItems() noexcept;
+    Result<bool> RenameItem() noexcept;
     Result<bool> RenameItemsGlobal() noexcept;
+    Result<bool> RenameItemsLocal() noexcept;
     void PasteItems() noexcept;
-    bool DeleteItems() noexcept;
+    Result<bool> DeleteItem() noexcept;
+    Result<bool> DeleteItemsLocal() noexcept;
+    Result<bool> DeleteItemsGlobal() noexcept;
     bool TrashItems() noexcept;
     void ToggleHiddenFiles() noexcept;
     void Search(const QString &searchExpression) noexcept;
@@ -74,6 +83,7 @@ public:
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
+    Result<bool> BulkRename(const QStringList &files) noexcept;
 
 signals:
     void afterDirChange(QString path);
@@ -93,7 +103,6 @@ protected:
 private:
     void selectHelper(const QModelIndex &index, const bool selectFirst) noexcept;
     void selectFirstItem() noexcept;
-    QString currentItem() noexcept;
     void initKeybinds() noexcept;
     void initContextMenu() noexcept;
     void handleItemDoubleClicked(const QModelIndex &index) noexcept;
@@ -129,4 +138,9 @@ private:
     QStringList m_terminal_args;
 
     Inputbar *m_inputbar;
+
+    // This is used to store the string of the current item under focus
+    // which will then be used to focus the item again after the directory
+    // reloads
+    // QString m_old_item_name;
 };

@@ -23,26 +23,6 @@ FilePanel::FilePanel(Inputbar *inputBar, QWidget *parent) : QWidget(parent), m_i
     // We disconnect the signal because we do not want to select the first item
     // when we come up the directory and so we handle it manually without the
     // signal
-    connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
-      selectFirstItem();
-      disconnect(m_model, &FileSystemModel::directoryLoaded, 0, 0);
-    });
-
-    connect(m_model, &FileSystemModel::directoryLoadProgress, this,
-            [&](const int &progress) {});
-
-    connect(this, &FilePanel::dropCopyRequested, this,
-            [&](const QStringList &sourceFilePaths) {
-                CopyItems();
-                PasteItems();
-            });
-
-    connect(this, &FilePanel::dropCutRequested, this,
-            [&](const QStringList &sourceFilePaths) {
-              CutItems();
-              PasteItems();
-            });
-
     setAcceptDrops(true);
 }
 
@@ -74,7 +54,7 @@ void FilePanel::initContextMenu() noexcept {
             [&]() { PasteItems(); });
 
     connect(m_context_action_delete, &QAction::triggered, this,
-            [&]() { DeleteItems(); });
+            [&]() { DeleteItem(); });
 
     connect(m_context_action_trash, &QAction::triggered, this,
             [&]() { TrashItems(); });
@@ -104,7 +84,29 @@ Result<bool> FilePanel::OpenTerminal(const QString &directory) noexcept {
 void FilePanel::initKeybinds() noexcept {}
 
 void FilePanel::initSignalsSlots() noexcept {
+
+    connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
+      selectFirstItem();
+      disconnect(m_model, &FileSystemModel::directoryLoaded, 0, 0);
+    });
+
+    connect(m_model, &FileSystemModel::directoryLoadProgress, this,
+            [&](const int &progress) {});
+
+    connect(this, &FilePanel::dropCopyRequested, this,
+            [&](const QStringList &sourceFilePaths) {
+                CopyItems();
+                PasteItems();
+            });
+
+    connect(this, &FilePanel::dropCutRequested, this,
+            [&](const QStringList &sourceFilePaths) {
+              CutItems();
+              PasteItems();
+            });
+
     connect(m_table_view, &QTableView::doubleClicked, this,
+
             &FilePanel::handleItemDoubleClicked);
 
     connect(m_table_view->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -121,9 +123,23 @@ void FilePanel::initSignalsSlots() noexcept {
     connect(this, &FilePanel::dropCutRequested, this,
             &FilePanel::DropCutRequested);
 
-    // connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
-    // });
+    connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
+        // if (m_old_item_name.isEmpty() || m_old_item_name.isNull())
+        //     return;
+        // QModelIndex newIndex = m_model->getIndexFromString(m_old_item_name);
+        // if (newIndex.isValid())
+        //     m_table_view->setCurrentIndex(newIndex);
+    });
+
+    connect(m_model->getFileSystemWatcher(),
+            &QFileSystemWatcher::directoryChanged, m_model,
+            [&](const QString &path) {
+                // QModelIndex oldIndex = m_table_view->currentIndex();
+                // m_old_item_name = getCurrentItemBaseName();
+                m_model->loadDirectory(path);
+            });
 }
+
 
 void FilePanel::DropCopyRequested(const QStringList &sourcePaths) noexcept {
     QString destDir = m_current_dir;
@@ -287,6 +303,11 @@ void FilePanel::SelectItem() noexcept {
     selectHelper(currentIndex, true);
 }
 
+void FilePanel::SelectItemHavingString(const QString &itemName) noexcept {
+    QModelIndex currentIndex = m_model->getIndexFromString(itemName);
+    selectHelper(currentIndex, true);
+}
+
 void FilePanel::UpDirectory() noexcept {
     QString old_dir = m_current_dir;
     QDir currentDir(old_dir);
@@ -339,25 +360,19 @@ void FilePanel::MarkItems() noexcept {
     }
 }
 
-void FilePanel::UnmarkItems() noexcept {
-
-    if (m_table_view->selectionModel()->hasSelection()) {
-        auto indexes = m_table_view->selectionModel()->selectedIndexes();
-        for (auto index : indexes) {
-            m_model->setData(index, false, static_cast<int>(Role::Marked));
-            m_model->removeMarkedFile(index);
-        }
-    } else {
-        QModelIndex currentIndex = m_table_view->currentIndex();
-        m_model->setData(currentIndex, false, static_cast<int>(Role::Marked));
-        m_model->removeMarkedFile(currentIndex);
-    }
+void FilePanel::UnmarkItem() noexcept {
+    QModelIndex currentIndex = m_table_view->currentIndex();
+    m_model->removeMarkedFile(currentIndex);
 }
 
-void FilePanel::UnmarkAllItems() noexcept { m_model->clearMarkedFilesList(); }
+void FilePanel::UnmarkItemsGlobal() noexcept {
+    if (m_model->hasMarks())
+        m_model->removeMarkedFiles();
+}
 
-void FilePanel::UnmarkAllItemsHere() noexcept {
-    m_model->clearMarkedFilesListHere();
+void FilePanel::UnmarkItemsLocal() noexcept {
+    if (m_model->hasMarksLocal())
+        m_model->clearMarkedFilesListLocal();
 }
 
 void FilePanel::GotoFirstItem() noexcept {
@@ -386,75 +401,235 @@ void FilePanel::Filters(const QString &filterString) noexcept {
     ForceUpdate();
 }
 
-Result<bool> FilePanel::RenameItems() noexcept {
-    if (m_model->getMarkedFilesCountHere() > 1) {
-        // TODO: handle multiple rename
-        return Result(true);
-    } else {
-        // current selection single rename
-        const QString &oldName = getCurrentItem();
-        const QString &oldBaseName = getCurrentItemBaseName();
-        QModelIndex currentIndex = m_table_view->currentIndex();
-        QString newFileName = m_inputbar->getInput(QString("Rename (%1)")
+Result<bool> FilePanel::RenameItem() noexcept {
+    // current selection single rename
+    const QString &oldName = getCurrentItem();
+    const QString &oldBaseName = getCurrentItemBaseName();
+    QModelIndex currentIndex = m_table_view->currentIndex();
+    QString newFileName = m_inputbar->getInput(QString("Rename (%1)")
                                                    .arg(oldBaseName), oldBaseName);
 
-        // If user cancels or the new file name is empty
-        if (newFileName.isEmpty() || newFileName.isNull())
-            return Result(false, "Operation Cancelled");
+    // If user cancels or the new file name is empty
+    if (newFileName.isEmpty() || newFileName.isNull())
+        return Result(true, "Operation Cancelled");
 
-        if (newFileName == oldName)
-            return Result(false, "File names are same");
+    if (newFileName == oldName)
+        return Result(false, "File names are same");
 
-        bool state = QFile::rename(oldName,
-                                   m_current_dir + QDir::separator() + newFileName);
-        if (state) {
-            m_model->removeMarkedFile(oldName);
-        }
-        return state;
+    bool state = QFile::rename(oldName,
+                               m_current_dir + QDir::separator() + newFileName);
+    if (state) {
+        m_model->removeMarkedFile(oldName);
     }
+    return Result(state);
 }
 
-bool FilePanel::DeleteItems() noexcept {
-    if (m_model->hasMarks()) {
-        return true;
-    } else {
-        if (m_model->isDir(m_table_view->currentIndex())) {
-            QDir dir(getCurrentItem());
-            int confirm = QMessageBox::question(
-                                                this, "Delete", "Do you really want to delete ?",
-                                                QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
-                                                QMessageBox::StandardButton::No);
-            switch (confirm) {
-            case QMessageBox::Yes:
-                m_model->removeMarkedFile(dir.absolutePath());
-                return dir.removeRecursively();
-                break;
+Result<bool> FilePanel::BulkRename(const QStringList &filePaths) noexcept {
+    QTemporaryFile tempFile;
 
-            case QMessageBox::No | QMessageBox::Cancel:
-                return false;
-                break;
-            }
-        } else {
-            int confirm = QMessageBox::question(
-                                                this, "Delete", "Do you really want to delete ?",
-                                                QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
-                                                QMessageBox::StandardButton::No);
-            switch (confirm) {
-            case QMessageBox::Yes: {
-                auto currentItem = getCurrentItem();
-                m_model->removeMarkedFile(currentItem);
-                return QFile::remove(currentItem);
-            }
-                break;
+    tempFile.setFileTemplate("Navi__Bulk_Rename_List__XXXXXXXXXX");
 
-            case QMessageBox::No | QMessageBox::Cancel:
-                return false;
-                break;
-            }
-        }
+    if (!tempFile.open()) {
+        return Result(false, "Could not create temporary file");
+    }
+
+    // Step 2: Write original filenames to temporary file with placeholders for new names
+    QTextStream out(&tempFile);
+
+    out << "# This is a comment line\n";
+    out << "# Add your new file names to the right of the -> symbol\n";
+    out << "# Once done, please save and quit the file\n";
+    out << "# The files will hopefully be renamed\n";
+
+    for (const QString &filePath : filePaths) {
+        out << filePath << " -> " << "\n";  // Format: original_path -> new_name_placeholder
+    }
+
+    tempFile.close();
+
+    // Step 3: Open the temporary file in the default text editor
+    QProcess editor;
+
+    editor.start("emacs", QStringList() << tempFile.fileName()); // Replace "gedit" with your text editor of choice
+    editor.waitForFinished();
+
+    // Step 4: Reopen the file to read user inputs
+    if (!tempFile.open()) {
+        QMessageBox::critical(nullptr, "Error", "Could not reopen temporary file.");
         return false;
     }
-    ForceUpdate();
+
+    // Step 5: Parse each line and rename files
+    QTextStream in(&tempFile);
+    bool success = true;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.startsWith("#")) continue; // skip "comments"
+        QStringList parts = line.split("->", Qt::SkipEmptyParts);
+        if (parts.size() == 2) {
+            QString originalPath = parts[0].trimmed();
+            QString newName = parts[1].trimmed();
+            if (!newName.isEmpty()) {
+                QString newFilePath = QFileInfo(originalPath).absolutePath() + "/" + newName;
+                if (!QFile::rename(originalPath, newFilePath)) {
+                    success = false;
+                    QMessageBox::warning(nullptr, "Rename Failed",
+                                         QString("Failed to rename %1").arg(originalPath));
+                }
+            }
+        }
+    }
+    tempFile.close();
+
+    return success;
+
+}
+
+Result<bool> FilePanel::RenameItemsGlobal() noexcept { return Result(true); }
+
+Result<bool> FilePanel::RenameItemsLocal() noexcept {
+    if (m_model->hasMarksLocal()) {
+        auto localMarkedFiles = m_model->getMarkedFilesLocal();
+        if (localMarkedFiles.size() > 1) {
+            return BulkRename(localMarkedFiles);
+        } else {
+            QFileInfo fileInfo(localMarkedFiles.at(0));
+            const QString &oldFilePath = fileInfo.filePath();
+            const QString &oldName = fileInfo.fileName();
+            QModelIndex currentIndex = m_table_view->currentIndex();
+            QString newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName), oldName);
+
+            // If user cancels or the new file name is empty
+            if (newFileName.isEmpty() || newFileName.isNull())
+                return Result(true, "Operation Cancelled");
+
+            if (newFileName == oldName)
+                return Result(false, "File names are same");
+
+            bool state = QFile::rename(oldFilePath, m_current_dir + QDir::separator() + newFileName);
+            if (state) {
+                m_model->removeMarkedFile(oldFilePath);
+            }
+
+            return Result(state);
+        }
+    }
+    return Result(false, "No marks found");
+}
+
+Result<bool> FilePanel::DeleteItem() noexcept {
+    if (m_model->isDir(m_table_view->currentIndex())) {
+        QDir dir(getCurrentItem());
+        int confirm = QMessageBox::question(
+                                            this, "Delete", "Do you really want to delete ?",
+                                            QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
+                                            QMessageBox::StandardButton::No);
+        switch (confirm) {
+        case QMessageBox::Yes:
+            m_model->removeMarkedFile(dir.absolutePath());
+            return dir.removeRecursively();
+            break;
+
+        case QMessageBox::No | QMessageBox::Cancel:
+            return false;
+            break;
+        }
+    } else {
+        int confirm = QMessageBox::question(
+                                            this, "Delete", "Do you really want to delete ?",
+                                            QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
+                                            QMessageBox::StandardButton::No);
+        switch (confirm) {
+        case QMessageBox::Yes: {
+            auto currentItem = getCurrentItem();
+            m_model->removeMarkedFile(currentItem);
+            return QFile::remove(currentItem);
+        }
+            break;
+
+        case QMessageBox::No | QMessageBox::Cancel:
+            return Result(true, "Deletion cancelled");
+            break;
+        }
+    }
+    return Result(false);
+}
+
+Result<bool> FilePanel::DeleteItemsGlobal() noexcept {
+    return true;
+}
+
+Result<bool> FilePanel::DeleteItemsLocal() noexcept {
+    bool check = true;
+    if (m_model->hasMarksLocal()) {
+        auto _removeDir = [&](QDir dir, const QString &itemPath) {
+            m_model->removeMarkedFile(itemPath);
+            dir.removeRecursively();
+        };
+
+        auto _removeFile = [&](const QString &itemPath) {
+            m_model->removeMarkedFile(itemPath);
+            QFile::remove(itemPath);
+        };
+
+        auto markedLocalFiles = m_model->getMarkedFilesLocal();
+        for(int i=0; i < markedLocalFiles.size(); i++) {
+            QString itemPath = markedLocalFiles.at(i);
+            QFileInfo item(itemPath);
+
+            if (item.isDir()) {
+                QDir dir(itemPath);
+
+                if (check) {
+                    int confirm = QMessageBox::question(
+                                                        this, "Delete",
+                                                        QString("Do you really want to delete %1?")
+                    .arg(item.fileName()),
+                                                        QMessageBox::StandardButton::YesToAll |
+                                                        QMessageBox::StandardButton::Yes |
+                                                        QMessageBox::StandardButton::No,
+                                                        QMessageBox::StandardButton::No);
+                    switch (confirm) {
+                    case QMessageBox::Yes:
+                        _removeDir(dir, itemPath);
+                        break;
+
+                    case QMessageBox::No | QMessageBox::Cancel:
+                        return Result(true, "Cancelled");
+                        break;
+
+                    case QMessageBox::YesToAll:
+                        check = false;
+                    }
+                } else {
+                    _removeDir(dir, itemPath);
+                }
+            } else {
+
+                if (check) {
+                    int confirm = QMessageBox::question(this, "Delete", "Do you really want to delete ?",
+                                                        QMessageBox::StandardButton::YesToAll |
+                                                        QMessageBox::StandardButton::Yes |
+                                                        QMessageBox::StandardButton::No,
+                                                        QMessageBox::StandardButton::No);
+                    switch (confirm) {
+                    case QMessageBox::Yes:
+                        _removeFile(itemPath);
+                        break;
+
+                    case QMessageBox::No | QMessageBox::Cancel:
+                        return Result(true, "Cancelled");
+                        break;
+
+                    case QMessageBox::YesToAll:
+                        check = false;
+                    }
+                } else
+                    _removeFile(itemPath);
+            }
+        }
+    }
+    return Result(false, "No local marks found");
 }
 
 void FilePanel::ToggleHiddenFiles() noexcept {
@@ -485,8 +660,7 @@ void FilePanel::SearchNext() noexcept {
     if (m_search_index_list_index > m_search_index_list.size() - 1)
         m_search_index_list_index = 0;
 
-    m_table_view->setCurrentIndex(
-                                  m_search_index_list.at(m_search_index_list_index));
+    m_table_view->setCurrentIndex(m_search_index_list.at(m_search_index_list_index));
 }
 
 void FilePanel::SearchPrev() noexcept {
@@ -683,4 +857,26 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
 void FilePanel::ItemProperty() noexcept {
     FilePropertyWidget prop_widget(getCurrentItem());
     prop_widget.exec();
+}
+
+void FilePanel::MarkInverse() noexcept {}
+
+void FilePanel::MarkAllItems() noexcept {}
+
+bool FilePanel::NewFolder(const QString &folderName) noexcept {
+    QDir dir;
+    if (dir.mkpath(m_current_dir + QDir::separator() + folderName)) {
+        // SelectItemHavingString(folderName);
+        return true;
+    }
+}
+
+bool FilePanel::NewFile(const QString &fileName) noexcept {
+    QFile file(m_current_dir + QDir::separator() + fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.close();
+        // SelectItemHavingString(fileName);
+        return true;
+    }
+    return false;
 }

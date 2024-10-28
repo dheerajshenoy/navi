@@ -14,6 +14,7 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QFileIconProvider>
+#include <qfilesystemwatcher.h>
 
 #include "utils.hpp"
 
@@ -38,10 +39,12 @@ public:
 
     QSet<QString> m_markedFiles;
 
+    QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
+    QModelIndex getIndexFromString(const QString &path) const noexcept;
     uint getMarkedFilesCount() noexcept;
-    uint getMarkedFilesCountHere() noexcept;
+    uint getMarkedFilesCountLocal() noexcept;
     void clearMarkedFilesList() noexcept;
-    void clearMarkedFilesListHere() noexcept;
+    void clearMarkedFilesListLocal() noexcept;
     void setNameFilters(const QStringList &filters) noexcept;
     void setColumnList(const QList<FileSystemModel::ColumnType> &cols) noexcept;
     QString filePath(const QModelIndex &index) noexcept;
@@ -57,8 +60,10 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     void loadDirectory(const QString &path) noexcept;
-    bool hasMarks() { return m_markedFiles.size() > 0; }
+    inline bool hasMarks() noexcept { return m_markedFiles.size() > 0; }
+    bool hasMarksLocal() noexcept;
     QSet<QString> getMarkedFiles() noexcept { return m_markedFiles; }
+    QStringList getMarkedFilesLocal() noexcept;
     void setFilter(const QDir::Filters &filters) noexcept;
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
@@ -86,6 +91,7 @@ private:
     QString getStringFromIndex(const QModelIndex &index) const noexcept {
         return this->data(index, Qt::DisplayRole).toString();
     }
+
 
     QString getStringFromRow(const int &row, const int &col = 0) const noexcept {
         return index(row, col).data().toString();

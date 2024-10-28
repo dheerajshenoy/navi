@@ -30,6 +30,13 @@
 #include "BookmarkManager.hpp"
 #include "BookmarkWidget.hpp"
 
+// Scope for the interactive commands (AT POINT, IN THE DIRECTORY, ALL THE MARKS)
+enum class CommandScope {
+    CURRENT = 0,
+    LOCAL,
+    GLOBAL
+};
+
 class Menubar : public QMenuBar {
     Q_OBJECT
 
@@ -62,13 +69,16 @@ public:
     void TogglePreviewPanel(const bool &state) noexcept;
     void TogglePreviewPanel() noexcept;
     void ExecuteExtendedCommand() noexcept;
-    void RenameItems() noexcept;
+    void RenameItems(const CommandScope &scope) noexcept;
     void NewFile(const int &nfiles = -1) noexcept;
     void NewFolder(const int &nfolders = -1) noexcept;
-    void CutItems() noexcept;
-    void CopyItems() noexcept;
-    void DeleteItems() noexcept;
-    void TrashItems() noexcept;
+    void CutItems(const CommandScope &scope) noexcept;
+    void CopyItems(const CommandScope &scope) noexcept;
+    void DeleteItems(const CommandScope &scope) noexcept;
+    void TrashItems(const CommandScope &scope) noexcept;
+    void PasteItems() noexcept;
+    void Chmod(const CommandScope &scope) noexcept;
+    void UnmarkItems(const CommandScope &scope) noexcept;
     void ShowHelp() noexcept;
     void Search() noexcept;
     void SearchNext() noexcept;
@@ -77,9 +87,6 @@ public:
     void ToggleMenuBar() noexcept;
     void Filter() noexcept;
     void ResetFilter() noexcept;
-    void Chmod() noexcept;
-    void HighlightMode() noexcept;
-    void PasteItems() noexcept;
     void LogMessage(const QString &message, const MessageType &type) noexcept;
     void ToggleMessagesBuffer(const bool &state) noexcept;
     void ToggleMessagesBuffer() noexcept;
@@ -87,8 +94,6 @@ public:
     void ToggleMarksBuffer() noexcept;
     void ToggleBookmarksBuffer(const bool &state) noexcept;
     void ToggleBookmarksBuffer() noexcept;
-    void UnmarkAllItems() noexcept;
-    void UnmarkAllItemsHere() noexcept;
     void FocusPath() noexcept;
     void AddBookmark(const QStringList &bookmarkName) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName) noexcept;
@@ -98,6 +103,7 @@ public:
     void SaveBookmarkFile() noexcept;
 
 private:
+    void chmodHelper() noexcept;
     void initBookmarks() noexcept;
     void initLayout() noexcept;
     void initMenubar() noexcept;
@@ -157,35 +163,76 @@ private:
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
     QStringList m_valid_command_list = {
+
+      // Mark
       "mark",
-      "unmark",
-      "unmark-all",
-      "unmark-all-here",
-      "chmod",
       "toggle-mark",
+      "mark-inverse",
+      "mark-all",
+
+      // Unmark
+      "unmark",
+      "unmark-global",
+      "unmark-local",
+
+      // Chmod
+      "chmod",
+      "chmod-global",
+      "chmod-local",
+
+      // Rename
       "rename",
+      "rename-global",
+      "rename-local",
+
+      // Cut
       "cut",
+      "cut-local",
+      "cut-global",
+
+      // Copy
       "copy",
+      "copy-local",
+      "copy-global",
+
+      // Paste
       "paste",
+
+      // Cut
       "cut",
+      "cut-local",
+      "cut-global",
+
+      // Delete
       "delete",
+      "delete-local",
+      "delete-global",
+
+      // Trash
       "trash",
+      "trash-local",
+      "trash-global",
+
       "filter",
       "unfilter",
       "refresh",
       "hidden-files",
-      "messages-pane",
-      "preview-pane",
-      "marks-pane",
       "menu-bar",
       "focus-path",
       "item-property",
+
+      // Bookmarks
       "bookmark-add",
       "bookmark-remove",
       "bookmark-edit",
-      "bookmarks-pane",
       "bookmark-go",
       "bookmarks-save",
+
+      // Panes
+      "messages-pane",
+      "preview-pane",
+      "marks-pane",
+      "bookmarks-pane",
     };
 
     QStringListModel *m_input_completion_model = nullptr;

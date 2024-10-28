@@ -56,20 +56,36 @@ void Navi::ShowHelp() noexcept {}
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
 
-  commandMap["rename"] = [this](const QStringList &args) { RenameItems(); };
+    commandMap["rename"] = [this](const QStringList &args) { RenameItems(CommandScope::CURRENT); };
+    commandMap["rename-global"] = [this](const QStringList &args) { RenameItems(CommandScope::GLOBAL); };
+    commandMap["rename-local"] = [this](const QStringList &args) { RenameItems(CommandScope::LOCAL); };
 
-  commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
+    commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
-  commandMap["copy"] = [this](const QStringList &args) { CopyItems(); };
+    commandMap["copy"] = [this](const QStringList &args) { CopyItems(CommandScope::CURRENT); };
+    commandMap["copy-global"] = [this](const QStringList &args) { CopyItems(CommandScope::GLOBAL); };
+    commandMap["copy-local"] = [this](const QStringList &args) { CopyItems(CommandScope::LOCAL); };
 
-  commandMap["cut"] = [this](const QStringList &args) { CutItems(); };
+    commandMap["cut"] = [this](const QStringList &args) { CutItems(CommandScope::CURRENT); };
+  commandMap["cut-global"] = [this](const QStringList &args) { CutItems(CommandScope::GLOBAL); };
+  commandMap["cut-local"] = [this](const QStringList &args) { CutItems(CommandScope::LOCAL); };
 
   commandMap["paste"] = [this](const QStringList &args) { PasteItems(); };
 
-  commandMap["delete"] = [this](const QStringList &args) { DeleteItems(); };
+  commandMap["delete"] = [this](const QStringList &args) { DeleteItems(CommandScope::CURRENT); };
+  commandMap["delete-global"] = [this](const QStringList &args) { DeleteItems(CommandScope::GLOBAL); };
+  commandMap["delete-local"] = [this](const QStringList &args) { DeleteItems(CommandScope::LOCAL); };
 
   commandMap["mark"] = [this](const QStringList &args) {
     m_file_panel->MarkItems();
+  };
+
+  commandMap["mark-inverse"] = [this](const QStringList &args) {
+    m_file_panel->MarkInverse();
+  };
+
+  commandMap["mark-all"] = [this](const QStringList &args) {
+    m_file_panel->MarkAllItems();
   };
 
   commandMap["toggle-mark"] = [this](const QStringList &args) {
@@ -77,22 +93,24 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["unmark"] = [this](const QStringList &args) {
-    m_file_panel->UnmarkItems();
+    m_file_panel->UnmarkItem();
   };
 
-  commandMap["unmark-all"] = [this](const QStringList &args) {
-    UnmarkAllItems();
+  commandMap["unmark-local"] = [this](const QStringList &args) {
+      UnmarkItems(CommandScope::LOCAL);
   };
 
-  commandMap["unmark-all-here"] = [this](const QStringList &args) {
-    UnmarkAllItemsHere();
+  commandMap["unmark-global"] = [this](const QStringList &args) {
+      UnmarkItems(CommandScope::GLOBAL);
   };
 
   commandMap["new-file"] = [this](const QStringList &args) { NewFile(); };
 
   commandMap["new-folder"] = [this](const QStringList &args) { NewFolder(); };
 
-  commandMap["trash"] = [this](const QStringList &args) { TrashItems(); };
+  commandMap["trash"] = [this](const QStringList &args) { TrashItems(CommandScope::CURRENT); };
+  commandMap["trash-local"] = [this](const QStringList &args) { TrashItems(CommandScope::LOCAL); };
+  commandMap["trash-global"] = [this](const QStringList &args) { TrashItems(CommandScope::GLOBAL); };
 
   commandMap["exit"] = [this](const QStringList &args) {
     QApplication::quit();
@@ -120,7 +138,9 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->ForceUpdate();
   };
 
-  commandMap["chmod"] = [this](const QStringList &args) { Chmod(); };
+  commandMap["chmod"] = [this](const QStringList &args) { Chmod(CommandScope::CURRENT); };
+  commandMap["chmod-local"] = [this](const QStringList &args) { Chmod(CommandScope::LOCAL); };
+  commandMap["chmod-global"] = [this](const QStringList &args) { Chmod(CommandScope::GLOBAL); };
 
   commandMap["marks-pane"] = [this](const QStringList &args) {
     ToggleMarksBuffer();
@@ -455,8 +475,9 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
   QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
   QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
-  QShortcut *kb_unmark_items_here =
+  QShortcut *kb_unmark_items_local =
       new QShortcut(QKeySequence("Shift+u"), this);
+  QShortcut *kb_toggle_hidden_files = new QShortcut(QKeySequence("."), this);
 
   QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
   QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
@@ -483,8 +504,8 @@ void Navi::initKeybinds() noexcept {
           &FilePanel::MarkOrUnmarkItems);
   connect(kb_command, &QShortcut::activated, this,
           &Navi::ExecuteExtendedCommand);
-  connect(kb_rename_items, &QShortcut::activated, this, &Navi::RenameItems);
-  connect(kb_delete_items, &QShortcut::activated, this, &Navi::DeleteItems);
+  connect(kb_rename_items, &QShortcut::activated, this, [&]() { RenameItems(CommandScope::CURRENT); });
+  connect(kb_delete_items, &QShortcut::activated, this, [&]() { DeleteItems(CommandScope::CURRENT); });
   connect(kb_search, &QShortcut::activated, this, &Navi::Search);
   connect(kb_search_next, &QShortcut::activated, this, &Navi::SearchNext);
   connect(kb_search_prev, &QShortcut::activated, this, &Navi::SearchPrev);
@@ -498,9 +519,12 @@ void Navi::initKeybinds() noexcept {
           [this]() { m_file_path_widget->FocusLineEdit(); });
 
   connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
-  connect(kb_copy_items, &QShortcut::activated, this, &Navi::CopyItems);
-  connect(kb_unmark_items_here, &QShortcut::activated, this,
-          &Navi::UnmarkAllItemsHere);
+  connect(kb_copy_items, &QShortcut::activated, this, [&]() { CopyItems(CommandScope::CURRENT); });
+  connect(kb_unmark_items_local, &QShortcut::activated, this,
+          [&]() { UnmarkItems(CommandScope::LOCAL); });
+
+  connect(kb_toggle_hidden_files, &QShortcut::activated, m_file_panel, &FilePanel::ToggleHiddenFiles);
+
 }
 
 void Navi::Search() noexcept {
@@ -511,28 +535,68 @@ void Navi::SearchNext() noexcept { m_file_panel->SearchNext(); }
 
 void Navi::SearchPrev() noexcept { m_file_panel->SearchPrev(); }
 
-void Navi::RenameItems() noexcept {
-  Result res = m_file_panel->RenameItems();
-  if (res.result())
-    m_statusbar->Message("Rename Successful!");
-  else
-    m_statusbar->Message(
-        QString("Error while renaming! (%1)").arg(res.reason()),
-        MessageType::ERROR, 5);
+void Navi::RenameItems(const CommandScope &scope) noexcept {
+    switch (scope) {
+    case CommandScope::CURRENT: {
+        Result res = m_file_panel->RenameItem();
+        if (res.result())
+            m_statusbar->Message("Rename Successful!");
+        else
+            m_statusbar->Message(
+                                 QString("Error while renaming! (%1)").arg(res.reason()),
+                                 MessageType::ERROR, 5);
+    } break;
+
+    case CommandScope::LOCAL: {
+        Result res = m_file_panel->RenameItemsLocal();
+        if (res.result())
+            m_statusbar->Message("Rename Successful!");
+        else
+            m_statusbar->Message(
+                                 QString("Error while renaming! (%1)").arg(res.reason()),
+                                 MessageType::ERROR, 5);
+    } break;
+
+    case CommandScope::GLOBAL: {
+
+    }
+    }
 }
 
-void Navi::DeleteItems() noexcept {
-  if (m_file_panel->DeleteItems())
-    m_statusbar->Message("Deletion Successful!");
-  else
-    m_statusbar->Message("Error while deleting!", MessageType::ERROR, 5);
+void Navi::DeleteItems(const CommandScope &scope) noexcept {
+    switch (scope) {
+
+        case CommandScope::CURRENT:
+            if (m_file_panel->DeleteItem().result())
+                m_statusbar->Message("Deletion Successful!");
+            else
+              m_statusbar->Message("Error while deleting!", MessageType::ERROR,
+                                   5);
+            break;
+
+    case CommandScope::GLOBAL:
+            if (m_file_panel->DeleteItemsGlobal().result())
+                m_statusbar->Message("Deletion Successful!");
+            else
+              m_statusbar->Message("Error while deleting!", MessageType::ERROR,
+                                   5);
+        break;
+
+    case CommandScope::LOCAL:
+        if (m_file_panel->DeleteItemsLocal().result())
+            m_statusbar->Message("Deletion Successful!");
+        else
+            m_statusbar->Message("Error while deleting!", MessageType::ERROR,
+                                 5);
+        break;
+    }
 }
 
-void Navi::CutItems() noexcept { m_file_panel->CutItems(); }
+void Navi::CutItems(const CommandScope &scope) noexcept { m_file_panel->CutItems(); }
 
-void Navi::CopyItems() noexcept { m_file_panel->CopyItems(); }
+void Navi::CopyItems(const CommandScope &scope) noexcept { m_file_panel->CopyItems(); }
 
-void Navi::TrashItems() noexcept {
+void Navi::TrashItems(const CommandScope &scope) noexcept {
   if (m_file_panel->TrashItems())
     m_statusbar->Message("Deletion Successful!");
   else
@@ -679,49 +743,41 @@ void Navi::initMenubar() noexcept {
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {
-  QFile file(filePath);
-
-  if (file.open(QIODevice::WriteOnly)) {
-    file.close();
-    return true;
-  }
-  return false;
 }
 
 // Create an empty file
 void Navi::NewFile(const int &nfiles) noexcept {
-  // Interactive file creation
-  if (nfiles == -1) {
-    QString filename = QInputDialog::getText(this, "Create New File",
-                                             "Enter the name for the file");
+    // Interactive file creation
+    if (nfiles == -1) {
+        QString filename = m_inputbar->getInput("Enter file name: ");
 
-    if (!(filename.isEmpty() && filename.isNull())) {
-      if (createEmptyFile(m_file_panel->getCurrentDir() + QDir::separator() +
-                          filename))
-        m_statusbar->Message("File created successfully!");
-      else
+        if (filename.isEmpty() && filename.isNull()) {
+            m_statusbar->Message("Error: filename cannot be empty!", MessageType::ERROR, 5);
+            return;
+        }
+
+        if (m_file_panel->NewFile(filename))
+            m_statusbar->Message("File created successfully!");
+    } else
         m_statusbar->Message("Error creating file!", MessageType::ERROR, 5);
-    }
-  }
 }
 
 // Create an empty folder
 void Navi::NewFolder(const int &nfolders) noexcept {
-  // Interactive folder creation
-  if (nfolders == -1) {
-    QString dirname =
-        QInputDialog::getText(this, "Create Folder(s)",
-                              "Enter a folder name (slash separations are "
-                              "considered as sub-directories)");
-    if (!(dirname.isEmpty() && dirname.isNull())) {
-      QDir dir;
-      if (dir.mkpath(m_file_panel->getCurrentDir() + QDir::separator() +
-                     dirname))
-        m_statusbar->Message("Folders created successfully!");
-      else
-        m_statusbar->Message("Error creating folders!", MessageType::ERROR, 5);
+    // Interactive folder creation
+    if (nfolders == -1) {
+        QString dirname = m_inputbar->getInput("Enter directory name: ");
+        if (dirname.isEmpty() && dirname.isNull()) {
+            m_statusbar->Message("Error: folder name cannot be empty!", MessageType::ERROR, 5);
+            return;
+        }
+
+        QDir dir;
+        if (m_file_panel->NewFolder(dirname))
+            m_statusbar->Message("Folders created successfully!");
+        else
+            m_statusbar->Message("Error creating folders!", MessageType::ERROR, 5);
     }
-  }
 }
 
 void Navi::setCurrentDir(const QString &path) noexcept {
@@ -778,41 +834,64 @@ void Navi::LogMessage(const QString &message,
 
 Navi::~Navi() {}
 
-void Navi::Chmod() noexcept {
-  QString permString = m_inputbar->getInput("Permission Number");
+void Navi::chmodHelper() noexcept {
+    QString permString = m_inputbar->getInput("Permission Number");
+    if (permString.length() != 3 ||
+        !permString.contains(QRegularExpression("^[0-7]{3}$"))) {
+        m_statusbar->Message("Invalid permission string."
+                             "Expected a three-digit octal string like '755'.",
+                             MessageType::ERROR, 5);
+        return;
+    }
+    if (m_file_panel->Chmod(permString)) {
+        m_statusbar->Message("Chmodded file successfully");
+        m_statusbar->UpdateFile();
+    } else
+        m_statusbar->Message("Error Chmoding file!", MessageType::ERROR, 5);
+}
 
-  if (permString.length() != 3 ||
-      !permString.contains(QRegularExpression("^[0-7]{3}$"))) {
-    m_statusbar->Message("Invalid permission string."
-                         "Expected a three-digit octal string like '755'.",
-                         MessageType::ERROR, 5);
-    return;
-  }
-  if (m_file_panel->Chmod(permString)) {
-    m_statusbar->Message("Chmodded file successfully");
-    m_statusbar->UpdateFile();
-  } else
-    m_statusbar->Message("Error Chmoding file!", MessageType::ERROR, 5);
+void Navi::Chmod(const CommandScope &scope) noexcept {
+
+    switch (scope) {
+    case CommandScope::CURRENT:
+    case CommandScope::LOCAL:
+    case CommandScope::GLOBAL:
+        break;
+    }
 }
 
 void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
 
-void Navi::UnmarkAllItems() noexcept {
-  int marksCount = m_file_panel->model()->getMarkedFilesCount();
-  QString input = m_inputbar->getInput(
-      QString("Do you want to delete all %1 marks (Y/n) ?").arg(marksCount));
-  if (input == "y" || input.isNull() || input.isEmpty())
-    m_file_panel->UnmarkAllItems();
-  m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
-}
+void Navi::UnmarkItems(const CommandScope &scope) noexcept {
+    switch (scope) {
 
-void Navi::UnmarkAllItemsHere() noexcept {
-  uint marksCount = m_file_panel->model()->getMarkedFilesCountHere();
-  QString input = m_inputbar->getInput(
-      QString("Do you want to delete all %1 marks (Y/n) ?").arg(marksCount));
-  if (input == "y" || input.isNull() || input.isEmpty())
-    m_file_panel->UnmarkAllItemsHere();
-  m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
+    case CommandScope::GLOBAL: {
+        int marksCount = m_file_panel->model()->getMarkedFilesCount();
+        QString input = m_inputbar->getInput(
+                                             QString("Do you want to unmark %1 marks (Y/n) ?").arg(marksCount));
+        if (input == "y" || input.isNull() || input.isEmpty()) {
+            m_file_panel->UnmarkItemsGlobal();
+            m_statusbar->Message(QString("Unmarked %1 marks").arg(marksCount));
+        } else
+            m_statusbar->Message(QString("Cancelled unmarking").arg(marksCount));
+    } break;
+
+    case CommandScope::LOCAL: {
+        uint marksCount = m_file_panel->model()->getMarkedFilesCountLocal();
+        QString input = m_inputbar->getInput(
+                                             QString("Do you want to remove %1 marks (Y/n) ?").arg(marksCount));
+        if (input == "y" || input.isNull() || input.isEmpty()) {
+            m_file_panel->UnmarkItemsLocal();
+            m_statusbar->Message(QString("Unmarked %1 marks").arg(marksCount));
+        } else
+            m_statusbar->Message(QString("Cancelled unmarking").arg(marksCount));
+    } break;
+
+    case CommandScope::CURRENT:
+        m_file_panel->UnmarkItem();
+        break;
+
+    }
 }
 
 void Navi::SaveBookmarkFile() noexcept {

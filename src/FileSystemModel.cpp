@@ -14,31 +14,22 @@ void FileSystemModel::initDefaults() noexcept {
     m_file_system_watcher = new QFileSystemWatcher(this);
     m_dir_filters = QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries;
 
-    connect(m_file_system_watcher, &QFileSystemWatcher::directoryChanged, this,
-            [&]() {
-                loadDirectory(m_root_path);
-            });
 }
 
-void FileSystemModel::clearMarkedFilesList() noexcept { m_markedFiles.clear(); }
-
-void FileSystemModel::clearMarkedFilesListHere() noexcept {
-    for (const auto &file : m_markedFiles) {
-        if (file.contains(m_root_path))
-            m_markedFiles.remove(file);
+void FileSystemModel::clearMarkedFilesListLocal() noexcept {
+    auto marksHere = getMarkedFilesLocal();
+    for (const auto &file : marksHere) {
+        m_markedFiles.remove(file);
     }
+    emit marksListChanged();
 }
 
 uint FileSystemModel::getMarkedFilesCount() noexcept {
     return m_markedFiles.size();
 }
 
-uint FileSystemModel::getMarkedFilesCountHere() noexcept {
-    uint count = 0;
-    for (const auto &files : m_markedFiles)
-      if (files.contains(m_root_path))
-          count++;
-    return count;
+uint FileSystemModel::getMarkedFilesCountLocal() noexcept {
+    return getMarkedFilesLocal().size();
 }
 
 void FileSystemModel::setRootPath(const QString &path) noexcept {
@@ -246,8 +237,8 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
     if (role == static_cast<int>(Role::Marked)) {
         m_markedFiles.insert(getPathFromIndex(index));
         emit marksListChanged();
-      emit dataChanged(index, index, {role});
-      return true;
+        emit dataChanged(index, index, {role});
+        return true;
     }
 
     return false; // Return false if renaming fails
@@ -270,25 +261,49 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
 
 bool FileSystemModel::removeMarkedFile(const QString &path) noexcept {
     if (m_markedFiles.contains(path)) {
-        emit marksListChanged();
-        return m_markedFiles.remove(path);
+        if (m_markedFiles.remove(path)) {
+            emit marksListChanged();
+            return true;
+        }
     }
     return false;
 }
 
 void FileSystemModel::removeMarkedFiles() noexcept {
+    for (const auto &mark : m_markedFiles) {
+        QModelIndex index = getIndexFromString(mark);
+        setData(index, false, static_cast<int>(Role::Marked));
+    }
     m_markedFiles.clear();
+    emit marksListChanged();
 }
 
-  bool FileSystemModel::removeMarkedFile(const QModelIndex &index) noexcept {
-    QString path = getPathFromIndex(index);
-    return m_markedFiles.contains(path) && m_markedFiles.remove(path);
-  }
+QModelIndex
+FileSystemModel::getIndexFromString(const QString &path) const noexcept {
+    // Iterate through m_fileInfoList to find the file info matching the given path
+    for (int i = 0; i < m_fileInfoList.size(); ++i) {
+        if (m_fileInfoList.at(i).absoluteFilePath() == path) {
+            return index(i, 0); // Return the index for the matching item
+        }
+    }
+    return QModelIndex(); // Return an invalid index if not found
+}
 
-  void FileSystemModel::setColumnList(
-      const QList<FileSystemModel::ColumnType> &cols) noexcept {
+bool FileSystemModel::removeMarkedFile(const QModelIndex &index) noexcept {
+    QString path = getPathFromIndex(index);
+    setData(index, false, static_cast<int>(Role::Marked));
+    if (m_markedFiles.contains(path) && m_markedFiles.remove(path)) {
+        emit marksListChanged();
+        return true;
+    }
+    return false;
+}
+
+void FileSystemModel::setColumnList(
+                                    const QList<FileSystemModel::ColumnType> &cols) noexcept {
+
     m_column_list = cols;
-  }
+}
 
   void FileSystemModel::setNameFilters(
       const QStringList &name_filters) noexcept {
@@ -336,3 +351,23 @@ void FileSystemModel::removeMarkedFiles() noexcept {
 
     return matchedIndexes;
   }
+
+QStringList FileSystemModel::getMarkedFilesLocal() noexcept {
+
+    // Return {} if no marks are found in the global level
+    if (m_markedFiles.isEmpty())
+        return QStringList();
+
+
+    QStringList markedFilesLocal;
+    for (const auto &file : m_markedFiles) {
+        if (file.contains(m_root_path))
+            markedFilesLocal.append(file);
+    }
+
+    return markedFilesLocal;
+}
+
+bool FileSystemModel::hasMarksLocal() noexcept {
+    return getMarkedFilesLocal().size() > 0;
+}
