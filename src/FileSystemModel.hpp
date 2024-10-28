@@ -13,6 +13,7 @@
 #include <QFileSystemWatcher>
 #include <QMimeData>
 #include <QUrl>
+#include <QFileIconProvider>
 
 #include "utils.hpp"
 
@@ -107,4 +108,5 @@ private:
     QLocale m_locale;
     QStringList m_name_filters = {"*"};
     QFileSystemWatcher *m_file_system_watcher = nullptr;
+    QFileIconProvider *m_fileIconProvider = new QFileIconProvider();
 };

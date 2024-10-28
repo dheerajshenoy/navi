@@ -679,3 +679,8 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
     drag->setMimeData(mimeData);
     drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
+
+void FilePanel::ItemProperty() noexcept {
+    FilePropertyWidget prop_widget(getCurrentItem());
+    prop_widget.exec();
+}

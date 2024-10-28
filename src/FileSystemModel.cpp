@@ -1,5 +1,4 @@
 #include "FileSystemModel.hpp"
-#include <qnamespace.h>
 
 FileSystemModel::FileSystemModel(QObject *parent)
     : QAbstractTableModel(parent) {
@@ -137,6 +136,13 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
         case static_cast<int>(Role::Marked):
             return m_markedFiles.contains(getPathFromIndex(index));
             break;
+
+    case Qt::DecorationRole: {
+        if (index.column() == static_cast<int>(ColumnType::FileName)) {
+            return QIcon(m_fileIconProvider->icon(m_fileInfoList.at(index.row())));
+        }
+    }
+        break;
 
         case Qt::ForegroundRole: {
             bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
@@ -330,49 +336,3 @@ void FileSystemModel::removeMarkedFiles() noexcept {
 
     return matchedIndexes;
   }
-
-
-// QMimeData *FileSystemModel::mimeData(const QModelIndexList &indexes) const {
-//     auto *mimeData = new QMimeData();
-//     if (indexes.isEmpty())
-//         return mimeData;
-
-//     QStringList paths;
-//     for (const QModelIndex &index : indexes) {
-//         if (index.isValid()) {
-//             paths << index.data(Qt::DisplayRole).toString();
-//         }
-//     }
-//     mimeData->setData("application/x-file-paths", paths.join('\n').toUtf8());
-//     return mimeData;
-// }
-
-// bool FileSystemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
-//                                    int column, const QModelIndex &parent) {
-//     if (!data->hasUrls() || !parent.isValid())
-//         return false;
-
-//     QList<QUrl> urls = data->urls();
-//     QStringList urls_local;
-//     urls_local.reserve(urls.size());
-
-//     for (const auto &url : urls)
-//         urls_local.append(url.toLocalFile());
-
-//     switch (action) {
-//     case Qt::DropAction::CopyAction:
-//         emit dropCopyRequested(urls_local);
-//         return true;
-//         break;
-
-//     case Qt::DropAction::MoveAction:
-//         emit dropCutRequested(urls_local);
-//         return true;
-//         break;
-
-//     default:
-//         return false;
-//     }
-
-//     return false;
-// }

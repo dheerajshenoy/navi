@@ -37,7 +37,7 @@
 21. [ ] Lua Integration for configuration
 22. [ ] Wonky file completion in the file path widget when "~" is present
 23. [ ] Bookmarks
-24. [ ] Icons
+24. [X] Icons
 25. [X] Total number of items
 26. [ ] Dual Pane
 27. [X] FileWatcher

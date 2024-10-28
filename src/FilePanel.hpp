@@ -24,6 +24,7 @@
 #include "FileWorker.hpp"
 #include "TableView.hpp"
 #include "Inputbar.hpp"
+#include "FilePropertyWidget.hpp"
 
 class FilePanel : public QWidget {
     Q_OBJECT
