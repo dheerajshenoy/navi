@@ -53,6 +53,7 @@ public:
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
     Result<bool> RenameItems() noexcept;
+    Result<bool> RenameItemsGlobal() noexcept;
     void PasteItems() noexcept;
     bool DeleteItems() noexcept;
     bool TrashItems() noexcept;
@@ -68,8 +69,9 @@ public:
                         const QString &permString) noexcept;
     void CopyItems() noexcept;
     void CutItems() noexcept;
-    void DropCopyRequested(const QString &sourcePath) noexcept;
-    void DropCutRequested(const QString &sourcePath) noexcept;
+    void DropCopyRequested(const QStringList &sourcePaths) noexcept;
+    void DropCutRequested(const QStringList &sourcePaths) noexcept;
+    void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
 
 signals:
@@ -77,9 +79,15 @@ signals:
     void currentItemChanged(const QString &path);
     void dirItemCount(const int &numItems);
     void fileOperationDone(const bool &result, const QString &reason = 0);
+    void dropCopyRequested(const QStringList &sourcePath);
+    void dropCutRequested(const QStringList &sourcePath);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *e) override;
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void startDrag(Qt::DropActions supportedActions);
 
 private:
     void selectHelper(const QModelIndex &index) noexcept;

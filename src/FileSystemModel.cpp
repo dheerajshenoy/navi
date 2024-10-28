@@ -8,7 +8,7 @@ FileSystemModel::FileSystemModel(QObject *parent)
 
 FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
     : QAbstractTableModel(parent), m_root_path(path) {
-  initDefaults();
+    initDefaults();
 }
 
 void FileSystemModel::initDefaults() noexcept {
@@ -19,7 +19,6 @@ void FileSystemModel::initDefaults() noexcept {
             [&]() {
                 loadDirectory(m_root_path);
             });
-
 }
 
 void FileSystemModel::clearMarkedFilesList() noexcept { m_markedFiles.clear(); }
@@ -331,3 +330,49 @@ void FileSystemModel::removeMarkedFiles() noexcept {
 
     return matchedIndexes;
   }
+
+
+// QMimeData *FileSystemModel::mimeData(const QModelIndexList &indexes) const {
+//     auto *mimeData = new QMimeData();
+//     if (indexes.isEmpty())
+//         return mimeData;
+
+//     QStringList paths;
+//     for (const QModelIndex &index : indexes) {
+//         if (index.isValid()) {
+//             paths << index.data(Qt::DisplayRole).toString();
+//         }
+//     }
+//     mimeData->setData("application/x-file-paths", paths.join('\n').toUtf8());
+//     return mimeData;
+// }
+
+// bool FileSystemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+//                                    int column, const QModelIndex &parent) {
+//     if (!data->hasUrls() || !parent.isValid())
+//         return false;
+
+//     QList<QUrl> urls = data->urls();
+//     QStringList urls_local;
+//     urls_local.reserve(urls.size());
+
+//     for (const auto &url : urls)
+//         urls_local.append(url.toLocalFile());
+
+//     switch (action) {
+//     case Qt::DropAction::CopyAction:
+//         emit dropCopyRequested(urls_local);
+//         return true;
+//         break;
+
+//     case Qt::DropAction::MoveAction:
+//         emit dropCutRequested(urls_local);
+//         return true;
+//         break;
+
+//     default:
+//         return false;
+//     }
+
+//     return false;
+// }

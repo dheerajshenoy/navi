@@ -43,3 +43,6 @@
 27. [X] FileWatcher
 28. [X] Add file operation cancel UI
 29. [ ] Select renamed file after renaming
+30. [ ] Rename consider only marks here and not the global marks by default
+31. [ ] Undo Operations
+32. [ ] Show search match count

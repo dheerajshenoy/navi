@@ -28,6 +28,7 @@
   - [[#toggle-preview-pane][toggle-preview-pane]]
   - [[#toggle-menu-bar][toggle-menu-bar]]
   - [[#focus-path][focus-path]]
+  - [[#item-property][item-property]]
 
 * Introduction
 
@@ -169,3 +170,7 @@ Default keybinding: =C-m=
 Focuses the path widget and sets it in edit mode.
 
 Default keybinding: =C-l=
+
+** item-property
+
+Display the property of the currently focused item.

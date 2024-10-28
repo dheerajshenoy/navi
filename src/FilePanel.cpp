@@ -1,4 +1,5 @@
 #include "FilePanel.hpp"
+#include "FileSystemModel.hpp"
 
 FilePanel::FilePanel(Inputbar *inputBar, QWidget *parent) : QWidget(parent), m_inputbar(inputBar) {
     this->setLayout(m_layout);
@@ -29,6 +30,20 @@ FilePanel::FilePanel(Inputbar *inputBar, QWidget *parent) : QWidget(parent), m_i
 
     connect(m_model, &FileSystemModel::directoryLoadProgress, this,
             [&](const int &progress) {});
+
+    connect(this, &FilePanel::dropCopyRequested, this,
+            [&](const QStringList &sourceFilePaths) {
+                CopyItems();
+                PasteItems();
+            });
+
+    connect(this, &FilePanel::dropCutRequested, this,
+            [&](const QStringList &sourceFilePaths) {
+              CutItems();
+              PasteItems();
+            });
+
+    setAcceptDrops(true);
 }
 
 void FilePanel::ResetFilter() noexcept {
@@ -51,6 +66,22 @@ void FilePanel::initContextMenu() noexcept {
 
     connect(m_context_action_open_terminal, &QAction::triggered, this,
             [&]() { OpenTerminal(); });
+
+    connect(m_context_action_open, &QAction::triggered, this,
+            [&]() { SelectItem(); });
+
+    connect(m_context_action_copy, &QAction::triggered, this, [&]() { CopyItems(); });
+    connect(m_context_action_paste, &QAction::triggered, this,
+            [&]() { PasteItems(); });
+
+    connect(m_context_action_delete, &QAction::triggered, this,
+            [&]() { DeleteItems(); });
+
+    connect(m_context_action_trash, &QAction::triggered, this,
+            [&]() { TrashItems(); });
+
+    connect(m_context_action_properties, &QAction::triggered, this,
+            [&]() { ItemProperty(); });
 }
 
 Result<bool> FilePanel::OpenTerminal(const QString &directory) noexcept {
@@ -85,23 +116,21 @@ void FilePanel::initSignalsSlots() noexcept {
                                         m_model->data(current, Qt::DisplayRole).toString());
             });
 
-    connect(m_table_view, &TableView::dropCopyRequested, this,
+    connect(this, &FilePanel::dropCopyRequested, this,
             &FilePanel::DropCopyRequested);
 
-    connect(m_table_view, &TableView::dropCutRequested, this,
+    connect(this, &FilePanel::dropCutRequested, this,
             &FilePanel::DropCutRequested);
 
     // connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
     // });
 }
 
-void FilePanel::DropCopyRequested(const QString &sourcePath) noexcept {
+void FilePanel::DropCopyRequested(const QStringList &sourcePaths) noexcept {
     QString destDir = m_current_dir;
 
-    const QStringList filesList = QStringList() << sourcePath;
-
     QThread *thread = new QThread();
-    FileWorker *worker = new FileWorker(filesList, destDir, FileOPType::COPY);
+    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileOPType::COPY);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker,
@@ -126,14 +155,12 @@ void FilePanel::DropCopyRequested(const QString &sourcePath) noexcept {
     thread->start();
 }
 
-void FilePanel::DropCutRequested(const QString &sourcePath) noexcept {
+void FilePanel::DropCutRequested(const QStringList &sourcePaths) noexcept {
 
     QString destDir = m_current_dir;
 
-    const QStringList &filesList = QStringList() << sourcePath;
-
     QThread *thread = new QThread();
-    FileWorker *worker = new FileWorker(filesList, destDir, FileOPType::CUT);
+    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileOPType::CUT);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker, &FileWorker::performOperation);
@@ -360,24 +387,30 @@ void FilePanel::Filters(const QString &filterString) noexcept {
 }
 
 Result<bool> FilePanel::RenameItems() noexcept {
-    if (m_model->hasMarks()) {
+    if (m_model->getMarkedFilesCountHere() > 1) {
         // TODO: handle multiple rename
         return Result(true);
     } else {
         // current selection single rename
+        const QString &oldName = getCurrentItem();
+        const QString &oldBaseName = getCurrentItemBaseName();
         QModelIndex currentIndex = m_table_view->currentIndex();
-        QString newFileName =
-            m_inputbar->getInput(QString("Rename (%1)").arg(getCurrentItemBaseName()),
-                                 getCurrentItemBaseName());
+        QString newFileName = m_inputbar->getInput(QString("Rename (%1)")
+                                                   .arg(oldBaseName), oldBaseName);
 
         // If user cancels or the new file name is empty
         if (newFileName.isEmpty() || newFileName.isNull())
             return Result(false, "Operation Cancelled");
 
-        if (newFileName == getCurrentItem())
+        if (newFileName == oldName)
             return Result(false, "File names are same");
 
-        return QFile::rename(getCurrentItem(), m_current_dir + QDir::separator() + newFileName);
+        bool state = QFile::rename(oldName,
+                                   m_current_dir + QDir::separator() + newFileName);
+        if (state) {
+            m_model->removeMarkedFile(oldName);
+        }
+        return state;
     }
 }
 
@@ -579,6 +612,70 @@ void FilePanel::CopyItems() noexcept {
     m_file_op_type = FileOPType::COPY;
 }
 
-void FilePanel::CutItems() noexcept {
-    m_file_op_type = FileOPType::CUT;
+void FilePanel::CutItems() noexcept { m_file_op_type = FileOPType::CUT; }
+
+
+void FilePanel::dragEnterEvent(QDragEnterEvent *event) {
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+}
+
+void FilePanel::dragMoveEvent(QDragMoveEvent *event) {
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+}
+
+void FilePanel::dropEvent(QDropEvent *event) {
+    const QMimeData *mimeData = event->mimeData();
+
+    if (mimeData->hasUrls()) {
+        QStringList files;
+        files.reserve(mimeData->urls().size());
+
+        for (const QUrl &url : mimeData->urls()) {
+            QString sourcePath = url.toLocalFile();
+            files.append(sourcePath);
+        }
+
+        // QString destPath =
+        //     QFileInfo(m_model->rootPath()).absoluteFilePath();
+
+        //Move or copy the file
+        if (event->proposedAction() == Qt::MoveAction) {
+            emit dropCutRequested(files);
+        } else if (event->proposedAction() == Qt::CopyAction) {
+            emit dropCopyRequested(files);
+        }
+        event->acceptProposedAction();
+    }
+}
+
+void FilePanel::startDrag(Qt::DropActions supportedActions) {
+    QModelIndexList selectedIndexes = m_table_view->selectionModel()->selectedIndexes();
+
+    if (selectedIndexes.isEmpty())
+        return;
+
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData;
+
+    if (!m_model)
+        return;
+
+    // Collect file paths
+    QList<QUrl> urls;
+    for (const QModelIndex &index : selectedIndexes) {
+        QString filePath = m_model->rootPath() + QDir::separator() +
+                           m_model->data(index, Qt::DisplayRole).toString();
+        urls << QUrl::fromLocalFile(filePath);
+    }
+
+    qDebug() << urls;
+
+    mimeData->setUrls(urls);
+
+    drag->setMimeData(mimeData);
+    drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }

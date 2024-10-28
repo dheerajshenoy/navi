@@ -11,6 +11,8 @@
 #include <QRegularExpression>
 #include <QFont>
 #include <QFileSystemWatcher>
+#include <QMimeData>
+#include <QUrl>
 
 #include "utils.hpp"
 
@@ -66,11 +68,15 @@ public:
     bool removeMarkedFile(const QString &path) noexcept;
     void removeMarkedFiles() noexcept;
     bool removeMarkedFile(const QModelIndex &index) noexcept;
+    // QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    // bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
     signals:
     void directoryLoaded(const QString &path);
     void directoryLoadProgress(const int &progress);
     void marksListChanged();
+    void dropCopyRequested(const QStringList &sourceFilePath);
+    void dropCutRequested(const QStringList &sourceFilePath);
 
 private:
     void initDefaults() noexcept;

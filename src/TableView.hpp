@@ -24,12 +24,4 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
-    void startDrag(Qt::DropActions supportedActions) override;
-    void dropEvent(QDropEvent *event) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-
-    signals:
-    void dropCopyRequested(const QString &sourcePath);
-    void dropCutRequested(const QString &sourcePath);
 };

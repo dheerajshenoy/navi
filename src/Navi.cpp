@@ -101,7 +101,13 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["toggle-marks-pane"] = [this](const QStringList &args) { ToggleMarksBuffer(); };
 
-  commandMap["focus-path"] = [&](const QStringList &args) { m_file_path_widget->FocusLineEdit(); };
+  commandMap["focus-path"] = [&](const QStringList &args) {
+    m_file_path_widget->FocusLineEdit();
+  };
+
+  commandMap["item-property"] = [&](const QStringList &args) {
+      m_file_panel->ItemProperty();
+  };
 
   m_input_completion_model = new QStringListModel(m_valid_command_list);
   m_inputbar->setCompleterModel(m_input_completion_model);
@@ -245,6 +251,7 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
   QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
   QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
+  QShortcut *kb_unmark_items_here = new QShortcut(QKeySequence("Shift+u"), this);
 
   QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
   QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
@@ -285,6 +292,7 @@ void Navi::initKeybinds() noexcept {
 
   connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
   connect(kb_copy_items, &QShortcut::activated, this, &Navi::CopyItems);
+  connect(kb_unmark_items_here, &QShortcut::activated, this, &Navi::UnmarkAllItemsHere);
 }
 
 void Navi::Search() noexcept {
