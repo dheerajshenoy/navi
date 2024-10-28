@@ -27,6 +27,8 @@
 #include "PreviewPanel.hpp"
 #include "Statusbar.hpp"
 #include "MarksBuffer.hpp"
+#include "BookmarkManager.hpp"
+#include "BookmarkWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -83,11 +85,20 @@ public:
     void ToggleMessagesBuffer() noexcept;
     void ToggleMarksBuffer(const bool &state) noexcept;
     void ToggleMarksBuffer() noexcept;
+    void ToggleBookmarksBuffer(const bool &state) noexcept;
+    void ToggleBookmarksBuffer() noexcept;
     void UnmarkAllItems() noexcept;
     void UnmarkAllItemsHere() noexcept;
     void FocusPath() noexcept;
+    void AddBookmark(const QStringList &bookmarkName) noexcept;
+    void RemoveBookmark(const QStringList &bookmarkName) noexcept;
+    void EditBookmark(const QStringList &bookmarkName) noexcept;
+    void LoadBookmarkFile(const QStringList &bookmarkFilePath) noexcept;
+    void GoBookmark(const QStringList &bookmarkName) noexcept;
+    void SaveBookmarkFile() noexcept;
 
 private:
+    void initBookmarks() noexcept;
     void initLayout() noexcept;
     void initMenubar() noexcept;
     void initSignalsSlots() noexcept;
@@ -103,7 +114,6 @@ private:
     QVBoxLayout *m_layout = new QVBoxLayout();
     QSplitter *m_splitter = new QSplitter();
     Menubar *m_menubar = nullptr;
-
 
     // Menubar stuff
     QMenu *m_filemenu = nullptr;
@@ -121,6 +131,7 @@ private:
     QAction *m_viewmenu__menubar = nullptr;
     QAction *m_viewmenu__messages = nullptr;
     QAction *m_viewmenu__marks_buffer = nullptr;
+    QAction *m_viewmenu__bookmarks_buffer = nullptr;
 
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
@@ -162,17 +173,26 @@ private:
       "filter",
       "unfilter",
       "refresh",
-      "toggle-hidden-files",
-      "toggle-messages-pane",
-      "toggle-preview-pane",
-      "toggle-marks-pane",
-      "toggle-menu-bar",
+      "hidden-files",
+      "messages-pane",
+      "preview-pane",
+      "marks-pane",
+      "menu-bar",
       "focus-path",
-      "item-property"
+      "item-property",
+      "bookmark-add",
+      "bookmark-remove",
+      "bookmark-edit",
+      "bookmarks-pane",
+      "bookmark-go",
+      "bookmarks-save",
     };
 
     QStringListModel *m_input_completion_model = nullptr;
 
     MessagesBuffer *m_log_buffer = nullptr;
     MarksBuffer *m_marks_buffer = nullptr;
+
+    BookmarkManager *m_bookmark_manager = nullptr;
+    BookmarkWidget *m_bookmarks_buffer = nullptr;
 };

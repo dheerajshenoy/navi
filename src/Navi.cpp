@@ -1,5 +1,4 @@
 #include "Navi.hpp"
-#include <qregularexpression.h>
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {
 
@@ -8,8 +7,13 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {
   initSignalsSlots(); // init signals and slots
   initKeybinds();
   setupCommandMap();
+  initBookmarks();
   setCurrentDir("~"); // set the current directory
+}
 
+void Navi::initBookmarks() noexcept {
+  // TODO: load bookmarks from config directory
+  m_bookmark_manager = new BookmarkManager();
 }
 
 // Handle signals and slots
@@ -25,7 +29,7 @@ void Navi::initSignalsSlots() noexcept {
           &FilePathWidget::setCurrentDir);
 
   connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
-          m_file_panel, &FilePanel::setCurrentDir);
+          m_file_panel, [&](const QString &dirName) { m_file_panel->setCurrentDir(dirName, true); });
 
   connect(m_file_panel, &FilePanel::dirItemCount, m_statusbar,
           &Statusbar::SetNumItems);
@@ -42,7 +46,8 @@ void Navi::initSignalsSlots() noexcept {
 
   connect(m_statusbar, &Statusbar::logMessage, this, &Navi::LogMessage);
 
-  connect(m_file_panel->model(), &FileSystemModel::marksListChanged, m_marks_buffer, &MarksBuffer::refreshMarksList);
+  connect(m_file_panel->model(), &FileSystemModel::marksListChanged,
+          m_marks_buffer, &MarksBuffer::refreshMarksList);
 }
 
 // Help for HELP interactive function
@@ -63,15 +68,25 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["delete"] = [this](const QStringList &args) { DeleteItems(); };
 
-  commandMap["mark"] = [this](const QStringList &args) { m_file_panel->MarkItems(); };
+  commandMap["mark"] = [this](const QStringList &args) {
+    m_file_panel->MarkItems();
+  };
 
-  commandMap["toggle-mark"] = [this](const QStringList &args) { m_file_panel->MarkOrUnmarkItems(); };
+  commandMap["toggle-mark"] = [this](const QStringList &args) {
+    m_file_panel->MarkOrUnmarkItems();
+  };
 
-  commandMap["unmark"] = [this](const QStringList &args) { m_file_panel->UnmarkItems(); };
+  commandMap["unmark"] = [this](const QStringList &args) {
+    m_file_panel->UnmarkItems();
+  };
 
-  commandMap["unmark-all"] = [this](const QStringList &args) { UnmarkAllItems(); };
+  commandMap["unmark-all"] = [this](const QStringList &args) {
+    UnmarkAllItems();
+  };
 
-  commandMap["unmark-all-here"] = [this](const QStringList &args) { UnmarkAllItemsHere(); };
+  commandMap["unmark-all-here"] = [this](const QStringList &args) {
+    UnmarkAllItemsHere();
+  };
 
   commandMap["new-file"] = [this](const QStringList &args) { NewFile(); };
 
@@ -79,38 +94,224 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["trash"] = [this](const QStringList &args) { TrashItems(); };
 
-  commandMap["exit"] = [this](const QStringList &args) { QApplication::quit(); };
+  commandMap["exit"] = [this](const QStringList &args) {
+    QApplication::quit();
+  };
 
-  commandMap["toggle-messages-pane"] = [this](const QStringList &args) { ToggleMessagesBuffer(); };
+  commandMap["messages-pane"] = [this](const QStringList &args) {
+    ToggleMessagesBuffer();
+  };
 
   commandMap["toggle-hidden-files"] = [this](const QStringList &args) {
     m_file_panel->ToggleHiddenFiles();
   };
 
-  commandMap["toggle-preview-pane"] = [this](const QStringList &args) { TogglePreviewPanel(); };
+  commandMap["preview-pane"] = [this](const QStringList &args) {
+    TogglePreviewPanel();
+  };
 
-  commandMap["toggle-menu-bar"] = [this](const QStringList &args) { ToggleMenuBar(); };
+  commandMap["menu-bar"] = [this](const QStringList &args) { ToggleMenuBar(); };
 
   commandMap["filter"] = [this](const QStringList &args) { Filter(); };
 
   commandMap["unfilter"] = [this](const QStringList &args) { ResetFilter(); };
 
-  commandMap["refresh"] = [this](const QStringList &args) { m_file_panel->ForceUpdate(); };
+  commandMap["refresh"] = [this](const QStringList &args) {
+    m_file_panel->ForceUpdate();
+  };
 
   commandMap["chmod"] = [this](const QStringList &args) { Chmod(); };
 
-  commandMap["toggle-marks-pane"] = [this](const QStringList &args) { ToggleMarksBuffer(); };
+  commandMap["marks-pane"] = [this](const QStringList &args) {
+    ToggleMarksBuffer();
+  };
 
   commandMap["focus-path"] = [&](const QStringList &args) {
     m_file_path_widget->FocusLineEdit();
   };
 
   commandMap["item-property"] = [&](const QStringList &args) {
-      m_file_panel->ItemProperty();
+    m_file_panel->ItemProperty();
+  };
+
+  commandMap["bookmarks-pane"] = [&](const QStringList &args) {
+    // ToggleBookmarksBuffer();
+  };
+
+  commandMap["bookmark-go"] = [&](const QStringList &args) {
+    GoBookmark(args);
+  };
+
+  commandMap["bookmark-add"] = [&](const QStringList &args) {
+    AddBookmark(args);
+  };
+
+  commandMap["bookmark-remove"] = [&](const QStringList &args) {
+    RemoveBookmark(args);
+  };
+
+  commandMap["bookmark-edit"] = [&](const QStringList &args) {
+    EditBookmark(args);
+  };
+
+  commandMap["bookmarks-save"] = [&](const QStringList &args) {
+    SaveBookmarkFile();
   };
 
   m_input_completion_model = new QStringListModel(m_valid_command_list);
   m_inputbar->setCompleterModel(m_input_completion_model);
+}
+
+void Navi::EditBookmark(const QStringList &args) noexcept {
+
+    // TODO: interactive
+    if (args.isEmpty() || args.size() < 2)
+        return;
+
+    // Change can be title or path for bookmark title or
+    // file path that the bookmark points to
+    QString changeType = args.at(0).toLower();
+
+    QString bookmarkName = args.at(1);
+
+    if (changeType == "title") {
+      QString newBookmarkName =
+          m_inputbar->getInput("New bookmark title", bookmarkName);
+
+
+      // If the bookmark title name is null, do nothing and return
+        if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
+            m_statusbar->Message("Error: No bookmark title provided!",
+                                 MessageType::ERROR, 5);
+            return;
+        }
+
+        // If bookmark title is provided
+        if (m_bookmark_manager->setBookmarkName(bookmarkName,
+                                                newBookmarkName)) {
+          m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
+                                   .arg(bookmarkName)
+                                   .arg(newBookmarkName));
+          return;
+        } else {
+          m_statusbar->Message("Error changing bookmark title name!",
+                               MessageType::ERROR, 5);
+          return;
+        }
+    } else if (changeType == "path") {
+      QString newBookmarkPath =
+          m_inputbar->getInput(QString("New bookmark path (Default: %1)").arg(m_file_panel->getCurrentDir()), bookmarkName);
+
+      // If the bookmark title name is null, do nothing and return
+        if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
+            m_statusbar->Message("Error: No bookmark path provided!",
+                                 MessageType::ERROR, 5);
+            return;
+        }
+
+        // If bookmark title is provided
+        QString oldBookmarkPath = m_bookmark_manager->getBookmarkFilePath(bookmarkName);
+        if (m_bookmark_manager->setBookmarkFile(bookmarkName,
+                                                newBookmarkPath)) {
+          m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
+                                   .arg(oldBookmarkPath)
+                                   .arg(newBookmarkPath));
+          return;
+        } else {
+          m_statusbar->Message("Error changing bookmark title name!",
+                               MessageType::ERROR, 5);
+          return;
+        }
+    }
+}
+
+void Navi::AddBookmark(const QStringList &args) noexcept {
+
+    // If no arg is supplied
+    if (args.isEmpty()) {
+    } else {
+        QString bookmarkName = args.at(0);
+        if (m_bookmark_manager->addBookmark(bookmarkName,
+                                            m_file_panel->getCurrentDir())) {
+            m_statusbar->Message("Added bookmark");
+        } else
+            m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
+    }
+}
+
+void Navi::RemoveBookmark(const QStringList &args) noexcept {
+
+    // TODO: Interactive removal
+  if (args.isEmpty())
+    return;
+
+  QString bookmarkName = args.at(0);
+  if (m_bookmark_manager->removeBookmark(bookmarkName))
+      m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
+  else
+      m_statusbar->Message(QString("Error removing bookmark %1").arg(bookmarkName),
+                           MessageType::ERROR, 5);
+}
+
+void Navi::LoadBookmarkFile(const QStringList &args) noexcept {
+
+    // TODO: Interactive
+    if (args.isEmpty())
+        return;
+
+    QString bookmarkFileName = args.at(0);
+    if (m_bookmark_manager->loadBookmarks(bookmarkFileName))
+        m_statusbar->Message(QString("Bookmark loaded from %1!").arg(bookmarkFileName));
+    else
+        m_statusbar->Message(QString("Error loading bookmark file %1").arg(bookmarkFileName),
+                             MessageType::ERROR, 5);
+}
+
+void Navi::GoBookmark(const QStringList &bookmarkName) noexcept {
+
+    // TODO: interactive
+    if (bookmarkName.isEmpty())
+        return;
+
+    QString bookmarkPath = m_bookmark_manager->getBookmark(bookmarkName.at(0));
+    if (bookmarkPath.isNull() || bookmarkPath.isEmpty())
+        m_statusbar->Message(
+                             QString("Bookmark %1 not found!").arg(bookmarkName.at(0)),
+                             MessageType::ERROR, 5);
+    else
+        m_file_panel->setCurrentDir(bookmarkPath, true);
+}
+
+void Navi::ToggleBookmarksBuffer() noexcept {
+  if (m_bookmarks_buffer->isVisible()) {
+    m_bookmarks_buffer->hide();
+    delete m_bookmarks_buffer;
+    m_bookmarks_buffer = nullptr;
+    disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
+  } else {
+    m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
+    m_bookmarks_buffer->show();
+    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
+            [&](const bool &state) {
+              m_viewmenu__bookmarks_buffer->setChecked(state);
+            });
+  }
+}
+
+void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
+  if (state) {
+    m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
+    m_bookmarks_buffer->show();
+    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
+            [&](const bool &state) {
+              m_viewmenu__bookmarks_buffer->setChecked(state);
+            });
+  } else {
+    m_bookmarks_buffer->hide();
+    delete m_bookmarks_buffer;
+    m_bookmarks_buffer = nullptr;
+    disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
+  }
 }
 
 void Navi::ToggleMessagesBuffer() noexcept {
@@ -143,46 +344,49 @@ void Navi::ToggleMarksBuffer(const bool &state) noexcept {
 
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
-    // QStringList commandlist = commandtext.split(" && ");
-    QStringList commandlist =
-        commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
+  // QStringList commandlist = commandtext.split(" && ");
+  QStringList commandlist =
+      commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
 
-    if (commandlist.isEmpty())
-        return;
+  if (commandlist.isEmpty())
+    return;
 
-    auto [isNumber, num] = utils::isNumber(commandlist[0]);
-    if (isNumber) {
-        m_file_panel->GotoItem(num);
-        return;
+  auto [isNumber, num] = utils::isNumber(commandlist[0]);
+  if (isNumber) {
+    m_file_panel->GotoItem(num);
+    return;
+  }
+
+  //        COMMAND1       &&        COMMAND2
+  // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
+
+  for (const auto &commands : commandlist) {
+    QStringList split = commands.split(" ");
+    QString subcommand = split[0];
+    QStringList args = (split.size() > 1) ? split.mid(1) : QStringList();
+
+    if (commandMap.contains(subcommand)) {
+      commandMap[subcommand](args); // Call the associated function
+    } else {
+      m_statusbar->Message(
+          QString("Command %1 is not a valid interactive command")
+              .arg(subcommand),
+          MessageType::ERROR, 5);
     }
-
-    //        COMMAND1       &&        COMMAND2
-    // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
-
-    for (const auto &commands : commandlist) {
-        QStringList split = commands.split(" ");
-        QString subcommand = split[0];
-        QStringList args = (split.size() > 1) ? split.mid(1) : QStringList();
-
-        if (commandMap.contains(subcommand)) {
-            commandMap[subcommand](args); // Call the associated function
-        } else {
-            m_statusbar->Message(QString("Command %1 is not a valid interactive command").arg(subcommand), MessageType::ERROR, 5);
-        }
-    }
+  }
 }
 
 void Navi::TogglePreviewPanel(const bool &state) noexcept {
-    if (state) {
-        m_preview_panel->show();
-        connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-                &PreviewPanel::onFileSelected);
-        m_preview_panel->onFileSelected(getCurrentFile());
-    } else {
-        m_preview_panel->hide();
-        disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-                   &PreviewPanel::onFileSelected);
-    }
+  if (state) {
+    m_preview_panel->show();
+    connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+            &PreviewPanel::onFileSelected);
+    m_preview_panel->onFileSelected(getCurrentFile());
+  } else {
+    m_preview_panel->hide();
+    disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+               &PreviewPanel::onFileSelected);
+  }
 }
 
 void Navi::TogglePreviewPanel() noexcept {
@@ -200,7 +404,7 @@ void Navi::TogglePreviewPanel() noexcept {
 }
 
 QString Navi::getCurrentFile() noexcept {
-    return m_file_panel->getCurrentItem();
+  return m_file_panel->getCurrentItem();
 }
 
 void Navi::initLayout() noexcept {
@@ -251,7 +455,8 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
   QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
   QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
-  QShortcut *kb_unmark_items_here = new QShortcut(QKeySequence("Shift+u"), this);
+  QShortcut *kb_unmark_items_here =
+      new QShortcut(QKeySequence("Shift+u"), this);
 
   QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
   QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
@@ -262,8 +467,10 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_focus_file_path_widget =
       new QShortcut(QKeySequence("Ctrl+l"), this);
 
-  connect(kb_next_item, &QShortcut::activated, m_file_panel, &FilePanel::NextItem);
-  connect(kb_prev_item, &QShortcut::activated, m_file_panel, &FilePanel::PrevItem);
+  connect(kb_next_item, &QShortcut::activated, m_file_panel,
+          &FilePanel::NextItem);
+  connect(kb_prev_item, &QShortcut::activated, m_file_panel,
+          &FilePanel::PrevItem);
   connect(kb_select_item, &QShortcut::activated, m_file_panel,
           &FilePanel::SelectItem);
   connect(kb_up_directory, &QShortcut::activated, m_file_panel,
@@ -292,7 +499,8 @@ void Navi::initKeybinds() noexcept {
 
   connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
   connect(kb_copy_items, &QShortcut::activated, this, &Navi::CopyItems);
-  connect(kb_unmark_items_here, &QShortcut::activated, this, &Navi::UnmarkAllItemsHere);
+  connect(kb_unmark_items_here, &QShortcut::activated, this,
+          &Navi::UnmarkAllItemsHere);
 }
 
 void Navi::Search() noexcept {
@@ -304,13 +512,13 @@ void Navi::SearchNext() noexcept { m_file_panel->SearchNext(); }
 void Navi::SearchPrev() noexcept { m_file_panel->SearchPrev(); }
 
 void Navi::RenameItems() noexcept {
-    Result res = m_file_panel->RenameItems();
-    if (res.result())
-        m_statusbar->Message("Rename Successful!");
-    else
-      m_statusbar->Message(
-          QString("Error while renaming! (%1)").arg(res.reason()),
-                           MessageType::ERROR, 5);
+  Result res = m_file_panel->RenameItems();
+  if (res.result())
+    m_statusbar->Message("Rename Successful!");
+  else
+    m_statusbar->Message(
+        QString("Error while renaming! (%1)").arg(res.reason()),
+        MessageType::ERROR, 5);
 }
 
 void Navi::DeleteItems() noexcept {
@@ -371,7 +579,10 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__messages->setCheckable(true);
 
   m_viewmenu__marks_buffer = new QAction("Marks List");
-  m_viewmenu__marks_buffer ->setCheckable(true);
+  m_viewmenu__marks_buffer->setCheckable(true);
+
+  m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
+  m_viewmenu__bookmarks_buffer->setCheckable(true);
 
   m_viewmenu__files_menu = new QMenu("Files");
 
@@ -419,7 +630,12 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
-  connect(m_viewmenu__marks_buffer, &QAction::triggered, this, [&](const bool &state) { ToggleMarksBuffer(state); });
+  connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
+          [&](const bool &state) { ToggleMarksBuffer(state); });
+
+  connect(m_viewmenu__bookmarks_buffer, &QAction::triggered, this,
+          [&](const bool &state) { ToggleBookmarksBuffer(state); });
+
   connect(m_viewmenu__preview_panel, &QAction::triggered, this,
           [&](const bool &state) { TogglePreviewPanel(state); });
 
@@ -457,8 +673,9 @@ void Navi::initMenubar() noexcept {
   connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
           [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
 
-  connect(m_marks_buffer, &MarksBuffer::visibilityChanged, this,
-          [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
+  connect(
+      m_marks_buffer, &MarksBuffer::visibilityChanged, this,
+      [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {
@@ -508,7 +725,7 @@ void Navi::NewFolder(const int &nfolders) noexcept {
 }
 
 void Navi::setCurrentDir(const QString &path) noexcept {
-  m_file_panel->setCurrentDir(path);
+    m_file_panel->setCurrentDir(path, true);
 }
 
 void Navi::ToggleMenuBar(const bool &state) noexcept {
@@ -581,19 +798,27 @@ void Navi::Chmod() noexcept {
 void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
 
 void Navi::UnmarkAllItems() noexcept {
-    int marksCount = m_file_panel->model()->getMarkedFilesCount();
-    QString input = m_inputbar->getInput(QString("Do you want to delete all %1 marks (Y/n) ?")
-          .arg(marksCount));
-    if (input == "y" || input.isNull() || input.isEmpty())
-        m_file_panel->UnmarkAllItems();
-    m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
+  int marksCount = m_file_panel->model()->getMarkedFilesCount();
+  QString input = m_inputbar->getInput(
+      QString("Do you want to delete all %1 marks (Y/n) ?").arg(marksCount));
+  if (input == "y" || input.isNull() || input.isEmpty())
+    m_file_panel->UnmarkAllItems();
+  m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
 }
 
 void Navi::UnmarkAllItemsHere() noexcept {
-    uint marksCount = m_file_panel->model()->getMarkedFilesCountHere();
-    QString input = m_inputbar->getInput(QString("Do you want to delete all %1 marks (Y/n) ?")
-          .arg(marksCount));
-    if (input == "y" || input.isNull() || input.isEmpty())
-        m_file_panel->UnmarkAllItemsHere();
-    m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
+  uint marksCount = m_file_panel->model()->getMarkedFilesCountHere();
+  QString input = m_inputbar->getInput(
+      QString("Do you want to delete all %1 marks (Y/n) ?").arg(marksCount));
+  if (input == "y" || input.isNull() || input.isEmpty())
+    m_file_panel->UnmarkAllItemsHere();
+  m_statusbar->Message(QString("Deleted %1 marks").arg(marksCount));
+}
+
+void Navi::SaveBookmarkFile() noexcept {
+  if (m_bookmark_manager->saveBookmarksFile()) {
+    m_statusbar->Message("Bookmark save successful!");
+  } else {
+    m_statusbar->Message("Error saving bookmarks!", MessageType::ERROR);
+  }
 }

@@ -38,6 +38,7 @@ qt_add_executable(${PROJECT_NAME}
     src/TreeSitterTextEdit.cpp
     src/FilePropertyWidget.cpp
     src/BookmarkManager.cpp
+    src/BookmarkWidget.cpp
 
     src/FileWorker.hpp
     src/FileSystemModel.cpp

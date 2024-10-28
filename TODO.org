@@ -36,7 +36,15 @@
     - [ ] Syntax highlighting for the text document preview
 21. [ ] Lua Integration for configuration
 22. [ ] Wonky file completion in the file path widget when "~" is present
-23. [ ] Bookmarks
+23. [-] Bookmarks
+    - [X] Add
+    - [X] Remove
+    - [X] Edit Title
+    - [X] Edit pointing file
+    - [ ] List
+    - [X] go to bookmark
+    - [ ] Load bookmarks from file
+    - [ ] Save bookmarks to file
 24. [X] Icons
 25. [X] Total number of items
 26. [ ] Dual Pane

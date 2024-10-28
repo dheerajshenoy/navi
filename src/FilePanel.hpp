@@ -32,7 +32,7 @@ public:
     FilePanel(Inputbar *inputWidget = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
-    void setCurrentDir(QString path) noexcept;
+    void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
     QString getCurrentDir() noexcept;
 
     QSet<QString> *getMarksSetPTR() noexcept { return &m_model->m_markedFiles; }
@@ -91,7 +91,7 @@ protected:
     void startDrag(Qt::DropActions supportedActions);
 
 private:
-    void selectHelper(const QModelIndex &index) noexcept;
+    void selectHelper(const QModelIndex &index, const bool selectFirst) noexcept;
     void selectFirstItem() noexcept;
     QString currentItem() noexcept;
     void initKeybinds() noexcept;

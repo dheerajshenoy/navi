@@ -49,7 +49,6 @@ FilePanel::FilePanel(Inputbar *inputBar, QWidget *parent) : QWidget(parent), m_i
 void FilePanel::ResetFilter() noexcept {
     m_model->setNameFilters(QStringList() << "*");
     ForceUpdate();
-    selectFirstItem();
 }
 
 void FilePanel::initContextMenu() noexcept {
@@ -210,10 +209,10 @@ void FilePanel::selectFirstItem() noexcept {
 }
 
 void FilePanel::handleItemDoubleClicked(const QModelIndex &index) noexcept {
-    selectHelper(index);
+    selectHelper(index, true);
 }
 
-void FilePanel::setCurrentDir(QString path) noexcept {
+void FilePanel::setCurrentDir(QString path, const bool &SelectFirstItem) noexcept {
     if (path.isEmpty())
         return;
 
@@ -224,6 +223,9 @@ void FilePanel::setCurrentDir(QString path) noexcept {
     if (utils::isValidPath(path)) {
         m_model->setRootPath(path);
         m_current_dir = path;
+
+        if (SelectFirstItem)
+            selectFirstItem();
         emit afterDirChange(m_current_dir);
     }
 }
@@ -269,11 +271,10 @@ void FilePanel::PrevItem() noexcept {
     // TODO: Add hook
 }
 
-void FilePanel::selectHelper(const QModelIndex &index) noexcept {
+void FilePanel::selectHelper(const QModelIndex &index, const bool selectFirst) noexcept {
     QString filepath = m_model->filePath(index);
     if (m_model->isDir(index)) {
-        setCurrentDir(filepath);
-        selectFirstItem();
+        setCurrentDir(filepath, selectFirst);
     } else {
         // TODO: handle File
         QDesktopServices::openUrl(QUrl::fromLocalFile(filepath));
@@ -283,7 +284,7 @@ void FilePanel::selectHelper(const QModelIndex &index) noexcept {
 
 void FilePanel::SelectItem() noexcept {
     QModelIndex currentIndex = m_table_view->currentIndex();
-    selectHelper(currentIndex);
+    selectHelper(currentIndex, true);
 }
 
 void FilePanel::UpDirectory() noexcept {
@@ -383,7 +384,6 @@ void FilePanel::Filters(const QString &filterString) noexcept {
         filterStringList = {filterString};
     m_model->setNameFilters(filterStringList);
     ForceUpdate();
-    selectFirstItem();
 }
 
 Result<bool> FilePanel::RenameItems() noexcept {
@@ -520,7 +520,7 @@ void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
     menu.exec(event->globalPos());
 }
 
-void FilePanel::ForceUpdate() noexcept { setCurrentDir(m_current_dir); }
+void FilePanel::ForceUpdate() noexcept { setCurrentDir(m_current_dir, true); }
 
 bool FilePanel::SetPermissions(const QString &filePath,
                                const QString &permissionString) noexcept {
