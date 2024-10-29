@@ -51,17 +51,23 @@ These are commands that can be executed using the =inputbar= UI component. By de
 There are three variants for most of the commands: =Current=, =Local= and =Global=.
 If any interactive command has scope available, they are named accordingly. For example, the =rename= command is actually the =Current= scoped command. It’s other variants are =rename-local= and =rename-global= for =Local= and =Global= scope respectively.
 
-*** Current
+*** Current Scope
 
-This applies to the currently selected item. Any command that is =Current= scoped will run only on the currently highlighted item. *This includes mouse selection also called as Highlighting.*
+This applies to the currently selected item. Any command that is =Current= scoped will run only on the currently highlighted item.
 
-*** Local
+*This includes mouse selection (also called as Highlighting)*.
 
-This applies to the marks that are in the current directory which is conveniently called as a *Local Mark*. Any command that is =Local= scoped will run on the local marks. *This does not include mouse highlighting.*
+*** Local Scope
 
-*** Global
+This applies to the marks that are in the current directory which is conveniently called as a *Local Mark*. Any command that is =Local= scoped will run on the local marks.
 
-This applies to the marks that are present in any directory. Unlike the =Local= scope the command that is =Global= scoped will run on the marks that are present in any directory. *This does not include mouse highlighting*.
+*This does not include mouse highlighting.*
+
+*** Global Scope
+
+This applies to the marks that are present in any directory. Unlike the =Local= scope the command that is =Global= scoped will run on the marks that are present in any directory.
+
+*This does not include mouse highlighting*.
 
 * Commands List
 
@@ -195,7 +201,7 @@ Default keybinding: =p=
 
 Delete the highlighted items(s).
 
-*WARNING: Please be careful when using this command, this does not trash the items, it directly deletes them. If you want to trash use the =trash= command*
+*WARNING: Please be careful when using this command, this does not trash the items, it directly deletes them. If you want to trash use the /trash/ command*
 
 Default keybinding: =S-d=
 
