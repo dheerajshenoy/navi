@@ -6,6 +6,7 @@
 * Table of Contents :toc:
 - [[#introduction][Introduction]]
 - [[#naming-conventions][Naming Conventions]]
+- [[#bookmarks][Bookmarks]]
 - [[#interactive-commands][Interactive Commands]]
   - [[#types-of-command][Types of Command]]
 - [[#commands-list][Commands List]]
@@ -25,8 +26,11 @@
   - [[#panes][Panes]]
   - [[#misc][Misc]]
   - [[#shell-commands][Shell Commands]]
-  - [[#bookmarks][Bookmarks]]
+  - [[#bookmarks-1][Bookmarks]]
   - [[#searching-items][Searching Items]]
+- [[#linux-only][Linux Only]]
+- [[#configuration-with-lua][Configuration with Lua]]
+- [[#scripting-with-lua][Scripting with Lua]]
 
 * Introduction
 
@@ -41,6 +45,15 @@
    #+end_comment
 
 3. =Marking= refers to the action of the =mark= or =toggle-mark= command to "select" one or more currently highlighted directory items. You can see the list of all the files that you have marked in the =Marks List= using =View -> Marks List= or by using the =show-marks= command. When you call any of the commands, the commands will be aware of these markings and do the action accordingly. For example, if we use the =rename= command and if there are marked files, your choice of text editor is opened with the list of all the file names. You can change these and write to the file to rename them accordingly.
+
+* Bookmarks
+
+Bookmarks allows you to instantly go to your favourite or frequently visited directories. You can add, edit, remove and even load bookmarks directly from a text file. Bookmarks are read and stored in plain text files that has the following structure:
+
+\# This is a comment -- Any lines that begin with # are ignored and empty lines are ignored as well.
+
+bookmark_title1 bookmark_directory_path1
+bookmark_title2 bookmark_directory_path2
 
 * Interactive Commands
 
@@ -365,3 +378,19 @@ Default Keybinding: =n=
 Goes to the previous best match for the search term
 
 Default Keybinding: =S-n=
+
+* Linux Only
+
+Sorry, this software is built keeping in mind Linux and it’s derivatives only.
+
+* TODO Configuration with Lua
+
+Navi can be configured using lua. The default configuration file is provided in this git repository. Navi looks for the configuration file in the XDG standard config directory (=~/.config=). You can place your configuration file in the =~/.config/navi/= directory. The configuration file should be named =config.lua=.
+
+Configuration includes all the settings that can be changed for Navi and keybindings can also be changed.
+
+*TL;DR: Navi configuration file (config.lua) should be placed at this location ( =~/.config/navi/config.lua=)*
+
+* TODO Scripting with Lua
+
+Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks.

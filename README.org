@@ -23,8 +23,19 @@ The file managers for linux aren’t that great for me. So I decided to write my
 * Features
 
 1. Display Images
-2. Async file Operations
+2. Async File Operations
 3. Keyboard driven
+4. [[./wiki.org#bookmarks][Bookmarks]]
+5. [[./wiki.org#types-of-command][Scoped Commands]]
+6. Shell Command Executions
+7. [[./wiki.org#linux-only][Linux Only]]
+8. Drag and Drop
+9. [[./wiki.org#lua-configuration][Configuration with Lua]]
+10. [[./wiki.org#scripting-with-lua][Scripting with Lua]]
+
+
+
+
 
 * TODOs
 

@@ -58,3 +58,4 @@
 34. [ ] Search bug
 35. [ ] Shell commands
 36. [X] Bulk rename editor multiple spawn bug
+37. [ ] Bookmark file ignore comments and empty lines
