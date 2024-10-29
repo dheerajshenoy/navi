@@ -62,8 +62,6 @@ QColor TreeSitterTextEdit::getColorForNode(const TSNode node) noexcept {
     // Example: Return different colors based on the node type
     const char *type = ts_node_type(node);
 
-    qDebug() << type;
-
     if (strcmp(type, "import_statement")) {
         return QColor(100, 0, 0);
     }

@@ -35,3 +35,16 @@ bool utils::isValidPath(const QString &path) noexcept {
     QFileInfo file(path);
     return file.exists() && file.isReadable();
 }
+
+QStringList utils::splitPreservingQuotes(const QString& input) noexcept {
+    QRegularExpression regex("\"([^\"]*)\"|(\\S+)");
+    QStringList result;
+
+    QRegularExpressionMatchIterator it = regex.globalMatch(input);
+    while (it.hasNext()) {
+        QRegularExpressionMatch match = it.next();
+        // If the quoted group matched, use it; otherwise, use the full match
+        result.append(match.captured(1).isEmpty() ? match.captured(0) : match.captured(1));
+    }
+    return result;
+}

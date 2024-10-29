@@ -37,8 +37,8 @@ public:
       FilePermission,
     };
 
-    QSet<QString> m_markedFiles;
 
+    QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
     uint getMarkedFilesCount() noexcept;
@@ -62,7 +62,7 @@ public:
     void loadDirectory(const QString &path) noexcept;
     inline bool hasMarks() noexcept { return m_markedFiles.size() > 0; }
     bool hasMarksLocal() noexcept;
-    QSet<QString> getMarkedFiles() noexcept { return m_markedFiles; }
+    QStringList getMarkedFiles() noexcept;
     QStringList getMarkedFilesLocal() noexcept;
     void setFilter(const QDir::Filters &filters) noexcept;
     bool setData(const QModelIndex &index, const QVariant &value,
@@ -76,22 +76,17 @@ public:
     bool removeMarkedFile(const QModelIndex &index) noexcept;
     // QMimeData *mimeData(const QModelIndexList &indexes) const override;
     // bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
-
-    signals:
-    void directoryLoaded(const QString &path);
-    void directoryLoadProgress(const int &progress);
-    void marksListChanged();
-    void dropCopyRequested(const QStringList &sourceFilePath);
-    void dropCutRequested(const QStringList &sourceFilePath);
-
-private:
-    void initDefaults() noexcept;
-    int findRow(const QFileInfo &fileInfo) const noexcept;
-
     QString getStringFromIndex(const QModelIndex &index) const noexcept {
         return this->data(index, Qt::DisplayRole).toString();
     }
 
+    QStringList getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept {
+        QStringList stringList;
+        stringList.reserve(indexList.size());
+        for (const auto &index : indexList)
+            stringList.append(m_root_path + QDir::separator() + getStringFromIndex(index));
+        return stringList;
+    }
 
     QString getStringFromRow(const int &row, const int &col = 0) const noexcept {
         return index(row, col).data().toString();
@@ -104,6 +99,19 @@ private:
     QString getPathFromRow(const int &row) const noexcept {
         return rootPath() + QDir::separator() + getStringFromRow(row);
     }
+
+    signals:
+    void directoryLoaded(const QString &path);
+    void directoryLoadProgress(const int &progress);
+    void marksListChanged();
+    void dropCopyRequested(const QStringList &sourceFilePath);
+    void dropCutRequested(const QStringList &sourceFilePath);
+
+
+private:
+    void initDefaults() noexcept;
+    int findRow(const QFileInfo &fileInfo) const noexcept;
+
 
     QList<QFileInfo> m_fileInfoList;
     QString m_root_path;

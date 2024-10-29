@@ -1,4 +1,5 @@
 #include "Navi.hpp"
+#include <qnamespace.h>
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {
 
@@ -29,7 +30,9 @@ void Navi::initSignalsSlots() noexcept {
           &FilePathWidget::setCurrentDir);
 
   connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
-          m_file_panel, [&](const QString &dirName) { m_file_panel->setCurrentDir(dirName, true); });
+          m_file_panel, [&](const QString &dirName) {
+            m_file_panel->setCurrentDir(dirName, true);
+          });
 
   connect(m_file_panel, &FilePanel::dirItemCount, m_statusbar,
           &Statusbar::SetNumItems);
@@ -56,28 +59,54 @@ void Navi::ShowHelp() noexcept {}
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
 
-    commandMap["rename"] = [this](const QStringList &args) { RenameItems(CommandScope::CURRENT); };
-    commandMap["rename-global"] = [this](const QStringList &args) { RenameItems(CommandScope::GLOBAL); };
-    commandMap["rename-local"] = [this](const QStringList &args) { RenameItems(CommandScope::LOCAL); };
+  commandMap["rename"] = [this](const QStringList &args) {
+      m_file_panel->RenameItem();
+  };
+  commandMap["rename-global"] = [this](const QStringList &args) {
+      m_file_panel->RenameItemsGlobal();
+  };
+  commandMap["rename-local"] = [this](const QStringList &args) {
+      m_file_panel->RenameItemsLocal();
+  };
 
-    commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
+  commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
-    commandMap["copy"] = [this](const QStringList &args) { CopyItems(CommandScope::CURRENT); };
-    commandMap["copy-global"] = [this](const QStringList &args) { CopyItems(CommandScope::GLOBAL); };
-    commandMap["copy-local"] = [this](const QStringList &args) { CopyItems(CommandScope::LOCAL); };
+  commandMap["copy"] = [this](const QStringList &args) {
+    CopyItems(CommandScope::CURRENT);
+  };
+  commandMap["copy-global"] = [this](const QStringList &args) {
+    CopyItems(CommandScope::GLOBAL);
+  };
+  commandMap["copy-local"] = [this](const QStringList &args) {
+    CopyItems(CommandScope::LOCAL);
+  };
 
-    commandMap["cut"] = [this](const QStringList &args) { CutItems(CommandScope::CURRENT); };
-  commandMap["cut-global"] = [this](const QStringList &args) { CutItems(CommandScope::GLOBAL); };
-  commandMap["cut-local"] = [this](const QStringList &args) { CutItems(CommandScope::LOCAL); };
+  commandMap["cut"] = [this](const QStringList &args) {
+    CutItems(CommandScope::CURRENT);
+  };
+  commandMap["cut-global"] = [this](const QStringList &args) {
+    CutItems(CommandScope::GLOBAL);
+  };
+  commandMap["cut-local"] = [this](const QStringList &args) {
+    CutItems(CommandScope::LOCAL);
+  };
 
   commandMap["paste"] = [this](const QStringList &args) { PasteItems(); };
 
-  commandMap["delete"] = [this](const QStringList &args) { DeleteItems(CommandScope::CURRENT); };
-  commandMap["delete-global"] = [this](const QStringList &args) { DeleteItems(CommandScope::GLOBAL); };
-  commandMap["delete-local"] = [this](const QStringList &args) { DeleteItems(CommandScope::LOCAL); };
+  commandMap["delete"] = [this](const QStringList &args) {
+    m_file_panel->DeleteItem();
+  };
+
+  commandMap["delete-global"] = [this](const QStringList &args) {
+    m_file_panel->DeleteItemsGlobal();
+  };
+
+  commandMap["delete-local"] = [this](const QStringList &args) {
+    m_file_panel->DeleteItemsLocal();
+  };
 
   commandMap["mark"] = [this](const QStringList &args) {
-    m_file_panel->MarkItems();
+    m_file_panel->MarkItem();
   };
 
   commandMap["mark-inverse"] = [this](const QStringList &args) {
@@ -89,7 +118,7 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["toggle-mark"] = [this](const QStringList &args) {
-    m_file_panel->MarkOrUnmarkItems();
+    m_file_panel->ToggleMarkItem();
   };
 
   commandMap["unmark"] = [this](const QStringList &args) {
@@ -97,20 +126,30 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["unmark-local"] = [this](const QStringList &args) {
-      UnmarkItems(CommandScope::LOCAL);
+      m_file_panel->UnmarkItemsLocal();
   };
 
   commandMap["unmark-global"] = [this](const QStringList &args) {
-      UnmarkItems(CommandScope::GLOBAL);
+      m_file_panel->UnmarkItemsGlobal();
   };
 
-  commandMap["new-file"] = [this](const QStringList &args) { NewFile(); };
+  commandMap["new-file"] = [this](const QStringList &args) {
+    m_file_panel->NewFile(args);
+  };
 
-  commandMap["new-folder"] = [this](const QStringList &args) { NewFolder(); };
+  commandMap["new-folder"] = [this](const QStringList &args) {
+    m_file_panel->NewFolder(args);
+  };
 
-  commandMap["trash"] = [this](const QStringList &args) { TrashItems(CommandScope::CURRENT); };
-  commandMap["trash-local"] = [this](const QStringList &args) { TrashItems(CommandScope::LOCAL); };
-  commandMap["trash-global"] = [this](const QStringList &args) { TrashItems(CommandScope::GLOBAL); };
+  commandMap["trash"] = [this](const QStringList &args) {
+    TrashItems(CommandScope::CURRENT);
+  };
+  commandMap["trash-local"] = [this](const QStringList &args) {
+    TrashItems(CommandScope::LOCAL);
+  };
+  commandMap["trash-global"] = [this](const QStringList &args) {
+    TrashItems(CommandScope::GLOBAL);
+  };
 
   commandMap["exit"] = [this](const QStringList &args) {
     QApplication::quit();
@@ -138,9 +177,15 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->ForceUpdate();
   };
 
-  commandMap["chmod"] = [this](const QStringList &args) { Chmod(CommandScope::CURRENT); };
-  commandMap["chmod-local"] = [this](const QStringList &args) { Chmod(CommandScope::LOCAL); };
-  commandMap["chmod-global"] = [this](const QStringList &args) { Chmod(CommandScope::GLOBAL); };
+  commandMap["chmod"] = [this](const QStringList &args) {
+    Chmod(CommandScope::CURRENT);
+  };
+  commandMap["chmod-local"] = [this](const QStringList &args) {
+    Chmod(CommandScope::LOCAL);
+  };
+  commandMap["chmod-global"] = [this](const QStringList &args) {
+    Chmod(CommandScope::GLOBAL);
+  };
 
   commandMap["marks-pane"] = [this](const QStringList &args) {
     ToggleMarksBuffer();
@@ -178,128 +223,137 @@ void Navi::setupCommandMap() noexcept {
     SaveBookmarkFile();
   };
 
+  commandMap["search"] = [&](const QStringList &args) { m_file_panel->Search(); };
+  commandMap["search-next"] = [&](const QStringList &args) { m_file_panel->SearchNext(); };
+  commandMap["search-prev"] = [&](const QStringList &args) {
+    m_file_panel->SearchPrev();
+  };
+
   m_input_completion_model = new QStringListModel(m_valid_command_list);
   m_inputbar->setCompleterModel(m_input_completion_model);
 }
 
 void Navi::EditBookmark(const QStringList &args) noexcept {
 
-    // TODO: interactive
-    if (args.isEmpty() || args.size() < 2)
-        return;
+  // TODO: interactive
+  if (args.isEmpty() || args.size() < 2)
+    return;
 
-    // Change can be title or path for bookmark title or
-    // file path that the bookmark points to
-    QString changeType = args.at(0).toLower();
+  // Change can be title or path for bookmark title or
+  // file path that the bookmark points to
+  QString changeType = args.at(0).toLower();
 
-    QString bookmarkName = args.at(1);
+  QString bookmarkName = args.at(1);
 
-    if (changeType == "title") {
-      QString newBookmarkName =
-          m_inputbar->getInput("New bookmark title", bookmarkName);
+  if (changeType == "title") {
+    QString newBookmarkName =
+        m_inputbar->getInput("New bookmark title", bookmarkName);
 
-
-      // If the bookmark title name is null, do nothing and return
-        if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
-            m_statusbar->Message("Error: No bookmark title provided!",
-                                 MessageType::ERROR, 5);
-            return;
-        }
-
-        // If bookmark title is provided
-        if (m_bookmark_manager->setBookmarkName(bookmarkName,
-                                                newBookmarkName)) {
-          m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
-                                   .arg(bookmarkName)
-                                   .arg(newBookmarkName));
-          return;
-        } else {
-          m_statusbar->Message("Error changing bookmark title name!",
-                               MessageType::ERROR, 5);
-          return;
-        }
-    } else if (changeType == "path") {
-      QString newBookmarkPath =
-          m_inputbar->getInput(QString("New bookmark path (Default: %1)").arg(m_file_panel->getCurrentDir()), bookmarkName);
-
-      // If the bookmark title name is null, do nothing and return
-        if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
-            m_statusbar->Message("Error: No bookmark path provided!",
-                                 MessageType::ERROR, 5);
-            return;
-        }
-
-        // If bookmark title is provided
-        QString oldBookmarkPath = m_bookmark_manager->getBookmarkFilePath(bookmarkName);
-        if (m_bookmark_manager->setBookmarkFile(bookmarkName,
-                                                newBookmarkPath)) {
-          m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
-                                   .arg(oldBookmarkPath)
-                                   .arg(newBookmarkPath));
-          return;
-        } else {
-          m_statusbar->Message("Error changing bookmark title name!",
-                               MessageType::ERROR, 5);
-          return;
-        }
+    // If the bookmark title name is null, do nothing and return
+    if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
+      m_statusbar->Message("Error: No bookmark title provided!",
+                           MessageType::ERROR, 5);
+      return;
     }
+
+    // If bookmark title is provided
+    if (m_bookmark_manager->setBookmarkName(bookmarkName, newBookmarkName)) {
+      m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
+                               .arg(bookmarkName)
+                               .arg(newBookmarkName));
+      return;
+    } else {
+      m_statusbar->Message("Error changing bookmark title name!",
+                           MessageType::ERROR, 5);
+      return;
+    }
+  } else if (changeType == "path") {
+    QString newBookmarkPath =
+        m_inputbar->getInput(QString("New bookmark path (Default: %1)")
+                                 .arg(m_file_panel->getCurrentDir()),
+                             bookmarkName);
+
+    // If the bookmark title name is null, do nothing and return
+    if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
+      m_statusbar->Message("Error: No bookmark path provided!",
+                           MessageType::ERROR, 5);
+      return;
+    }
+
+    // If bookmark title is provided
+    QString oldBookmarkPath =
+        m_bookmark_manager->getBookmarkFilePath(bookmarkName);
+    if (m_bookmark_manager->setBookmarkFile(bookmarkName, newBookmarkPath)) {
+      m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
+                               .arg(oldBookmarkPath)
+                               .arg(newBookmarkPath));
+      return;
+    } else {
+      m_statusbar->Message("Error changing bookmark title name!",
+                           MessageType::ERROR, 5);
+      return;
+    }
+  }
 }
 
 void Navi::AddBookmark(const QStringList &args) noexcept {
 
-    // If no arg is supplied
-    if (args.isEmpty()) {
-    } else {
-        QString bookmarkName = args.at(0);
-        if (m_bookmark_manager->addBookmark(bookmarkName,
-                                            m_file_panel->getCurrentDir())) {
-            m_statusbar->Message("Added bookmark");
-        } else
-            m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
-    }
+  // If no arg is supplied
+  if (args.isEmpty()) {
+  } else {
+    QString bookmarkName = args.at(0);
+    if (m_bookmark_manager->addBookmark(bookmarkName,
+                                        m_file_panel->getCurrentDir())) {
+      m_statusbar->Message("Added bookmark");
+    } else
+      m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
+  }
 }
 
 void Navi::RemoveBookmark(const QStringList &args) noexcept {
 
-    // TODO: Interactive removal
+  // TODO: Interactive removal
   if (args.isEmpty())
     return;
 
   QString bookmarkName = args.at(0);
   if (m_bookmark_manager->removeBookmark(bookmarkName))
-      m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
+    m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
   else
-      m_statusbar->Message(QString("Error removing bookmark %1").arg(bookmarkName),
-                           MessageType::ERROR, 5);
+    m_statusbar->Message(
+        QString("Error removing bookmark %1").arg(bookmarkName),
+        MessageType::ERROR, 5);
 }
 
 void Navi::LoadBookmarkFile(const QStringList &args) noexcept {
 
-    // TODO: Interactive
-    if (args.isEmpty())
-        return;
+  // TODO: Interactive
+  if (args.isEmpty())
+    return;
 
-    QString bookmarkFileName = args.at(0);
-    if (m_bookmark_manager->loadBookmarks(bookmarkFileName))
-        m_statusbar->Message(QString("Bookmark loaded from %1!").arg(bookmarkFileName));
-    else
-        m_statusbar->Message(QString("Error loading bookmark file %1").arg(bookmarkFileName),
-                             MessageType::ERROR, 5);
+  QString bookmarkFileName = args.at(0);
+  if (m_bookmark_manager->loadBookmarks(bookmarkFileName))
+    m_statusbar->Message(
+        QString("Bookmark loaded from %1!").arg(bookmarkFileName));
+  else
+    m_statusbar->Message(
+        QString("Error loading bookmark file %1").arg(bookmarkFileName),
+        MessageType::ERROR, 5);
 }
 
 void Navi::GoBookmark(const QStringList &bookmarkName) noexcept {
 
-    // TODO: interactive
-    if (bookmarkName.isEmpty())
-        return;
+  // TODO: interactive
+  if (bookmarkName.isEmpty())
+    return;
 
-    QString bookmarkPath = m_bookmark_manager->getBookmark(bookmarkName.at(0));
-    if (bookmarkPath.isNull() || bookmarkPath.isEmpty())
-        m_statusbar->Message(
-                             QString("Bookmark %1 not found!").arg(bookmarkName.at(0)),
-                             MessageType::ERROR, 5);
-    else
-        m_file_panel->setCurrentDir(bookmarkPath, true);
+  QString bookmarkPath = m_bookmark_manager->getBookmark(bookmarkName.at(0));
+  if (bookmarkPath.isNull() || bookmarkPath.isEmpty())
+    m_statusbar->Message(
+        QString("Bookmark %1 not found!").arg(bookmarkName.at(0)),
+        MessageType::ERROR, 5);
+  else
+    m_file_panel->setCurrentDir(bookmarkPath, true);
 }
 
 void Navi::ToggleBookmarksBuffer() noexcept {
@@ -364,14 +418,14 @@ void Navi::ToggleMarksBuffer(const bool &state) noexcept {
 
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
-  // QStringList commandlist = commandtext.split(" && ");
+    // QStringList commandlist = commandtext.split(" && ");
   QStringList commandlist =
       commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
 
   if (commandlist.isEmpty())
     return;
 
-  auto [isNumber, num] = utils::isNumber(commandlist[0]);
+  auto [isNumber, num] = utils::isNumber(commandlist.at(0));
   if (isNumber) {
     m_file_panel->GotoItem(num);
     return;
@@ -381,9 +435,9 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
   // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
 
   for (const auto &commands : commandlist) {
-    QStringList split = commands.split(" ");
-    QString subcommand = split[0];
-    QStringList args = (split.size() > 1) ? split.mid(1) : QStringList();
+      QStringList command = utils::splitPreservingQuotes(commands);
+      QString subcommand = command.takeFirst();
+      QStringList args = command;
 
     if (commandMap.contains(subcommand)) {
       commandMap[subcommand](args); // Call the associated function
@@ -429,11 +483,11 @@ QString Navi::getCurrentFile() noexcept {
 
 void Navi::initLayout() noexcept {
   m_inputbar = new Inputbar();
-  m_file_panel = new FilePanel(m_inputbar);
+  m_statusbar = new Statusbar();
+  m_file_panel = new FilePanel(m_inputbar, m_statusbar);
 
   m_preview_panel = new PreviewPanel();
   m_file_path_widget = new FilePathWidget();
-  m_statusbar = new Statusbar();
   m_log_buffer = new MessagesBuffer();
   m_marks_buffer = new MarksBuffer();
 
@@ -501,14 +555,16 @@ void Navi::initKeybinds() noexcept {
   connect(kb_goto_first_item, &QShortcut::activated, m_file_panel,
           &FilePanel::GotoFirstItem);
   connect(kb_mark_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::MarkOrUnmarkItems);
+          &FilePanel::ToggleMarkItem);
   connect(kb_command, &QShortcut::activated, this,
           &Navi::ExecuteExtendedCommand);
-  connect(kb_rename_items, &QShortcut::activated, this, [&]() { RenameItems(CommandScope::CURRENT); });
-  connect(kb_delete_items, &QShortcut::activated, this, [&]() { DeleteItems(CommandScope::CURRENT); });
-  connect(kb_search, &QShortcut::activated, this, &Navi::Search);
-  connect(kb_search_next, &QShortcut::activated, this, &Navi::SearchNext);
-  connect(kb_search_prev, &QShortcut::activated, this, &Navi::SearchPrev);
+  connect(kb_rename_items, &QShortcut::activated, this,
+          [&]() { m_file_panel->RenameItem(); });
+  connect(kb_delete_items, &QShortcut::activated, this,
+          [&]() { m_file_panel->DeleteItem(); });
+  connect(kb_search, &QShortcut::activated, m_file_panel, &FilePanel::Search);
+  connect(kb_search_next, &QShortcut::activated, m_file_panel, &FilePanel::SearchNext);
+  connect(kb_search_prev, &QShortcut::activated, m_file_panel, &FilePanel::SearchPrev);
   connect(kb_toggle_menubar, &QShortcut::activated, this,
           [this]() { ToggleMenuBar(); });
 
@@ -519,95 +575,47 @@ void Navi::initKeybinds() noexcept {
           [this]() { m_file_path_widget->FocusLineEdit(); });
 
   connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
-  connect(kb_copy_items, &QShortcut::activated, this, [&]() { CopyItems(CommandScope::CURRENT); });
+  connect(kb_copy_items, &QShortcut::activated, this,
+          [&]() { CopyItems(CommandScope::CURRENT); });
   connect(kb_unmark_items_local, &QShortcut::activated, this,
-          [&]() { UnmarkItems(CommandScope::LOCAL); });
+          [&]() { m_file_panel->UnmarkItemsLocal(); });
 
-  connect(kb_toggle_hidden_files, &QShortcut::activated, m_file_panel, &FilePanel::ToggleHiddenFiles);
-
+  connect(kb_toggle_hidden_files, &QShortcut::activated, m_file_panel,
+          &FilePanel::ToggleHiddenFiles);
 }
 
-void Navi::Search() noexcept {
-  m_file_panel->Search(m_inputbar->getInput("Search"));
+void Navi::CutItems(const CommandScope &scope) noexcept {
+  m_file_panel->CutItems();
 }
 
-void Navi::SearchNext() noexcept { m_file_panel->SearchNext(); }
-
-void Navi::SearchPrev() noexcept { m_file_panel->SearchPrev(); }
-
-void Navi::RenameItems(const CommandScope &scope) noexcept {
-    switch (scope) {
-    case CommandScope::CURRENT: {
-        Result res = m_file_panel->RenameItem();
-        if (res.result())
-            m_statusbar->Message("Rename Successful!");
-        else
-            m_statusbar->Message(
-                                 QString("Error while renaming! (%1)").arg(res.reason()),
-                                 MessageType::ERROR, 5);
-    } break;
-
-    case CommandScope::LOCAL: {
-        Result res = m_file_panel->RenameItemsLocal();
-        if (res.result())
-            m_statusbar->Message("Rename Successful!");
-        else
-            m_statusbar->Message(
-                                 QString("Error while renaming! (%1)").arg(res.reason()),
-                                 MessageType::ERROR, 5);
-    } break;
-
-    case CommandScope::GLOBAL: {
-
-    }
-    }
+void Navi::CopyItems(const CommandScope &scope) noexcept {
+  m_file_panel->CopyItems();
 }
-
-void Navi::DeleteItems(const CommandScope &scope) noexcept {
-    switch (scope) {
-
-        case CommandScope::CURRENT:
-            if (m_file_panel->DeleteItem().result())
-                m_statusbar->Message("Deletion Successful!");
-            else
-              m_statusbar->Message("Error while deleting!", MessageType::ERROR,
-                                   5);
-            break;
-
-    case CommandScope::GLOBAL:
-            if (m_file_panel->DeleteItemsGlobal().result())
-                m_statusbar->Message("Deletion Successful!");
-            else
-              m_statusbar->Message("Error while deleting!", MessageType::ERROR,
-                                   5);
-        break;
-
-    case CommandScope::LOCAL:
-        if (m_file_panel->DeleteItemsLocal().result())
-            m_statusbar->Message("Deletion Successful!");
-        else
-            m_statusbar->Message("Error while deleting!", MessageType::ERROR,
-                                 5);
-        break;
-    }
-}
-
-void Navi::CutItems(const CommandScope &scope) noexcept { m_file_panel->CutItems(); }
-
-void Navi::CopyItems(const CommandScope &scope) noexcept { m_file_panel->CopyItems(); }
 
 void Navi::TrashItems(const CommandScope &scope) noexcept {
-  if (m_file_panel->TrashItems())
-    m_statusbar->Message("Deletion Successful!");
-  else
-    m_statusbar->Message("Error while moving!", MessageType::ERROR, 5);
+  switch (scope) {
+
+  case CommandScope::CURRENT: {
+    Result<bool> result = m_file_panel->TrashItem();
+    if (result.result())
+      m_statusbar->Message(result.reason());
+    else
+      m_statusbar->Message(result.reason(), MessageType::ERROR, 5);
+  } break;
+
+  case CommandScope::LOCAL:
+  case CommandScope::GLOBAL:
+    break;
+  }
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-  // m_minibuffer->ExecuteCommand();
-  QString command = m_inputbar->getInput("Command");
-  ProcessCommand(command);
-  // m_file_panel->setFocus();
+    // m_minibuffer->ExecuteCommand();
+    m_inputbar->enableCommandCompletions();
+    QString command = m_inputbar->getInput("Command");
+    ProcessCommand(command);
+    m_inputbar->disableCommandCompletions();
+    // m_file_panel->setFocus();
 }
 
 void Navi::initMenubar() noexcept {
@@ -707,17 +715,12 @@ void Navi::initMenubar() noexcept {
           [&](const bool &state) { ToggleMessagesBuffer(state); });
 
   connect(m_filemenu__create_new_file, &QAction::triggered, this,
-          [&]() { this->NewFile(); });
+          [&]() { m_file_panel->NewFile(); });
 
   connect(m_filemenu__create_new_folder, &QAction::triggered, this,
-          [&]() { this->NewFolder(); });
+          [&]() { m_file_panel->NewFolder(); });
 
-  connect(m_tools_menu__search, &QAction::triggered, this, [&]() {
-    QString searchText =
-        QInputDialog::getText(this, "Search", "Enter a file/directory name");
-    if (!(searchText.isEmpty() && searchText.isNull()))
-      m_file_panel->Search(searchText);
-  });
+  connect(m_tools_menu__search, &QAction::triggered, this, [&]() { m_file_panel->Search(); });
 
   connect(m_viewmenu__files_menu__hidden, &QAction::triggered, m_file_panel,
           &FilePanel::ToggleHiddenFiles);
@@ -742,46 +745,10 @@ void Navi::initMenubar() noexcept {
       [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
-bool Navi::createEmptyFile(const QString &filePath) noexcept {
-}
-
-// Create an empty file
-void Navi::NewFile(const int &nfiles) noexcept {
-    // Interactive file creation
-    if (nfiles == -1) {
-        QString filename = m_inputbar->getInput("Enter file name: ");
-
-        if (filename.isEmpty() && filename.isNull()) {
-            m_statusbar->Message("Error: filename cannot be empty!", MessageType::ERROR, 5);
-            return;
-        }
-
-        if (m_file_panel->NewFile(filename))
-            m_statusbar->Message("File created successfully!");
-    } else
-        m_statusbar->Message("Error creating file!", MessageType::ERROR, 5);
-}
-
-// Create an empty folder
-void Navi::NewFolder(const int &nfolders) noexcept {
-    // Interactive folder creation
-    if (nfolders == -1) {
-        QString dirname = m_inputbar->getInput("Enter directory name: ");
-        if (dirname.isEmpty() && dirname.isNull()) {
-            m_statusbar->Message("Error: folder name cannot be empty!", MessageType::ERROR, 5);
-            return;
-        }
-
-        QDir dir;
-        if (m_file_panel->NewFolder(dirname))
-            m_statusbar->Message("Folders created successfully!");
-        else
-            m_statusbar->Message("Error creating folders!", MessageType::ERROR, 5);
-    }
-}
+bool Navi::createEmptyFile(const QString &filePath) noexcept {}
 
 void Navi::setCurrentDir(const QString &path) noexcept {
-    m_file_panel->setCurrentDir(path, true);
+  m_file_panel->setCurrentDir(path, true);
 }
 
 void Navi::ToggleMenuBar(const bool &state) noexcept {
@@ -835,64 +802,32 @@ void Navi::LogMessage(const QString &message,
 Navi::~Navi() {}
 
 void Navi::chmodHelper() noexcept {
-    QString permString = m_inputbar->getInput("Permission Number");
-    if (permString.length() != 3 ||
-        !permString.contains(QRegularExpression("^[0-7]{3}$"))) {
-        m_statusbar->Message("Invalid permission string."
-                             "Expected a three-digit octal string like '755'.",
-                             MessageType::ERROR, 5);
-        return;
-    }
-    if (m_file_panel->Chmod(permString)) {
-        m_statusbar->Message("Chmodded file successfully");
-        m_statusbar->UpdateFile();
-    } else
-        m_statusbar->Message("Error Chmoding file!", MessageType::ERROR, 5);
+  QString permString = m_inputbar->getInput("Permission Number");
+  if (permString.length() != 3 ||
+      !permString.contains(QRegularExpression("^[0-7]{3}$"))) {
+    m_statusbar->Message("Invalid permission string."
+                         "Expected a three-digit octal string like '755'.",
+                         MessageType::ERROR, 5);
+    return;
+  }
+  if (m_file_panel->Chmod(permString)) {
+    m_statusbar->Message("Chmodded file successfully");
+    m_statusbar->UpdateFile();
+  } else
+    m_statusbar->Message("Error Chmoding file!", MessageType::ERROR, 5);
 }
 
 void Navi::Chmod(const CommandScope &scope) noexcept {
 
-    switch (scope) {
-    case CommandScope::CURRENT:
-    case CommandScope::LOCAL:
-    case CommandScope::GLOBAL:
-        break;
-    }
+  switch (scope) {
+  case CommandScope::CURRENT:
+  case CommandScope::LOCAL:
+  case CommandScope::GLOBAL:
+    break;
+  }
 }
 
 void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
-
-void Navi::UnmarkItems(const CommandScope &scope) noexcept {
-    switch (scope) {
-
-    case CommandScope::GLOBAL: {
-        int marksCount = m_file_panel->model()->getMarkedFilesCount();
-        QString input = m_inputbar->getInput(
-                                             QString("Do you want to unmark %1 marks (Y/n) ?").arg(marksCount));
-        if (input == "y" || input.isNull() || input.isEmpty()) {
-            m_file_panel->UnmarkItemsGlobal();
-            m_statusbar->Message(QString("Unmarked %1 marks").arg(marksCount));
-        } else
-            m_statusbar->Message(QString("Cancelled unmarking").arg(marksCount));
-    } break;
-
-    case CommandScope::LOCAL: {
-        uint marksCount = m_file_panel->model()->getMarkedFilesCountLocal();
-        QString input = m_inputbar->getInput(
-                                             QString("Do you want to remove %1 marks (Y/n) ?").arg(marksCount));
-        if (input == "y" || input.isNull() || input.isEmpty()) {
-            m_file_panel->UnmarkItemsLocal();
-            m_statusbar->Message(QString("Unmarked %1 marks").arg(marksCount));
-        } else
-            m_statusbar->Message(QString("Cancelled unmarking").arg(marksCount));
-    } break;
-
-    case CommandScope::CURRENT:
-        m_file_panel->UnmarkItem();
-        break;
-
-    }
-}
 
 void Navi::SaveBookmarkFile() noexcept {
   if (m_bookmark_manager->saveBookmarksFile()) {

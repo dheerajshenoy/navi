@@ -1,4 +1,5 @@
 #include "FileSystemModel.hpp"
+#include <qnamespace.h>
 
 FileSystemModel::FileSystemModel(QObject *parent)
     : QAbstractTableModel(parent) {
@@ -13,7 +14,6 @@ FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
 void FileSystemModel::initDefaults() noexcept {
     m_file_system_watcher = new QFileSystemWatcher(this);
     m_dir_filters = QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries;
-
 }
 
 void FileSystemModel::clearMarkedFilesListLocal() noexcept {
@@ -44,9 +44,7 @@ QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
   if (!index.isValid())
     return QString();
 
-  // Assuming `fileInfoList` holds QFileInfo objects or a similar structure
-  return QFileInfo(m_root_path + QDir::separator() + index.data().toString())
-      .absoluteFilePath();
+  return m_root_path + QDir::separator() + index.data().toString().split(" -> ").at(0);
 }
 
 bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
@@ -54,7 +52,7 @@ bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
     return false;
 
   // Assuming `fileInfoList` holds QFileInfo objects or a similar structure
-  return QFileInfo(m_root_path + QDir::separator() + index.data().toString())
+      return QFileInfo(m_root_path + QDir::separator() + index.data().toString().split(" -> ").at(0))
       .isDir();
 }
 
@@ -147,7 +145,12 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
             const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
             switch (m_column_list.at(index.column())) {
             case ColumnType::FileName: // File Name
-                return fileInfo.fileName();
+                if (fileInfo.isSymbolicLink())
+                    return QString("%1 -> %2")
+                      .arg(fileInfo.fileName())
+                      .arg(fileInfo.symLinkTarget());
+                else
+                    return fileInfo.fileName();
 
             case ColumnType::FileSize: // File Size
                 return fileInfo.isDir()
@@ -172,24 +175,21 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
 QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const {
     if (orientation == Qt::Vertical) {
+        bool isMarked = m_markedFiles.contains(getPathFromRow(section));
         switch (role) {
 
-        case static_cast<int>(Role::Marked):
-            return m_markedFiles.contains(getPathFromRow(section));
-            break;
+        // case static_cast<int>(Role::Marked):
+        //     return m_markedFiles.contains(getPathFromRow(section));
+        //     break;
 
-        case Qt::BackgroundRole: {
-          // QColor color;
-          // bool isMarked = m_markedFiles.contains(getPathFromRow(section));
-          // if (isMarked)
-          //     return color.fromString("#FF5000");
-          // return color;
+        case Qt::ForegroundRole: {
+          if (isMarked)
+              return QColor("#FF5000");
           // TODO: Fix this
         } break;
 
         case Qt::FontRole: {
             QFont font;
-            bool isMarked = m_markedFiles.contains(getPathFromRow(section));
             if (isMarked) {
                 font.setBold(true);
                 font.setItalic(true);
@@ -229,20 +229,21 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-  bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
-                                int role) {
-    // if (!index.isValid() || role != Qt::EditRole || index.column() != 0)
-    //     return false;
+bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
+                              int role) {
 
     if (role == static_cast<int>(Role::Marked)) {
-        m_markedFiles.insert(getPathFromIndex(index));
-        emit marksListChanged();
+        if (value.toBool() == true) {
+            m_markedFiles.insert(getPathFromIndex(index));
+            emit marksListChanged();
+        }
         emit dataChanged(index, index, {role});
+        emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         return true;
     }
 
-    return false; // Return false if renaming fails
-  }
+    return false;
+}
 
   void FileSystemModel::setFilter(const QDir::Filters &filters) noexcept {
     m_dir_filters = filters;
@@ -291,8 +292,8 @@ FileSystemModel::getIndexFromString(const QString &path) const noexcept {
 
 bool FileSystemModel::removeMarkedFile(const QModelIndex &index) noexcept {
     QString path = getPathFromIndex(index);
-    setData(index, false, static_cast<int>(Role::Marked));
     if (m_markedFiles.contains(path) && m_markedFiles.remove(path)) {
+        setData(index, false, static_cast<int>(Role::Marked));
         emit marksListChanged();
         return true;
     }
@@ -370,4 +371,14 @@ QStringList FileSystemModel::getMarkedFilesLocal() noexcept {
 
 bool FileSystemModel::hasMarksLocal() noexcept {
     return getMarkedFilesLocal().size() > 0;
+}
+
+
+QStringList FileSystemModel::getMarkedFiles() noexcept {
+
+    // Return {} if no marks are found in the global level
+    if (m_markedFiles.isEmpty())
+        return QStringList();
+
+    return QStringList(m_markedFiles.cbegin(), m_markedFiles.cend());
 }

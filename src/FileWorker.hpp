@@ -6,7 +6,6 @@
 #include <QDir>
 #include <QStringList>
 
-
 enum class FileOPType {
     COPY = 0,
     CUT,

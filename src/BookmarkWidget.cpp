@@ -13,7 +13,6 @@ BookmarkWidget::BookmarkWidget(BookmarkManager *manager, QWidget *parent)
         return;
 
     auto bookmarks = m_manager->getBookmarks();
-    qDebug() << "DD";
     m_table_widget->setColumnCount(2);
     m_table_widget->setRowCount(bookmarks.size());
 

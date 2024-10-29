@@ -19,6 +19,9 @@
 #include <QWidget>
 #include <QProcess>
 #include <QTemporaryFile>
+#include <QWheelEvent>
+#include <QMouseEvent>
+#include <QApplication>
 
 #include "Result.hpp"
 #include "FileSystemModel.hpp"
@@ -26,11 +29,12 @@
 #include "TableView.hpp"
 #include "Inputbar.hpp"
 #include "FilePropertyWidget.hpp"
+#include "Statusbar.hpp"
 
 class FilePanel : public QWidget {
     Q_OBJECT
 public:
-    FilePanel(Inputbar *inputWidget = nullptr, QWidget *parent = nullptr);
+    FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
@@ -40,17 +44,17 @@ public:
 
     FileSystemModel* model() noexcept { return m_model; }
 
-    bool NewFolder(const QString &folderName) noexcept;
-    bool NewFile(const QString &fileName) noexcept;
+    void NewFolder(const QStringList &folderName = {}) noexcept;
+    void NewFile(const QStringList &fileName = {}) noexcept;
     QString getCurrentItem() noexcept;
-    QString getCurrentItemBaseName() noexcept;
+    QString getCurrentItemFileName() noexcept;
     void UpDirectory() noexcept;
     void SelectItem() noexcept;
     void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
     void PrevItem() noexcept;
-    void MarkOrUnmarkItems() noexcept;
-    void MarkItems() noexcept;
+    void ToggleMarkItem() noexcept;
+    void MarkItem() noexcept;
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
     void UnmarkItem() noexcept;
@@ -59,16 +63,18 @@ public:
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
-    Result<bool> RenameItem() noexcept;
-    Result<bool> RenameItemsGlobal() noexcept;
-    Result<bool> RenameItemsLocal() noexcept;
+    void RenameItem() noexcept;
+    void RenameItemsGlobal() noexcept;
+    void RenameItemsLocal() noexcept;
     void PasteItems() noexcept;
-    Result<bool> DeleteItem() noexcept;
-    Result<bool> DeleteItemsLocal() noexcept;
-    Result<bool> DeleteItemsGlobal() noexcept;
-    bool TrashItems() noexcept;
+    void DeleteItem() noexcept;
+    void DeleteItemsLocal() noexcept;
+    void DeleteItemsGlobal() noexcept;
+    Result<bool> TrashItem() noexcept;
+    Result<bool> TrashItemsLocal() noexcept;
+    Result<bool> TrashItemsGlobal() noexcept;
     void ToggleHiddenFiles() noexcept;
-    void Search(const QString &searchExpression) noexcept;
+    void Search(QString &searchText = 0) noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
     void Filters(const QString &filterString) noexcept;
@@ -83,7 +89,7 @@ public:
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
-    Result<bool> BulkRename(const QStringList &files) noexcept;
+    void BulkRename(const QStringList &files) noexcept;
 
 signals:
     void afterDirChange(QString path);
@@ -99,8 +105,12 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void startDrag(Qt::DropActions supportedActions);
+    void wheelEvent(QWheelEvent *event) override;
+    // void mousePressEvent(QMouseEvent *event) override;
+    // void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
+    void dragRequested() noexcept;
     void selectHelper(const QModelIndex &index, const bool selectFirst) noexcept;
     void selectFirstItem() noexcept;
     void initKeybinds() noexcept;
@@ -126,9 +136,15 @@ private:
     QAction *m_context_action_properties = nullptr;
     QAction *m_context_action_open_terminal = nullptr;
 
+    // Search related things
     QModelIndexList m_search_index_list;
     int m_search_index_list_index = -1;
     unsigned int m_item_count = 0;
+    // This variable is used to check if the search has been performed
+    // in the directory. If not, then we perform check and then
+    // iterate through the search results. If yes, we just iterate
+    bool m_search_new_directory = true;
+    QString m_search_text;
 
     // This is for storing the recent file operation action like COPY, PASTE.
     // Depending on which we perform the necessary action.
@@ -138,9 +154,12 @@ private:
     QStringList m_terminal_args;
 
     Inputbar *m_inputbar;
+    Statusbar *m_statusbar;
 
     // This is used to store the string of the current item under focus
     // which will then be used to focus the item again after the directory
     // reloads
     // QString m_old_item_name;
+
+    QPoint m_drag_start_position;
 };

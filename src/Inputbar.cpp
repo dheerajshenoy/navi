@@ -27,7 +27,7 @@ void Inputbar::suggestionComplete() noexcept {
 }
 
 QString Inputbar::getInput(const QString &prompt,
-                           const QString &defaultValue) noexcept {
+                           const QString &defaultValue, const QString &selectionString) noexcept {
     this->show();
     m_prompt_label->setText(prompt);
     m_line_edit->setFocus();
@@ -35,13 +35,7 @@ QString Inputbar::getInput(const QString &prompt,
 
     if (!(defaultValue.isNull() && defaultValue.isEmpty())) {
         m_line_edit->setText(defaultValue);
-        int index = -1;
-        if (defaultValue.contains("."))
-            index = defaultValue.indexOf(".");
-        else
-            index = defaultValue.size();
-
-        m_line_edit->setSelection(0, index);
+        m_line_edit->setSelection(0, defaultValue.indexOf(selectionString) + selectionString.size());
     }
 
     QString userInput;
@@ -70,4 +64,13 @@ Inputbar::~Inputbar() {}
 
 void Inputbar::setCompleterModel(QAbstractItemModel *model) noexcept {
     m_line_edit_completer->setModel(model);
+}
+
+
+void Inputbar::enableCommandCompletions() noexcept {
+    m_line_edit->setCompleter(m_line_edit_completer);
+}
+
+void Inputbar::disableCommandCompletions() noexcept {
+    m_line_edit->setCompleter(nullptr);
 }

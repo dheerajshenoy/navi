@@ -69,20 +69,13 @@ public:
     void TogglePreviewPanel(const bool &state) noexcept;
     void TogglePreviewPanel() noexcept;
     void ExecuteExtendedCommand() noexcept;
-    void RenameItems(const CommandScope &scope) noexcept;
-    void NewFile(const int &nfiles = -1) noexcept;
-    void NewFolder(const int &nfolders = -1) noexcept;
+    void NewFolder(const QStringList &folders = {}) noexcept;
     void CutItems(const CommandScope &scope) noexcept;
     void CopyItems(const CommandScope &scope) noexcept;
-    void DeleteItems(const CommandScope &scope) noexcept;
     void TrashItems(const CommandScope &scope) noexcept;
     void PasteItems() noexcept;
     void Chmod(const CommandScope &scope) noexcept;
-    void UnmarkItems(const CommandScope &scope) noexcept;
     void ShowHelp() noexcept;
-    void Search() noexcept;
-    void SearchNext() noexcept;
-    void SearchPrev() noexcept;
     void ToggleMenuBar(const bool &state) noexcept;
     void ToggleMenuBar() noexcept;
     void Filter() noexcept;
@@ -164,6 +157,10 @@ private:
 
     QStringList m_valid_command_list = {
 
+      // Shell command
+      "shell-command",
+      "shell-command-async",
+
       // Mark
       "mark",
       "toggle-mark",
@@ -233,6 +230,11 @@ private:
       "preview-pane",
       "marks-pane",
       "bookmarks-pane",
+
+      // Search
+      "search",
+      "search-next",
+      "search-prev",
     };
 
     QStringListModel *m_input_completion_model = nullptr;

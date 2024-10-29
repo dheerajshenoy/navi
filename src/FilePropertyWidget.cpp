@@ -10,8 +10,8 @@ FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
         return;
 
     QLabel *iconLabel = new QLabel;
-    QIcon icon = QIcon::fromTheme(
-                                  QMimeDatabase().mimeTypeForFile(fileInfo.path()).iconName());
+    QString filePath = fileInfo.filePath();
+    QIcon icon = QIcon::fromTheme(QMimeDatabase().mimeTypeForFile(filePath).iconName());
     QPixmap iconPixmap = icon.pixmap(QSize(32, 32));
     iconLabel->setPixmap(iconPixmap);
 
@@ -21,10 +21,10 @@ FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
         m_layout->addRow(
                          "Size", new QLabel(m_locale.formattedDataSize(fileInfo.size())));
         m_layout->addRow("Last modified", new QLabel(fileInfo.lastModified().toString()));
-        m_layout->addRow("Path", new QLabel(fileInfo.filePath()));
+        m_layout->addRow("Path", new QLabel(filePath));
         m_layout->addRow("Permissions",
                          new QLabel(utils::getPermString(fileInfo)));
-        m_layout->addRow("Mime Type", new QLabel(QMimeDatabase().mimeTypeForFile(fileInfo.path()).name()));
+        m_layout->addRow("Mime Type", new QLabel(QMimeDatabase().mimeTypeForFile(filePath).name()));
     }
     else if (fileInfo.isDir()) {
         m_layout->addRow("Name", new QLabel(fileInfo.fileName()));
@@ -32,9 +32,9 @@ FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
         m_layout->addRow("Size",
                          new QLabel(m_locale.formattedDataSize(fileInfo.size())));
         m_layout->addRow("Last modified", new QLabel(fileInfo.lastModified().toString()));
-        m_layout->addRow("Path", new QLabel(fileInfo.filePath()));
+        m_layout->addRow("Path", new QLabel(filePath));
         m_layout->addRow("Permissions", new QLabel(utils::getPermString(fileInfo)));
-        m_layout->addRow("Mime Type", new QLabel(QMimeDatabase().mimeTypeForFile(fileInfo.path()).name()));
+        m_layout->addRow("Mime Type", new QLabel(QMimeDatabase().mimeTypeForFile(filePath).name()));
     }
 
         m_layout->addRow("Icon", iconLabel);

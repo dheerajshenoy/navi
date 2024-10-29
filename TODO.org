@@ -54,5 +54,7 @@
 30. [X] Rename consider only marks here and not the global marks by default
 31. [ ] Undo Operations
 32. [ ] Show search match count
-33. [ ] Mouse scroll for folder
+33. [X] Mouse scroll for folder
 34. [ ] Search bug
+35. [ ] Shell commands
+36. [X] Bulk rename editor multiple spawn bug

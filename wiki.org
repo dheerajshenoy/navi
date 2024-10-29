@@ -7,28 +7,26 @@
 - [[#introduction][Introduction]]
 - [[#naming-conventions][Naming Conventions]]
 - [[#interactive-commands][Interactive Commands]]
+  - [[#types-of-command][Types of Command]]
 - [[#commands-list][Commands List]]
-  - [[#mark][mark]]
-  - [[#unmark][unmark]]
-  - [[#unmark-all-here][unmark-all-here]]
-  - [[#unmark-all][unmark-all]]
-  - [[#chmod][chmod]]
-  - [[#toggle-mark][toggle-mark]]
-  - [[#rename][rename]]
-  - [[#cut][cut]]
-  - [[#copy][copy]]
-  - [[#paste][paste]]
-  - [[#delete][delete]]
-  - [[#trash][trash]]
-  - [[#messages][messages]]
+  - [[#marking-item][Marking Item]]
+  - [[#unmarking-item][Unmarking Item]]
+  - [[#change-permission][Change Permission]]
+  - [[#renaming-files][Renaming Files]]
+  - [[#cutting-files][Cutting Files]]
+  - [[#copying-files][Copying Files]]
+  - [[#pasting-moving-files][Pasting (Moving) Files]]
+  - [[#deleting-files][Deleting Files]]
+  - [[#trashing-files][Trashing Files]]
   - [[#filter][filter]]
   - [[#unfilter][unfilter]]
   - [[#refresh][refresh]]
-  - [[#toggle-hidden-files][toggle-hidden-files]]
-  - [[#toggle-preview-pane][toggle-preview-pane]]
-  - [[#toggle-menu-bar][toggle-menu-bar]]
-  - [[#focus-path][focus-path]]
-  - [[#item-property][item-property]]
+  - [[#hidden-files][hidden-files]]
+  - [[#panes][Panes]]
+  - [[#misc][Misc]]
+  - [[#shell-commands][Shell Commands]]
+  - [[#bookmarks][Bookmarks]]
+  - [[#searching-items][Searching Items]]
 
 * Introduction
 
@@ -48,84 +46,186 @@
 
 These are commands that can be executed using the =inputbar= UI component. By default, pressing =: (colon)= key pops up the inputbar. You can type a name of the command in this bar or a line number to go to in the current directory of the focused pane. Example: =mark= or =42=, where =mark= would mark the current item under focus or highlighted items (more than one items).
 
-Below is an exhaustive list of commands that are currently available in Navi
+** Types of Command
+
+There are three variants for most of the commands: =Current=, =Local= and =Global=.
+If any interactive command has scope available, they are named accordingly. For example, the =rename= command is actually the =Current= scoped command. It’s other variants are =rename-local= and =rename-global= for =Local= and =Global= scope respectively.
+
+*** Current
+
+This applies to the currently selected item. Any command that is =Current= scoped will run only on the currently highlighted item. *This includes mouse selection also called as Highlighting.*
+
+*** Local
+
+This applies to the marks that are in the current directory which is conveniently called as a *Local Mark*. Any command that is =Local= scoped will run on the local marks. *This does not include mouse highlighting.*
+
+*** Global
+
+This applies to the marks that are present in any directory. Unlike the =Local= scope the command that is =Global= scoped will run on the marks that are present in any directory. *This does not include mouse highlighting*.
 
 * Commands List
 
-In the following commands, the default keybindings associated with them are mentioned. Below is a mapping of what some keys mean.
+Below is an exhaustive list of commands that are currently available in Navi. The default keybindings associated with them are mentioned. Below is a mapping of what some keys mean.
 
 1. =C= - Control
 2. =M= - Meta (Alt Key)
 3. =S= - Shift
 4. =SPC= - Space
 
-** mark
+** Marking Item
 
-Marks the highlighted item(s).
+*** mark
 
-** unmark
+Marks the current item.
 
-Unmarks the highlighted item(s).
+*** toggle-mark
 
-** unmark-all-here
-
-Unmarks all the highlighted item(s) in the current directory.
-
-** unmark-all
-
-Unmark all the marks everywhere.
-
-Default keybinding: =S-u=
-
-** chmod
-
-Change the permission of the highlighted item(s) using three digit numbers
-
-Example: 777, 666, 000 etc.
-
-** toggle-mark
-
-Toggle the mark of the highlighted item(s).
+Toggle the mark of the current item.
 
 Default keybinding: =SPC=
 
-** rename
+*** mark-all
 
-Rename the highlighted item(s).
+Marks all the items in the current directory.
+
+Default keybinding: =C-a=
+
+*** mark-inverse
+
+Inverses the marks in the current directory.
+
+Default keybinding: =S-SPC=
+
+** Unmarking Item
+
+*** unmark
+
+Unmarks the current item.
+
+*** unmark-local
+
+=unmark= for *Local Marks*
+
+Default keybinding: =S-u=
+
+*** unmark-global
+
+=unmark= for *Global Marks*
+
+Default keybinding: =C-S-u=
+
+** Change Permission
+
+*** chmod
+
+Change the permission of the current item using three digit numbers
+
+Example: 777, 666, 000 etc.
+
+*** chmod-local
+
+Similar to =chmod= for *Local Marks*
+
+*** chmod-global
+
+Similar to =chmod= for *Global Marks*
+
+
+** Renaming Files
+
+*NOTE: Renaming more than one item leads to /bulk renaming/. This is where a text editor of your choice (set it in the configuration) opens up a temporary "rename file" and enables you to rename all the marked files once you save and close the said "rename file"*
+
+*** rename
+
+Rename the highlighted item.
 
 Default keybinding: =S-r=
 
-** cut
+*** rename-local
 
-Cut (prepare for moving) the highlighted item(s).
+=rename= for *Local Marks*
+
+*** rename-global
+
+=rename= for *Global Marks*
+
+** Cutting Files
+
+*** cut
+
+Cut (prepare for moving) the current item.
 
 Default keybinding: =C-x=
 
-** copy
+*** cut-local
 
-Copy the highlighted item(s).
+=cut= for *Local Marks*
+
+*** cut-global
+
+=cut= for *Global Marks*
+
+** Copying Files
+
+*** copy
+
+Copy the current item.
 
 Default keybinding: =C-c=
 
-** paste
+*** copy-local
 
-Paste (Move) the highlighted item(s).
+=copy= for *Local Marks*
+
+*** copy-global
+
+=copy= for *Global Marks*
+
+** Pasting (Moving) Files
+
+*** paste
+
+Paste (Move) the current item.
 
 Default keybinding: =p=
 
-** delete
+** Deleting Files
+
+*** delete
 
 Delete the highlighted items(s).
 
 *WARNING: Please be careful when using this command, this does not trash the items, it directly deletes them. If you want to trash use the =trash= command*
 
-** trash
+Default keybinding: =S-d=
 
-Trash the highlighted item(s).
+*** delete-local
 
-** messages
+=delete= for *Local Marks*
 
-Opens the messages list.
+*** delete-global
+
+=delete= for *Global Marks*
+
+** Trashing Files
+
+*** trash
+
+Trash the current item.
+
+Default keybinding: =S-t=
+
+*** trash-local
+
+=trash= for *Local Marks*
+
+Default keybinding: =S-t=
+
+*** trash-global
+
+=trash= for *Global Marks*
+
+Default keybinding: =S-t=
 
 ** filter
 
@@ -143,7 +243,7 @@ Force refresh the current directory.
 
 *NOTE: By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.*
 
-** toggle-hidden-files
+** hidden-files
 
 Toggles the hidden files.
 
@@ -151,7 +251,21 @@ Default keybinding: =C-h=
 
 NOTE: Hidden files are those items whose name start with a period like =.config=, =.gitignore= etc.
 
-** toggle-preview-pane
+** Panes
+
+*** bookmark-pane
+
+Opens the bookmarks list.
+
+*** marks-pane
+
+Opens the marks list.
+
+*** messages-pane
+
+Opens the messages list.
+
+*** preview-pane
 
 Toggles the preview pane.
 
@@ -159,18 +273,89 @@ Default keybinding: =C-p=
 
 The preview pane handles previewing images (good number of formats) and PDF documents (first page) =asynchronously=. This means that the previewing experience will be seamless and without any lag. Navi uses =ImageMagick= library under the hood for previewing images and therefore any image formats supported my ImageMagick is supported by Navi.
 
-** toggle-menu-bar
+** Misc
+
+*** menu-bar
 
 Toggles the menu bar.
 
 Default keybinding: =C-m=
 
-** focus-path
+*** focus-path
 
 Focuses the path widget and sets it in edit mode.
 
 Default keybinding: =C-l=
 
-** item-property
+*** item-property
 
 Display the property of the currently focused item.
+
+** Shell Commands
+
+*** TODO shell-command
+
+Run a shell command /synchronously/ (blocking).
+
+*NOTE: This blocks the main GUI thread until the command finished executing*
+
+*** TODO shell-command-async
+
+Run a shell command /asynchronously/ (non-blocking).
+
+The running commands can be seen in the =Task Widget=
+
+** Bookmarks
+
+*** bookmark-add
+
+Add a new non-existing bookmark
+
+*** bookmark-remove
+
+Remove an existing bookmark
+
+*** bookmark-edit
+
+Edit an existing bookmark
+
+**** Args:
+
+=title= - this tells Navi to edit the bookmark title
+=path= - this tells Navi to edit the bookmark directory that the bookmark points to
+
+*** bookmark-go
+
+Go to the directory pointed by the bookmark
+
+**** Args:
+
+=bookmark-name= - a unique bookmark name
+
+*** bookmark-save
+
+Save the bookmarks that have been added.
+
+*NOTE: Saving of the bookmarks added is done when the application exits. If you feel insecure about losing your bookmarks, then you can run this command manually.*
+
+** Searching Items
+
+Searching is *Regular Expression* enabled. So you can pinpoint exactly the file that you want to look for.
+
+*** search
+
+Searches the current directory for the search term
+
+Default Keybinding: =/=
+
+*** search-next
+
+Goes to the next best match for the search term
+
+Default Keybinding: =n=
+
+*** search-prev
+
+Goes to the previous best match for the search term
+
+Default Keybinding: =S-n=
