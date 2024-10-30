@@ -1,25 +1,28 @@
-#+TITLE: TODOs for Navi
 
-1. [X] List contents of directory
-2. [X] Vim bindings for navigation
-3. [X] Menubar
-   - [X] File Menu
-   - [X] Edit Menu
-   - [X] View Menu
-   - [X] Tools Menu
-4. [X] Minibuffer (statusbar)
-   - [X] Commands
-5. [X] Async File Preview
-6. [X] Focus first file after loading a directory
-7. [X] Regex Search
-8. [-] Operations
-   - [X] Rename
-   - [X] Copy
-   - [X] Cut
-   - [X] Paste
-   - [X] Delete
-   - [ ] Trash
-9. [X] Bulk Operations
+# Table of Contents
+
+
+
+1.  [X] List contents of directory
+2.  [X] Vim bindings for navigation
+3.  [X] Menubar
+    -   [X] File Menu
+    -   [X] Edit Menu
+    -   [X] View Menu
+    -   [X] Tools Menu
+4.  [X] Minibuffer (statusbar)
+    -   [X] Commands
+5.  [X] Async File Preview
+6.  [X] Focus first file after loading a directory
+7.  [X] Regex Search
+8.  [-] Operations
+    -   [X] Rename
+    -   [X] Copy
+    -   [X] Cut
+    -   [X] Paste
+    -   [X] Delete
+    -   [ ] Trash
+9.  [X] Bulk Operations
 10. [X] File Permission
 11. [X] Chmod
 12. [X] Messages Buffer (Pane)
@@ -31,20 +34,20 @@
 18. [X] Result class
 19. [X] Use ImageMagick for image previews
 20. [-] Preview
-    - [X] Image
-    - [X] Documents
-    - [ ] Syntax highlighting for the text document preview
+    -   [X] Image
+    -   [X] Documents
+    -   [ ] Syntax highlighting for the text document preview
 21. [ ] Lua Integration for configuration
 22. [ ] Wonky file completion in the file path widget when "~" is present
 23. [-] Bookmarks
-    - [X] Add
-    - [X] Remove
-    - [X] Edit Title
-    - [X] Edit pointing file
-    - [ ] List
-    - [X] go to bookmark
-    - [ ] Load bookmarks from file
-    - [ ] Save bookmarks to file
+    -   [X] Add
+    -   [X] Remove
+    -   [X] Edit Title
+    -   [X] Edit pointing file
+    -   [ ] List
+    -   [X] go to bookmark
+    -   [ ] Load bookmarks from file
+    -   [ ] Save bookmarks to file
 24. [X] Icons
 25. [X] Total number of items
 26. [ ] Dual Pane
@@ -59,3 +62,4 @@
 35. [ ] Shell commands
 36. [X] Bulk rename editor multiple spawn bug
 37. [ ] Bookmark file ignore comments and empty lines
+
