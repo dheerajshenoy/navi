@@ -3,63 +3,61 @@
 
 
 
-1.  [X] List contents of directory
-2.  [X] Vim bindings for navigation
-3.  [X] Menubar
-    -   [X] File Menu
-    -   [X] Edit Menu
-    -   [X] View Menu
-    -   [X] Tools Menu
-4.  [X] Minibuffer (statusbar)
-    -   [X] Commands
-5.  [X] Async File Preview
-6.  [X] Focus first file after loading a directory
-7.  [X] Regex Search
-8.  [-] Operations
-    -   [X] Rename
-    -   [X] Copy
-    -   [X] Cut
-    -   [X] Paste
-    -   [X] Delete
-    -   [ ] Trash
-9.  [X] Bulk Operations
-10. [X] File Permission
-11. [X] Chmod
-12. [X] Messages Buffer (Pane)
-13. [X] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
-14. [X] Drag event
-15. [X] Drop event
-16. [X] Fix CHMOD errors
-17. [X] Terminal at point
-18. [X] Result class
-19. [X] Use ImageMagick for image previews
-20. [-] Preview
-    -   [X] Image
-    -   [X] Documents
-    -   [ ] Syntax highlighting for the text document preview
-21. [ ] Lua Integration for configuration
-22. [ ] Wonky file completion in the file path widget when "~" is present
-23. [-] Bookmarks
-    -   [X] Add
-    -   [X] Remove
-    -   [X] Edit Title
-    -   [X] Edit pointing file
-    -   [ ] List
-    -   [X] go to bookmark
-    -   [ ] Load bookmarks from file
-    -   [ ] Save bookmarks to file
-24. [X] Icons
-25. [X] Total number of items
-26. [ ] Dual Pane
-27. [X] FileWatcher
-28. [X] Add file operation cancel UI
-29. [ ] Select renamed file after renaming
-30. [X] Rename consider only marks here and not the global marks by default
-31. [ ] Undo Operations
-32. [ ] Show search match count
-33. [X] Mouse scroll for folder
-34. [ ] Search bug
-35. [ ] Shell commands
-36. [X] Bulk rename editor multiple spawn bug
-37. [ ] Bookmark file ignore comments and empty lines
-
+- [X] List contents of directory
+- [X] Vim bindings for navigation
+- [X] Menubar
+  - [X] File Menu
+  - [X] Edit Menu
+  - [X] View Menu
+  - [X] Tools Menu
+- [X] Minibuffer (statusbar)
+- [X] Commands
+- [X] Async File Preview
+- [X] Focus first file after loading a directory
+- [X] Regex Search
+- [ ] Operations
+  - [X] Rename
+  - [X] Copy
+  - [X] Cut
+  - [X] Paste
+  - [X] Delete
+  - [ ] Trash
+- [X] Bulk Operations
+- [X] File Permission Display
+- [X] Chmod
+- [X] Messages Buffer (Pane)
+- [X] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
+- [X] Drag event
+- [X] Drop event
+- [X] Fix CHMOD errors
+- [X] Terminal at point
+- [X] Use ImageMagick for image previews
+- [-] Preview
+  - [X] Image
+  - [X] Documents
+  - [ ] Syntax highlighting for the text document preview
+- [ ] Lua Integration for configuration
+- [ ] Wonky file completion in the file path widget when "~" is present
+- [-] Bookmarks
+  - [X] Add
+  - [X] Remove
+  - [X] Edit Title
+  - [X] Edit pointing file
+  - [ ] List
+  - [X] go to bookmark
+  - [ ] Load bookmarks from file
+  - [ ] Save bookmarks to file
+- [X] Icons
+- [X] Total number of items
+- [ ] Dual Pane
+- [X] FileWatcher
+- [ ] Add file operation cancel UI
+- [ ] Select renamed file after renaming
+- [X] Rename consider only marks here and not the global marks by default
+- [ ] Undo Operations
+- [ ] Show search match count
+- [X] Mouse scroll for folder
+- [X] Search bug
+- [ ] Shell commands
+- [X] Bulk rename editor multiple spawn bug
+- [ ] Bookmark file ignore comments and empty lines

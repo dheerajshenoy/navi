@@ -562,7 +562,7 @@ Remove an existing bookmark
 
 Edit an existing bookmark
 
-1.  Args:
+- Args:
 
     `title` - this tells Navi to edit the bookmark title
     `path` - this tells Navi to edit the bookmark directory that the bookmark points to
@@ -574,7 +574,7 @@ Edit an existing bookmark
 
 Go to the directory pointed by the bookmark
 
-1.  Args:
+- Args:
 
     `bookmark-name` - a unique bookmark name
 
