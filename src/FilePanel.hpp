@@ -31,11 +31,18 @@
 #include "FilePropertyWidget.hpp"
 #include "Statusbar.hpp"
 
+
 class FilePanel : public QWidget {
     Q_OBJECT
 public:
     FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
+
+    enum class SortBy {
+        Name,
+        Size,
+        Date
+    };
 
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
     QString getCurrentDir() noexcept;
@@ -74,7 +81,7 @@ public:
     Result<bool> TrashItemsLocal() noexcept;
     Result<bool> TrashItemsGlobal() noexcept;
     void ToggleHiddenFiles() noexcept;
-    void Search(QString &searchText = 0) noexcept;
+    void Search(QString searchText = "") noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
     void Filters(const QString &filterString) noexcept;
@@ -90,6 +97,7 @@ public:
     void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
+    void SortItems(SortBy sortMethod) noexcept;
 
 signals:
     void afterDirChange(QString path);

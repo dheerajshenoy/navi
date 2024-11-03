@@ -373,15 +373,18 @@ void FilePanel::UnmarkItemsGlobal() noexcept {
 
 void FilePanel::UnmarkItemsLocal() noexcept {
   if (m_model->hasMarksLocal()) {
-    QString confirm =
-        m_inputbar->getInput("Do you want to clear %1 local marks ? (y/N)")
-            .toLower();
-    if (confirm == "y")
-      m_model->clearMarkedFilesListLocal();
-    else
-      m_statusbar->Message("Unmark cancelled");
+    // auto nMarks = m_model->getMarkedFilesCountLocal();
+    // QString confirm =
+    //     m_inputbar
+    //         ->getInput(QString("Do you want to clear %1 local marks ? (y/N)")
+    //                        .arg(nMarks))
+    //         .toLower();
+    // if (confirm == "y")
+    m_model->clearMarkedFilesListLocal();
+    // else
+    //   m_statusbar->Message("Unmark cancelled", MessageType::WARNING);
   } else
-    m_statusbar->Message("No local marks found");
+    m_statusbar->Message("No local marks found", MessageType::WARNING);
 }
 
 void FilePanel::GotoFirstItem() noexcept {
@@ -737,18 +740,18 @@ void FilePanel::ToggleHiddenFiles() noexcept {
   ForceUpdate();
 }
 
-void FilePanel::Search(QString &searchExpression) noexcept {
-    if (searchExpression.isNull() || searchExpression.isEmpty())
-        searchExpression = m_inputbar->getInput("Search", m_search_text);
-    m_search_index_list =
-        m_model->match(m_model->index(0, 0), Qt::DisplayRole, searchExpression,
-                       -1, Qt::MatchRegularExpression);
-    if (m_search_index_list.isEmpty())
-        return;
-    m_table_view->setCurrentIndex(m_search_index_list.at(0));
-    m_search_index_list_index = 0;
-    m_search_new_directory = false;
-    m_search_text = searchExpression;
+void FilePanel::Search(QString searchExpression) noexcept {
+  if (searchExpression.isNull() || searchExpression.isEmpty())
+      searchExpression = m_inputbar->getInput("Search", m_search_text, m_search_text);
+  m_search_index_list =
+      m_model->match(m_model->index(0, 0), Qt::DisplayRole, searchExpression,
+                     -1, Qt::MatchRegularExpression);
+  if (m_search_index_list.isEmpty())
+    return;
+  m_table_view->setCurrentIndex(m_search_index_list.at(0));
+  m_search_index_list_index = 0;
+  m_search_new_directory = false;
+  m_search_text = searchExpression;
 }
 
 void FilePanel::SearchNext() noexcept {
@@ -761,8 +764,10 @@ void FilePanel::SearchNext() noexcept {
     return;
 
   m_search_index_list_index++;
-  if (m_search_index_list_index > m_search_index_list.size() - 1)
-    m_search_index_list_index = 0;
+  if (m_search_index_list_index > m_search_index_list.size() - 1) {
+      m_search_index_list_index = 0;
+      m_statusbar->Message("Search reached BOTTOM of the directory");
+  }
 
   m_table_view->setCurrentIndex(
       m_search_index_list.at(m_search_index_list_index));
@@ -779,10 +784,11 @@ void FilePanel::SearchPrev() noexcept {
     return;
 
   m_search_index_list_index--;
-  if (m_search_index_list_index < 0)
-    m_search_index_list_index = m_search_index_list.size() - 1;
-  m_table_view->setCurrentIndex(
-      m_search_index_list.at(m_search_index_list_index));
+  if (m_search_index_list_index < 0) {
+      m_search_index_list_index = m_search_index_list.size() - 1;
+      m_table_view->setCurrentIndex(m_search_index_list.at(m_search_index_list_index));
+      m_statusbar->Message("Search reached TOP of the directory");
+  }
 }
 
 void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
@@ -1064,7 +1070,12 @@ void FilePanel::dragRequested() noexcept {
 
   auto indexes = m_table_view->selectionModel()->selectedIndexes();
   auto filePathList = m_model->getFilePathsFromIndexList(indexes);
-  QList<QUrl> urls = QUrl::fromStringList(filePathList);
+  QList<QUrl> urls;
+  urls.reserve(filePathList.size());
+
+  for (const auto &filePath : filePathList)
+      urls.append(QUrl::fromLocalFile(filePath));
+
   mimeData->setUrls(urls);
   drag->setMimeData(mimeData);
 
@@ -1080,4 +1091,20 @@ void FilePanel::dragRequested() noexcept {
     dropAction = drag->exec(Qt::MoveAction);
     break;
   }
+}
+
+void FilePanel::SortItems(SortBy sortMethod) noexcept {
+    switch(sortMethod) {
+    case SortBy::Name:
+        m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileName));
+        break;
+
+    case SortBy::Date:
+        m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileModifiedDate));
+        break;
+
+    case SortBy::Size:
+        m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileSize));
+        break;
+    }
 }

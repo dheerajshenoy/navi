@@ -9,8 +9,8 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
 
     horizontalHeader()->setStretchLastSection(true);
     // horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
-    setFrameShadow(QTableView::Shadow::Plain);
-    setFrameStyle(0);
+//setFrameShadow(QTableView::Shadow::Plain);
+    //setFrameStyle(0);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     horizontalHeader()->setHidden(true);

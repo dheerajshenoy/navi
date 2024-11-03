@@ -11,6 +11,9 @@ bool BookmarkManager::loadBookmarks(const QString &filePath) noexcept {
     QTextStream in(&bookmarkFile);
     while (!in.atEnd()) {
         QString line = in.readLine();
+        if (line.startsWith("#") || line.isEmpty())
+            continue;
+
         QStringList bookmarkItem = line.split(QRegularExpression("\\s*,\\s*"), Qt::SkipEmptyParts);
         m_bookmarks_hash[bookmarkItem.at(0)] = bookmarkItem.at(1);
     }

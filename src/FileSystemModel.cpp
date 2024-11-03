@@ -1,5 +1,4 @@
 #include "FileSystemModel.hpp"
-#include <qnamespace.h>
 
 FileSystemModel::FileSystemModel(QObject *parent)
     : QAbstractTableModel(parent) {
@@ -19,6 +18,8 @@ void FileSystemModel::initDefaults() noexcept {
 void FileSystemModel::clearMarkedFilesListLocal() noexcept {
     auto marksHere = getMarkedFilesLocal();
     for (const auto &file : marksHere) {
+        QModelIndex index = getIndexFromString(file);
+        setData(index, false, static_cast<int>(Role::Marked));
         m_markedFiles.remove(file);
     }
     emit marksListChanged();
@@ -37,7 +38,6 @@ void FileSystemModel::setRootPath(const QString &path) noexcept {
     m_root_path = path;
     loadDirectory(path);
     m_file_system_watcher->addPath(path);
-    // TODO: handle bool from this statement
 }
 
 QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
@@ -381,4 +381,27 @@ QStringList FileSystemModel::getMarkedFiles() noexcept {
         return QStringList();
 
     return QStringList(m_markedFiles.cbegin(), m_markedFiles.cend());
+}
+
+void FileSystemModel::sort(int column, Qt::SortOrder order) {
+  std::sort(m_fileInfoList.begin(), m_fileInfoList.end(),
+            [column, order](QFileInfo a, QFileInfo b) {
+              bool result;
+              switch (column) {
+              case static_cast<int>(ColumnType::FileName): // Name
+                result = a.fileName() < b.fileName();
+                break;
+              case static_cast<int>(ColumnType::FileSize): // Size
+                result = a.size() < b.size();
+                break;
+              case static_cast<int>(ColumnType::FileModifiedDate): // Modified Date
+                result = a.lastModified() < b.lastModified();
+                break;
+              default:
+                return false;
+              }
+              return order == Qt::AscendingOrder ? result : !result;
+            });
+
+  emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
 }

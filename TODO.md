@@ -1,8 +1,6 @@
 
 # Table of Contents
 
-
-
 - [X] List contents of directory
 - [X] Vim bindings for navigation
 - [X] Menubar
@@ -61,3 +59,7 @@
 - [ ] Shell commands
 - [X] Bulk rename editor multiple spawn bug
 - [ ] Bookmark file ignore comments and empty lines
+- [X] Sort
+  - [X] Size
+  - [X] Name
+  - [X] Modified Date

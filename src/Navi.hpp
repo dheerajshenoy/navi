@@ -18,6 +18,18 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QRegularExpression>
+#include <QStandardPaths>
+#include <QDebug>
+#include <QStringView>
+#include "sol/sol.hpp"
+
+// Config related things
+static const QString APP_NAME = "navi";
+static const QString CONFIG_DIR_PATH =
+    QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) +
+    QDir::separator() + APP_NAME;
+static const QString CONFIG_FILE_NAME = "config.lua";
+static const QString CONFIG_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + CONFIG_FILE_NAME;
 
 // Local includes
 #include "FilePathWidget.hpp"
@@ -96,6 +108,7 @@ public:
     void SaveBookmarkFile() noexcept;
 
 private:
+    void initConfiguration() noexcept;
     void chmodHelper() noexcept;
     void initBookmarks() noexcept;
     void initLayout() noexcept;
@@ -131,6 +144,11 @@ private:
     QAction *m_viewmenu__messages = nullptr;
     QAction *m_viewmenu__marks_buffer = nullptr;
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
+    QMenu *m_viewmenu__sort_menu = nullptr;
+    QAction *m_viewmenu__sort_by_name = nullptr;
+    QAction *m_viewmenu__sort_by_size = nullptr;
+    QAction *m_viewmenu__sort_by_date = nullptr;
+    QAction *m_viewmenu__sort_ascending = nullptr;
 
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
@@ -244,4 +262,6 @@ private:
 
     BookmarkManager *m_bookmark_manager = nullptr;
     BookmarkWidget *m_bookmarks_buffer = nullptr;
+
+    sol::state lua;
 };

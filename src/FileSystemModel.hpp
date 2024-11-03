@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <QAbstractTableModel>
 #include <QDir>
 #include <QFile>
@@ -14,14 +15,18 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QFileIconProvider>
-#include <qfilesystemwatcher.h>
 
 #include "utils.hpp"
+
+enum class SortColumn {
+    Size,
+    Name,
+    Date,
+};
 
 enum class Role {
   Marked = Qt::UserRole + 1,
 };
-
 
 class FileSystemModel : public QAbstractTableModel {
     Q_OBJECT
@@ -36,7 +41,6 @@ public:
       FileModifiedDate,
       FilePermission,
     };
-
 
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
@@ -99,6 +103,8 @@ public:
     QString getPathFromRow(const int &row) const noexcept {
         return rootPath() + QDir::separator() + getStringFromRow(row);
     }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
 
     signals:
     void directoryLoaded(const QString &path);

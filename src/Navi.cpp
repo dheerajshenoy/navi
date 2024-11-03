@@ -1,5 +1,4 @@
 #include "Navi.hpp"
-#include <qnamespace.h>
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {
 
@@ -10,6 +9,27 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {
   setupCommandMap();
   initBookmarks();
   setCurrentDir("~"); // set the current directory
+    qDebug() << CONFIG_DIR_PATH;
+}
+
+void Navi::initConfiguration() noexcept {
+
+    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
+
+    sol::optional<sol::object> lua_file_read =
+        lua.safe_script_file(CONFIG_DIR_PATH.toStdString());
+
+    // Don’t process if the config file does not exist
+    if (!lua_file_read.has_value())
+        return;
+
+    // Read the SETTINGS table
+    sol::optional<sol::table> settings_table_opt = lua.get<sol::table>("settings");
+
+    if (settings_table_opt.has_value()) {
+        // sol::table settings_table = settings_
+        // auto preview_pane = sett
+    }
 }
 
 void Navi::initBookmarks() noexcept {
@@ -60,13 +80,13 @@ void Navi::ShowHelp() noexcept {}
 void Navi::setupCommandMap() noexcept {
 
   commandMap["rename"] = [this](const QStringList &args) {
-      m_file_panel->RenameItem();
+    m_file_panel->RenameItem();
   };
   commandMap["rename-global"] = [this](const QStringList &args) {
-      m_file_panel->RenameItemsGlobal();
+    m_file_panel->RenameItemsGlobal();
   };
   commandMap["rename-local"] = [this](const QStringList &args) {
-      m_file_panel->RenameItemsLocal();
+    m_file_panel->RenameItemsLocal();
   };
 
   commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
@@ -126,11 +146,11 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["unmark-local"] = [this](const QStringList &args) {
-      m_file_panel->UnmarkItemsLocal();
+    m_file_panel->UnmarkItemsLocal();
   };
 
   commandMap["unmark-global"] = [this](const QStringList &args) {
-      m_file_panel->UnmarkItemsGlobal();
+    m_file_panel->UnmarkItemsGlobal();
   };
 
   commandMap["new-file"] = [this](const QStringList &args) {
@@ -223,8 +243,12 @@ void Navi::setupCommandMap() noexcept {
     SaveBookmarkFile();
   };
 
-  commandMap["search"] = [&](const QStringList &args) { m_file_panel->Search(); };
-  commandMap["search-next"] = [&](const QStringList &args) { m_file_panel->SearchNext(); };
+  commandMap["search"] = [&](const QStringList &args) {
+    m_file_panel->Search();
+  };
+  commandMap["search-next"] = [&](const QStringList &args) {
+    m_file_panel->SearchNext();
+  };
   commandMap["search-prev"] = [&](const QStringList &args) {
     m_file_panel->SearchPrev();
   };
@@ -418,7 +442,7 @@ void Navi::ToggleMarksBuffer(const bool &state) noexcept {
 
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
-    // QStringList commandlist = commandtext.split(" && ");
+  // QStringList commandlist = commandtext.split(" && ");
   QStringList commandlist =
       commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
 
@@ -435,9 +459,9 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
   // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
 
   for (const auto &commands : commandlist) {
-      QStringList command = utils::splitPreservingQuotes(commands);
-      QString subcommand = command.takeFirst();
-      QStringList args = command;
+    QStringList command = utils::splitPreservingQuotes(commands);
+    QString subcommand = command.takeFirst();
+    QStringList args = command;
 
     if (commandMap.contains(subcommand)) {
       commandMap[subcommand](args); // Call the associated function
@@ -523,7 +547,11 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_select_item = new QShortcut(QKeySequence("l"), this);
   QShortcut *kb_goto_first_item = new QShortcut(QKeySequence("g,g"), this);
   QShortcut *kb_goto_last_item = new QShortcut(QKeySequence("Shift+g"), this);
+
   QShortcut *kb_mark_item = new QShortcut(QKeySequence("Space"), this);
+  QShortcut *kb_mark_inverse = new QShortcut(QKeySequence("Shift+Space"), this);
+  QShortcut *kb_mark_all = new QShortcut(QKeySequence("Ctrl+a"), this);
+
   QShortcut *kb_command = new QShortcut(QKeySequence(":"), this);
   QShortcut *kb_rename_items = new QShortcut(QKeySequence("Shift+r"), this);
   QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
@@ -542,6 +570,13 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_focus_file_path_widget =
       new QShortcut(QKeySequence("Ctrl+l"), this);
 
+  connect(kb_mark_item, &QShortcut::activated, m_file_panel,
+          &FilePanel::ToggleMarkItem);
+  connect(kb_mark_inverse, &QShortcut::activated, m_file_panel,
+          &FilePanel::MarkInverse);
+  connect(kb_mark_all, &QShortcut::activated, m_file_panel,
+          &FilePanel::MarkAllItems);
+
   connect(kb_next_item, &QShortcut::activated, m_file_panel,
           &FilePanel::NextItem);
   connect(kb_prev_item, &QShortcut::activated, m_file_panel,
@@ -554,17 +589,19 @@ void Navi::initKeybinds() noexcept {
           &FilePanel::GotoLastItem);
   connect(kb_goto_first_item, &QShortcut::activated, m_file_panel,
           &FilePanel::GotoFirstItem);
-  connect(kb_mark_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::ToggleMarkItem);
   connect(kb_command, &QShortcut::activated, this,
           &Navi::ExecuteExtendedCommand);
   connect(kb_rename_items, &QShortcut::activated, this,
           [&]() { m_file_panel->RenameItem(); });
   connect(kb_delete_items, &QShortcut::activated, this,
           [&]() { m_file_panel->DeleteItem(); });
-  connect(kb_search, &QShortcut::activated, m_file_panel, &FilePanel::Search);
-  connect(kb_search_next, &QShortcut::activated, m_file_panel, &FilePanel::SearchNext);
-  connect(kb_search_prev, &QShortcut::activated, m_file_panel, &FilePanel::SearchPrev);
+  connect(kb_search, &QShortcut::activated, m_file_panel, [&]() {
+      m_file_panel->Search();
+  });
+  connect(kb_search_next, &QShortcut::activated, m_file_panel,
+          &FilePanel::SearchNext);
+  connect(kb_search_prev, &QShortcut::activated, m_file_panel,
+          &FilePanel::SearchPrev);
   connect(kb_toggle_menubar, &QShortcut::activated, this,
           [this]() { ToggleMenuBar(); });
 
@@ -610,12 +647,12 @@ void Navi::TrashItems(const CommandScope &scope) noexcept {
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-    // m_minibuffer->ExecuteCommand();
-    m_inputbar->enableCommandCompletions();
-    QString command = m_inputbar->getInput("Command");
-    ProcessCommand(command);
-    m_inputbar->disableCommandCompletions();
-    // m_file_panel->setFocus();
+  // m_minibuffer->ExecuteCommand();
+  m_inputbar->enableCommandCompletions();
+  QString command = m_inputbar->getInput("Command");
+  ProcessCommand(command);
+  m_inputbar->disableCommandCompletions();
+  // m_file_panel->setFocus();
 }
 
 void Navi::initMenubar() noexcept {
@@ -655,6 +692,20 @@ void Navi::initMenubar() noexcept {
 
   m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
   m_viewmenu__bookmarks_buffer->setCheckable(true);
+
+  m_viewmenu__sort_menu = new QMenu("Sort by");
+  m_viewmenu__sort_by_name = new QAction("Name");
+  m_viewmenu__sort_by_size = new QAction("Size");
+  m_viewmenu__sort_by_date = new QAction("Modified Date");
+  m_viewmenu__sort_ascending = new QAction("Ascending");
+  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_name);
+  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_size);
+  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_date);
+  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_ascending);
+  m_viewmenu->addMenu(m_viewmenu__sort_menu);
+
+  m_viewmenu__sort_ascending->setCheckable(true);
+  m_viewmenu__sort_ascending->setChecked(true);
 
   m_viewmenu__files_menu = new QMenu("Files");
 
@@ -702,6 +753,18 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
+  connect(m_viewmenu__sort_by_name, &QAction::triggered, this, [&]() {
+      m_file_panel->SortItems(FilePanel::SortBy::Name);
+  });
+
+  connect(m_viewmenu__sort_by_date, &QAction::triggered, this, [&]() {
+      m_file_panel->SortItems(FilePanel::SortBy::Date);
+  });
+
+  connect(m_viewmenu__sort_by_size, &QAction::triggered, this, [&]() {
+      m_file_panel->SortItems(FilePanel::SortBy::Size);
+  });
+
   connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
           [&](const bool &state) { ToggleMarksBuffer(state); });
 
@@ -720,7 +783,8 @@ void Navi::initMenubar() noexcept {
   connect(m_filemenu__create_new_folder, &QAction::triggered, this,
           [&]() { m_file_panel->NewFolder(); });
 
-  connect(m_tools_menu__search, &QAction::triggered, this, [&]() { m_file_panel->Search(); });
+  connect(m_tools_menu__search, &QAction::triggered, this,
+          [&]() { m_file_panel->Search(); });
 
   connect(m_viewmenu__files_menu__hidden, &QAction::triggered, m_file_panel,
           &FilePanel::ToggleHiddenFiles);

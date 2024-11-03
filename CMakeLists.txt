@@ -22,6 +22,7 @@ add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 find_package(Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
+find_package(Lua REQUIRED)
 
 qt_standard_project_setup()
 # define an executable built from a source file
@@ -49,10 +50,10 @@ qt_add_executable(${PROJECT_NAME}
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-python)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-python ${LUA_LIBRARIES})
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
 
 add_custom_target(run
     COMMAND Navi
