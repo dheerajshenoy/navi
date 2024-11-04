@@ -753,16 +753,25 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
+
+  connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
+          [&](const bool &state) {
+              if (state)
+                  m_sort_order = Qt::SortOrder::AscendingOrder;
+              else
+                  m_sort_order = Qt::SortOrder::DescendingOrder;
+          });
+
   connect(m_viewmenu__sort_by_name, &QAction::triggered, this, [&]() {
-      m_file_panel->SortItems(FilePanel::SortBy::Name);
+      m_file_panel->SortItems(FilePanel::SortBy::Name, m_sort_order);
   });
 
   connect(m_viewmenu__sort_by_date, &QAction::triggered, this, [&]() {
-      m_file_panel->SortItems(FilePanel::SortBy::Date);
+      m_file_panel->SortItems(FilePanel::SortBy::Date, m_sort_order);
   });
 
   connect(m_viewmenu__sort_by_size, &QAction::triggered, this, [&]() {
-      m_file_panel->SortItems(FilePanel::SortBy::Size);
+      m_file_panel->SortItems(FilePanel::SortBy::Size, m_sort_order);
   });
 
   connect(m_viewmenu__marks_buffer, &QAction::triggered, this,

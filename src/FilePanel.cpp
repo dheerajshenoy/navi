@@ -1,5 +1,6 @@
 #include "FilePanel.hpp"
 #include "FileWorker.hpp"
+#include <qnamespace.h>
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
     : m_inputbar(inputBar), m_statusbar(statusBar), QWidget(parent) {
@@ -402,7 +403,7 @@ void FilePanel::GotoItem(const uint &itemNum) noexcept {
     m_table_view->setCurrentIndex(m_model->index(itemNum, 0));
 }
 
-Result<bool> FilePanel::TrashItem() noexcept {
+void FilePanel::TrashItem() noexcept {
   // TODO: trash items
   // current selection single rename
   const QString &filePath = getCurrentItem();
@@ -410,16 +411,43 @@ Result<bool> FilePanel::TrashItem() noexcept {
   bool state = QFile::moveToTrash(filePath);
   if (state) {
     m_model->removeMarkedFile(filePath);
-    return Result(state, QString("Trashed item %1 successfully!")
+    m_statusbar->Message(QString("Trashed item %1 successfully!")
                              .arg(QFileInfo(filePath).fileName()));
-  }
-
-  return Result(state);
+  } else
+    m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
 }
 
-Result<bool> FilePanel::TrashItemsLocal() noexcept { return Result(true); }
+void FilePanel::TrashItemsLocal() noexcept {
+  auto localMarkFiles = m_model->getMarkedFilesLocal();
+  if (localMarkFiles.size() == 0) {
+    m_statusbar->Message("No local marks found", MessageType::WARNING);
+    return;
+  }
 
-Result<bool> FilePanel::TrashItemsGlobal() noexcept { return Result(true); }
+  for (const auto &file : localMarkFiles) {
+    if (QFile::moveToTrash(file))
+      m_statusbar->Message("Error trashing %1", MessageType::ERROR);
+    else
+      m_statusbar->Message("Trashed %1 successfully");
+  }
+}
+
+void FilePanel::TrashItemsGlobal() noexcept {
+
+  auto markFiles = m_model->getMarkedFiles();
+  if (markFiles.size() == 0) {
+    m_statusbar->Message("No marks found", MessageType::WARNING);
+    return;
+  }
+
+  for (const auto &file : markFiles) {
+    if (QFile::moveToTrash(file))
+      m_statusbar->Message("Error trashing %1", MessageType::ERROR);
+    else
+      m_statusbar->Message("Trashed %1 successfully");
+  }
+}
 
 void FilePanel::Filters(const QString &filterString) noexcept {
   QStringList filterStringList = filterString.split(" ");
@@ -742,7 +770,8 @@ void FilePanel::ToggleHiddenFiles() noexcept {
 
 void FilePanel::Search(QString searchExpression) noexcept {
   if (searchExpression.isNull() || searchExpression.isEmpty())
-      searchExpression = m_inputbar->getInput("Search", m_search_text, m_search_text);
+    searchExpression =
+        m_inputbar->getInput("Search", m_search_text, m_search_text);
   m_search_index_list =
       m_model->match(m_model->index(0, 0), Qt::DisplayRole, searchExpression,
                      -1, Qt::MatchRegularExpression);
@@ -765,8 +794,8 @@ void FilePanel::SearchNext() noexcept {
 
   m_search_index_list_index++;
   if (m_search_index_list_index > m_search_index_list.size() - 1) {
-      m_search_index_list_index = 0;
-      m_statusbar->Message("Search reached BOTTOM of the directory");
+    m_search_index_list_index = 0;
+    m_statusbar->Message("Search reached BOTTOM of the directory");
   }
 
   m_table_view->setCurrentIndex(
@@ -785,9 +814,10 @@ void FilePanel::SearchPrev() noexcept {
 
   m_search_index_list_index--;
   if (m_search_index_list_index < 0) {
-      m_search_index_list_index = m_search_index_list.size() - 1;
-      m_table_view->setCurrentIndex(m_search_index_list.at(m_search_index_list_index));
-      m_statusbar->Message("Search reached TOP of the directory");
+    m_search_index_list_index = m_search_index_list.size() - 1;
+    m_table_view->setCurrentIndex(
+        m_search_index_list.at(m_search_index_list_index));
+    m_statusbar->Message("Search reached TOP of the directory");
   }
 }
 
@@ -1074,7 +1104,7 @@ void FilePanel::dragRequested() noexcept {
   urls.reserve(filePathList.size());
 
   for (const auto &filePath : filePathList)
-      urls.append(QUrl::fromLocalFile(filePath));
+    urls.append(QUrl::fromLocalFile(filePath));
 
   mimeData->setUrls(urls);
   drag->setMimeData(mimeData);
@@ -1093,18 +1123,23 @@ void FilePanel::dragRequested() noexcept {
   }
 }
 
-void FilePanel::SortItems(SortBy sortMethod) noexcept {
-    switch(sortMethod) {
-    case SortBy::Name:
-        m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileName));
-        break;
+void FilePanel::SortItems(SortBy sortMethod,
+                          const Qt::SortOrder &sortOrder) noexcept {
+  switch (sortMethod) {
+  case SortBy::Name:
+    m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileName),
+                  sortOrder);
+    break;
 
-    case SortBy::Date:
-        m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileModifiedDate));
-        break;
+  case SortBy::Date:
+    m_model->sort(
+        static_cast<int>(FileSystemModel::ColumnType::FileModifiedDate),
+        sortOrder);
+    break;
 
-    case SortBy::Size:
-        m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileSize));
-        break;
-    }
+  case SortBy::Size:
+    m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileSize),
+                  sortOrder);
+    break;
+  }
 }

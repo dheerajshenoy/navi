@@ -22,6 +22,7 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QApplication>
+#include <qnamespace.h>
 
 #include "Result.hpp"
 #include "FileSystemModel.hpp"
@@ -77,9 +78,9 @@ public:
     void DeleteItem() noexcept;
     void DeleteItemsLocal() noexcept;
     void DeleteItemsGlobal() noexcept;
-    Result<bool> TrashItem() noexcept;
-    Result<bool> TrashItemsLocal() noexcept;
-    Result<bool> TrashItemsGlobal() noexcept;
+    void TrashItem() noexcept;
+    void TrashItemsLocal() noexcept;
+    void TrashItemsGlobal() noexcept;
     void ToggleHiddenFiles() noexcept;
     void Search(QString searchText = "") noexcept;
     void SearchNext() noexcept;
@@ -97,7 +98,7 @@ public:
     void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
-    void SortItems(SortBy sortMethod) noexcept;
+    void SortItems(SortBy sortMethod, const Qt::SortOrder &sortOrder = Qt::SortOrder::AscendingOrder) noexcept;
 
 signals:
     void afterDirChange(QString path);

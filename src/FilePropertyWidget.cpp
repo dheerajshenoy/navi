@@ -37,5 +37,8 @@ FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
         m_layout->addRow("Mime Type", new QLabel(QMimeDatabase().mimeTypeForFile(filePath).name()));
     }
 
-        m_layout->addRow("Icon", iconLabel);
+    m_layout->addRow("Icon", iconLabel);
+    QPushButton *closeButton = new QPushButton("Close");
+    m_layout->add(closeButton);
+    connect(closeButton, &QPushButton::clicked, this, [&]() { this->close(); });
 }

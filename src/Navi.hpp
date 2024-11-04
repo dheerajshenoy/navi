@@ -263,5 +263,6 @@ private:
     BookmarkManager *m_bookmark_manager = nullptr;
     BookmarkWidget *m_bookmarks_buffer = nullptr;
 
+    Qt::SortOrder m_sort_order = Qt::SortOrder::AscendingOrder;
     sol::state lua;
 };
