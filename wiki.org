@@ -359,7 +359,7 @@ Copy and paste the following template config file into the configuration directo
 settings = {
     ui = {
         preview_pane = {
-            shown = false -- preview pane visibility
+            shown = false, -- preview pane visibility
         },
 
         menu_bar = {

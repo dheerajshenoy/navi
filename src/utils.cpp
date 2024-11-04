@@ -48,3 +48,51 @@ QStringList utils::splitPreservingQuotes(const QString& input) noexcept {
     }
     return result;
 }
+
+qint64 utils::parseFileSize(const QString& sizeStr) noexcept {
+    // Define the multipliers for each suffix
+    const qint64 KB = 1024;
+    const qint64 MB = KB * 1024;
+    const qint64 GB = MB * 1024;
+    const qint64 TB = GB * 1024;
+    const qint64 PB = TB * 1024;
+    const qint64 EB = PB * 1024;
+
+    // Regular expression to match the size format, e.g., "10M", "5G", "100K", "1T", "500B"
+    QRegularExpression regex(R"((\d+(?:\.\d*)?)\s*([KMGTP]?[B]?)?)", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = regex.match(sizeStr.trimmed());
+
+    // Check if the input matches the pattern
+    if (!match.hasMatch()) {
+        return -1; // Return an error value or handle invalid input as needed
+    }
+
+    // Extract the number part and the optional suffix
+    QString numberPart = match.captured(1);
+    QString suffix = match.captured(2).toUpper();
+
+    bool ok;
+    double value = numberPart.toDouble(&ok);
+    if (!ok) {
+        return -1; // Return an error if conversion fails
+    }
+
+    // Apply the multiplier based on the suffix
+    if (suffix == "K" || suffix == "KB") {
+        return static_cast<qint64>(value * KB);
+    } else if (suffix == "M" || suffix == "MB") {
+        return static_cast<qint64>(value * MB);
+    } else if (suffix == "G" || suffix == "GB") {
+        return static_cast<qint64>(value * GB);
+    } else if (suffix == "T" || suffix == "TB") {
+        return static_cast<qint64>(value * TB);
+    } else if (suffix == "P" || suffix == "PB") {
+        return static_cast<qint64>(value * PB);
+    } else if (suffix == "E" || suffix == "EB") {
+        return static_cast<qint64>(value * EB);
+    } else if (suffix == "" || suffix == "B") {
+        return static_cast<qint64>(value); // Assume bytes if no suffix or "B" suffix
+    }
+
+    return -1; // Return an error if the suffix is unrecognized
+}

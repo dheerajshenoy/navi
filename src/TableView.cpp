@@ -1,5 +1,4 @@
 #include "TableView.hpp"
-#include "TableHeaderView.hpp"
 
 TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDragEnabled(true);
@@ -15,6 +14,8 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 
+    HeaderProxyStyle *headerStyle = new HeaderProxyStyle();
+    this->verticalHeader()->setStyle(headerStyle);
 }
 
 TableView::~TableView() {}

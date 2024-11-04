@@ -2,7 +2,7 @@
 
 PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
-    this->setContentsMargins(0, 0, 0, 0);
+    // this->setContentsMargins(0, 0, 0, 0);
 
     m_img_preview_widget->setHidden(true);
     m_text_preview_widget->setHidden(true);
@@ -12,13 +12,14 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
     m_img_preview_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_text_preview_widget->setAcceptRichText(true);
     m_text_preview_widget->setReadOnly(true);
-    m_text_preview_widget->setFrameShadow(QTextEdit::Shadow::Plain);
-    m_text_preview_widget->setFrameStyle(0);
+    // m_text_preview_widget->setFrameShadow(QTextEdit::Shadow::Plain);
+    // m_text_preview_widget->setFrameStyle(0);
 
     m_worker = new FilePreviewWorker();
     m_workerThread = new QThread(this);
     m_worker->moveToThread(m_workerThread);
 
+    connect(m_worker, &FilePreviewWorker::clearPreview, this, &PreviewPanel::clearPreview);
     connect(m_worker, &FilePreviewWorker::imagePreviewReady, this, &PreviewPanel::showImagePreview);
     connect(m_worker, &FilePreviewWorker::textPreviewReady, this, &PreviewPanel::showTextPreview);
     connect(m_worker, &FilePreviewWorker::errorOccurred, this, [&]() {
@@ -57,4 +58,8 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
 
 void PreviewPanel::cancelPreview() noexcept {
     m_worker->cancel();  // Signal cancellation to the worker
+}
+
+void PreviewPanel::clearPreview() noexcept {
+    m_img_preview_widget->clear();
 }

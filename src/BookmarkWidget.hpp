@@ -4,6 +4,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QTableWidgetItem>
+#include <QPushButton>
 
 #include "BookmarkManager.hpp"
 

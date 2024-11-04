@@ -49,6 +49,12 @@ void Navi::initConfiguration() {
                     static_cast<int>(totalSize * (1 - fraction)),
                     static_cast<int>(totalSize * fraction)};
                 m_splitter->setSizes(sizes);
+
+                auto max_file_size = QString::fromStdString(
+                    preview_pane["max_size"].get_or<std::string>("10M"));
+
+                auto max_file_bytes = utils::parseFileSize(max_file_size);
+                m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
             }
 
             // Menu bar
@@ -106,9 +112,21 @@ void Navi::initConfiguration() {
                     m_file_panel->ToggleHeaders(headers_visible.value());
                 }
 
+                // cycle
                 sol::optional<bool> cycle = file_pane_table["cycle"];
                 if (cycle) {
                     m_file_panel->SetCycle(cycle.value());
+                }
+
+                // marks
+                sol::optional<sol::table> marks_table = file_pane_table["mark"];
+                if (marks_table) {
+                    auto marks = marks_table.value();
+                    auto markBackground = QString::fromStdString(marks["background"].get_or<std::string>(""));
+                    auto markForeground = QString::fromStdString(marks["foreground"].get_or<std::string>("#FF5000"));
+
+                    m_file_panel->SetMarkBackgroundColor(markBackground);
+                    m_file_panel->SetMarkForegroundColor(markForeground);
                 }
 
             }
@@ -212,7 +230,7 @@ void Navi::setupCommandMap() noexcept {
   commandMap["paste"] = [this](const QStringList &args) { m_file_panel->PasteItems(); };
 
   commandMap["delete"] = [this](const QStringList &args) {
-    m_file_panel->DeleteItem();
+    m_file_panel->DeleteDWIM();
   };
 
   commandMap["delete-global"] = [this](const QStringList &args) {
@@ -541,8 +559,8 @@ void Navi::ToggleMarksBuffer(const bool &state) noexcept {
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
   // QStringList commandlist = commandtext.split(" && ");
-  QStringList commandlist =
-      commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
+  QStringList commandlist = commandtext.split(QRegularExpression("\\s*&&\\s*"),
+                                              Qt::SkipEmptyParts);
 
   if (commandlist.isEmpty())
     return;
@@ -615,9 +633,6 @@ void Navi::initLayout() noexcept {
 
   m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
-  m_log_buffer->setAcceptRichText(true);
-  m_log_buffer->setReadOnly(true);
-
   m_file_panel->setFocus();
   m_inputbar->hide();
 
@@ -677,29 +692,40 @@ void Navi::initKeybinds() noexcept {
 
   connect(kb_next_item, &QShortcut::activated, m_file_panel,
           &FilePanel::NextItem);
+
   connect(kb_prev_item, &QShortcut::activated, m_file_panel,
           &FilePanel::PrevItem);
+
   connect(kb_select_item, &QShortcut::activated, m_file_panel,
           &FilePanel::SelectItem);
+
   connect(kb_up_directory, &QShortcut::activated, m_file_panel,
           &FilePanel::UpDirectory);
+
   connect(kb_goto_last_item, &QShortcut::activated, m_file_panel,
           &FilePanel::GotoLastItem);
+
   connect(kb_goto_first_item, &QShortcut::activated, m_file_panel,
           &FilePanel::GotoFirstItem);
+
   connect(kb_command, &QShortcut::activated, this,
           &Navi::ExecuteExtendedCommand);
+
   connect(kb_rename_items, &QShortcut::activated, this,
-          [&]() { m_file_panel->RenameItem(); });
+          [&]() { m_file_panel->RenameDWIM(); });
+
   connect(kb_delete_items, &QShortcut::activated, this,
-          [&]() { m_file_panel->DeleteItem(); });
-  connect(kb_search, &QShortcut::activated, m_file_panel, [&]() {
-      m_file_panel->Search();
-  });
+          [&]() { m_file_panel->DeleteDWIM(); });
+
+  connect(kb_search, &QShortcut::activated, m_file_panel,
+          [&]() { m_file_panel->Search(); });
+
   connect(kb_search_next, &QShortcut::activated, m_file_panel,
           &FilePanel::SearchNext);
+
   connect(kb_search_prev, &QShortcut::activated, m_file_panel,
           &FilePanel::SearchPrev);
+
   connect(kb_toggle_menubar, &QShortcut::activated, this,
           [this]() { ToggleMenuBar(); });
 
@@ -709,8 +735,12 @@ void Navi::initKeybinds() noexcept {
   connect(kb_focus_file_path_widget, &QShortcut::activated, this,
           [this]() { m_file_path_widget->FocusLineEdit(); });
 
-  connect(kb_paste_items, &QShortcut::activated, m_file_panel, &FilePanel::PasteItems);
-  connect(kb_copy_items, &QShortcut::activated, m_file_panel, &FilePanel::CopyItem);
+  connect(kb_paste_items, &QShortcut::activated, m_file_panel,
+          &FilePanel::PasteItems);
+
+  connect(kb_copy_items, &QShortcut::activated, m_file_panel,
+          &FilePanel::CopyItem);
+
   connect(kb_unmark_items_local, &QShortcut::activated, this,
           [&]() { m_file_panel->UnmarkItemsLocal(); });
 
@@ -862,7 +892,8 @@ void Navi::initMenubar() noexcept {
           [&](const bool &state) { ToggleMarksBuffer(state); });
 
   connect(m_viewmenu__bookmarks_buffer, &QAction::triggered, this,
-          [&](const bool &state) { ToggleBookmarksBuffer(state); });
+          [&](const bool &state) { // ToggleBookmarksBuffer(state); });
+          });
 
   connect(m_viewmenu__preview_panel, &QAction::triggered, this,
           [&](const bool &state) { TogglePreviewPanel(state); });
@@ -976,7 +1007,7 @@ void Navi::LogMessage(const QString &message,
     coloredMessage = "<font color='red'>" + message + "</font>";
     break;
   }
-  m_log_buffer->append(coloredMessage);
+  m_log_buffer->AppendText(coloredMessage);
 }
 
 Navi::~Navi() {}

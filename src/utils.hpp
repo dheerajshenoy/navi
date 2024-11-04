@@ -14,4 +14,5 @@ public:
     static std::tuple<bool, uint> isNumber(const QString &numString) noexcept;
     static bool isValidPath(const QString &path) noexcept;
     static QStringList splitPreservingQuotes(const QString& input) noexcept;
+    static qint64 parseFileSize(const QString& sizeStr) noexcept;
 };

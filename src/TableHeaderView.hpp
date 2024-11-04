@@ -21,7 +21,6 @@ public:
         QHeaderView::show();
     }
 
-
     signals:
     void visibilityChanged(const bool &state);
 };

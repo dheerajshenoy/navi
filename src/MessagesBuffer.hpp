@@ -2,23 +2,41 @@
 
 #include <QTextEdit>
 
-class MessagesBuffer : public QTextEdit {
+class MessagesBuffer : public QWidget {
     Q_OBJECT
 
 signals:
 void visibilityChanged(const bool& state);
 
 public:
-    explicit MessagesBuffer(QWidget *parent = nullptr) : QTextEdit(parent) {}
+    explicit MessagesBuffer(QWidget *parent = nullptr) : QWidget(parent) {
+        m_layout->addWidget(m_text_edit);
+        this->setLayout(m_layout);
+        QPushButton *m_close_btn = new QPushButton("Close");
+        connect(m_close_btn, &QPushButton::clicked, this, [&]() { this->close(); });
+        m_layout->addWidget(m_close_btn);
+
+        m_text_edit->setAcceptRichText(true);
+        m_text_edit->setReadOnly(true);
+
+    }
+
+    void AppendText(const QString &text) noexcept {
+        m_text_edit->append(text);
+    }
 
     void show() noexcept {
         emit visibilityChanged(true);
-        QTextEdit::show();
+        QWidget::show();
     }
 
     void hide() noexcept {
         emit visibilityChanged(false);
-        QTextEdit::hide();
+        QWidget::hide();
 
     }
+
+private:
+    QTextEdit *m_text_edit = new QTextEdit();
+    QVBoxLayout *m_layout = new QVBoxLayout();
 };

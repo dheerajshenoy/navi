@@ -19,6 +19,7 @@
 
 #include "FileSystemModel.hpp"
 #include "TableHeaderView.hpp"
+#include "HeaderProxyStyle.hpp"
 
 class TableView : public QTableView {
     Q_OBJECT

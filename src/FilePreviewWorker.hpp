@@ -16,56 +16,21 @@ class FilePreviewWorker : public QObject {
     public:
     explicit FilePreviewWorker(QObject *parent = nullptr) : QObject(parent) {}
 
+    void setMaxPreviewThreshold(const qint64 &maxThreshold) noexcept {
+        m_max_preview_threshold = maxThreshold;
+    }
+
 public slots:
-    // void loadPreview(const QString &filePath) {
-    //     QPixmap preview;
-
-    //     // Check for cancellation before starting the task
-    //     if (isCancelled) return;
-
-    //     if (preview.load(filePath)) {
-    //         // Check for cancellation again before emitting
-    //         if (isCancelled) return;
-    //         emit previewReady(preview);
-    //     } else {
-    //         emit errorOccurred("Failed to load preview.");
-    //     }
-    // }
-
-    // void loadPreview(const QString &filePath) {
-    //     // Check for cancellation before starting the task
-    //     if (isCancelled) return;
-
-    //     QMimeDatabase mimeDatabase;
-    //     QMimeType mimeType = mimeDatabase.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
-
-  //     if (mimeType.name().startsWith("image/")) {
-  //         // Load image preview
-  //         QPixmap preview;
-  //         if (preview.load(filePath)) {
-  //             if (isCancelled) return; // Check cancellation again
-  //             emit imagePreviewReady(preview);
-  //         } else {
-  //             emit errorOccurred("Failed to load image preview.");
-  //         }
-  //     } else if (mimeType.name().startsWith("text/")) {
-  //         // Load text preview
-  //         QFile file(filePath);
-  //         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-  //             if (isCancelled) return; // Check cancellation again
-  //             QTextStream in(&file);
-  //             QString content = in.readAll();
-  //             emit textPreviewReady(content);
-  //         } else {
-  //             emit errorOccurred("Failed to load text preview.");
-  //         }
-  //     } else {
-  //         emit errorOccurred("Unsupported file type for preview.");
-  //     }
-    // }
-
     void loadPreview(const QString &filePath) {
+
         if (isCancelled) return; // Check for cancellation
+
+        // Do not preview if file size is greater than ‘max_preview_threshold’
+        QFileInfo file(filePath);
+        if (file.size() > m_max_preview_threshold) {
+            emit clearPreview();
+            return;
+        }
 
         QMimeDatabase mimeDatabase;
         QMimeType mimeType =
@@ -124,8 +89,11 @@ public slots:
     void imagePreviewReady(const QPixmap &preview);
     void errorOccurred(const QString &errorMessage);
     void textPreviewReady(const QString &textContent);
+    void clearPreview();
 
 private:
     bool isCancelled = false;
     QMutex mutex;
+
+    qint64 m_max_preview_threshold = 1e+7;
 };

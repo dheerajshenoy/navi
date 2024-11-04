@@ -48,6 +48,9 @@ public:
     };
 
 
+    void setMarkForegroundColor(const QString &color) noexcept;
+    void setMarkBackgroundColor(const QString &color) noexcept;
+
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
@@ -140,4 +143,7 @@ private:
         Column { "DATE", ColumnType::FileModifiedDate },
         Column { "PERM", ColumnType::FilePermission },
     };
+
+    QColor m_markForegroundColor = QColor(),
+           m_markBackgroundColor = QColor();
 };

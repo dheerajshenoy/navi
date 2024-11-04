@@ -52,6 +52,11 @@ public:
         this->setLayout(m_layout);
         m_layout->addWidget(m_marks_list_view);
         m_marks_list_view->setModel(m_model);
+
+        QPushButton *m_close_btn = new QPushButton("Close");
+        m_layout->addWidget(m_close_btn);
+
+        connect(m_close_btn, &QPushButton::clicked, this, [&]() { this->close(); });
     }
 
     void show() noexcept {

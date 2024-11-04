@@ -20,7 +20,6 @@ class PreviewPanel : public QStackedWidget {
 
 signals:
 void visibilityChanged(const bool& state);
-
 public:
     PreviewPanel(QWidget *parent = nullptr);
     ~PreviewPanel();
@@ -35,6 +34,10 @@ public:
         emit visibilityChanged(true);
         m_img_preview_widget->clear();
         QWidget::show();
+    }
+
+    inline void SetMaxPreviewThreshold(const qint64 &thresh) noexcept {
+        m_worker->setMaxPreviewThreshold(thresh);
     }
 
     void onFileSelected(const QString &filePath) noexcept;
@@ -55,4 +58,5 @@ private:
     void showImagePreview(const QPixmap &pixmap) noexcept;
     void showTextPreview(const QString &pixmap) noexcept;
     void cancelPreview() noexcept;
+    void clearPreview() noexcept;
 };

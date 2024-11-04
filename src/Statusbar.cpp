@@ -44,7 +44,6 @@ void Statusbar::Message(const QString& message, const MessageType type, int ms) 
         m_message_palette.setColor(m_message_label->foregroundRole(), Qt::red);
         break;
 
-
     }
 
     m_message_label->setPalette(m_message_palette);

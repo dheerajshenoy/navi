@@ -644,10 +644,138 @@ void FilePanel::RenameItemsLocal() noexcept {
   }
 }
 
+void FilePanel::RenameItems(const QStringList &files) noexcept {
+
+    for (const auto &filepath : files) {
+
+        QFileInfo fileInfo(filepath);
+        const QString &oldFilePath = fileInfo.filePath();
+        const QString &oldName = fileInfo.fileName();
+        QString newFileName;
+
+        if (fileInfo.isFile())
+            newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                                               oldName, fileInfo.baseName());
+        else if (fileInfo.isDir())
+            newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                                               oldName, oldName);
+
+        // If user cancels or the new file name is empty
+        if (newFileName.isEmpty() || newFileName.isNull()) {
+            m_statusbar->Message("Operation Cancelled", MessageType::WARNING);
+            return;
+        }
+
+        if (newFileName == oldName) {
+            m_statusbar->Message("Filename is the same.", MessageType::WARNING);
+            return;
+        }
+
+        bool state = QFile::rename(
+                                   oldFilePath, m_current_dir + QDir::separator() + newFileName);
+        if (state) {
+            m_model->removeMarkedFile(oldFilePath);
+            m_statusbar->Message(QString("Renamed %1 to %2")
+                                     .arg(oldName)
+                                 .arg(newFileName));
+        }
+    }
+}
+
+void FilePanel::RenameDWIM() noexcept {
+    // If there are local marks
+    auto localMarks = m_model->getMarkedFilesLocal();
+    if (localMarks.isEmpty())
+        return;
+
+    if (localMarks.size() > m_bulk_rename_threshold) {
+        BulkRename(localMarks);
+    } else
+        RenameItems(localMarks);
+}
+
+void FilePanel::DeleteDWIM() noexcept {
+    auto localMarks = m_model->getMarkedFilesLocal();
+    if (localMarks.isEmpty())
+        return;
+    DeleteItems(localMarks);
+}
+
+void FilePanel::DeleteItems(const QStringList &files) noexcept {
+    bool check = true;
+    for (const auto &itemPath : files) {
+        QFileInfo file(itemPath);
+        if (file.isDir()) {
+            QDir dir(itemPath);
+
+            if (check) {
+                QString inputConfirm =
+                    m_inputbar
+            ->getInput(QString("Do you want to delete %1 and all of it's "
+                               "subitems ? (y, N, y!)")
+                           .arg(itemPath))
+            .toLower();
+                if (inputConfirm == "y") {
+                    if (dir.removeRecursively()) {
+                        m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+                        m_model->removeMarkedFile(itemPath);
+                    } else
+                        m_statusbar->Message(QString("Error deleting %1").arg(itemPath), MessageType::ERROR);
+
+                } else if (inputConfirm == "n") {
+                    m_statusbar->Message("Delete operation cancelled");
+                    return;
+                } else if (inputConfirm == "y!") {
+                    dir.removeRecursively();
+                    m_model->removeMarkedFile(itemPath);
+                    check = false;
+                }
+            } else {
+                if (dir.removeRecursively()) {
+                    m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+                    m_model->removeMarkedFile(itemPath);
+                } else
+                    m_statusbar->Message(QString("Error deleting %1").arg(itemPath), MessageType::ERROR);
+            }
+        } else {
+            QString inputConfirm =
+                m_inputbar
+                  ->getInput(QString("Do you want to delete %1 ? (y, N, y!)")
+                                 .arg(itemPath))
+                  .toLower();
+
+            if (check) {
+                if (inputConfirm == "y") {
+                    if (QFile::remove(itemPath))
+                        m_model->removeMarkedFile(itemPath);
+                    else
+                        m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
+                } else if (inputConfirm == "y!") {
+                    if (QFile::remove(itemPath))
+                        m_model->removeMarkedFile(itemPath);
+                    else
+                        m_statusbar->Message(
+                                             QString("Error deleting %1!").arg(itemPath));
+                    check = false;
+                } else if (inputConfirm == "n") {
+                    m_statusbar->Message("Delete operation cancelled");
+                    return;
+                }
+            } else {
+                if (QFile::remove(itemPath))
+                    m_model->removeMarkedFile(itemPath);
+                else
+                    m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
+            }
+        }
+    }
+}
+
 void FilePanel::DeleteItem() noexcept {
   QString itemPath = getCurrentItem();
   if (m_model->isDir(m_table_view->currentIndex())) {
-    QDir dir(itemPath);
+      QDir dir(itemPath);
+
 
     QString inputConfirm =
         m_inputbar
@@ -1239,4 +1367,13 @@ void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
 
 void FilePanel::ToggleCycle() noexcept {
     m_cycle_item = !m_cycle_item;
+}
+
+
+void FilePanel::SetMarkForegroundColor(const QString &markForeground) noexcept {
+    m_model->setMarkForegroundColor(markForeground);
+}
+
+void FilePanel::SetMarkBackgroundColor(const QString &markBackground) noexcept {
+    m_model->setMarkBackgroundColor(markBackground);
 }

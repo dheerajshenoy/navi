@@ -28,4 +28,8 @@ BookmarkWidget::BookmarkWidget(BookmarkManager *manager, QWidget *parent)
         row++;
     }
 
+    QPushButton *m_close_btn = new QPushButton("Close");
+    connect(m_close_btn, &QPushButton::clicked, this, [&]() { this->close(); });
+    m_layout->addWidget(m_close_btn);
+
 }

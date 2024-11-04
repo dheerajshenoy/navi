@@ -71,13 +71,21 @@ public:
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
+
     void RenameItem() noexcept;
+    void RenameItems(const QStringList &files) noexcept;
     void RenameItemsGlobal() noexcept;
     void RenameItemsLocal() noexcept;
+    void RenameDWIM() noexcept;
+
     void PasteItems() noexcept;
+
     void DeleteItem() noexcept;
+    void DeleteItems(const QStringList &files) noexcept;
     void DeleteItemsLocal() noexcept;
     void DeleteItemsGlobal() noexcept;
+    void DeleteDWIM() noexcept;
+
     void TrashItem() noexcept;
     void TrashItemsLocal() noexcept;
     void TrashItemsGlobal() noexcept;
@@ -111,6 +119,8 @@ public:
     void ToggleHeaders() noexcept;
     void SetCycle(const bool &state) noexcept;
     void ToggleCycle() noexcept;
+    void SetMarkForegroundColor(const QString &markForeground) noexcept;
+    void SetMarkBackgroundColor(const QString &markBackground) noexcept;
 
 signals:
     void afterDirChange(QString path);
@@ -183,4 +193,6 @@ private:
     QPoint m_drag_start_position;
 
     bool m_cycle_item = true;
+
+    unsigned int m_bulk_rename_threshold = 5;
 };
