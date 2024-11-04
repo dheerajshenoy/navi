@@ -1,6 +1,7 @@
 #include "FilePanel.hpp"
 #include "FileWorker.hpp"
 #include <qnamespace.h>
+#include <qregularexpression.h>
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
     : m_inputbar(inputBar), m_statusbar(statusBar), QWidget(parent) {
@@ -20,11 +21,6 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
   initKeybinds();
   initContextMenu();
 
-  // Select the first item after the directory has loaded for the first time
-  // after the application starts.
-  // We disconnect the signal because we do not want to select the first item
-  // when we come up the directory and so we handle it manually without the
-  // signal
   setAcceptDrops(true);
 }
 
@@ -52,7 +48,7 @@ void FilePanel::initContextMenu() noexcept {
           [&]() { SelectItem(); });
 
   connect(m_context_action_copy, &QAction::triggered, this,
-          [&]() { CopyItems(); });
+          [&]() { CopyItem(); });
   connect(m_context_action_paste, &QAction::triggered, this,
           [&]() { PasteItems(); });
 
@@ -91,6 +87,11 @@ void FilePanel::initSignalsSlots() noexcept {
   connect(m_table_view, &TableView::dragRequested, this,
           &FilePanel::dragRequested);
 
+  // Select the first item after the directory has loaded for the first time
+  // after the application starts.
+  // We disconnect the signal because we do not want to select the first item
+  // when we come up the directory and so we handle it manually without the
+  // signal
   connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
     selectFirstItem();
     disconnect(m_model, &FileSystemModel::directoryLoaded, 0, 0);
@@ -101,18 +102,19 @@ void FilePanel::initSignalsSlots() noexcept {
 
   connect(this, &FilePanel::dropCopyRequested, this,
           [&](const QStringList &sourceFilePaths) {
-            CopyItems();
+            m_file_op_type = FileOPType::COPY;
+            m_register_files_list = sourceFilePaths;
             PasteItems();
           });
 
   connect(this, &FilePanel::dropCutRequested, this,
           [&](const QStringList &sourceFilePaths) {
-            CutItems();
+            m_file_op_type = FileOPType::CUT;
+            m_register_files_list = sourceFilePaths;
             PasteItems();
           });
 
   connect(m_table_view, &QTableView::doubleClicked, this,
-
           &FilePanel::handleItemDoubleClicked);
 
   connect(m_table_view->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -267,8 +269,8 @@ void FilePanel::NextItem() noexcept {
   int nextRow = currentIndex.row() + 1;
 
   // Loop to start
-  if (nextRow >= m_model->rowCount(m_table_view->rootIndex()))
-    nextRow = 0;
+  if (m_cycle_item && nextRow >= m_model->rowCount(m_table_view->rootIndex()))
+      nextRow = 0;
 
   QModelIndex nextIndex = m_model->index(nextRow, 0);
   if (nextIndex.isValid()) {
@@ -283,7 +285,7 @@ void FilePanel::PrevItem() noexcept {
   int prevRow = currentIndex.row() - 1;
 
   // // Loop
-  if (prevRow < 0)
+  if (m_cycle_item && prevRow < 0)
     prevRow = m_model->rowCount(m_table_view->rootIndex()) - 1;
 
   QModelIndex prevIndex = m_model->index(prevRow, 0);
@@ -882,17 +884,71 @@ bool FilePanel::SetPermissions(const QString &filePath,
   return file.setPermissions(permissions);
 }
 
-bool FilePanel::Chmod(const QString &permString) noexcept {
-  if (m_model->hasMarks()) {
-    // auto indexes = m_table_view->selectionModel()->selectedIndexes();
-    // for (auto index : indexes) {
-    // }
-  } else {
-    QString filePath = getCurrentItem();
-    return SetPermissions(filePath, permString);
-  }
+void FilePanel::ChmodItem() noexcept {
+    QString permString = m_inputbar->getInput("Enter permission number: ");
+    QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
+    QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
-  return false;
+    if (permissionMatch.hasMatch()) {
+        QString filePath = getCurrentItem();
+        if (SetPermissions(filePath, permString)) {
+            m_statusbar->Message("Permission changed successfully");
+        } else {
+            m_statusbar->Message("Error setting permission", MessageType::ERROR);
+        }
+    } else {
+        m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+    }
+}
+
+void FilePanel::ChmodItemsLocal() noexcept {
+    auto localMarkedFiles = m_model->getMarkedFilesLocal();
+    if (localMarkedFiles.size() == 0) {
+        m_statusbar->Message("No local marks found", MessageType::WARNING);
+        return;
+    }
+
+    QString permString = m_inputbar->getInput("Enter permission number: ");
+    QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
+    QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
+
+    if (permissionMatch.hasMatch()) {
+        for (const auto &filePath : localMarkedFiles) {
+            if (SetPermissions(filePath, permString)) {
+                m_statusbar->Message(QString("Permission changed for %1").arg(filePath));
+            } else {
+              m_statusbar->Message(QString("Error setting permission for %1").arg(filePath),
+                                   MessageType::ERROR);
+            }
+        }
+    } else {
+        m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+    }
+}
+
+void FilePanel::ChmodItemsGlobal() noexcept {
+    auto localMarkedFiles = m_model->getMarkedFiles();
+    if (localMarkedFiles.size() == 0) {
+        m_statusbar->Message("No marks found", MessageType::WARNING);
+        return;
+    }
+
+    QString permString = m_inputbar->getInput("Enter permission number: ");
+    QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
+    QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
+
+    if (permissionMatch.hasMatch()) {
+        for (const auto &filePath : localMarkedFiles) {
+            if (SetPermissions(filePath, permString)) {
+                m_statusbar->Message(QString("Permission changed for %1").arg(filePath));
+            } else {
+              m_statusbar->Message(QString("Error setting permission for %1").arg(filePath),
+                                   MessageType::ERROR);
+            }
+        }
+    } else {
+        m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+    }
 }
 
 void FilePanel::PasteItems() noexcept {
@@ -928,9 +984,35 @@ void FilePanel::PasteItems() noexcept {
   }
 }
 
-void FilePanel::CopyItems() noexcept { m_file_op_type = FileOPType::COPY; }
+void FilePanel::CopyItem() noexcept {
+  m_file_op_type = FileOPType::COPY;
+  m_register_files_list = {getCurrentItem()};
+}
 
-void FilePanel::CutItems() noexcept { m_file_op_type = FileOPType::CUT; }
+void FilePanel::CopyItemsLocal() noexcept {
+  m_file_op_type = FileOPType::COPY;
+  m_register_files_list = m_model->getMarkedFilesLocal();
+}
+
+void FilePanel::CopyItemsGlobal() noexcept {
+  m_file_op_type = FileOPType::COPY;
+  m_register_files_list = m_model->getMarkedFiles();
+}
+
+void FilePanel::CutItem() noexcept {
+  m_file_op_type = FileOPType::CUT;
+  m_register_files_list = {getCurrentItem()};
+}
+
+void FilePanel::CutItemsLocal() noexcept {
+  m_file_op_type = FileOPType::CUT;
+  m_register_files_list = m_model->getMarkedFilesLocal();
+}
+
+void FilePanel::CutItemsGlobal() noexcept {
+  m_file_op_type = FileOPType::CUT;
+  m_register_files_list = m_model->getMarkedFiles();
+}
 
 void FilePanel::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasUrls()) {
@@ -1142,4 +1224,19 @@ void FilePanel::SortItems(SortBy sortMethod,
                   sortOrder);
     break;
   }
+}
+
+void FilePanel::ToggleHeaders(const bool &state) noexcept {
+    m_table_view->horizontalHeader()->setVisible(state);
+}
+
+void FilePanel::ToggleHeaders() noexcept {
+  m_table_view->horizontalHeader()->setVisible(!m_table_view->horizontalHeader()->isVisible());
+
+}
+
+void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
+
+void FilePanel::ToggleCycle() noexcept {
+    m_cycle_item = !m_cycle_item;
 }

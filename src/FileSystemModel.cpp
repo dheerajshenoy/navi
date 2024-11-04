@@ -2,7 +2,8 @@
 
 FileSystemModel::FileSystemModel(QObject *parent)
     : QAbstractTableModel(parent) {
-  initDefaults();
+    initDefaults();
+
 }
 
 FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
@@ -13,6 +14,7 @@ FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
 void FileSystemModel::initDefaults() noexcept {
     m_file_system_watcher = new QFileSystemWatcher(this);
     m_dir_filters = QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries;
+
 }
 
 void FileSystemModel::clearMarkedFilesListLocal() noexcept {
@@ -143,7 +145,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
 
         case Qt::DisplayRole: {
             const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
-            switch (m_column_list.at(index.column())) {
+            switch (m_column_list.at(index.column()).type) {
             case ColumnType::FileName: // File Name
                 if (fileInfo.isSymbolicLink())
                     return QString("%1 -> %2")
@@ -154,7 +156,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
 
             case ColumnType::FileSize: // File Size
                 return fileInfo.isDir()
-                    ? QVariant("<DIR>")
+                    ? QVariant()
                     : QVariant(m_locale.formattedDataSize(fileInfo.size()));
 
             case ColumnType::FileModifiedDate: // Last Modified Date
@@ -208,22 +210,8 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
 
         }
 
-
-
     } else if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-
-        switch (m_column_list.at(section)) {
-        case ColumnType::FileName:
-            return "Name";
-        case ColumnType::FileSize:
-            return "Size";
-        case ColumnType::FileModifiedDate:
-            return "Last Modified";
-        case ColumnType::FilePermission:
-            return "Permissions";
-        default:
-            return QVariant();
-        }
+        return m_column_list.at(section).name;
     }
 
     return QVariant();
@@ -298,12 +286,6 @@ bool FileSystemModel::removeMarkedFile(const QModelIndex &index) noexcept {
         return true;
     }
     return false;
-}
-
-void FileSystemModel::setColumnList(
-                                    const QList<FileSystemModel::ColumnType> &cols) noexcept {
-
-    m_column_list = cols;
 }
 
   void FileSystemModel::setNameFilters(
@@ -404,4 +386,13 @@ void FileSystemModel::sort(int column, Qt::SortOrder order) {
             });
 
   emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
+}
+
+void FileSystemModel::setColumns(const QList<Column> &cols) noexcept {
+    m_column_list.clear();
+
+    for (const auto &col : cols)
+        m_column_list.push_back(col);
+
+    emit headerDataChanged(Qt::Orientation::Horizontal, 0, -1);
 }

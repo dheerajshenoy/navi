@@ -16,7 +16,9 @@
 #include <QHeaderView>
 #include <QMouseEvent>
 #include <QApplication>
+
 #include "FileSystemModel.hpp"
+#include "TableHeaderView.hpp"
 
 class TableView : public QTableView {
     Q_OBJECT
@@ -35,4 +37,5 @@ protected:
 
  private:
     QPoint m_drag_start_position;
+    TableHeaderView *m_header_view = nullptr;
 };

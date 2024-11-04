@@ -1,4 +1,5 @@
 #include "Navi.hpp"
+#include "sol/sol.hpp"
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {
 
@@ -8,27 +9,110 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {
   initKeybinds();
   setupCommandMap();
   initBookmarks();
+  initConfiguration();
   setCurrentDir("~"); // set the current directory
-    qDebug() << CONFIG_DIR_PATH;
 }
 
-void Navi::initConfiguration() noexcept {
+void Navi::initConfiguration() {
 
     lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
 
-    sol::optional<sol::object> lua_file_read =
-        lua.safe_script_file(CONFIG_DIR_PATH.toStdString());
-
-    // Don’t process if the config file does not exist
-    if (!lua_file_read.has_value())
+    try {
+        lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
+    } catch (const sol::error &e) {
+        m_statusbar->Message("No configuration file found. Skipping initializing configurations");
         return;
+    }
+
 
     // Read the SETTINGS table
-    sol::optional<sol::table> settings_table_opt = lua.get<sol::table>("settings");
+    sol::optional<sol::table> settings_table_opt = lua["settings"];
 
-    if (settings_table_opt.has_value()) {
-        // sol::table settings_table = settings_
-        // auto preview_pane = sett
+    if (settings_table_opt) {
+        sol::table settings_table = settings_table_opt.value();
+        sol::optional<sol::table> ui_table_opt = settings_table["ui"];
+        if (ui_table_opt) {
+            sol::table ui_table = ui_table_opt.value();
+
+            // Preview pane
+            sol::optional<sol::table> preview_pane_table =
+                ui_table["preview_pane"];
+
+            if (preview_pane_table) {
+                auto preview_pane = preview_pane_table.value();
+                auto shown = preview_pane["shown"].get_or(true);
+                TogglePreviewPanel(shown);
+
+                auto fraction = preview_pane["fraction"].get_or(0.5);
+                auto totalSize = m_splitter->width();
+                QList<int> sizes = {
+                    static_cast<int>(totalSize * (1 - fraction)),
+                    static_cast<int>(totalSize * fraction)};
+                m_splitter->setSizes(sizes);
+            }
+
+            // Menu bar
+            sol::optional<sol::table> menu_bar_table = ui_table["menu_bar"];
+
+            if (menu_bar_table) {
+                auto menu_bar = menu_bar_table.value();
+                auto shown = menu_bar["shown"].get_or(true);
+                ToggleMenuBar(shown);
+            }
+
+            // Status bar
+            sol::optional<sol::table> status_bar_table = ui_table["status_bar"];
+
+            if (status_bar_table) {
+                auto status_bar = status_bar_table.value();
+                auto shown = status_bar["shown"].get_or(true);
+                ToggleStatusBar(shown);
+            }
+
+            // File Pane
+            sol::table file_pane_table = ui_table["file_pane"];
+
+            if (file_pane_table.valid()) {
+                sol::optional<sol::table> columns_table = file_pane_table["columns"];
+                if (columns_table.has_value()) {
+                    QList<FileSystemModel::Column> columnList; // List to store column configuration
+                    FileSystemModel::Column column;
+                    for (const auto &entry : columns_table.value()) {
+                        auto key = QString::fromStdString(entry.first.as<std::string>());
+                        auto value = QString::fromStdString(entry.second.as<std::string>());
+
+                        if (key == "name")
+                            column.type = FileSystemModel::ColumnType::FileName;
+                        else if (key == "size")
+                            column.type = FileSystemModel::ColumnType::FileSize;
+                        else if (key == "modified_date")
+                            column.type = FileSystemModel::ColumnType::FileModifiedDate;
+                        else if (key == "permission")
+                            column.type = FileSystemModel::ColumnType::FilePermission;
+                        else {
+                            m_statusbar->Message(QString("Unknown column key %1").arg(key), MessageType::WARNING);
+                            continue;
+                        }
+
+                        column.name = value;
+                        columnList.append(column);
+                    }
+                    m_file_panel->model()->setColumns(columnList);
+                }
+
+                // headers
+                sol::optional<bool> headers_visible = file_pane_table["headers"];
+                if (headers_visible) {
+                    m_file_panel->ToggleHeaders(headers_visible.value());
+                }
+
+                sol::optional<bool> cycle = file_pane_table["cycle"];
+                if (cycle) {
+                    m_file_panel->SetCycle(cycle.value());
+                }
+
+            }
+        }
     }
 }
 
@@ -79,12 +163,22 @@ void Navi::ShowHelp() noexcept {}
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
 
+  commandMap["toggle-cycle"] = [this](const QStringList &args) {
+      m_file_panel->ToggleCycle();
+  };
+
+  commandMap["toggle-header"] = [this](const QStringList &args) {
+      m_file_panel->ToggleHeaders();
+  };
+
   commandMap["rename"] = [this](const QStringList &args) {
     m_file_panel->RenameItem();
   };
+
   commandMap["rename-global"] = [this](const QStringList &args) {
     m_file_panel->RenameItemsGlobal();
   };
+
   commandMap["rename-local"] = [this](const QStringList &args) {
     m_file_panel->RenameItemsLocal();
   };
@@ -92,26 +186,30 @@ void Navi::setupCommandMap() noexcept {
   commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
   commandMap["copy"] = [this](const QStringList &args) {
-    CopyItems(CommandScope::CURRENT);
+    m_file_panel->CopyItem();
   };
+
   commandMap["copy-global"] = [this](const QStringList &args) {
-    CopyItems(CommandScope::GLOBAL);
+    m_file_panel->CopyItemsGlobal();
   };
+
   commandMap["copy-local"] = [this](const QStringList &args) {
-    CopyItems(CommandScope::LOCAL);
+      m_file_panel->CopyItemsLocal();
   };
 
   commandMap["cut"] = [this](const QStringList &args) {
-    CutItems(CommandScope::CURRENT);
-  };
-  commandMap["cut-global"] = [this](const QStringList &args) {
-    CutItems(CommandScope::GLOBAL);
-  };
-  commandMap["cut-local"] = [this](const QStringList &args) {
-    CutItems(CommandScope::LOCAL);
+    m_file_panel->CutItem();
   };
 
-  commandMap["paste"] = [this](const QStringList &args) { PasteItems(); };
+  commandMap["cut-global"] = [this](const QStringList &args) {
+    m_file_panel->CutItemsGlobal();
+  };
+
+  commandMap["cut-local"] = [this](const QStringList &args) {
+    m_file_panel->CutItemsLocal();
+  };
+
+  commandMap["paste"] = [this](const QStringList &args) { m_file_panel->PasteItems(); };
 
   commandMap["delete"] = [this](const QStringList &args) {
     m_file_panel->DeleteItem();
@@ -162,13 +260,13 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["trash"] = [this](const QStringList &args) {
-    TrashItems(CommandScope::CURRENT);
+      m_file_panel->TrashItem();
   };
   commandMap["trash-local"] = [this](const QStringList &args) {
-    TrashItems(CommandScope::LOCAL);
+      m_file_panel->TrashItemsLocal();
   };
   commandMap["trash-global"] = [this](const QStringList &args) {
-    TrashItems(CommandScope::GLOBAL);
+      m_file_panel->TrashItemsGlobal();
   };
 
   commandMap["exit"] = [this](const QStringList &args) {
@@ -198,13 +296,13 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["chmod"] = [this](const QStringList &args) {
-    Chmod(CommandScope::CURRENT);
+      m_file_panel->ChmodItem();
   };
   commandMap["chmod-local"] = [this](const QStringList &args) {
-    Chmod(CommandScope::LOCAL);
+      m_file_panel->ChmodItemsLocal();
   };
   commandMap["chmod-global"] = [this](const QStringList &args) {
-    Chmod(CommandScope::GLOBAL);
+      m_file_panel->ChmodItemsGlobal();
   };
 
   commandMap["marks-pane"] = [this](const QStringList &args) {
@@ -611,39 +709,13 @@ void Navi::initKeybinds() noexcept {
   connect(kb_focus_file_path_widget, &QShortcut::activated, this,
           [this]() { m_file_path_widget->FocusLineEdit(); });
 
-  connect(kb_paste_items, &QShortcut::activated, this, &Navi::PasteItems);
-  connect(kb_copy_items, &QShortcut::activated, this,
-          [&]() { CopyItems(CommandScope::CURRENT); });
+  connect(kb_paste_items, &QShortcut::activated, m_file_panel, &FilePanel::PasteItems);
+  connect(kb_copy_items, &QShortcut::activated, m_file_panel, &FilePanel::CopyItem);
   connect(kb_unmark_items_local, &QShortcut::activated, this,
           [&]() { m_file_panel->UnmarkItemsLocal(); });
 
   connect(kb_toggle_hidden_files, &QShortcut::activated, m_file_panel,
           &FilePanel::ToggleHiddenFiles);
-}
-
-void Navi::CutItems(const CommandScope &scope) noexcept {
-  m_file_panel->CutItems();
-}
-
-void Navi::CopyItems(const CommandScope &scope) noexcept {
-  m_file_panel->CopyItems();
-}
-
-void Navi::TrashItems(const CommandScope &scope) noexcept {
-  switch (scope) {
-
-  case CommandScope::CURRENT: {
-    Result<bool> result = m_file_panel->TrashItem();
-    if (result.result())
-      m_statusbar->Message(result.reason());
-    else
-      m_statusbar->Message(result.reason(), MessageType::ERROR, 5);
-  } break;
-
-  case CommandScope::LOCAL:
-  case CommandScope::GLOBAL:
-    break;
-  }
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
@@ -658,6 +730,7 @@ void Navi::ExecuteExtendedCommand() noexcept {
 void Navi::initMenubar() noexcept {
   m_menubar = new Menubar();
   this->setMenuBar(m_menubar);
+
 
   m_filemenu = new QMenu("File");
 
@@ -679,6 +752,12 @@ void Navi::initMenubar() noexcept {
 
   m_viewmenu__menubar = new QAction("Menubar");
   m_viewmenu__menubar->setCheckable(true);
+
+  m_viewmenu__statusbar = new QAction("Statusbar");
+  m_viewmenu__statusbar->setCheckable(true);
+
+  m_viewmenu__headers = new QAction("Headers");
+  m_viewmenu__headers->setCheckable(true);
 
   m_viewmenu__preview_panel = new QAction("Preview Panel");
   m_viewmenu__preview_panel->setCheckable(true);
@@ -719,8 +798,10 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__hidden);
   m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__dotdot);
 
+  m_viewmenu->addAction(m_viewmenu__headers);
   m_viewmenu->addAction(m_viewmenu__preview_panel);
   m_viewmenu->addAction(m_viewmenu__menubar);
+  m_viewmenu->addAction(m_viewmenu__statusbar);
   m_viewmenu->addAction(m_viewmenu__messages);
   m_viewmenu->addAction(m_viewmenu__marks_buffer);
 
@@ -753,6 +834,9 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
+
+  connect(m_viewmenu__headers, &QAction::triggered, this,
+          [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
   connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
           [&](const bool &state) {
@@ -801,10 +885,16 @@ void Navi::initMenubar() noexcept {
   connect(m_viewmenu__menubar, &QAction::triggered, this,
           [&](const bool &state) { Navi::ToggleMenuBar(state); });
 
+  connect(m_viewmenu__menubar, &QAction::triggered, this,
+          [&](const bool &state) { Navi::ToggleStatusBar(state); });
+
   // Handle visibility state change to reflect in the checkbox of the menu item
 
   connect(m_menubar, &Menubar::visibilityChanged, this,
           [&](const bool &state) { m_viewmenu__menubar->setChecked(state); });
+
+  connect(m_statusbar, &Statusbar::visibilityChanged, this,
+          [&](const bool &state) { m_viewmenu__statusbar->setChecked(state); });
 
   connect(
       m_preview_panel, &PreviewPanel::visibilityChanged, this,
@@ -839,6 +929,23 @@ void Navi::ToggleMenuBar() noexcept {
   } else {
     m_menubar->hide();
   }
+}
+
+void Navi::ToggleStatusBar(const bool &state) noexcept {
+    if (state) {
+        m_statusbar->show();
+    } else {
+        m_statusbar->hide();
+    }
+}
+
+void Navi::ToggleStatusBar() noexcept {
+    bool visible = m_statusbar->isVisible();
+    if (!visible) {
+        m_statusbar->show();
+    } else {
+        m_statusbar->hide();
+    }
 }
 
 void Navi::Filter() noexcept {
@@ -883,24 +990,7 @@ void Navi::chmodHelper() noexcept {
                          MessageType::ERROR, 5);
     return;
   }
-  if (m_file_panel->Chmod(permString)) {
-    m_statusbar->Message("Chmodded file successfully");
-    m_statusbar->UpdateFile();
-  } else
-    m_statusbar->Message("Error Chmoding file!", MessageType::ERROR, 5);
 }
-
-void Navi::Chmod(const CommandScope &scope) noexcept {
-
-  switch (scope) {
-  case CommandScope::CURRENT:
-  case CommandScope::LOCAL:
-  case CommandScope::GLOBAL:
-    break;
-  }
-}
-
-void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
 
 void Navi::SaveBookmarkFile() noexcept {
   if (m_bookmark_manager->saveBookmarksFile()) {

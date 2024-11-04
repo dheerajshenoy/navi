@@ -1,4 +1,5 @@
 #include "TableView.hpp"
+#include "TableHeaderView.hpp"
 
 TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDragEnabled(true);
@@ -7,13 +8,12 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDefaultDropAction(Qt::CopyAction);
     setDragDropMode(QAbstractItemView::InternalMove);
 
-    horizontalHeader()->setStretchLastSection(true);
-    // horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
-//setFrameShadow(QTableView::Shadow::Plain);
+    m_header_view = new TableHeaderView(Qt::Orientation::Horizontal, this);
+    this->setHorizontalHeader(m_header_view);
+    //setFrameShadow(QTableView::Shadow::Plain);
     //setFrameStyle(0);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-    horizontalHeader()->setHidden(true);
 
 }
 

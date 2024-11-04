@@ -42,6 +42,12 @@ public:
       FilePermission,
     };
 
+    struct Column {
+        QString name;
+        ColumnType type;
+    };
+
+
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
@@ -50,7 +56,7 @@ public:
     void clearMarkedFilesList() noexcept;
     void clearMarkedFilesListLocal() noexcept;
     void setNameFilters(const QStringList &filters) noexcept;
-    void setColumnList(const QList<FileSystemModel::ColumnType> &cols) noexcept;
+    void setColumns(const QList<Column> &col) noexcept;
     QString filePath(const QModelIndex &index) noexcept;
     bool isDir(const QModelIndex &index) noexcept;
     QModelIndex index(const QString &path) const noexcept;
@@ -118,15 +124,20 @@ private:
     void initDefaults() noexcept;
     int findRow(const QFileInfo &fileInfo) const noexcept;
 
-
     QList<QFileInfo> m_fileInfoList;
     QString m_root_path;
     QHash<QString, int> m_path_row_hash;
 
     QDir::Filters m_dir_filters;
-    QList<ColumnType> m_column_list = {ColumnType::FileName};
     QLocale m_locale;
     QStringList m_name_filters = {"*"};
     QFileSystemWatcher *m_file_system_watcher = nullptr;
     QFileIconProvider *m_fileIconProvider = new QFileIconProvider();
+
+    QList<Column> m_column_list = {
+        Column { "Name", ColumnType::FileName },
+        Column { "Size", ColumnType::FileSize },
+        Column { "DATE", ColumnType::FileModifiedDate },
+        Column { "PERM", ColumnType::FilePermission },
+    };
 };

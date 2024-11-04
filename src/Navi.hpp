@@ -76,29 +76,16 @@ public:
     ~Navi();
 
     void setCurrentDir(const QString &path) noexcept;
-
     // Interactive Functions
-    void TogglePreviewPanel(const bool &state) noexcept;
-    void TogglePreviewPanel() noexcept;
     void ExecuteExtendedCommand() noexcept;
     void NewFolder(const QStringList &folders = {}) noexcept;
-    void CutItems(const CommandScope &scope) noexcept;
-    void CopyItems(const CommandScope &scope) noexcept;
-    void TrashItems(const CommandScope &scope) noexcept;
     void PasteItems() noexcept;
-    void Chmod(const CommandScope &scope) noexcept;
     void ShowHelp() noexcept;
     void ToggleMenuBar(const bool &state) noexcept;
     void ToggleMenuBar() noexcept;
     void Filter() noexcept;
     void ResetFilter() noexcept;
     void LogMessage(const QString &message, const MessageType &type) noexcept;
-    void ToggleMessagesBuffer(const bool &state) noexcept;
-    void ToggleMessagesBuffer() noexcept;
-    void ToggleMarksBuffer(const bool &state) noexcept;
-    void ToggleMarksBuffer() noexcept;
-    void ToggleBookmarksBuffer(const bool &state) noexcept;
-    void ToggleBookmarksBuffer() noexcept;
     void FocusPath() noexcept;
     void AddBookmark(const QStringList &bookmarkName) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName) noexcept;
@@ -107,8 +94,23 @@ public:
     void GoBookmark(const QStringList &bookmarkName) noexcept;
     void SaveBookmarkFile() noexcept;
 
+    void ToggleStatusBar(const bool &state) noexcept;
+    void ToggleStatusBar() noexcept;
+
+    void TogglePreviewPanel(const bool &state) noexcept;
+    void TogglePreviewPanel() noexcept;
+
+    void ToggleMessagesBuffer(const bool &state) noexcept;
+    void ToggleMessagesBuffer() noexcept;
+
+    void ToggleMarksBuffer(const bool &state) noexcept;
+    void ToggleMarksBuffer() noexcept;
+
+    void ToggleBookmarksBuffer(const bool &state) noexcept;
+    void ToggleBookmarksBuffer() noexcept;
+
 private:
-    void initConfiguration() noexcept;
+    void initConfiguration();
     void chmodHelper() noexcept;
     void initBookmarks() noexcept;
     void initLayout() noexcept;
@@ -141,6 +143,8 @@ private:
 
     QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
+    QAction *m_viewmenu__statusbar = nullptr;
+    QAction *m_viewmenu__headers = nullptr;
     QAction *m_viewmenu__messages = nullptr;
     QAction *m_viewmenu__marks_buffer = nullptr;
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
@@ -194,40 +198,42 @@ private:
       "chmod",
       "chmod-global",
       "chmod-local",
+      "chmod-dwim",
 
       // Rename
       "rename",
       "rename-global",
       "rename-local",
+      "rename-dwim",
 
       // Cut
       "cut",
       "cut-local",
       "cut-global",
+      "cut-dwim",
 
       // Copy
       "copy",
       "copy-local",
       "copy-global",
+      "copy-dwim",
 
       // Paste
       "paste",
-
-      // Cut
-      "cut",
-      "cut-local",
-      "cut-global",
 
       // Delete
       "delete",
       "delete-local",
       "delete-global",
+      "delete-dwim",
 
       // Trash
       "trash",
       "trash-local",
       "trash-global",
+      "trash-dwim",
 
+      // misc
       "filter",
       "unfilter",
       "refresh",
@@ -235,6 +241,8 @@ private:
       "menu-bar",
       "focus-path",
       "item-property",
+      "toggle-cycle",
+      "toggle-header",
 
       // Bookmarks
       "bookmark-add",

@@ -1,0 +1,392 @@
+*NOTE: This page is still a work in progress.*
+
+* Naming Conventions
+1. =Item= refers to a file or a directory.
+
+2. =Highlighting= refers to the action of clicking a directory item (one
+   or more than one) once. This means that you can use your mouse to
+   select and highlight multiple items in the directory.
+
+3. =Marking= refers to the action of the =mark= or =toggle-mark= command
+   to "select" one or more currently highlighted directory items. You
+   can see the list of all the files that you have marked in the
+   =Marks List= using =View -> Marks List= or by using the =show-marks=
+   command. When you call any of the commands, the commands will be
+   aware of these markings and do the action accordingly. For example,
+   if we use the =rename= command and if there are marked files, your
+   choice of text editor is opened with the list of all the file names.
+   You can change these and write to the file to rename them
+   accordingly.
+
+* Bookmarks
+Bookmarks allows you to instantly go to your favourite or frequently
+visited directories. You can add, edit, remove and even load bookmarks
+directly from a text file. Bookmarks are read and stored in plain text
+files that has the following structure:
+
+​# This is a comment -- Any lines that begin with # are ignored and empty
+lines are ignored as well.
+
+bookmarktitle1 bookmarkdirectorypath1 bookmarktitle2
+bookmarkdirectorypath2
+
+* Interactive Commands
+These are commands that can be executed using the =inputbar= UI
+component. By default, pressing =: (colon)= key pops up the inputbar.
+You can type a name of the command in this bar or a line number to go to
+in the current directory of the focused pane. Example: =mark= or =42=,
+where =mark= would mark the current item under focus or highlighted
+items (more than one items).
+
+** Types of Command
+There are three variants for most of the commands: =Current=, =Local=
+and =Global=. If any interactive command has scope available, they are
+named accordingly. For example, the =rename= command is actually the
+=Current= scoped command. It's other variants are =rename-local= and
+=rename-global= for =Local= and =Global= scope respectively.
+
+*** Current Scope
+This applies to the currently selected item. Any command that is
+=Current= scoped will run only on the currently highlighted item.
+
+*This includes mouse selection (also called as Highlighting)*.
+
+*** Local Scope
+This applies to the marks that are in the current directory which is
+conveniently called as a *Local Mark*. Any command that is =Local=
+scoped will run on the local marks.
+
+*This does not include mouse highlighting.*
+
+*** Global Scope
+This applies to the marks that are present in any directory. Unlike the
+=Local= scope the command that is =Global= scoped will run on the marks
+that are present in any directory.
+
+*This does not include mouse highlighting*.
+
+* Commands List
+Below is an exhaustive list of commands that are currently available in
+Navi. The default keybindings associated with them are mentioned. Below
+is a mapping of what some keys mean.
+
+1. =C= - Control
+2. =M= - Meta (Alt Key)
+3. =S= - Shift
+4. =SPC= - Space
+
+** Marking Item
+
+*** mark
+Marks the current item.
+
+*** toggle-mark
+Toggle the mark of the current item.
+
+Default keybinding: =SPC=
+
+*** mark-all
+Marks all the items in the current directory.
+
+Default keybinding: =C-a=
+
+*** mark-inverse
+Inverses the marks in the current directory.
+
+Default keybinding: =S-SPC=
+
+** Unmarking Item
+
+*** unmark
+Unmarks the current item.
+
+*** unmark-local
+=unmark= for *Local Marks*
+
+Default keybinding: =S-u=
+
+*** unmark-global
+=unmark= for *Global Marks*
+
+Default keybinding: =C-S-u=
+
+** Change Permission
+
+*** chmod
+Change the permission of the current item using three digit numbers
+
+Example: 777, 666, 000 etc.
+
+*** chmod-local
+Similar to =chmod= for *Local Marks*
+
+*** chmod-global
+Similar to =chmod= for *Global Marks*
+
+** Renaming Files
+*NOTE: Renaming more than one item leads to /bulk renaming/. This is
+where a text editor of your choice (set it in the configuration) opens
+up a temporary "rename file" and enables you to rename all the marked
+files once you save and close the said "rename file"*
+
+*** rename
+Rename the highlighted item.
+
+Default keybinding: =S-r=
+
+*** rename-local
+=rename= for *Local Marks*
+
+*** rename-global
+=rename= for *Global Marks*
+
+** Cutting Files
+
+*** cut
+Cut (prepare for moving) the current item.
+
+Default keybinding: =C-x=
+
+*** cut-local
+=cut= for *Local Marks*
+
+*** cut-global
+=cut= for *Global Marks*
+
+** Copying Files
+
+*** copy
+Copy the current item.
+
+Default keybinding: =C-c=
+
+*** copy-local
+=copy= for *Local Marks*
+
+*** copy-global
+=copy= for *Global Marks*
+
+** Pasting (Moving) Files
+
+*** paste
+Paste (Move) the current item.
+
+Default keybinding: =p=
+
+** Deleting Files
+
+*** delete
+Delete the highlighted items(s).
+
+*WARNING: Please be careful when using this command, this does not trash
+the items, it directly deletes them. If you want to trash use the
+/trash/ command*
+
+Default keybinding: =S-d=
+
+*** delete-local
+=delete= for *Local Marks*
+
+*** delete-global
+=delete= for *Global Marks*
+
+** Trashing Files
+
+*** trash
+Trash the current item.
+
+Default keybinding: =S-t=
+
+*** trash-local
+=trash= for *Local Marks*
+
+Default keybinding: =S-t=
+
+*** trash-global
+=trash= for *Global Marks*
+
+Default keybinding: =S-t=
+
+** filter
+Set a filter to directory.
+
+Example: =*= displays everything, =*.csv= displays only the csv files,
+=*.png= displays only the png files
+
+** unfilter
+Reset the appplied filter.
+
+** refresh
+Force refresh the current directory.
+
+*NOTE: By default, Navi watches the directory for changes and loads
+them, so there is no requirement to refresh the directory. This command
+is there just in case something does not look right.*
+
+** hidden-files
+Toggles the hidden files.
+
+Default keybinding: =C-h=
+
+NOTE: Hidden files are those items whose name start with a period like
+=.config=, =.gitignore= etc.
+
+** Panes
+
+*** bookmark-pane
+Opens the bookmarks list.
+
+*** marks-pane
+Opens the marks list.
+
+*** messages-pane
+Opens the messages list.
+
+*** preview-pane
+Toggles the preview pane.
+
+Default keybinding: =C-p=
+
+The preview pane handles previewing images (good number of formats) and
+PDF documents (first page) =asynchronously=. This means that the
+previewing experience will be seamless and without any lag. Navi uses
+=ImageMagick= library under the hood for previewing images and therefore
+any image formats supported my ImageMagick is supported by Navi.
+
+** Misc
+*** menu-bar
+Toggles the menu bar.
+
+Default keybinding: =C-m=
+
+*** focus-path
+Focuses the path widget and sets it in edit mode.
+
+Default keybinding: =C-l=
+
+*** item-property
+Display the property of the currently focused item.
+
+*** toggle-header
+
+Toggle the display of header information.
+
+*** toggle-cycle
+
+Toggle the cycle (last item to first item and vice-versa) during navigation.
+
+** Shell Commands
+*** TODO shell-command
+Run a shell command /synchronously/ (blocking).
+
+*NOTE: This blocks the main GUI thread until the command finished
+executing*
+
+*** TODO shell-command-async
+Run a shell command /asynchronously/ (non-blocking).
+
+The running commands can be seen in the =Task Widget=
+
+** Bookmarks
+
+*** bookmark-add
+Add a new non-existing bookmark
+
+*** bookmark-remove
+Remove an existing bookmark
+
+*** bookmark-edit
+Edit an existing bookmark
+
+- Args:
+
+  =title= - this tells Navi to edit the bookmark title =path= - this
+  tells Navi to edit the bookmark directory that the bookmark points to
+
+*** bookmark-go
+Go to the directory pointed by the bookmark
+
+- Args:
+
+  =bookmark-name= - a unique bookmark name
+
+*** bookmark-save
+Save the bookmarks that have been added.
+
+*NOTE: Saving of the bookmarks added is done when the application exits.
+If you feel insecure about losing your bookmarks, then you can run this
+command manually.*
+
+** Searching Items
+Searching is *Regular Expression* enabled. So you can pinpoint exactly
+the file that you want to look for.
+
+*** search
+Searches the current directory for the search term
+
+Default Keybinding: =/=
+
+*** search-next
+Goes to the next best match for the search term
+
+Default Keybinding: =n=
+
+*** search-prev
+Goes to the previous best match for the search term
+
+Default Keybinding: =S-n=
+
+* Linux Only
+Sorry, this software is built keeping in mind Linux and it's derivatives
+only.
+
+* Configuration with Lua
+Navi can be configured using lua. The default configuration file is
+provided in this git repository. Navi looks for the configuration file
+in the XDG standard config directory (=~/.config=). You can place your
+configuration file in the =~/.config/navi/= directory. The configuration
+file should be named =config.lua=.
+
+Configuration includes all the settings that can be changed for Navi and
+keybindings can also be changed.
+
+*TL;DR: Navi configuration file (config.lua) should be placed at this
+location ( =~/.config/navi/config.lua=)*
+
+Copy and paste the following template config file into the configuration directory.
+
+#+begin_src lua
+settings = {
+    ui = {
+        preview_pane = {
+            shown = false -- preview pane visibility
+        },
+
+        menu_bar = {
+            shown = false -- menubar visibility
+        },
+
+        status_bar = {
+            shown = false -- statusbar visibility
+        },
+
+        file_pane = {
+            -- the key names (the names on the left hand side) should be one of name,
+            -- permission, modified_date and size. The right hand side string represents
+            -- the header titles
+            columns = {
+                name = "NAME",
+                -- permission = "PERM",
+                -- modified_date = "Date",
+                -- size = "SIZE"
+            },
+            headers = false, -- headers visibility
+            cycle = true, -- cycle from the last item to the first and vice-versa or no
+        }
+    }
+}
+#+end_src
+
+* TODO Scripting with Lua
+Navi can be scripted to include custom actions by subscribing to hooks
+and perform custom actions in response to those hooks.

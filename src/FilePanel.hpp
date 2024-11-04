@@ -88,17 +88,29 @@ public:
     void Filters(const QString &filterString) noexcept;
     void ResetFilter() noexcept;
     void ForceUpdate() noexcept;
-    bool Chmod(const QString &permString) noexcept;
+    void ChmodItem() noexcept;
+    void ChmodItemsLocal() noexcept;
+    void ChmodItemsGlobal() noexcept;
     bool SetPermissions(const QString &filePath,
                         const QString &permString) noexcept;
-    void CopyItems() noexcept;
-    void CutItems() noexcept;
+    void CopyItem() noexcept;
+    void CopyItemsLocal() noexcept;
+    void CopyItemsGlobal() noexcept;
+    void CutItem() noexcept;
+    void CutItemsLocal() noexcept;
+    void CutItemsGlobal() noexcept;
     void DropCopyRequested(const QStringList &sourcePaths) noexcept;
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
-    void SortItems(SortBy sortMethod, const Qt::SortOrder &sortOrder = Qt::SortOrder::AscendingOrder) noexcept;
+    void SortItems(SortBy sortMethod,
+                   const Qt::SortOrder &sortOrder =
+                       Qt::SortOrder::AscendingOrder) noexcept;
+    void ToggleHeaders(const bool &state) noexcept;
+    void ToggleHeaders() noexcept;
+    void SetCycle(const bool &state) noexcept;
+    void ToggleCycle() noexcept;
 
 signals:
     void afterDirChange(QString path);
@@ -165,10 +177,10 @@ private:
     Inputbar *m_inputbar;
     Statusbar *m_statusbar;
 
-    // This is used to store the string of the current item under focus
-    // which will then be used to focus the item again after the directory
-    // reloads
-    // QString m_old_item_name;
+    // This is used to store the filenames that are marked for cutting or copying.
+    QStringList m_register_files_list;
 
     QPoint m_drag_start_position;
+
+    bool m_cycle_item = true;
 };

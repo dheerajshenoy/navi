@@ -39,6 +39,6 @@ FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
 
     m_layout->addRow("Icon", iconLabel);
     QPushButton *closeButton = new QPushButton("Close");
-    m_layout->add(closeButton);
+    m_layout->addRow(closeButton);
     connect(closeButton, &QPushButton::clicked, this, [&]() { this->close(); });
 }
