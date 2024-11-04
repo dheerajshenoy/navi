@@ -63,13 +63,18 @@ public:
     void PrevItem() noexcept;
 
     void ToggleMarkItem() noexcept;
+    void ToggleMarkDWIM() noexcept;
     void MarkItem() noexcept;
+    void MarkItems(const QModelIndexList &indexes) noexcept;
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
+    void MarkDWIM() noexcept;
 
     void UnmarkItem() noexcept;
+    void UnmarkItems(const QModelIndexList &list) noexcept;
     void UnmarkItemsLocal() noexcept;
     void UnmarkItemsGlobal() noexcept;
+    void UnmarkDWIM() noexcept;
 
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
@@ -132,6 +137,9 @@ public:
     void SetMarkForegroundColor(const QString &markForeground) noexcept;
     void SetMarkBackgroundColor(const QString &markBackground) noexcept;
 
+    void ToggleVisualLine() noexcept;
+    void ToggleVisualLine(const bool &state) noexcept;
+
 signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
@@ -154,7 +162,6 @@ private:
     void dragRequested() noexcept;
     void selectHelper(const QModelIndex &index, const bool selectFirst) noexcept;
     void selectFirstItem() noexcept;
-    void initKeybinds() noexcept;
     void initContextMenu() noexcept;
     void handleItemDoubleClicked(const QModelIndex &index) noexcept;
     void initSignalsSlots() noexcept;
@@ -174,6 +181,7 @@ private:
     QAction *m_context_action_paste = nullptr;
     QAction *m_context_action_delete = nullptr;
     QAction *m_context_action_trash = nullptr;
+    QAction *m_context_action_rename = nullptr;
     QAction *m_context_action_properties = nullptr;
     QAction *m_context_action_open_terminal = nullptr;
 
@@ -203,6 +211,8 @@ private:
     QPoint m_drag_start_position;
 
     bool m_cycle_item = true;
+    bool m_visual_line_mode = false;
 
     unsigned int m_bulk_rename_threshold = 5;
+    QModelIndex m_visual_start_index;
 };

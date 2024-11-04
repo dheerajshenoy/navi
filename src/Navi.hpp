@@ -21,6 +21,8 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QStringView>
+#include <QActionGroup>
+
 #include "sol/sol.hpp"
 
 // Config related things
@@ -148,11 +150,15 @@ private:
     QAction *m_viewmenu__messages = nullptr;
     QAction *m_viewmenu__marks_buffer = nullptr;
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
+
     QMenu *m_viewmenu__sort_menu = nullptr;
     QAction *m_viewmenu__sort_by_name = nullptr;
     QAction *m_viewmenu__sort_by_size = nullptr;
     QAction *m_viewmenu__sort_by_date = nullptr;
     QAction *m_viewmenu__sort_ascending = nullptr;
+    QAction *m_viewmenu__sort_descending = nullptr;
+
+    QActionGroup *m_viewmenu__sort_asc_desc_group = nullptr;
 
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
@@ -188,11 +194,13 @@ private:
       "toggle-mark",
       "mark-inverse",
       "mark-all",
+      "mark-dwim",
 
       // Unmark
       "unmark",
       "unmark-global",
       "unmark-local",
+      "unmark-dwim",
 
       // Chmod
       "chmod",

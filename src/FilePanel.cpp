@@ -8,7 +8,6 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
   this->setLayout(m_layout);
   m_layout->addWidget(m_table_view);
   m_table_view->setModel(m_model);
-  this->show();
 
   // m_model->setNameFilterDisables(false);
 
@@ -18,10 +17,10 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
   m_terminal_args = QStringList() << "--working-directory" << "%d";
 
   initSignalsSlots();
-  initKeybinds();
   initContextMenu();
 
   setAcceptDrops(true);
+  this->show();
 }
 
 void FilePanel::ResetFilter() noexcept {
@@ -38,8 +37,12 @@ void FilePanel::initContextMenu() noexcept {
   m_context_action_copy = new QAction("Copy");
   m_context_action_paste = new QAction("Paste");
   m_context_action_delete = new QAction("Delete");
+  m_context_action_rename = new QAction("Rename");
   m_context_action_trash = new QAction("Trash");
   m_context_action_properties = new QAction("Properties");
+
+  connect(m_context_action_rename, &QAction::triggered, this,
+          [&]() { RenameDWIM(); });
 
   connect(m_context_action_open_terminal, &QAction::triggered, this,
           [&]() { OpenTerminal(); });
@@ -48,15 +51,15 @@ void FilePanel::initContextMenu() noexcept {
           [&]() { SelectItem(); });
 
   connect(m_context_action_copy, &QAction::triggered, this,
-          [&]() { CopyItem(); });
+          [&]() { CopyDWIM(); });
   connect(m_context_action_paste, &QAction::triggered, this,
           [&]() { PasteItems(); });
 
   connect(m_context_action_delete, &QAction::triggered, this,
-          [&]() { DeleteItem(); });
+          [&]() { DeleteDWIM(); });
 
   connect(m_context_action_trash, &QAction::triggered, this,
-          [&]() { TrashItem(); });
+          [&]() { TrashDWIM(); });
 
   connect(m_context_action_properties, &QAction::triggered, this,
           [&]() { ItemProperty(); });
@@ -79,8 +82,6 @@ Result<bool> FilePanel::OpenTerminal(const QString &directory) noexcept {
     return Result(false, "Directory doesn't exist");
   }
 }
-
-void FilePanel::initKeybinds() noexcept {}
 
 void FilePanel::initSignalsSlots() noexcept {
 
@@ -265,18 +266,30 @@ FilePanel::~FilePanel() {}
 ///////////////////////////
 
 void FilePanel::NextItem() noexcept {
-  QModelIndex currentIndex = m_table_view->currentIndex();
-  int nextRow = currentIndex.row() + 1;
+    QModelIndex currentIndex = m_table_view->currentIndex();
+    int nextRow = currentIndex.row() + 1;
 
-  // Loop to start
-  if (m_cycle_item && nextRow >= m_model->rowCount(m_table_view->rootIndex()))
-      nextRow = 0;
+    // Loop to start
+    if (m_cycle_item && nextRow >= m_model->rowCount(m_table_view->rootIndex()))
+        nextRow = 0;
 
-  QModelIndex nextIndex = m_model->index(nextRow, 0);
-  if (nextIndex.isValid()) {
-    m_table_view->setCurrentIndex(nextIndex);
-    m_table_view->scrollTo(nextIndex);
-  }
+    QModelIndex nextIndex = m_model->index(nextRow, 0);
+    if (nextIndex.isValid()) {
+        m_table_view->setCurrentIndex(nextIndex);
+        m_table_view->scrollTo(nextIndex);
+
+        if (m_visual_line_mode) {
+            // Update selection to include the new index
+            QItemSelection selection(m_visual_start_index, nextIndex);
+            m_table_view->selectionModel()->select(
+                selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+            m_table_view->selectionModel()->setCurrentIndex(
+                nextIndex, QItemSelectionModel::NoUpdate);
+        }
+    }
+
+
+
   // TODO: Add hook
 }
 
@@ -293,8 +306,14 @@ void FilePanel::PrevItem() noexcept {
   if (prevIndex.isValid()) {
     m_table_view->setCurrentIndex(prevIndex);
     m_table_view->scrollTo(prevIndex);
+    if (m_visual_line_mode) {
+      // Update selection to include the new index
+      QItemSelection selection(m_visual_start_index, prevIndex);
+      m_table_view->selectionModel()->select(selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+      m_table_view->selectionModel()->setCurrentIndex(
+          prevIndex, QItemSelectionModel::NoUpdate);
+    }
   }
-  // TODO: Add hook
 }
 
 void FilePanel::selectHelper(const QModelIndex &index,
@@ -343,16 +362,57 @@ void FilePanel::ToggleMarkItem() noexcept {
   }
 }
 
+void FilePanel::ToggleMarkDWIM() noexcept {
+    if (m_table_view->selectionModel()->hasSelection()) {
+        auto indexes = m_table_view->selectionModel()->selectedIndexes();
+
+        for (const auto &index : indexes) {
+          if (m_model->data(index, static_cast<int>(Role::Marked))
+                  .toBool()) {
+            m_model->setData(index, false,
+                             static_cast<int>(Role::Marked));
+            m_model->removeMarkedFile(index);
+          } else {
+            m_model->setData(index, true,
+                             static_cast<int>(Role::Marked));
+          }
+        }
+    } else {
+      ToggleMarkItem();
+    }
+}
+
 void FilePanel::MarkItem() noexcept {
-  // if (m_table_view->selectionModel()->hasSelection()) {
-  //   auto indexes = m_table_view->selectionModel()->selectedIndexes();
-  //   for (auto index : indexes) {
-  //     m_model->setData(index, true, static_cast<int>(Role::Marked));
-  //   }
-  // } else {
   m_model->setData(m_table_view->currentIndex(), true,
                    static_cast<int>(Role::Marked));
-  // }
+}
+
+void FilePanel::MarkItems(const QModelIndexList &list) noexcept {
+    for (auto index : list)
+      m_model->setData(index, true, static_cast<int>(Role::Marked));
+}
+
+void FilePanel::MarkDWIM() noexcept {
+    if (m_table_view->selectionModel()->hasSelection()) {
+        MarkItems(m_table_view->selectionModel()->selectedIndexes());
+    } else {
+    MarkItem();
+  }
+}
+
+void FilePanel::UnmarkDWIM() noexcept {
+    if (m_table_view->selectionModel()->hasSelection()) {
+        UnmarkItems(m_table_view->selectionModel()->selectedIndexes());
+    } else {
+    MarkItem();
+  }
+}
+
+void FilePanel::UnmarkItems(const QModelIndexList &list) noexcept {
+  for (auto index : list) {
+    m_model->setData(index, false, static_cast<int>(Role::Marked));
+    m_model->removeMarkedFile(index);
+  }
 }
 
 void FilePanel::UnmarkItem() noexcept {
@@ -361,9 +421,9 @@ void FilePanel::UnmarkItem() noexcept {
 }
 
 void FilePanel::UnmarkItemsGlobal() noexcept {
-  if (m_model->hasMarks()) {
+    if (m_model->hasMarks()) {
     QString confirm =
-        m_inputbar->getInput("Do you want to clear %1 global marks ? (y/N)")
+        m_inputbar->getInput(QString("Do you want to clear %1 global marks ? (y/N)").arg(m_model->getMarkedFilesCount()))
             .toLower();
 
     if (confirm == "y")
@@ -391,12 +451,32 @@ void FilePanel::UnmarkItemsLocal() noexcept {
 }
 
 void FilePanel::GotoFirstItem() noexcept {
-  m_table_view->setCurrentIndex(m_model->index(0, 0));
+    QModelIndex index = m_model->index(0, 0);
+    m_table_view->setCurrentIndex(index);
+
+    if (m_visual_line_mode) {
+      // Update selection to include the new index
+      QItemSelection selection(m_visual_start_index, index);
+      m_table_view->selectionModel()->select(
+          selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+      m_table_view->selectionModel()->setCurrentIndex(
+          index, QItemSelectionModel::NoUpdate);
+    }
 }
 
 void FilePanel::GotoLastItem() noexcept {
-  m_table_view->setCurrentIndex(
-      m_model->index(m_model->rowCount(m_table_view->rootIndex()) - 1, 0));
+  QModelIndex index =
+      m_model->index(m_model->rowCount(m_table_view->rootIndex()) - 1, 0);
+  m_table_view->setCurrentIndex(index);
+
+  if (m_visual_line_mode) {
+    // Update selection to include the new index
+    QItemSelection selection(m_visual_start_index, index);
+    m_table_view->selectionModel()->select(
+        selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+    m_table_view->selectionModel()->setCurrentIndex(
+        index, QItemSelectionModel::NoUpdate);
+    }
 }
 
 void FilePanel::GotoItem(const uint &itemNum) noexcept {
@@ -1450,4 +1530,34 @@ void FilePanel::SetMarkForegroundColor(const QString &markForeground) noexcept {
 
 void FilePanel::SetMarkBackgroundColor(const QString &markBackground) noexcept {
     m_model->setMarkBackgroundColor(markBackground);
+}
+
+void FilePanel::ToggleVisualLine() noexcept {
+    m_visual_line_mode = !m_visual_line_mode;
+    if (m_visual_line_mode) {
+        m_visual_start_index = m_table_view->currentIndex();
+        m_table_view->selectionModel()->select(m_visual_start_index,
+                                               QItemSelectionModel::Current);
+        m_table_view->setSelectionMode(QAbstractItemView::MultiSelection);
+    } else {
+        m_table_view->clearSelection();
+        m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
+    }
+
+    m_statusbar->SetVisualLineMode(m_visual_line_mode);
+}
+
+void FilePanel::ToggleVisualLine(const bool &state) noexcept {
+  m_visual_line_mode = state;
+  if (state) {
+    m_visual_start_index = m_table_view->currentIndex();
+    m_table_view->selectionModel()->select(m_visual_start_index,
+                                           QItemSelectionModel::Current);
+    m_table_view->setSelectionMode(QAbstractItemView::MultiSelection);
+  } else {
+      m_table_view->clearSelection();
+    m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
+  }
+
+  m_statusbar->SetVisualLineMode(state);
 }

@@ -269,6 +269,10 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->MarkAllItems();
   };
 
+  commandMap["mark-dwim"] = [this](const QStringList &args) {
+    m_file_panel->MarkDWIM();
+  };
+
   commandMap["toggle-mark"] = [this](const QStringList &args) {
     m_file_panel->ToggleMarkItem();
   };
@@ -705,10 +709,17 @@ void Navi::initKeybinds() noexcept {
   QShortcut *kb_focus_file_path_widget =
       new QShortcut(QKeySequence("Ctrl+l"), this);
 
+  QShortcut *kb_visual_line = new QShortcut(QKeySequence("Shift+v"), this);
+
+  connect(kb_visual_line, &QShortcut::activated, this,
+          [&]() { m_file_panel->ToggleVisualLine(); });
+
   connect(kb_mark_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::ToggleMarkItem);
+          &FilePanel::ToggleMarkDWIM);
+
   connect(kb_mark_inverse, &QShortcut::activated, m_file_panel,
           &FilePanel::MarkInverse);
+
   connect(kb_mark_all, &QShortcut::activated, m_file_panel,
           &FilePanel::MarkAllItems);
 
@@ -825,14 +836,27 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__bookmarks_buffer->setCheckable(true);
 
   m_viewmenu__sort_menu = new QMenu("Sort by");
+
+
   m_viewmenu__sort_by_name = new QAction("Name");
   m_viewmenu__sort_by_size = new QAction("Size");
   m_viewmenu__sort_by_date = new QAction("Modified Date");
   m_viewmenu__sort_ascending = new QAction("Ascending");
+  m_viewmenu__sort_ascending->setCheckable(true);
+  m_viewmenu__sort_ascending->setChecked(true);
+
+  m_viewmenu__sort_descending = new QAction("Descending");
+  m_viewmenu__sort_descending->setCheckable(true);
+
+  m_viewmenu__sort_asc_desc_group = new QActionGroup(m_viewmenu__sort_menu);
+  m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_ascending);
+  m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_descending);
+  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_ascending);
+  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_descending);
+  m_viewmenu__sort_menu->addSeparator();
   m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_name);
   m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_size);
   m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_date);
-  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_ascending);
   m_viewmenu->addMenu(m_viewmenu__sort_menu);
 
   m_viewmenu__sort_ascending->setCheckable(true);
@@ -894,9 +918,14 @@ void Navi::initMenubar() noexcept {
           [&](const bool &state) {
               if (state)
                   m_sort_order = Qt::SortOrder::AscendingOrder;
-              else
+          });
+
+  connect(m_viewmenu__sort_descending, &QAction::triggered, this,
+          [&](const bool &state) {
+              if (state)
                   m_sort_order = Qt::SortOrder::DescendingOrder;
           });
+
 
   connect(m_viewmenu__sort_by_name, &QAction::triggered, this, [&]() {
       m_file_panel->SortItems(FilePanel::SortBy::Name, m_sort_order);

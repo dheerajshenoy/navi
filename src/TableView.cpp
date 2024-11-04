@@ -11,7 +11,7 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     this->setHorizontalHeader(m_header_view);
     //setFrameShadow(QTableView::Shadow::Plain);
     //setFrameStyle(0);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setSelectionMode(QAbstractItemView::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 
     HeaderProxyStyle *headerStyle = new HeaderProxyStyle();

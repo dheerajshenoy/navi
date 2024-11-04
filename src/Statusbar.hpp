@@ -17,6 +17,7 @@ enum class MessageType { INFO = 0, WARNING, ERROR };
 class Statusbar : public QWidget {
     Q_OBJECT
 
+
 signals:
   void visibilityChanged(const bool &state);
     void logMessage(const QString &message, const MessageType &type);
@@ -25,6 +26,7 @@ public:
     Statusbar(QWidget *parent = nullptr);
     ~Statusbar();
 
+    void SetVisualLineMode(const bool &state) noexcept;
     void Message(const QString &message, MessageType type = MessageType::INFO,
                  int ms = 2) noexcept;
     void SetFile(const QString &filename) noexcept;
@@ -52,6 +54,7 @@ private:
     QLabel *m_file_modified_label = new QLabel();
     QLabel *m_filter_label = new QLabel("FILTER");
     QLabel *m_num_items_label = new QLabel();
+    QLabel *m_visual_line_mode_label = new QLabel("VISUAL LINE");
 
     QLocale m_locale;
     QString m_file_path;

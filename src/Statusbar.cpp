@@ -11,6 +11,8 @@ Statusbar::Statusbar(QWidget *parent)
 
     m_message_label->hide();
     m_vert_layout->addLayout(m_layout);
+    m_layout->addWidget(m_visual_line_mode_label);
+    m_layout->addStretch();
     m_layout->addWidget(m_file_name_label);
     m_layout->addStretch();
     m_layout->addWidget(m_filter_label);
@@ -23,6 +25,8 @@ Statusbar::Statusbar(QWidget *parent)
     m_layout->addWidget(m_file_modified_label);
     m_layout->addSpacing(40);
     m_layout->addWidget(m_file_perm_label);
+
+    m_visual_line_mode_label->setHidden(true);
 
     m_vert_layout->addWidget(m_message_label);
     m_filter_label->setHidden(true);
@@ -85,3 +89,10 @@ void Statusbar::SetFilterMode(const bool state) noexcept {
 }
 
 Statusbar::~Statusbar() {}
+
+void Statusbar::SetVisualLineMode(const bool &state) noexcept {
+    if (state)
+        m_visual_line_mode_label->show();
+    else
+        m_visual_line_mode_label->hide();
+}
