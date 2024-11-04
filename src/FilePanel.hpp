@@ -61,13 +61,16 @@ public:
     void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
     void PrevItem() noexcept;
+
     void ToggleMarkItem() noexcept;
     void MarkItem() noexcept;
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
+
     void UnmarkItem() noexcept;
     void UnmarkItemsLocal() noexcept;
     void UnmarkItemsGlobal() noexcept;
+
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
@@ -87,8 +90,11 @@ public:
     void DeleteDWIM() noexcept;
 
     void TrashItem() noexcept;
+    void TrashItems(const QStringList &files) noexcept;
     void TrashItemsLocal() noexcept;
     void TrashItemsGlobal() noexcept;
+    void TrashDWIM() noexcept;
+
     void ToggleHiddenFiles() noexcept;
     void Search(QString searchText = "") noexcept;
     void SearchNext() noexcept;
@@ -104,9 +110,13 @@ public:
     void CopyItem() noexcept;
     void CopyItemsLocal() noexcept;
     void CopyItemsGlobal() noexcept;
+    void CopyDWIM() noexcept;
+
     void CutItem() noexcept;
     void CutItemsLocal() noexcept;
     void CutItemsGlobal() noexcept;
+    void CutDWIM() noexcept;
+
     void DropCopyRequested(const QStringList &sourcePaths) noexcept;
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ItemProperty() noexcept;

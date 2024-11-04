@@ -406,8 +406,6 @@ void FilePanel::GotoItem(const uint &itemNum) noexcept {
 }
 
 void FilePanel::TrashItem() noexcept {
-  // TODO: trash items
-  // current selection single rename
   const QString &filePath = getCurrentItem();
 
   bool state = QFile::moveToTrash(filePath);
@@ -418,6 +416,61 @@ void FilePanel::TrashItem() noexcept {
   } else
     m_statusbar->Message(QString("Error trashing item %1 successfully!")
                              .arg(QFileInfo(filePath).fileName()));
+}
+
+void FilePanel::TrashItems(const QStringList &files) noexcept {
+    bool check = true;
+    for (const auto &filePath : files) {
+        if (check) {
+            QString inputConfirm =
+                m_inputbar
+            ->getInput(QString("Do you want to delete %1 and all of it's "
+                               "subitems ? (y, N, y!, n!)")
+                           .arg(filePath))
+            .toLower();
+            if (inputConfirm == "y") {
+                if (QFile::moveToTrash(filePath)) {
+                    m_model->removeMarkedFile(filePath);
+                    m_statusbar->Message(QString("Trashed item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
+                } else
+                    m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
+            }
+            else if (inputConfirm == "y!") {
+                check = false;
+                if (QFile::moveToTrash(filePath)) {
+                    m_model->removeMarkedFile(filePath);
+                    m_statusbar->Message(QString("Trashed item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
+                } else
+                    m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
+            } else if (inputConfirm == "n!") {
+                m_statusbar->Message("Trash operation cancelled");
+                return;
+            }
+        } else {
+            if (QFile::moveToTrash(filePath)) {
+                m_model->removeMarkedFile(filePath);
+                m_statusbar->Message(QString("Trashed item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
+            } else
+                m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
+        }
+    }
+}
+
+void FilePanel::TrashDWIM() noexcept {
+    auto localMarks = m_model->getMarkedFilesLocal();
+
+    if (localMarks.isEmpty()) {
+        TrashItem();
+        return;
+    }
+
+    TrashItems(localMarks);
 }
 
 void FilePanel::TrashItemsLocal() noexcept {
@@ -685,8 +738,10 @@ void FilePanel::RenameItems(const QStringList &files) noexcept {
 void FilePanel::RenameDWIM() noexcept {
     // If there are local marks
     auto localMarks = m_model->getMarkedFilesLocal();
-    if (localMarks.isEmpty())
+    if (localMarks.isEmpty()) {
+        RenameItem();
         return;
+    }
 
     if (localMarks.size() > m_bulk_rename_threshold) {
         BulkRename(localMarks);
@@ -696,8 +751,11 @@ void FilePanel::RenameDWIM() noexcept {
 
 void FilePanel::DeleteDWIM() noexcept {
     auto localMarks = m_model->getMarkedFilesLocal();
-    if (localMarks.isEmpty())
+    // TODO: Fix some wierd behavior
+    if (localMarks.isEmpty()) {
+        DeleteItem();
         return;
+    }
     DeleteItems(localMarks);
 }
 
@@ -712,7 +770,7 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                 QString inputConfirm =
                     m_inputbar
             ->getInput(QString("Do you want to delete %1 and all of it's "
-                               "subitems ? (y, N, y!)")
+                               "subitems ? (y, N, y!, n!)")
                            .arg(itemPath))
             .toLower();
                 if (inputConfirm == "y") {
@@ -723,12 +781,13 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                         m_statusbar->Message(QString("Error deleting %1").arg(itemPath), MessageType::ERROR);
 
                 } else if (inputConfirm == "n") {
-                    m_statusbar->Message("Delete operation cancelled");
-                    return;
                 } else if (inputConfirm == "y!") {
                     dir.removeRecursively();
                     m_model->removeMarkedFile(itemPath);
                     check = false;
+                } else if (inputConfirm == "n!") {
+                    m_statusbar->Message("Delete operation cancelled!");
+                    return;
                 }
             } else {
                 if (dir.removeRecursively()) {
@@ -740,7 +799,7 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
         } else {
             QString inputConfirm =
                 m_inputbar
-                  ->getInput(QString("Do you want to delete %1 ? (y, N, y!)")
+                  ->getInput(QString("Do you want to delete %1 ? (y, N, y!, n!)")
                                  .arg(itemPath))
                   .toLower();
 
@@ -757,10 +816,10 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                         m_statusbar->Message(
                                              QString("Error deleting %1!").arg(itemPath));
                     check = false;
-                } else if (inputConfirm == "n") {
+                } else if (inputConfirm == "n!") {
                     m_statusbar->Message("Delete operation cancelled");
                     return;
-                }
+                } else if (inputConfirm == "n") {}
             } else {
                 if (QFile::remove(itemPath))
                     m_model->removeMarkedFile(itemPath);
@@ -775,7 +834,6 @@ void FilePanel::DeleteItem() noexcept {
   QString itemPath = getCurrentItem();
   if (m_model->isDir(m_table_view->currentIndex())) {
       QDir dir(itemPath);
-
 
     QString inputConfirm =
         m_inputbar
@@ -833,35 +891,24 @@ void FilePanel::DeleteItemsLocal() noexcept {
 
   if (m_model->hasMarksLocal()) {
     auto markedLocalFiles = m_model->getMarkedFilesLocal();
-
-    QString confirm =
-        m_inputbar
-            ->getInput(QString("Do you want to delete %1 items ? (y, N, y!)")
-                           .arg(markedLocalFiles.size()))
-            .toLower();
-    if (confirm == "y!")
-      check = false;
-    else if (confirm != "y") {
-      m_statusbar->Message("Delete operation cancelled");
-      return;
-    }
-
     for (const auto &itemPath : markedLocalFiles) {
       QFileInfo item(itemPath);
       if (item.isFile()) {
         if (check) {
           QString confirm =
               m_inputbar
-                  ->getInput(QString("Do you want to delete %1? (y, N, y!)")
+                  ->getInput(QString("Do you want to delete %1? (y, N, y!, n!)")
                                  .arg(itemPath))
                   .toLower();
           if (confirm == "y!") {
             check = false;
             _removeFile(itemPath);
           } else if (confirm == "y")
-            _removeFile(itemPath);
-          else
-            continue;
+              _removeFile(itemPath);
+          else if (confirm == "n!") {
+              m_statusbar->Message("Delete operation cancelled!");
+              return;
+          }
         } else
           _removeFile(itemPath);
       } else {
@@ -869,7 +916,7 @@ void FilePanel::DeleteItemsLocal() noexcept {
         if (check) {
           QString confirm =
               m_inputbar
-                  ->getInput(QString("Do you want to delete %1? (y, N, y!)")
+                  ->getInput(QString("Do you want to delete %1? (y, N, y!, n!)")
                                  .arg(itemPath))
                   .toLower();
 
@@ -878,8 +925,10 @@ void FilePanel::DeleteItemsLocal() noexcept {
             _removeDir(itemPath);
           } else if (confirm == "y")
             _removeDir(itemPath);
-          else
-            continue;
+          else if (confirm == "n!") {
+              m_statusbar->Message("Delete operation cancelled!");
+              return;
+          }
         } else
           _removeDir(itemPath);
       }
@@ -1112,9 +1161,21 @@ void FilePanel::PasteItems() noexcept {
   }
 }
 
+void FilePanel::CopyDWIM() noexcept {
+
+    auto localMarks = m_model->getMarkedFilesLocal();
+
+    if (localMarks.isEmpty()) {
+        CopyItem();
+        return;
+    }
+    m_file_op_type = FileOPType::COPY;
+    m_register_files_list = localMarks;
+}
+
 void FilePanel::CopyItem() noexcept {
-  m_file_op_type = FileOPType::COPY;
-  m_register_files_list = {getCurrentItem()};
+    m_file_op_type = FileOPType::COPY;
+    m_register_files_list = {getCurrentItem()};
 }
 
 void FilePanel::CopyItemsLocal() noexcept {
@@ -1125,6 +1186,19 @@ void FilePanel::CopyItemsLocal() noexcept {
 void FilePanel::CopyItemsGlobal() noexcept {
   m_file_op_type = FileOPType::COPY;
   m_register_files_list = m_model->getMarkedFiles();
+}
+
+void FilePanel::CutDWIM() noexcept {
+
+    auto localMarks = m_model->getMarkedFilesLocal();
+
+    if (localMarks.isEmpty()) {
+        CutItem();
+        return;
+    }
+
+    m_file_op_type = FileOPType::CUT;
+    m_register_files_list = localMarks;
 }
 
 void FilePanel::CutItem() noexcept {

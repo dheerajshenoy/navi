@@ -201,6 +201,10 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->RenameItemsLocal();
   };
 
+  commandMap["rename-dwim"] = [this](const QStringList &args) {
+    m_file_panel->RenameDWIM();
+  };
+
   commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
   commandMap["copy"] = [this](const QStringList &args) {
@@ -215,6 +219,10 @@ void Navi::setupCommandMap() noexcept {
       m_file_panel->CopyItemsLocal();
   };
 
+  commandMap["copy-dwim"] = [this](const QStringList &args) {
+      m_file_panel->CopyDWIM();
+  };
+
   commandMap["cut"] = [this](const QStringList &args) {
     m_file_panel->CutItem();
   };
@@ -227,10 +235,14 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->CutItemsLocal();
   };
 
+  commandMap["cut-dwim"] = [this](const QStringList &args) {
+    m_file_panel->CutDWIM();
+  };
+
   commandMap["paste"] = [this](const QStringList &args) { m_file_panel->PasteItems(); };
 
   commandMap["delete"] = [this](const QStringList &args) {
-    m_file_panel->DeleteDWIM();
+    m_file_panel->DeleteItem();
   };
 
   commandMap["delete-global"] = [this](const QStringList &args) {
@@ -239,6 +251,10 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["delete-local"] = [this](const QStringList &args) {
     m_file_panel->DeleteItemsLocal();
+  };
+
+  commandMap["delete-dwim"] = [this](const QStringList &args) {
+    m_file_panel->DeleteDWIM();
   };
 
   commandMap["mark"] = [this](const QStringList &args) {
@@ -280,11 +296,17 @@ void Navi::setupCommandMap() noexcept {
   commandMap["trash"] = [this](const QStringList &args) {
       m_file_panel->TrashItem();
   };
+
   commandMap["trash-local"] = [this](const QStringList &args) {
       m_file_panel->TrashItemsLocal();
   };
+
   commandMap["trash-global"] = [this](const QStringList &args) {
       m_file_panel->TrashItemsGlobal();
+  };
+
+  commandMap["trash-dwim"] = [this](const QStringList &args) {
+      m_file_panel->TrashDWIM();
   };
 
   commandMap["exit"] = [this](const QStringList &args) {
