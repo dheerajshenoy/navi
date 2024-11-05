@@ -241,17 +241,6 @@ private:
       "trash-global",
       "trash-dwim",
 
-      // misc
-      "filter",
-      "unfilter",
-      "refresh",
-      "hidden-files",
-      "menu-bar",
-      "focus-path",
-      "item-property",
-      "toggle-cycle",
-      "toggle-header",
-
       // Bookmarks
       "bookmark-add",
       "bookmark-remove",
@@ -269,6 +258,18 @@ private:
       "search",
       "search-next",
       "search-prev",
+
+      // misc
+      "filter",
+      "unfilter",
+      "refresh",
+      "hidden-files",
+      "menu-bar",
+      "focus-path",
+      "item-property",
+      "toggle-cycle",
+      "toggle-header",
+      "reload-config",
     };
 
     QStringListModel *m_input_completion_model = nullptr;

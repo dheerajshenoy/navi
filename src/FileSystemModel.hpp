@@ -49,6 +49,7 @@ public:
 
     void setSymlinkSeparator(const QString &separator) noexcept;
     void setSymlinkForeground(const QString &foreground) noexcept;
+    void setSymlinkVisible(const bool &state) noexcept { m_show_symlink = state; }
 
     void setMarkForegroundColor(const QString &color) noexcept;
     void setMarkBackgroundColor(const QString &color) noexcept;
@@ -167,4 +168,5 @@ private:
     QFont m_markHeaderFont, m_markFont;
     QString m_symlink_separator;
     QColor m_symlink_foreground;
+    bool m_show_symlink;
 };

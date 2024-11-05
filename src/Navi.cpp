@@ -125,10 +125,12 @@ void Navi::initConfiguration() {
         if (symlink_table) {
             auto symlink = symlink_table.value();
 
+            auto shown = symlink["shown"].get_or(true);
             auto foreground = QString::fromStdString(symlink["foreground"].get_or<std::string>(""));
             auto separator = QString::fromStdString(
                                                     symlink["separator"].get_or<std::string>("->"));
 
+            model->setSymlinkVisible(shown);
             model->setSymlinkSeparator(separator);
             model->setSymlinkForeground(foreground);
         }
@@ -240,6 +242,8 @@ void Navi::initConfiguration() {
       }
     }
   }
+
+  m_statusbar->Message("Reading configuration file done!");
 }
 
 void Navi::initBookmarks() noexcept {
@@ -288,6 +292,10 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
+
+  commandMap["reload-config"] = [this](const QStringList &args) {
+      initConfiguration();
+  };
 
   commandMap["toggle-cycle"] = [this](const QStringList &args) {
     m_file_panel->ToggleCycle();

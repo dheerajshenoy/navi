@@ -207,13 +207,17 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
     switch (m_column_list.at(index.column()).type) {
     case ColumnType::FileName: // File Name
-      if (fileInfo.isSymbolicLink())
-        return QString("%1 %2 %3")
-            .arg(fileInfo.fileName())
-            .arg(m_symlink_separator)
-            .arg(fileInfo.symLinkTarget());
-      else
+      if (fileInfo.isSymbolicLink()) {
+        if (m_show_symlink) {
+          return QString("%1 %2 %3")
+              .arg(fileInfo.fileName())
+              .arg(m_symlink_separator)
+              .arg(fileInfo.symLinkTarget());
+        } else
+            return QString("%1").arg(fileInfo.fileName());
+    } else {
         return fileInfo.fileName();
+    }
 
     case ColumnType::FileSize: // File Size
       return fileInfo.isDir()

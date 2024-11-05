@@ -359,31 +359,62 @@ Copy and paste the following template config file into the configuration directo
 settings = {
     ui = {
         preview_pane = {
-            shown = false, -- preview pane visibility
+            shown = false,
+            max_file_size = "2.4M", -- max file size to preview
+            fraction = 0.2,
         },
 
         menu_bar = {
-            shown = false -- menubar visibility
+            shown = false
         },
 
         status_bar = {
-            shown = false -- statusbar visibility
+            shown = true
+        },
+
+        input_bar = {
+            background = "#FF5000",
+            foreground = "#FFFFFF",
+            font = "JetBrainsMono Nerd Font Mono",
+        },
+
+        path_bar = {
+            shown = true,
         },
 
         file_pane = {
-            -- the key names (the names on the left hand side) should be one of name,
-            -- permission, modified_date and size. The right hand side string represents
-            -- the header titles
+            symlink = {
+                shown = true,
+                foreground = "#FF5000", -- TODO: not yet implemented
+                separator = "->",
+            },
+
             columns = {
                 name = "NAME",
                 -- permission = "PERM",
                 -- modified_date = "Date",
-                -- size = "SIZE"
+                -- size = "SIZE",
             },
-            headers = false, -- headers visibility
-            cycle = true, -- cycle from the last item to the first and vice-versa or no
+            headers = false,
+            cycle = true,
+            mark = {
+                foreground = "#FF5000",
+                background = nil,
+                italic = true,
+                bold = nil,
+                font = "JetBrainsMono Nerd Font Mono",
+                header = {
+                    foreground = "#FF5000",
+                    background = "#FFFFFF",
+                    italic = nil,
+                    bold = true,
+                }
+            },
         }
     }
+}
+
+keybinds = {
 }
 #+end_src
 
