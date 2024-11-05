@@ -34,8 +34,7 @@
   - [x] Image
   - [x] Documents
   - [ ] Syntax highlighting for the text document preview
-- [ ] Lua Integration for configuration
-- [ ] Wonky file completion in the file path widget when "~" is present
+- [x] Lua Integration for configuration
 - [-] Bookmarks
   - [x] Add
   - [x] Remove
@@ -47,24 +46,26 @@
   - [ ] Save bookmarks to file
 - [x] Icons
 - [x] Total number of items
-- [ ] Dual Pane
 - [x] FileWatcher
-- [ ] Add file operation cancel UI
-- [ ] Select renamed file after renaming
 - [x] Rename consider only marks here and not the global marks by default
-- [ ] Undo Operations
-- [ ] Show search match count
 - [x] Mouse scroll for folder
 - [x] Search bug
-- [ ] Shell commands
 - [x] Bulk rename editor multiple spawn bug
-- [ ] Bookmark file ignore comments and empty lines
 - [x] Sort
   - [x] Size
   - [x] Name
   - [x] Modified Date
 - [x] Close button for properties dialog
 - [x] Do what I mean (dwim) for all functions
-- [ ] Open with menu
 - [x] Background for vertical headers
+- [ ] Open with menu
 - [ ] Rich text in file panel
+- [ ] Bookmark file ignore comments and empty lines
+- [ ] Shell commands
+- [ ] Undo Operations
+- [ ] Show search match count
+- [ ] Add file operation cancel UI
+- [ ] Select renamed file after renaming
+- [ ] Dual Pane
+- [ ] Wonky file completion in the file path widget when "~" is present
+- [ ] Keybinds from Lua

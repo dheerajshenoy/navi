@@ -75,6 +75,7 @@ public:
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
     void GotoItem(const uint &itemNum) noexcept;
+    void GotoMiddleItem() noexcept;
 
     void RenameItem() noexcept;
     void RenameItems(const QStringList &files) noexcept;

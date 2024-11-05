@@ -480,9 +480,36 @@ void FilePanel::GotoLastItem() noexcept {
 }
 
 void FilePanel::GotoItem(const uint &itemNum) noexcept {
-  if (itemNum >= 0 &&
-      itemNum <= m_model->rowCount(m_table_view->rootIndex()) - 1)
-    m_table_view->setCurrentIndex(m_model->index(itemNum, 0));
+    if (itemNum >= 0 &&
+        itemNum <= m_model->rowCount(m_table_view->rootIndex()) - 1) {
+        QModelIndex index = m_model->index(itemNum, 0);
+        m_table_view->setCurrentIndex(index);
+
+        if (m_visual_line_mode) {
+            // Update selection to include the new index
+            QItemSelection selection(m_visual_start_index, index);
+            m_table_view->selectionModel()->select(selection,
+                                                   QItemSelectionModel::SelectionFlag::ClearAndSelect);
+            m_table_view->selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
+
+        }
+    }
+}
+
+void FilePanel::GotoMiddleItem() noexcept {
+    unsigned int middleRow = m_model->rowCount() / 2;
+
+    QModelIndex index = m_model->index(middleRow, 0);
+    m_table_view->setCurrentIndex(index);
+
+    if (m_visual_line_mode) {
+        // Update selection to include the new index
+        QItemSelection selection(m_visual_start_index, index);
+        m_table_view->selectionModel()->select(selection,
+                                               QItemSelectionModel::SelectionFlag::ClearAndSelect);
+        m_table_view->selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
+
+    }
 }
 
 void FilePanel::TrashItem() noexcept {

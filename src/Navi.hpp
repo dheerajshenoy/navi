@@ -44,13 +44,6 @@ static const QString CONFIG_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + CO
 #include "BookmarkManager.hpp"
 #include "BookmarkWidget.hpp"
 
-// Scope for the interactive commands (AT POINT, IN THE DIRECTORY, ALL THE MARKS)
-enum class CommandScope {
-    CURRENT = 0,
-    LOCAL,
-    GLOBAL
-};
-
 class Menubar : public QMenuBar {
     Q_OBJECT
 
@@ -114,6 +107,15 @@ public:
     void ToggleBookmarksBuffer(const bool &state) noexcept;
     void ToggleBookmarksBuffer() noexcept;
 
+    void ToggleShortcutsBuffer(const bool &state) noexcept;
+    void ToggleShortcutsBuffer() noexcept;
+
+    struct Keybind {
+        QString key;
+        QString command;
+        QString desc;
+    };
+
 private:
     void initConfiguration();
     void chmodHelper() noexcept;
@@ -127,6 +129,7 @@ private:
     bool createEmptyFile(const QString &filename) noexcept;
     QString getCurrentFile() noexcept;
     void ProcessCommand(const QString &commandtext) noexcept;
+    void generateKeybinds() noexcept;
 
 
     QWidget *m_widget = new QWidget();
@@ -258,19 +261,34 @@ private:
       "preview-pane",
       "marks-pane",
       "bookmarks-pane",
+      "shortcuts-pane",
 
       // Search
       "search",
       "search-next",
       "search-prev",
 
-      // TODO: Sort commands
+      // Sort
       "sort-name",
       "sort-name-desc",
       "sort-date",
       "sort-date-desc",
       "sort-size",
       "sort-size-desc",
+
+      // Navigation
+      "next-item",
+      "prev-item",
+      "first-item",
+      "last-item",
+      "middle-item",
+      "up-directory",
+      "select-item",
+
+      // Echo
+      "echo-info",
+      "echo-warn",
+      "echo-error",
 
       // misc
       "filter",
@@ -283,6 +301,7 @@ private:
       "toggle-cycle",
       "toggle-header",
       "reload-config",
+
     };
 
     QStringListModel *m_input_completion_model = nullptr;
@@ -297,4 +316,6 @@ private:
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
     sol::state lua;
+
+    QList<Keybind> m_keybind_list;
 };

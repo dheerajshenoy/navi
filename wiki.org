@@ -411,7 +411,7 @@ settings = {
         file_pane = {
             symlink = {
                 shown = true,
-                foreground = "#FF5000", -- TODO: not yet implemented
+                foreground = "#FF5000",
                 separator = "->",
             },
 
@@ -419,7 +419,7 @@ settings = {
                 name = "NAME",
                 -- permission = "PERM",
                 -- modified_date = "Date",
-                -- size = "SIZE",
+                -- size = "SIZE"
             },
             headers = false,
             cycle = true,
@@ -440,7 +440,31 @@ settings = {
     }
 }
 
-keybinds = {
+keybindings = {
+    { key = "h", command = "up-directory", desc = "Go to the parent directory" },
+    { key = "j", command = "next-item", desc = "Go to the next item" },
+    { key = "k", command = "prev-item", desc = "Go to the previous item" },
+    { key = "l", command = "select-item", desc = "Select item" },
+    { key = "g,g", command = "first-item", desc = "Go to the first item" },
+    { key = "z,z", command = "middle-item", desc = "Go to middle item" },
+    { key = "Shift+g", command = "last-item", desc = "Go to the last item" },
+    { key = "Shift+r", command = "rename-dwim", desc = "Rename item(s)" },
+    { key = "Shift+d", command = "delete-dwim", desc = "Delete item(s)" },
+    { key = "Space", command = "toggle-mark", desc = "Mark item(s)" },
+    { key = "F5", command = "refresh", desc = "Refresh current directory" },
+    { key = "Shift+Space", command = "mark-inverse", desc = "Mark inverse item(s)" },
+    { key = ":", command = "mark-inverse", desc = "Mark inverse item(s)" },
+    { key = "y,y", command = "copy-dwim", desc = "Copy item(s)" },
+    { key = "p", command = "paste", desc = "Paste item(s)" },
+    { key = "Shift+u", command = "unmark-dwim", desc = "Unmark item(s)" },
+    { key = "/", command = "search", desc = "Search (regex)" },
+    { key = "n", command = "search-next", desc = "Search next" },
+    { key = "Shift+n", command = "search-prev", desc = "Search previous" },
+    { key = "Ctrl+m", command = "toggle-menu-bar", desc = "Toggle menu bar" },
+    { key = "Ctrl+p", command = "preview-pane", desc = "Toggle preview pane" },
+    { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
+    { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
+    { key = ".", command = "toggle-hidden-files", desc = "Toggle hidden items" },
 }
 #+end_src
 

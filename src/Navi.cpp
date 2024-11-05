@@ -6,9 +6,10 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {
   initLayout();       // init layout
   initMenubar();      // init menubar
   initSignalsSlots(); // init signals and slots
-  initKeybinds();
+  // initKeybinds();
   setupCommandMap();
   initBookmarks();
+
   initConfiguration();
   setCurrentDir("~"); // set the current directory
 }
@@ -20,8 +21,8 @@ void Navi::initConfiguration() {
   try {
     lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
   } catch (const sol::error &e) {
-    m_statusbar->Message(
-        "No configuration file found. Skipping initializing configurations");
+      m_statusbar->Message("No configuration file found."
+                           "Skipping initializing configurations");
     return;
   }
 
@@ -243,7 +244,55 @@ void Navi::initConfiguration() {
     }
   }
 
+  // Read the KEYBINDINGS table
+  sol::optional<sol::table> keybindings_table_opt = lua["keybindings"];
+
+  if (keybindings_table_opt) {
+
+      sol::table keybindings_table = keybindings_table_opt.value();
+      m_keybind_list.reserve(keybindings_table.size());
+      for (std::size_t i = 1; i <= keybindings_table.size(); i++) {
+          sol::table entry = keybindings_table[i];
+          if (!entry)
+              continue;
+
+          auto key =
+              QString::fromStdString(entry["key"].get_or<std::string>(""));
+
+
+          if (key.isEmpty() || key.isNull())
+              continue;
+
+          auto command = QString::fromStdString(entry["command"].get_or<std::string>(""));
+          auto desc =
+              QString::fromStdString(entry["desc"].get_or<std::string>(""));
+
+          if (command.isEmpty() || command.isNull())
+              continue;
+
+          Keybind kb;
+          kb.key = key;
+          kb.command = command;
+          kb.desc = desc;
+
+          qDebug() << key << " " << command << " " << desc;
+
+          m_keybind_list.append(kb);
+      }
+          generateKeybinds();
+      }
+
   m_statusbar->Message("Reading configuration file done!");
+}
+
+// Function to create Qt keybindings from list of ‘Keybinds’ struct
+void Navi::generateKeybinds() noexcept {
+
+    for (const auto &keybind : m_keybind_list) {
+        QShortcut *shortcut = new QShortcut(QKeySequence(keybind.key), this);
+        connect(shortcut, &QShortcut::activated, this,
+                [&]() { ProcessCommand(keybind.command); });
+    }
 }
 
 void Navi::initBookmarks() noexcept {
@@ -292,6 +341,58 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
+  commandMap["shortcuts-pane"] = [this](const QStringList &args) {
+    ToggleShortcutsBuffer();
+  };
+
+  commandMap["up-directory"] = [this](const QStringList &args) {
+    m_file_panel->UpDirectory();
+  };
+
+  commandMap["select-item"] = [this](const QStringList &args) {
+      m_file_panel->SelectItem();
+  };
+
+  commandMap["next-item"] = [this](const QStringList &args) {
+    m_file_panel->NextItem();
+  };
+
+  commandMap["prev-item"] = [this](const QStringList &args) {
+      m_file_panel->PrevItem();
+  };
+
+  commandMap["first-item"] = [this](const QStringList &args) {
+      m_file_panel->GotoFirstItem();
+  };
+
+  commandMap["last-item"] = [this](const QStringList &args) {
+    m_file_panel->GotoLastItem();
+  };
+
+  commandMap["middle-item"] = [this](const QStringList &args) {
+    m_file_panel->GotoMiddleItem();
+  };
+
+  commandMap["echo-info"] = [this](const QStringList &args) {
+    if (args.isEmpty())
+      return;
+
+    m_statusbar->Message(args.join(" "), MessageType::INFO);
+  };
+
+  commandMap["echo-warn"] = [this](const QStringList &args) {
+    if (args.isEmpty())
+      return;
+
+    m_statusbar->Message(args.join(" "), MessageType::WARNING);
+  };
+
+  commandMap["echo-error"] = [this](const QStringList &args) {
+      if (args.isEmpty())
+          return;
+
+      m_statusbar->Message(args.join(" "), MessageType::ERROR);
+  };
 
   commandMap["reload-config"] = [this](const QStringList &args) {
     initConfiguration();
@@ -478,9 +579,11 @@ void Navi::setupCommandMap() noexcept {
   commandMap["chmod"] = [this](const QStringList &args) {
     m_file_panel->ChmodItem();
   };
+
   commandMap["chmod-local"] = [this](const QStringList &args) {
     m_file_panel->ChmodItemsLocal();
   };
+
   commandMap["chmod-global"] = [this](const QStringList &args) {
     m_file_panel->ChmodItemsGlobal();
   };
@@ -688,6 +791,20 @@ void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
     m_bookmarks_buffer = nullptr;
     disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
   }
+}
+
+void Navi::ToggleShortcutsBuffer() noexcept {
+  // if (m_log_buffer->isVisible())
+  //   m_log_buffer->hide();
+  // else
+  //   m_log_buffer->show();
+}
+
+void Navi::ToggleShortcutsBuffer(const bool &state) noexcept {
+  // if (state)
+  //   m_log_buffer->show();
+  // else
+  //   m_log_buffer->hide();
 }
 
 void Navi::ToggleMessagesBuffer() noexcept {
