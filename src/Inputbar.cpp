@@ -66,11 +66,29 @@ void Inputbar::setCompleterModel(QAbstractItemModel *model) noexcept {
     m_line_edit_completer->setModel(model);
 }
 
-
 void Inputbar::enableCommandCompletions() noexcept {
     m_line_edit->setCompleter(m_line_edit_completer);
 }
 
 void Inputbar::disableCommandCompletions() noexcept {
     m_line_edit->setCompleter(nullptr);
+}
+
+void Inputbar::setBackground(const QString &background) noexcept {
+    QPalette palette;
+    palette.setColor(QPalette::Window, QColor(background));
+    m_line_edit->setPalette(palette);
+    // TODO: Unable to apply this
+}
+
+void Inputbar::setForeground(const QString &foreground) noexcept {
+    QPalette palette;
+    palette.setColor(QPalette::Text, QColor(foreground));
+    m_line_edit->setPalette(palette);
+}
+
+void Inputbar::setFontFamily(const QString &family) noexcept {
+    QFont font = m_line_edit->font();
+    font.setFamily(family);
+    m_line_edit->setFont(font);
 }

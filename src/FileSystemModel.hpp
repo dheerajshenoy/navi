@@ -47,12 +47,17 @@ public:
         ColumnType type;
     };
 
+    void setSymlinkSeparator(const QString &separator) noexcept;
+    void setSymlinkForeground(const QString &foreground) noexcept;
 
     void setMarkForegroundColor(const QString &color) noexcept;
     void setMarkBackgroundColor(const QString &color) noexcept;
 
     void setMarkHeaderForegroundColor(const QString &color) noexcept;
     void setMarkHeaderBackgroundColor(const QString &color) noexcept;
+
+    void setMarkFontFamily(const QString &family) noexcept;
+    void setMarkHeaderFontFamily(const QString &family) noexcept;
 
     void setMarkFontItalic(const bool &state) noexcept;
     void setMarkFontBold(const bool &state) noexcept;
@@ -160,4 +165,6 @@ private:
            m_markHeaderBackgroundColor = Qt::transparent;
 
     QFont m_markHeaderFont, m_markFont;
+    QString m_symlink_separator;
+    QColor m_symlink_foreground;
 };

@@ -45,7 +45,10 @@ QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
     return QString();
 
   return m_root_path + QDir::separator() +
-         index.data().toString().split(" -> ").at(0);
+         index.data()
+             .toString()
+             .split(QString(") %1 ").arg(m_symlink_separator))
+             .at(0);
 }
 
 bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
@@ -54,7 +57,10 @@ bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
 
   // Assuming `fileInfoList` holds QFileInfo objects or a similar structure
   return QFileInfo(m_root_path + QDir::separator() +
-                   index.data().toString().split(" -> ").at(0))
+                   index.data()
+                       .toString()
+                       .split(QString(" %1 ").arg(m_symlink_separator))
+                       .at(0))
       .isDir();
 }
 
@@ -119,7 +125,7 @@ int FileSystemModel::columnCount(const QModelIndex &parent) const {
 
 void FileSystemModel::setMarkForegroundColor(const QString &color) noexcept {
   if (color.isEmpty() || color.isNull())
-      m_markBackgroundColor = QColor();
+    m_markBackgroundColor = QColor();
   else
     m_markForegroundColor = QColor(color);
 }
@@ -131,28 +137,30 @@ void FileSystemModel::setMarkBackgroundColor(const QString &color) noexcept {
     m_markBackgroundColor = QColor(color);
 }
 
-void FileSystemModel::setMarkHeaderForegroundColor(const QString &color) noexcept {
-    m_markHeaderForegroundColor = QColor(color);
+void FileSystemModel::setMarkHeaderForegroundColor(
+    const QString &color) noexcept {
+  m_markHeaderForegroundColor = QColor(color);
 }
 
-void FileSystemModel::setMarkHeaderBackgroundColor(const QString &color) noexcept {
-    m_markHeaderBackgroundColor = QColor(color);
+void FileSystemModel::setMarkHeaderBackgroundColor(
+    const QString &color) noexcept {
+  m_markHeaderBackgroundColor = QColor(color);
 }
 
 void FileSystemModel::setMarkHeaderFontBold(const bool &state) noexcept {
-    m_markHeaderFont.setBold(state);
+  m_markHeaderFont.setBold(state);
 }
 
 void FileSystemModel::setMarkHeaderFontItalic(const bool &state) noexcept {
-    m_markHeaderFont.setItalic(state);
+  m_markHeaderFont.setItalic(state);
 }
 
 void FileSystemModel::setMarkFontBold(const bool &state) noexcept {
-    m_markFont.setBold(state);
+  m_markFont.setBold(state);
 }
 
 void FileSystemModel::setMarkFontItalic(const bool &state) noexcept {
-    m_markFont.setItalic(state);
+  m_markFont.setItalic(state);
 }
 
 QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
@@ -173,7 +181,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::ForegroundRole: {
-      bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
     if (isMarked) {
       return m_markForegroundColor;
     }
@@ -181,7 +189,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::BackgroundRole: {
-      bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
     if (isMarked) {
       return m_markBackgroundColor;
     }
@@ -189,20 +197,20 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::FontRole: {
-      bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
-      if (isMarked) {
-          return m_markFont;
-      }
-  }
-      break;
+    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+    if (isMarked) {
+      return m_markFont;
+    }
+  } break;
 
   case Qt::DisplayRole: {
     const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
     switch (m_column_list.at(index.column()).type) {
     case ColumnType::FileName: // File Name
       if (fileInfo.isSymbolicLink())
-        return QString("%1 -> %2")
+        return QString("%1 %2 %3")
             .arg(fileInfo.fileName())
+            .arg(m_symlink_separator)
             .arg(fileInfo.symLinkTarget());
       else
         return fileInfo.fileName();
@@ -230,12 +238,12 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
 QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const {
   if (orientation == Qt::Vertical) {
-      switch (role) {
+    switch (role) {
 
     case Qt::BackgroundRole: {
       bool isMarked = m_markedFiles.contains(getPathFromRow(section));
       if (isMarked)
-          return m_markHeaderBackgroundColor;
+        return m_markHeaderBackgroundColor;
     } break;
 
     case Qt::ForegroundRole: {
@@ -453,4 +461,20 @@ void FileSystemModel::setColumns(const QList<Column> &cols) noexcept {
     m_column_list.push_back(col);
 
   emit headerDataChanged(Qt::Orientation::Horizontal, 0, -1);
+}
+
+void FileSystemModel::setMarkFontFamily(const QString &family) noexcept {
+  m_markFont.setFamily(family);
+}
+
+void FileSystemModel::setMarkHeaderFontFamily(const QString &family) noexcept {
+  m_markHeaderFont.setFamily(family);
+}
+
+void FileSystemModel::setSymlinkSeparator(const QString &separator) noexcept {
+  m_symlink_separator = separator;
+}
+
+void FileSystemModel::setSymlinkForeground(const QString &foreground) noexcept {
+  m_symlink_foreground = foreground;
 }

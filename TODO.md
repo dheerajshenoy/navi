@@ -67,3 +67,4 @@
 - [x] Do what I mean (dwim) for all functions
 - [ ] Open with menu
 - [x] Background for vertical headers
+- [ ] Rich text in file panel

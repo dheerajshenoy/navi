@@ -25,6 +25,8 @@ void Navi::initConfiguration() {
     return;
   }
 
+  auto model = m_file_panel->model();
+
   // Read the SETTINGS table
   sol::optional<sol::table> settings_table_opt = lua["settings"];
 
@@ -103,7 +105,7 @@ void Navi::initConfiguration() {
             column.name = value;
             columnList.append(column);
           }
-          m_file_panel->model()->setColumns(columnList);
+          model->setColumns(columnList);
         }
 
         // headers
@@ -118,17 +120,33 @@ void Navi::initConfiguration() {
           m_file_panel->SetCycle(cycle.value());
         }
 
+        // symlink
+        sol::optional<sol::table> symlink_table = file_pane_table["symlink"];
+        if (symlink_table) {
+            auto symlink = symlink_table.value();
+
+            auto foreground = QString::fromStdString(symlink["foreground"].get_or<std::string>(""));
+            auto separator = QString::fromStdString(
+                                                    symlink["separator"].get_or<std::string>("->"));
+
+            model->setSymlinkSeparator(separator);
+            model->setSymlinkForeground(foreground);
+        }
+
         // marks
         sol::optional<sol::table> mark_table = file_pane_table["mark"];
         if (mark_table) {
-            auto model = m_file_panel->model();
           auto mark = mark_table.value();
           auto markBackground = QString::fromStdString(
               mark["background"].get_or<std::string>(""));
           auto markForeground = QString::fromStdString(
                                                        mark["foreground"].get_or<std::string>("#FF5000"));
+          auto markFont = QString::fromStdString(mark["font"].get_or<std::string>(""));
           auto markItalic = mark["italic"].get_or(false);
           auto markBold = mark["bold"].get_or(false);
+
+          if (!(markFont.isEmpty() || markFont.isNull()))
+              model->setMarkHeaderFontFamily(markFont);
 
           if (markItalic)
               model->setMarkFontItalic(true);
@@ -167,8 +185,12 @@ void Navi::initConfiguration() {
           auto markHeaderForeground = QString::fromStdString(
                                                              header["foreground"].get_or<std::string>("#FF5000"));
 
+          auto markFont = QString::fromStdString(header["font"].get_or<std::string>(""));
           auto markItalic = header["italic"].get_or(false);
           auto markBold = header["bold"].get_or(false);
+
+          if (!(markFont.isEmpty() || markFont.isNull()))
+              model->setMarkHeaderFontFamily(markFont);
 
           if (markItalic)
               model->setMarkHeaderFontItalic(true);
@@ -198,6 +220,23 @@ void Navi::initConfiguration() {
 
           }
         }
+      }
+
+      // input_bar
+      sol::optional<sol::table> input_bar_table = ui_table["input_bar"];
+
+      if (input_bar_table) {
+          auto input_bar = input_bar_table.value();
+
+          auto foregroundColor = QString::fromStdString(input_bar["foreground"].get_or<std::string>(""));
+          auto backgroundColor = QString::fromStdString(input_bar["background"].get_or<std::string>(""));
+          auto font =
+              QString::fromStdString(input_bar["font"].get_or<std::string>(""));
+
+          // TODO: background unable to apply
+          m_inputbar->setForeground(foregroundColor);
+          m_inputbar->setBackground(backgroundColor);
+          m_inputbar->setFontFamily(font);
       }
     }
   }
