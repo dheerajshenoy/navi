@@ -39,11 +39,9 @@ public:
     FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
-    enum class SortBy {
-        Name,
-        Size,
-        Date
-    };
+    enum class SortBy { Name, Size, Date };
+
+    QTableView* tableView() { return m_table_view; }
 
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
     QString getCurrentDir() noexcept;

@@ -144,6 +144,6 @@ private:
         Column { "PERM", ColumnType::FilePermission },
     };
 
-    QColor m_markForegroundColor = QColor(),
-           m_markBackgroundColor = QColor();
+    QColor m_markForegroundColor = Qt::transparent,
+           m_markBackgroundColor = Qt::transparent;
 };

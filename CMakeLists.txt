@@ -47,7 +47,7 @@ qt_add_executable(${PROJECT_NAME}
     src/FilePreviewWorker.hpp
     src/MarksBuffer.hpp
     src/TableHeaderView.hpp
-    src/HeaderProxyStyle.hpp
+    src/VerticalHeaderView.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules

@@ -19,7 +19,7 @@
 
 #include "FileSystemModel.hpp"
 #include "TableHeaderView.hpp"
-#include "HeaderProxyStyle.hpp"
+#include "VerticalHeaderView.hpp"
 
 class TableView : public QTableView {
     Q_OBJECT
@@ -39,4 +39,5 @@ protected:
  private:
     QPoint m_drag_start_position;
     TableHeaderView *m_header_view = nullptr;
+    VerticalHeaderView *m_vertical_header_view = nullptr;
 };

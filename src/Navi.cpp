@@ -123,10 +123,29 @@ void Navi::initConfiguration() {
                 if (marks_table) {
                     auto marks = marks_table.value();
                     auto markBackground = QString::fromStdString(marks["background"].get_or<std::string>(""));
-                    auto markForeground = QString::fromStdString(marks["foreground"].get_or<std::string>("#FF5000"));
+                    auto markForeground = QString::fromStdString(
+                                                                 marks["foreground"].get_or<std::string>("#FF5000"));
 
-                    m_file_panel->SetMarkBackgroundColor(markBackground);
-                    m_file_panel->SetMarkForegroundColor(markForeground);
+                    if (!(markBackground.isNull() || markBackground.isEmpty()))
+                        m_file_panel->SetMarkBackgroundColor(markBackground);
+                    else
+                      m_file_panel->SetMarkBackgroundColor(
+                          m_file_panel->tableView()
+                              ->palette()
+                              .brush(QWidget::backgroundRole())
+                              .color()
+                              .name());
+
+                    if (!(markForeground.isNull() || markForeground.isEmpty()))
+                        m_file_panel->SetMarkForegroundColor(markForeground);
+                    else
+                      m_file_panel->SetMarkForegroundColor(
+                          m_file_panel->tableView()
+                              ->palette()
+                              .brush(QWidget::backgroundRole())
+                              .color()
+                              .name());
+
                 }
 
             }

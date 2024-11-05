@@ -64,5 +64,6 @@
   - [x] Name
   - [x] Modified Date
 - [x] Close button for properties dialog
-- [ ] Do what I mean (dwim) for all functions
+- [x] Do what I mean (dwim) for all functions
 - [ ] Open with menu
+- [x] Background for vertical headers

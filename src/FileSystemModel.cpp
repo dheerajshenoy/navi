@@ -149,7 +149,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::ForegroundRole: {
-    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+      bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
     if (isMarked) {
       return m_markForegroundColor;
     }
@@ -157,7 +157,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::BackgroundRole: {
-    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+      bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
     if (isMarked) {
       return m_markBackgroundColor;
     }
@@ -198,12 +198,12 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
 QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const {
   if (orientation == Qt::Vertical) {
-    switch (role) {
+      switch (role) {
 
     case Qt::BackgroundRole: {
       bool isMarked = m_markedFiles.contains(getPathFromRow(section));
       if (isMarked)
-        return m_markBackgroundColor;
+          return m_markBackgroundColor;
     } break;
 
     case Qt::ForegroundRole: {

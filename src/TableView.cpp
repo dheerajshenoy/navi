@@ -8,14 +8,14 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDragDropMode(QAbstractItemView::InternalMove);
 
     m_header_view = new TableHeaderView(Qt::Orientation::Horizontal, this);
+    m_vertical_header_view = new VerticalHeaderView(Qt::Orientation::Vertical, this);
     this->setHorizontalHeader(m_header_view);
+    this->setVerticalHeader(m_vertical_header_view);
     //setFrameShadow(QTableView::Shadow::Plain);
     //setFrameStyle(0);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 
-    HeaderProxyStyle *headerStyle = new HeaderProxyStyle();
-    this->verticalHeader()->setStyle(headerStyle);
 }
 
 TableView::~TableView() {}
