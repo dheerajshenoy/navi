@@ -131,6 +131,30 @@ void FileSystemModel::setMarkBackgroundColor(const QString &color) noexcept {
     m_markBackgroundColor = QColor(color);
 }
 
+void FileSystemModel::setMarkHeaderForegroundColor(const QString &color) noexcept {
+    m_markHeaderForegroundColor = QColor(color);
+}
+
+void FileSystemModel::setMarkHeaderBackgroundColor(const QString &color) noexcept {
+    m_markHeaderBackgroundColor = QColor(color);
+}
+
+void FileSystemModel::setMarkHeaderFontBold(const bool &state) noexcept {
+    m_markHeaderFont.setBold(state);
+}
+
+void FileSystemModel::setMarkHeaderFontItalic(const bool &state) noexcept {
+    m_markHeaderFont.setItalic(state);
+}
+
+void FileSystemModel::setMarkFontBold(const bool &state) noexcept {
+    m_markFont.setBold(state);
+}
+
+void FileSystemModel::setMarkFontItalic(const bool &state) noexcept {
+    m_markFont.setItalic(state);
+}
+
 QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
@@ -163,6 +187,14 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     }
     return QVariant();
   } break;
+
+  case Qt::FontRole: {
+      bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+      if (isMarked) {
+          return m_markFont;
+      }
+  }
+      break;
 
   case Qt::DisplayRole: {
     const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
@@ -203,24 +235,20 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
     case Qt::BackgroundRole: {
       bool isMarked = m_markedFiles.contains(getPathFromRow(section));
       if (isMarked)
-          return m_markBackgroundColor;
+          return m_markHeaderBackgroundColor;
     } break;
 
     case Qt::ForegroundRole: {
       bool isMarked = m_markedFiles.contains(getPathFromRow(section));
       if (isMarked)
-        return m_markForegroundColor;
+        return m_markHeaderForegroundColor;
     } break;
 
     case Qt::FontRole: {
       bool isMarked = m_markedFiles.contains(getPathFromRow(section));
-      QFont font;
       if (isMarked) {
-        font.setBold(true);
-        font.setItalic(true);
-        return font;
+        return m_markHeaderFont;
       }
-      return font;
     } break;
 
     case Qt::DisplayRole:

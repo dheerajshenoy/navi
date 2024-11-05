@@ -132,8 +132,6 @@ public:
     void ToggleHeaders() noexcept;
     void SetCycle(const bool &state) noexcept;
     void ToggleCycle() noexcept;
-    void SetMarkForegroundColor(const QString &markForeground) noexcept;
-    void SetMarkBackgroundColor(const QString &markBackground) noexcept;
 
     void ToggleVisualLine() noexcept;
     void ToggleVisualLine(const bool &state) noexcept;

@@ -51,6 +51,15 @@ public:
     void setMarkForegroundColor(const QString &color) noexcept;
     void setMarkBackgroundColor(const QString &color) noexcept;
 
+    void setMarkHeaderForegroundColor(const QString &color) noexcept;
+    void setMarkHeaderBackgroundColor(const QString &color) noexcept;
+
+    void setMarkFontItalic(const bool &state) noexcept;
+    void setMarkFontBold(const bool &state) noexcept;
+
+    void setMarkHeaderFontItalic(const bool &state) noexcept;
+    void setMarkHeaderFontBold(const bool &state) noexcept;
+
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
@@ -146,4 +155,9 @@ private:
 
     QColor m_markForegroundColor = Qt::transparent,
            m_markBackgroundColor = Qt::transparent;
+
+    QColor m_markHeaderForegroundColor = Qt::transparent,
+           m_markHeaderBackgroundColor = Qt::transparent;
+
+    QFont m_markHeaderFont, m_markFont;
 };

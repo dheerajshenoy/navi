@@ -1519,18 +1519,7 @@ void FilePanel::ToggleHeaders() noexcept {
 
 void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
 
-void FilePanel::ToggleCycle() noexcept {
-    m_cycle_item = !m_cycle_item;
-}
-
-
-void FilePanel::SetMarkForegroundColor(const QString &markForeground) noexcept {
-    m_model->setMarkForegroundColor(markForeground);
-}
-
-void FilePanel::SetMarkBackgroundColor(const QString &markBackground) noexcept {
-    m_model->setMarkBackgroundColor(markBackground);
-}
+void FilePanel::ToggleCycle() noexcept { m_cycle_item = !m_cycle_item; }
 
 void FilePanel::ToggleVisualLine() noexcept {
     m_visual_line_mode = !m_visual_line_mode;

@@ -15,142 +15,192 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {
 
 void Navi::initConfiguration() {
 
-    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
+  lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
 
-    try {
-        lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
-    } catch (const sol::error &e) {
-        m_statusbar->Message("No configuration file found. Skipping initializing configurations");
-        return;
-    }
+  try {
+    lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
+  } catch (const sol::error &e) {
+    m_statusbar->Message(
+        "No configuration file found. Skipping initializing configurations");
+    return;
+  }
 
+  // Read the SETTINGS table
+  sol::optional<sol::table> settings_table_opt = lua["settings"];
 
-    // Read the SETTINGS table
-    sol::optional<sol::table> settings_table_opt = lua["settings"];
+  if (settings_table_opt) {
+    sol::table settings_table = settings_table_opt.value();
+    sol::optional<sol::table> ui_table_opt = settings_table["ui"];
+    if (ui_table_opt) {
+      sol::table ui_table = ui_table_opt.value();
 
-    if (settings_table_opt) {
-        sol::table settings_table = settings_table_opt.value();
-        sol::optional<sol::table> ui_table_opt = settings_table["ui"];
-        if (ui_table_opt) {
-            sol::table ui_table = ui_table_opt.value();
+      // Preview pane
+      sol::optional<sol::table> preview_pane_table = ui_table["preview_pane"];
 
-            // Preview pane
-            sol::optional<sol::table> preview_pane_table =
-                ui_table["preview_pane"];
+      if (preview_pane_table) {
+        auto preview_pane = preview_pane_table.value();
+        auto shown = preview_pane["shown"].get_or(true);
+        TogglePreviewPanel(shown);
 
-            if (preview_pane_table) {
-                auto preview_pane = preview_pane_table.value();
-                auto shown = preview_pane["shown"].get_or(true);
-                TogglePreviewPanel(shown);
+        auto fraction = preview_pane["fraction"].get_or(0.5);
+        auto totalSize = m_splitter->width();
+        QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
+                            static_cast<int>(totalSize * fraction)};
+        m_splitter->setSizes(sizes);
 
-                auto fraction = preview_pane["fraction"].get_or(0.5);
-                auto totalSize = m_splitter->width();
-                QList<int> sizes = {
-                    static_cast<int>(totalSize * (1 - fraction)),
-                    static_cast<int>(totalSize * fraction)};
-                m_splitter->setSizes(sizes);
+        auto max_file_size = QString::fromStdString(
+            preview_pane["max_size"].get_or<std::string>("10M"));
 
-                auto max_file_size = QString::fromStdString(
-                    preview_pane["max_size"].get_or<std::string>("10M"));
+        auto max_file_bytes = utils::parseFileSize(max_file_size);
+        m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
+      }
 
-                auto max_file_bytes = utils::parseFileSize(max_file_size);
-                m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
+      // Menu bar
+      sol::optional<sol::table> menu_bar_table = ui_table["menu_bar"];
+
+      if (menu_bar_table) {
+        auto menu_bar = menu_bar_table.value();
+        auto shown = menu_bar["shown"].get_or(true);
+        ToggleMenuBar(shown);
+      }
+
+      // Status bar
+      sol::optional<sol::table> status_bar_table = ui_table["status_bar"];
+
+      if (status_bar_table) {
+        auto status_bar = status_bar_table.value();
+        auto shown = status_bar["shown"].get_or(true);
+        ToggleStatusBar(shown);
+      }
+
+      // File Pane
+      sol::table file_pane_table = ui_table["file_pane"];
+
+      if (file_pane_table.valid()) {
+        sol::optional<sol::table> columns_table = file_pane_table["columns"];
+        if (columns_table.has_value()) {
+          QList<FileSystemModel::Column>
+              columnList; // List to store column configuration
+          FileSystemModel::Column column;
+          for (const auto &entry : columns_table.value()) {
+            auto key = QString::fromStdString(entry.first.as<std::string>());
+            auto value = QString::fromStdString(entry.second.as<std::string>());
+
+            if (key == "name")
+              column.type = FileSystemModel::ColumnType::FileName;
+            else if (key == "size")
+              column.type = FileSystemModel::ColumnType::FileSize;
+            else if (key == "modified_date")
+              column.type = FileSystemModel::ColumnType::FileModifiedDate;
+            else if (key == "permission")
+              column.type = FileSystemModel::ColumnType::FilePermission;
+            else {
+              m_statusbar->Message(QString("Unknown column key %1").arg(key),
+                                   MessageType::WARNING);
+              continue;
             }
 
-            // Menu bar
-            sol::optional<sol::table> menu_bar_table = ui_table["menu_bar"];
-
-            if (menu_bar_table) {
-                auto menu_bar = menu_bar_table.value();
-                auto shown = menu_bar["shown"].get_or(true);
-                ToggleMenuBar(shown);
-            }
-
-            // Status bar
-            sol::optional<sol::table> status_bar_table = ui_table["status_bar"];
-
-            if (status_bar_table) {
-                auto status_bar = status_bar_table.value();
-                auto shown = status_bar["shown"].get_or(true);
-                ToggleStatusBar(shown);
-            }
-
-            // File Pane
-            sol::table file_pane_table = ui_table["file_pane"];
-
-            if (file_pane_table.valid()) {
-                sol::optional<sol::table> columns_table = file_pane_table["columns"];
-                if (columns_table.has_value()) {
-                    QList<FileSystemModel::Column> columnList; // List to store column configuration
-                    FileSystemModel::Column column;
-                    for (const auto &entry : columns_table.value()) {
-                        auto key = QString::fromStdString(entry.first.as<std::string>());
-                        auto value = QString::fromStdString(entry.second.as<std::string>());
-
-                        if (key == "name")
-                            column.type = FileSystemModel::ColumnType::FileName;
-                        else if (key == "size")
-                            column.type = FileSystemModel::ColumnType::FileSize;
-                        else if (key == "modified_date")
-                            column.type = FileSystemModel::ColumnType::FileModifiedDate;
-                        else if (key == "permission")
-                            column.type = FileSystemModel::ColumnType::FilePermission;
-                        else {
-                            m_statusbar->Message(QString("Unknown column key %1").arg(key), MessageType::WARNING);
-                            continue;
-                        }
-
-                        column.name = value;
-                        columnList.append(column);
-                    }
-                    m_file_panel->model()->setColumns(columnList);
-                }
-
-                // headers
-                sol::optional<bool> headers_visible = file_pane_table["headers"];
-                if (headers_visible) {
-                    m_file_panel->ToggleHeaders(headers_visible.value());
-                }
-
-                // cycle
-                sol::optional<bool> cycle = file_pane_table["cycle"];
-                if (cycle) {
-                    m_file_panel->SetCycle(cycle.value());
-                }
-
-                // marks
-                sol::optional<sol::table> marks_table = file_pane_table["mark"];
-                if (marks_table) {
-                    auto marks = marks_table.value();
-                    auto markBackground = QString::fromStdString(marks["background"].get_or<std::string>(""));
-                    auto markForeground = QString::fromStdString(
-                                                                 marks["foreground"].get_or<std::string>("#FF5000"));
-
-                    if (!(markBackground.isNull() || markBackground.isEmpty()))
-                        m_file_panel->SetMarkBackgroundColor(markBackground);
-                    else
-                      m_file_panel->SetMarkBackgroundColor(
-                          m_file_panel->tableView()
-                              ->palette()
-                              .brush(QWidget::backgroundRole())
-                              .color()
-                              .name());
-
-                    if (!(markForeground.isNull() || markForeground.isEmpty()))
-                        m_file_panel->SetMarkForegroundColor(markForeground);
-                    else
-                      m_file_panel->SetMarkForegroundColor(
-                          m_file_panel->tableView()
-                              ->palette()
-                              .brush(QWidget::backgroundRole())
-                              .color()
-                              .name());
-
-                }
-
-            }
+            column.name = value;
+            columnList.append(column);
+          }
+          m_file_panel->model()->setColumns(columnList);
         }
+
+        // headers
+        sol::optional<bool> headers_visible = file_pane_table["headers"];
+        if (headers_visible) {
+          m_file_panel->ToggleHeaders(headers_visible.value());
+        }
+
+        // cycle
+        sol::optional<bool> cycle = file_pane_table["cycle"];
+        if (cycle) {
+          m_file_panel->SetCycle(cycle.value());
+        }
+
+        // marks
+        sol::optional<sol::table> mark_table = file_pane_table["mark"];
+        if (mark_table) {
+            auto model = m_file_panel->model();
+          auto mark = mark_table.value();
+          auto markBackground = QString::fromStdString(
+              mark["background"].get_or<std::string>(""));
+          auto markForeground = QString::fromStdString(
+                                                       mark["foreground"].get_or<std::string>("#FF5000"));
+          auto markItalic = mark["italic"].get_or(false);
+          auto markBold = mark["bold"].get_or(false);
+
+          if (markItalic)
+              model->setMarkFontItalic(true);
+
+          if (markBold)
+              model->setMarkFontBold(true);
+
+          if (!(markBackground.isNull() || markBackground.isEmpty()))
+              model->setMarkBackgroundColor(markBackground);
+          else
+              model->setMarkBackgroundColor(
+                                            m_file_panel->tableView()
+                    ->palette()
+                    .brush(QWidget::backgroundRole())
+                    .color()
+                    .name());
+
+          if (!(markForeground.isNull() || markForeground.isEmpty()))
+            model->setMarkForegroundColor(markForeground);
+          else
+            model->setMarkForegroundColor(
+                m_file_panel->tableView()
+                    ->palette()
+                    .brush(QWidget::backgroundRole())
+                    .color()
+                    .name());
+
+          // header
+          sol::optional<sol::table> header_table = mark["header"];
+
+          if (header_table) {
+              auto header = header_table.value();
+
+          auto markHeaderBackground = QString::fromStdString(
+                                                             header["background"].get_or<std::string>(""));
+          auto markHeaderForeground = QString::fromStdString(
+                                                             header["foreground"].get_or<std::string>("#FF5000"));
+
+          auto markItalic = header["italic"].get_or(false);
+          auto markBold = header["bold"].get_or(false);
+
+          if (markItalic)
+              model->setMarkHeaderFontItalic(true);
+
+          if (markBold)
+              model->setMarkHeaderFontBold(true);
+
+          if (!(markHeaderBackground.isNull() || markHeaderBackground.isEmpty()))
+            model->setMarkHeaderBackgroundColor(markHeaderBackground);
+          else
+            model->setMarkHeaderBackgroundColor(
+                m_file_panel->tableView()
+                    ->palette()
+                    .brush(QWidget::backgroundRole())
+                    .color()
+                    .name());
+
+          if (!(markHeaderForeground.isNull() || markHeaderForeground.isEmpty()))
+            model->setMarkHeaderForegroundColor(markHeaderForeground);
+          else
+            model->setMarkHeaderForegroundColor(
+                m_file_panel->tableView()
+                    ->palette()
+                    .brush(QWidget::backgroundRole())
+                    .color()
+                    .name());
+
+          }
+        }
+      }
     }
+  }
 }
 
 void Navi::initBookmarks() noexcept {
@@ -201,11 +251,11 @@ void Navi::ShowHelp() noexcept {}
 void Navi::setupCommandMap() noexcept {
 
   commandMap["toggle-cycle"] = [this](const QStringList &args) {
-      m_file_panel->ToggleCycle();
+    m_file_panel->ToggleCycle();
   };
 
   commandMap["toggle-header"] = [this](const QStringList &args) {
-      m_file_panel->ToggleHeaders();
+    m_file_panel->ToggleHeaders();
   };
 
   commandMap["rename"] = [this](const QStringList &args) {
@@ -235,11 +285,11 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["copy-local"] = [this](const QStringList &args) {
-      m_file_panel->CopyItemsLocal();
+    m_file_panel->CopyItemsLocal();
   };
 
   commandMap["copy-dwim"] = [this](const QStringList &args) {
-      m_file_panel->CopyDWIM();
+    m_file_panel->CopyDWIM();
   };
 
   commandMap["cut"] = [this](const QStringList &args) {
@@ -258,7 +308,9 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->CutDWIM();
   };
 
-  commandMap["paste"] = [this](const QStringList &args) { m_file_panel->PasteItems(); };
+  commandMap["paste"] = [this](const QStringList &args) {
+    m_file_panel->PasteItems();
+  };
 
   commandMap["delete"] = [this](const QStringList &args) {
     m_file_panel->DeleteItem();
@@ -317,19 +369,19 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["trash"] = [this](const QStringList &args) {
-      m_file_panel->TrashItem();
+    m_file_panel->TrashItem();
   };
 
   commandMap["trash-local"] = [this](const QStringList &args) {
-      m_file_panel->TrashItemsLocal();
+    m_file_panel->TrashItemsLocal();
   };
 
   commandMap["trash-global"] = [this](const QStringList &args) {
-      m_file_panel->TrashItemsGlobal();
+    m_file_panel->TrashItemsGlobal();
   };
 
   commandMap["trash-dwim"] = [this](const QStringList &args) {
-      m_file_panel->TrashDWIM();
+    m_file_panel->TrashDWIM();
   };
 
   commandMap["exit"] = [this](const QStringList &args) {
@@ -359,13 +411,13 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["chmod"] = [this](const QStringList &args) {
-      m_file_panel->ChmodItem();
+    m_file_panel->ChmodItem();
   };
   commandMap["chmod-local"] = [this](const QStringList &args) {
-      m_file_panel->ChmodItemsLocal();
+    m_file_panel->ChmodItemsLocal();
   };
   commandMap["chmod-global"] = [this](const QStringList &args) {
-      m_file_panel->ChmodItemsGlobal();
+    m_file_panel->ChmodItemsGlobal();
   };
 
   commandMap["marks-pane"] = [this](const QStringList &args) {
@@ -604,8 +656,8 @@ void Navi::ToggleMarksBuffer(const bool &state) noexcept {
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
   // QStringList commandlist = commandtext.split(" && ");
-  QStringList commandlist = commandtext.split(QRegularExpression("\\s*&&\\s*"),
-                                              Qt::SkipEmptyParts);
+  QStringList commandlist =
+      commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
 
   if (commandlist.isEmpty())
     return;
@@ -813,7 +865,6 @@ void Navi::initMenubar() noexcept {
   m_menubar = new Menubar();
   this->setMenuBar(m_menubar);
 
-
   m_filemenu = new QMenu("File");
 
   m_filemenu__new_window = new QAction("New Window");
@@ -855,7 +906,6 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__bookmarks_buffer->setCheckable(true);
 
   m_viewmenu__sort_menu = new QMenu("Sort by");
-
 
   m_viewmenu__sort_by_name = new QAction("Name");
   m_viewmenu__sort_by_size = new QAction("Size");
@@ -929,33 +979,31 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
-
   connect(m_viewmenu__headers, &QAction::triggered, this,
           [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
   connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
           [&](const bool &state) {
-              if (state)
-                  m_sort_order = Qt::SortOrder::AscendingOrder;
+            if (state)
+              m_sort_order = Qt::SortOrder::AscendingOrder;
           });
 
   connect(m_viewmenu__sort_descending, &QAction::triggered, this,
           [&](const bool &state) {
-              if (state)
-                  m_sort_order = Qt::SortOrder::DescendingOrder;
+            if (state)
+              m_sort_order = Qt::SortOrder::DescendingOrder;
           });
 
-
   connect(m_viewmenu__sort_by_name, &QAction::triggered, this, [&]() {
-      m_file_panel->SortItems(FilePanel::SortBy::Name, m_sort_order);
+    m_file_panel->SortItems(FilePanel::SortBy::Name, m_sort_order);
   });
 
   connect(m_viewmenu__sort_by_date, &QAction::triggered, this, [&]() {
-      m_file_panel->SortItems(FilePanel::SortBy::Date, m_sort_order);
+    m_file_panel->SortItems(FilePanel::SortBy::Date, m_sort_order);
   });
 
   connect(m_viewmenu__sort_by_size, &QAction::triggered, this, [&]() {
-      m_file_panel->SortItems(FilePanel::SortBy::Size, m_sort_order);
+    m_file_panel->SortItems(FilePanel::SortBy::Size, m_sort_order);
   });
 
   connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
@@ -1033,20 +1081,20 @@ void Navi::ToggleMenuBar() noexcept {
 }
 
 void Navi::ToggleStatusBar(const bool &state) noexcept {
-    if (state) {
-        m_statusbar->show();
-    } else {
-        m_statusbar->hide();
-    }
+  if (state) {
+    m_statusbar->show();
+  } else {
+    m_statusbar->hide();
+  }
 }
 
 void Navi::ToggleStatusBar() noexcept {
-    bool visible = m_statusbar->isVisible();
-    if (!visible) {
-        m_statusbar->show();
-    } else {
-        m_statusbar->hide();
-    }
+  bool visible = m_statusbar->isVisible();
+  if (!visible) {
+    m_statusbar->show();
+  } else {
+    m_statusbar->hide();
+  }
 }
 
 void Navi::Filter() noexcept {
