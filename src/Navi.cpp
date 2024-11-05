@@ -294,7 +294,25 @@ void Navi::ShowHelp() noexcept {}
 void Navi::setupCommandMap() noexcept {
 
   commandMap["reload-config"] = [this](const QStringList &args) {
-      initConfiguration();
+    initConfiguration();
+  };
+
+  commandMap["sort-name"] = [this](const QStringList &args) { SortByName(); };
+
+  commandMap["sort-date"] = [this](const QStringList &args) { SortByDate(); };
+
+  commandMap["sort-size"] = [this](const QStringList &args) { SortBySize(); };
+
+  commandMap["sort-name-desc"] = [this](const QStringList &args) {
+    SortByName(true);
+  };
+
+  commandMap["sort-date-desc"] = [this](const QStringList &args) {
+    SortByDate(true);
+  };
+
+  commandMap["sort-size-desc"] = [this](const QStringList &args) {
+      SortBySize(true);
   };
 
   commandMap["toggle-cycle"] = [this](const QStringList &args) {
@@ -1039,24 +1057,6 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
-  auto sortByName = [&]() {
-      m_sort_by = SortBy::Name;
-      m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
-      m_file_panel->model()->setSortBy(m_sort_flags);
-  };
-
-  auto sortBySize = [&]() {
-      m_sort_by = SortBy::Size;
-      m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
-      m_file_panel->model()->setSortBy(m_sort_flags);
-  };
-
-  auto sortByDate = [&]() {
-      m_sort_by = SortBy::Date;
-      m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
-      m_file_panel->model()->setSortBy(m_sort_flags);
-  };
-
   connect(m_viewmenu__headers, &QAction::triggered, this,
           [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
@@ -1080,9 +1080,9 @@ void Navi::initMenubar() noexcept {
               }
           });
 
-  connect(m_viewmenu__sort_by_name, &QAction::triggered, this, sortByName);
-  connect(m_viewmenu__sort_by_date, &QAction::triggered, this, sortByDate);
-  connect(m_viewmenu__sort_by_size, &QAction::triggered, this, sortBySize);
+  connect(m_viewmenu__sort_by_name, &QAction::triggered, this, &Navi::SortByName);
+  connect(m_viewmenu__sort_by_date, &QAction::triggered, this, &Navi::SortByDate);
+  connect(m_viewmenu__sort_by_size, &QAction::triggered, this, &Navi::SortBySize);
 
   connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
           [&](const bool &state) { ToggleMarksBuffer(state); });
@@ -1225,4 +1225,34 @@ void Navi::SaveBookmarkFile() noexcept {
   } else {
     m_statusbar->Message("Error saving bookmarks!", MessageType::ERROR);
   }
+}
+
+void Navi::SortByName(const bool &reverse) noexcept {
+    m_sort_by = SortBy::Name;
+    m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
+
+    if (reverse)
+        m_sort_flags |= QDir::SortFlag::Reversed;
+
+    m_file_panel->model()->setSortBy(m_sort_flags);
+}
+
+void Navi::SortBySize(const bool &reverse) noexcept {
+      m_sort_by = SortBy::Size;
+      m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
+
+      if (reverse)
+          m_sort_flags |= QDir::SortFlag::Reversed;
+
+      m_file_panel->model()->setSortBy(m_sort_flags);
+}
+
+void Navi::SortByDate(const bool &reverse) noexcept {
+      m_sort_by = SortBy::Date;
+      m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
+
+      if (reverse)
+          m_sort_flags |= QDir::SortFlag::Reversed;
+
+      m_file_panel->model()->setSortBy(m_sort_flags);
 }

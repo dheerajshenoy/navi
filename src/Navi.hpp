@@ -95,6 +95,9 @@ public:
     void LoadBookmarkFile(const QStringList &bookmarkFilePath) noexcept;
     void GoBookmark(const QStringList &bookmarkName) noexcept;
     void SaveBookmarkFile() noexcept;
+    void SortByName(const bool &reverse = false) noexcept;
+    void SortByDate(const bool &reverse = false) noexcept;
+    void SortBySize(const bool &reverse = false) noexcept;
 
     void ToggleStatusBar(const bool &state) noexcept;
     void ToggleStatusBar() noexcept;
@@ -262,14 +265,12 @@ private:
       "search-prev",
 
       // TODO: Sort commands
-      "sort",
-      "sort-desc",
+      "sort-name",
+      "sort-name-desc",
       "sort-date",
       "sort-date-desc",
       "sort-size",
       "sort-size-desc",
-      "sort-name",
-      "sort-name-desc",
 
       // misc
       "filter",
