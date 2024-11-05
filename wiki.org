@@ -336,6 +336,32 @@ Goes to the previous best match for the search term
 
 Default Keybinding: =S-n=
 
+** Sorting Items
+
+*** sort-name
+
+Sorts the directory by /name/ in *ascending order* with the directories listed first.
+
+*** sort-name-desc
+
+Sorts the directory by /name/ in *descending order* with the directories listed first.
+
+*** sort-date
+
+Sorts the directory by /date/ in *ascending order* with the directories listed first.
+
+*** sort-date-desc
+
+Sorts the directory by /date/ in *descending order* with the directories listed first.
+
+*** sort-size
+
+Sorts the directory by /size/ in *ascending order* with the directories listed first.
+
+*** sort-size-desc
+
+Sorts the directory by /size/ in *descending order* with the directories listed first.
+
 * Linux Only
 Sorry, this software is built keeping in mind Linux and it's derivatives
 only.
