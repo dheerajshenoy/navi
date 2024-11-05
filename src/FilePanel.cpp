@@ -859,10 +859,9 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                         m_model->removeMarkedFile(itemPath);
                     } else
                         m_statusbar->Message(QString("Error deleting %1").arg(itemPath), MessageType::ERROR);
-
-                } else if (inputConfirm == "n") {
                 } else if (inputConfirm == "y!") {
                     dir.removeRecursively();
+                    m_statusbar->Message(QString("Deleted %1").arg(itemPath));
                     m_model->removeMarkedFile(itemPath);
                     check = false;
                 } else if (inputConfirm == "n!") {
@@ -890,19 +889,22 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                     else
                         m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
                 } else if (inputConfirm == "y!") {
-                    if (QFile::remove(itemPath))
-                        m_model->removeMarkedFile(itemPath);
-                    else
-                        m_statusbar->Message(
-                                             QString("Error deleting %1!").arg(itemPath));
                     check = false;
+                    if (QFile::remove(itemPath)) {
+                        m_model->removeMarkedFile(itemPath);
+                        m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+                    }
+                    else
+                        m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
                 } else if (inputConfirm == "n!") {
                     m_statusbar->Message("Delete operation cancelled");
                     return;
                 } else if (inputConfirm == "n") {}
             } else {
-                if (QFile::remove(itemPath))
+                if (QFile::remove(itemPath)) {
                     m_model->removeMarkedFile(itemPath);
+                    m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+                }
                 else
                     m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
             }
@@ -1487,27 +1489,6 @@ void FilePanel::dragRequested() noexcept {
   }
 }
 
-void FilePanel::SortItems(SortBy sortMethod,
-                          const Qt::SortOrder &sortOrder) noexcept {
-  switch (sortMethod) {
-  case SortBy::Name:
-    m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileName),
-                  sortOrder);
-    break;
-
-  case SortBy::Date:
-    m_model->sort(
-        static_cast<int>(FileSystemModel::ColumnType::FileModifiedDate),
-        sortOrder);
-    break;
-
-  case SortBy::Size:
-    m_model->sort(static_cast<int>(FileSystemModel::ColumnType::FileSize),
-                  sortOrder);
-    break;
-  }
-}
-
 void FilePanel::ToggleHeaders(const bool &state) noexcept {
     m_table_view->horizontalHeader()->setVisible(state);
 }
@@ -1549,4 +1530,12 @@ void FilePanel::ToggleVisualLine(const bool &state) noexcept {
   }
 
   m_statusbar->SetVisualLineMode(state);
+}
+
+void FilePanel::AsyncShellCommand(const QString &command) noexcept {
+
+}
+
+void FilePanel::ShellCommand(const QString &command) noexcept {
+
 }

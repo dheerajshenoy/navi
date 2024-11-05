@@ -955,8 +955,20 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__sort_menu = new QMenu("Sort by");
 
   m_viewmenu__sort_by_name = new QAction("Name");
+  m_viewmenu__sort_by_name->setCheckable(true);
+  m_viewmenu__sort_by_name->setChecked(true);
+
   m_viewmenu__sort_by_size = new QAction("Size");
+  m_viewmenu__sort_by_size->setCheckable(true);
+
   m_viewmenu__sort_by_date = new QAction("Modified Date");
+  m_viewmenu__sort_by_date->setCheckable(true);
+
+  m_viewmenu__sort_by_group = new QActionGroup(m_viewmenu__sort_menu);
+  m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_name);
+  m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_size);
+  m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_date);
+
   m_viewmenu__sort_ascending = new QAction("Ascending");
   m_viewmenu__sort_ascending->setCheckable(true);
   m_viewmenu__sort_ascending->setChecked(true);
@@ -967,6 +979,7 @@ void Navi::initMenubar() noexcept {
   m_viewmenu__sort_asc_desc_group = new QActionGroup(m_viewmenu__sort_menu);
   m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_ascending);
   m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_descending);
+
   m_viewmenu__sort_menu->addAction(m_viewmenu__sort_ascending);
   m_viewmenu__sort_menu->addAction(m_viewmenu__sort_descending);
   m_viewmenu__sort_menu->addSeparator();
@@ -1026,32 +1039,50 @@ void Navi::initMenubar() noexcept {
   m_menubar->addMenu(m_viewmenu);
   m_menubar->addMenu(m_tools_menu);
 
+  auto sortByName = [&]() {
+      m_sort_by = SortBy::Name;
+      m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
+      m_file_panel->model()->setSortBy(m_sort_flags);
+  };
+
+  auto sortBySize = [&]() {
+      m_sort_by = SortBy::Size;
+      m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
+      m_file_panel->model()->setSortBy(m_sort_flags);
+  };
+
+  auto sortByDate = [&]() {
+      m_sort_by = SortBy::Date;
+      m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
+      m_file_panel->model()->setSortBy(m_sort_flags);
+  };
+
   connect(m_viewmenu__headers, &QAction::triggered, this,
           [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
   connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
           [&](const bool &state) {
-            if (state)
-              m_sort_order = Qt::SortOrder::AscendingOrder;
+              if (state) {
+                  if (m_sort_flags & QDir::SortFlag::Reversed) {
+                      m_sort_flags &= ~QDir::SortFlag::Reversed;
+                      m_file_panel->model()->setSortBy(m_sort_flags);
+                  }
+              }
           });
 
   connect(m_viewmenu__sort_descending, &QAction::triggered, this,
           [&](const bool &state) {
-            if (state)
-              m_sort_order = Qt::SortOrder::DescendingOrder;
+              if (state) {
+                  if (m_sort_flags & QDir::SortFlag::Reversed)
+                      return;
+                  m_sort_flags |= QDir::SortFlag::Reversed;
+                  m_file_panel->model()->setSortBy(m_sort_flags);
+              }
           });
 
-  connect(m_viewmenu__sort_by_name, &QAction::triggered, this, [&]() {
-    m_file_panel->SortItems(FilePanel::SortBy::Name, m_sort_order);
-  });
-
-  connect(m_viewmenu__sort_by_date, &QAction::triggered, this, [&]() {
-    m_file_panel->SortItems(FilePanel::SortBy::Date, m_sort_order);
-  });
-
-  connect(m_viewmenu__sort_by_size, &QAction::triggered, this, [&]() {
-    m_file_panel->SortItems(FilePanel::SortBy::Size, m_sort_order);
-  });
+  connect(m_viewmenu__sort_by_name, &QAction::triggered, this, sortByName);
+  connect(m_viewmenu__sort_by_date, &QAction::triggered, this, sortByDate);
+  connect(m_viewmenu__sort_by_size, &QAction::triggered, this, sortBySize);
 
   connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
           [&](const bool &state) { ToggleMarksBuffer(state); });

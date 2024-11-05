@@ -152,13 +152,15 @@ private:
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
 
     QMenu *m_viewmenu__sort_menu = nullptr;
+
+    QActionGroup *m_viewmenu__sort_by_group = nullptr;
     QAction *m_viewmenu__sort_by_name = nullptr;
     QAction *m_viewmenu__sort_by_size = nullptr;
     QAction *m_viewmenu__sort_by_date = nullptr;
-    QAction *m_viewmenu__sort_ascending = nullptr;
-    QAction *m_viewmenu__sort_descending = nullptr;
 
     QActionGroup *m_viewmenu__sort_asc_desc_group = nullptr;
+    QAction *m_viewmenu__sort_ascending = nullptr;
+    QAction *m_viewmenu__sort_descending = nullptr;
 
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
@@ -259,6 +261,16 @@ private:
       "search-next",
       "search-prev",
 
+      // TODO: Sort commands
+      "sort",
+      "sort-desc",
+      "sort-date",
+      "sort-date-desc",
+      "sort-size",
+      "sort-size-desc",
+      "sort-name",
+      "sort-name-desc",
+
       // misc
       "filter",
       "unfilter",
@@ -280,6 +292,8 @@ private:
     BookmarkManager *m_bookmark_manager = nullptr;
     BookmarkWidget *m_bookmarks_buffer = nullptr;
 
-    Qt::SortOrder m_sort_order = Qt::SortOrder::AscendingOrder;
+    QDir::SortFlags m_sort_flags = QDir::SortFlag::DirsFirst;
+    enum class SortBy { Name = 0, Date, Size };
+    SortBy m_sort_by = SortBy::Name;
     sol::state lua;
 };

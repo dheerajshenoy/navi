@@ -12,7 +12,6 @@ FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
 
 void FileSystemModel::initDefaults() noexcept {
   m_file_system_watcher = new QFileSystemWatcher(this);
-  m_dir_filters = QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries;
 }
 
 void FileSystemModel::clearMarkedFilesListLocal() noexcept {
@@ -93,8 +92,8 @@ void FileSystemModel::loadDirectory(const QString &path) noexcept {
   QDir dir(path);
 
   if (dir.exists()) {
-    QFileInfoList allFiles = dir.entryInfoList(m_name_filters, m_dir_filters,
-                                               QDir::SortFlag::DirsFirst);
+    QFileInfoList allFiles =
+        dir.entryInfoList(m_name_filters, m_dir_filters, m_dir_sort_flags);
     int totalEntries = allFiles.size();
     m_fileInfoList.reserve(totalEntries);
     m_path_row_hash.reserve(totalEntries);
@@ -214,10 +213,10 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
               .arg(m_symlink_separator)
               .arg(fileInfo.symLinkTarget());
         } else
-            return QString("%1").arg(fileInfo.fileName());
-    } else {
+          return QString("%1").arg(fileInfo.fileName());
+      } else {
         return fileInfo.fileName();
-    }
+      }
 
     case ColumnType::FileSize: // File Size
       return fileInfo.isDir()
@@ -434,29 +433,29 @@ QStringList FileSystemModel::getMarkedFiles() noexcept {
   return QStringList(m_markedFiles.cbegin(), m_markedFiles.cend());
 }
 
-void FileSystemModel::sort(int column, Qt::SortOrder order) {
-  std::sort(m_fileInfoList.begin(), m_fileInfoList.end(),
-            [column, order](QFileInfo a, QFileInfo b) {
-              bool result;
-              switch (column) {
-              case static_cast<int>(ColumnType::FileName): // Name
-                result = a.fileName() < b.fileName();
-                break;
-              case static_cast<int>(ColumnType::FileSize): // Size
-                result = a.size() < b.size();
-                break;
-              case static_cast<int>(
-                  ColumnType::FileModifiedDate): // Modified Date
-                result = a.lastModified() < b.lastModified();
-                break;
-              default:
-                return false;
-              }
-              return order == Qt::AscendingOrder ? result : !result;
-            });
+// void FileSystemModel::sort(int column, Qt::SortOrder order) {
+//   std::sort(m_fileInfoList.begin(), m_fileInfoList.end(),
+//             [column, order](QFileInfo a, QFileInfo b) {
+//               bool result;
+//               switch (column) {
+//               case static_cast<int>(ColumnType::FileName): // Name
+//                 result = a.fileName() < b.fileName();
+//                 break;
+//               case static_cast<int>(ColumnType::FileSize): // Size
+//                 result = a.size() < b.size();
+//                 break;
+//               case static_cast<int>(
+//                   ColumnType::FileModifiedDate): // Modified Date
+//                 result = a.lastModified() < b.lastModified();
+//                 break;
+//               default:
+//                 return false;
+//               }
+//               return order == Qt::AscendingOrder ? result : !result;
+//             });
 
-  emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
-}
+//   emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
+// }
 
 void FileSystemModel::setColumns(const QList<Column> &cols) noexcept {
   m_column_list.clear();
@@ -481,4 +480,9 @@ void FileSystemModel::setSymlinkSeparator(const QString &separator) noexcept {
 
 void FileSystemModel::setSymlinkForeground(const QString &foreground) noexcept {
   m_symlink_foreground = foreground;
+}
+
+void FileSystemModel::setSortBy(const QDir::SortFlags &sortFlags) noexcept {
+    m_dir_sort_flags = sortFlags;
+    loadDirectory(m_root_path);
 }

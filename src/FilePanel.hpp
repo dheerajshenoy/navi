@@ -39,15 +39,10 @@ public:
     FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
-    enum class SortBy { Name, Size, Date };
-
     QTableView* tableView() { return m_table_view; }
-
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
     QString getCurrentDir() noexcept;
-
     QSet<QString> *getMarksSetPTR() noexcept { return &m_model->m_markedFiles; }
-
     FileSystemModel* model() noexcept { return m_model; }
 
     void NewFolder(const QStringList &folderName = {}) noexcept;
@@ -59,6 +54,9 @@ public:
     void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
     void PrevItem() noexcept;
+
+    void AsyncShellCommand(const QString &command) noexcept;
+    void ShellCommand(const QString &command) noexcept;
 
     void ToggleMarkItem() noexcept;
     void ToggleMarkDWIM() noexcept;
@@ -125,9 +123,6 @@ public:
     void ItemProperty() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
-    void SortItems(SortBy sortMethod,
-                   const Qt::SortOrder &sortOrder =
-                       Qt::SortOrder::AscendingOrder) noexcept;
     void ToggleHeaders(const bool &state) noexcept;
     void ToggleHeaders() noexcept;
     void SetCycle(const bool &state) noexcept;

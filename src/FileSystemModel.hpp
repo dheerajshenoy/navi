@@ -128,7 +128,8 @@ public:
         return rootPath() + QDir::separator() + getStringFromRow(row);
     }
 
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    // void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
     signals:
     void directoryLoaded(const QString &path);
@@ -136,7 +137,6 @@ public:
     void marksListChanged();
     void dropCopyRequested(const QStringList &sourceFilePath);
     void dropCutRequested(const QStringList &sourceFilePath);
-
 
 private:
     void initDefaults() noexcept;
@@ -146,7 +146,10 @@ private:
     QString m_root_path;
     QHash<QString, int> m_path_row_hash;
 
-    QDir::Filters m_dir_filters;
+    QDir::Filters m_dir_filters = QDir::Filter::NoDotAndDotDot |
+                                  QDir::Filter::AllEntries;
+
+    QDir::SortFlags m_dir_sort_flags = QDir::SortFlag::DirsFirst;
     QLocale m_locale;
     QStringList m_name_filters = {"*"};
     QFileSystemWatcher *m_file_system_watcher = nullptr;
@@ -169,4 +172,5 @@ private:
     QString m_symlink_separator;
     QColor m_symlink_foreground;
     bool m_show_symlink;
+
 };
