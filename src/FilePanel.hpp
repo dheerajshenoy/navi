@@ -211,4 +211,5 @@ private:
 
     unsigned int m_bulk_rename_threshold = 5;
     QModelIndex m_visual_start_index;
+
 };

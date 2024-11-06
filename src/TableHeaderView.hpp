@@ -6,10 +6,8 @@ class TableHeaderView : public QHeaderView {
 Q_OBJECT
 public:
   explicit TableHeaderView(Qt::Orientation orientation,
-                           QWidget *parent = nullptr) : QHeaderView(orientation, parent) {
-
-    setStretchLastSection(true);
-}
+                           QWidget *parent = nullptr)
+      : QHeaderView(orientation, parent) {}
 
     void hide() noexcept {
         emit visibilityChanged(false);

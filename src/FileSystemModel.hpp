@@ -47,6 +47,7 @@ public:
         ColumnType type;
     };
 
+    int fileNameColumnIndex() const noexcept { return m_file_name_column_index; }
     void setSymlinkSeparator(const QString &separator) noexcept;
     void setSymlinkForeground(const QString &foreground) noexcept;
     void setSymlinkVisible(const bool &state) noexcept { m_show_symlink = state; }
@@ -131,6 +132,7 @@ public:
     // void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
+
     signals:
     void directoryLoaded(const QString &path);
     void directoryLoadProgress(const int &progress);
@@ -139,6 +141,7 @@ public:
     void dropCutRequested(const QStringList &sourceFilePath);
 
 private:
+    int indexOfFileNameColumn() const noexcept;
     void initDefaults() noexcept;
     int findRow(const QFileInfo &fileInfo) const noexcept;
 
@@ -172,5 +175,6 @@ private:
     QString m_symlink_separator;
     QColor m_symlink_foreground;
     bool m_show_symlink;
+    unsigned int m_file_name_column_index = -1;
 
 };

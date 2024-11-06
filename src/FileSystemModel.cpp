@@ -11,7 +11,16 @@ FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
 }
 
 void FileSystemModel::initDefaults() noexcept {
-  m_file_system_watcher = new QFileSystemWatcher(this);
+    m_file_system_watcher = new QFileSystemWatcher(this);
+
+    m_file_name_column_index = indexOfFileNameColumn();
+}
+
+int FileSystemModel::indexOfFileNameColumn() const noexcept {
+    for (std::size_t i = 0; i < m_column_list.size(); i++)
+        if (m_column_list.at(i).type == ColumnType::FileName)
+            return i;
+    return -1;
 }
 
 void FileSystemModel::clearMarkedFilesListLocal() noexcept {
@@ -180,7 +189,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::ForegroundRole: {
-    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+      bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
     if (isMarked) {
       return m_markForegroundColor;
     }
@@ -188,7 +197,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::BackgroundRole: {
-    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+      bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
     if (isMarked) {
       return m_markBackgroundColor;
     }
@@ -196,7 +205,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
   } break;
 
   case Qt::FontRole: {
-    bool isMarked = m_markedFiles.contains(getPathFromIndex(index));
+      bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
     if (isMarked) {
       return m_markFont;
     }
@@ -281,9 +290,9 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
 bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
                               int role) {
 
-  if (role == static_cast<int>(Role::Marked)) {
+    if (role == static_cast<int>(Role::Marked)) {
     if (value.toBool() == true) {
-      m_markedFiles.insert(getPathFromIndex(index));
+      m_markedFiles.insert(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
       emit marksListChanged();
     }
     emit dataChanged(index, index, {role});
@@ -461,7 +470,9 @@ void FileSystemModel::setColumns(const QList<Column> &cols) noexcept {
   m_column_list.clear();
 
   for (const auto &col : cols)
-    m_column_list.push_back(col);
+      m_column_list.push_back(col);
+
+  m_file_name_column_index = indexOfFileNameColumn();
 
   emit headerDataChanged(Qt::Orientation::Horizontal, 0, -1);
 }
@@ -483,6 +494,6 @@ void FileSystemModel::setSymlinkForeground(const QString &foreground) noexcept {
 }
 
 void FileSystemModel::setSortBy(const QDir::SortFlags &sortFlags) noexcept {
-    m_dir_sort_flags = sortFlags;
-    loadDirectory(m_root_path);
+  m_dir_sort_flags = sortFlags;
+  loadDirectory(m_root_path);
 }

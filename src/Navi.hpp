@@ -199,6 +199,7 @@ private:
       // Mark
       "mark",
       "toggle-mark",
+      "toggle-mark-dwim",
       "mark-inverse",
       "mark-all",
       "mark-dwim",

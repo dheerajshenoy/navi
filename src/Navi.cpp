@@ -21,8 +21,8 @@ void Navi::initConfiguration() {
   try {
     lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
   } catch (const sol::error &e) {
-      m_statusbar->Message("No configuration file found."
-                           "Skipping initializing configurations");
+    m_statusbar->Message("No configuration file found."
+                         "Skipping initializing configurations");
     return;
   }
 
@@ -85,27 +85,39 @@ void Navi::initConfiguration() {
           QList<FileSystemModel::Column>
               columnList; // List to store column configuration
           FileSystemModel::Column column;
-          for (const auto &entry : columns_table.value()) {
-            auto key = QString::fromStdString(entry.first.as<std::string>());
-            auto value = QString::fromStdString(entry.second.as<std::string>());
+          bool file_name_type_check = false;
+          sol::table columns = columns_table.value();
+          for (std::size_t i = 1; i < columns.size(); i++) {
+            auto col = columns[i];
+            auto name = QString::fromStdString(col["name"].get_or<std::string>(""));
+            auto type = QString::fromStdString(col["type"].get_or<std::string>(""));
 
-            if (key == "name")
-              column.type = FileSystemModel::ColumnType::FileName;
-            else if (key == "size")
+            if (type == "file_name") {
+                column.type = FileSystemModel::ColumnType::FileName;
+                file_name_type_check = true;
+            }
+            else if (type == "file_size")
               column.type = FileSystemModel::ColumnType::FileSize;
-            else if (key == "modified_date")
+            else if (type == "file_date")
               column.type = FileSystemModel::ColumnType::FileModifiedDate;
-            else if (key == "permission")
+            else if (type == "file_permission")
               column.type = FileSystemModel::ColumnType::FilePermission;
             else {
-              m_statusbar->Message(QString("Unknown column key %1").arg(key),
+              m_statusbar->Message(QString("Unknown column type %1").arg(type),
                                    MessageType::WARNING);
               continue;
             }
 
-            column.name = value;
+            column.name = name;
             columnList.append(column);
           }
+
+          // If file_name type is not found in the configuration, inform the user
+          if (!file_name_type_check) {
+            m_statusbar->Message("*file_name* key is mandatory in the columns table."
+                                 "Consider adding it to get the columns working", MessageType::ERROR);
+          }
+
           model->setColumns(columnList);
         }
 
@@ -124,16 +136,17 @@ void Navi::initConfiguration() {
         // symlink
         sol::optional<sol::table> symlink_table = file_pane_table["symlink"];
         if (symlink_table) {
-            auto symlink = symlink_table.value();
+          auto symlink = symlink_table.value();
 
-            auto shown = symlink["shown"].get_or(true);
-            auto foreground = QString::fromStdString(symlink["foreground"].get_or<std::string>(""));
-            auto separator = QString::fromStdString(
-                                                    symlink["separator"].get_or<std::string>("->"));
+          auto shown = symlink["shown"].get_or(true);
+          auto foreground = QString::fromStdString(
+              symlink["foreground"].get_or<std::string>(""));
+          auto separator = QString::fromStdString(
+              symlink["separator"].get_or<std::string>("->"));
 
-            model->setSymlinkVisible(shown);
-            model->setSymlinkSeparator(separator);
-            model->setSymlinkForeground(foreground);
+          model->setSymlinkVisible(shown);
+          model->setSymlinkSeparator(separator);
+          model->setSymlinkForeground(foreground);
         }
 
         // marks
@@ -143,84 +156,85 @@ void Navi::initConfiguration() {
           auto markBackground = QString::fromStdString(
               mark["background"].get_or<std::string>(""));
           auto markForeground = QString::fromStdString(
-                                                       mark["foreground"].get_or<std::string>("#FF5000"));
-          auto markFont = QString::fromStdString(mark["font"].get_or<std::string>(""));
+              mark["foreground"].get_or<std::string>("#FF5000"));
+          auto markFont =
+              QString::fromStdString(mark["font"].get_or<std::string>(""));
           auto markItalic = mark["italic"].get_or(false);
           auto markBold = mark["bold"].get_or(false);
 
           if (!(markFont.isEmpty() || markFont.isNull()))
-              model->setMarkHeaderFontFamily(markFont);
+            model->setMarkHeaderFontFamily(markFont);
 
           if (markItalic)
-              model->setMarkFontItalic(true);
+            model->setMarkFontItalic(true);
 
           if (markBold)
-              model->setMarkFontBold(true);
+            model->setMarkFontBold(true);
 
           if (!(markBackground.isNull() || markBackground.isEmpty()))
-              model->setMarkBackgroundColor(markBackground);
+            model->setMarkBackgroundColor(markBackground);
           else
-              model->setMarkBackgroundColor(
-                                            m_file_panel->tableView()
-                    ->palette()
-                    .brush(QWidget::backgroundRole())
-                    .color()
-                    .name());
+            model->setMarkBackgroundColor(m_file_panel->tableView()
+                                              ->palette()
+                                              .brush(QWidget::backgroundRole())
+                                              .color()
+                                              .name());
 
           if (!(markForeground.isNull() || markForeground.isEmpty()))
             model->setMarkForegroundColor(markForeground);
           else
-            model->setMarkForegroundColor(
-                m_file_panel->tableView()
-                    ->palette()
-                    .brush(QWidget::backgroundRole())
-                    .color()
-                    .name());
+            model->setMarkForegroundColor(m_file_panel->tableView()
+                                              ->palette()
+                                              .brush(QWidget::backgroundRole())
+                                              .color()
+                                              .name());
 
           // header
           sol::optional<sol::table> header_table = mark["header"];
 
           if (header_table) {
-              auto header = header_table.value();
+            auto header = header_table.value();
 
-          auto markHeaderBackground = QString::fromStdString(
-                                                             header["background"].get_or<std::string>(""));
-          auto markHeaderForeground = QString::fromStdString(
-                                                             header["foreground"].get_or<std::string>("#FF5000"));
+            auto markHeaderBackground = QString::fromStdString(
+                header["background"].get_or<std::string>(""));
+            auto markHeaderForeground = QString::fromStdString(
+                header["foreground"].get_or<std::string>("#FF5000"));
 
-          auto markFont = QString::fromStdString(header["font"].get_or<std::string>(""));
-          auto markItalic = header["italic"].get_or(false);
-          auto markBold = header["bold"].get_or(false);
+            auto markFont =
+                QString::fromStdString(header["font"].get_or<std::string>(""));
+            auto markItalic = header["italic"].get_or(false);
+            auto markBold = header["bold"].get_or(false);
 
-          if (!(markFont.isEmpty() || markFont.isNull()))
+            if (!(markFont.isEmpty() || markFont.isNull()))
               model->setMarkHeaderFontFamily(markFont);
 
-          if (markItalic)
+            if (markItalic)
               model->setMarkHeaderFontItalic(true);
 
-          if (markBold)
+            if (markBold)
               model->setMarkHeaderFontBold(true);
 
-          if (!(markHeaderBackground.isNull() || markHeaderBackground.isEmpty()))
-            model->setMarkHeaderBackgroundColor(markHeaderBackground);
-          else
-            model->setMarkHeaderBackgroundColor(
-                m_file_panel->tableView()
-                    ->palette()
-                    .brush(QWidget::backgroundRole())
-                    .color()
-                    .name());
+            if (!(markHeaderBackground.isNull() ||
+                  markHeaderBackground.isEmpty()))
+              model->setMarkHeaderBackgroundColor(markHeaderBackground);
+            else
+              model->setMarkHeaderBackgroundColor(
+                  m_file_panel->tableView()
+                      ->palette()
+                      .brush(QWidget::backgroundRole())
+                      .color()
+                      .name());
 
-          if (!(markHeaderForeground.isNull() || markHeaderForeground.isEmpty()))
-            model->setMarkHeaderForegroundColor(markHeaderForeground);
-          else
-            model->setMarkHeaderForegroundColor(
-                m_file_panel->tableView()
-                    ->palette()
-                    .brush(QWidget::backgroundRole())
-                    .color()
-                    .name());
-
+            if (!(markHeaderForeground.isNull() ||
+                  markHeaderForeground.isEmpty()))
+              model->setMarkHeaderForegroundColor(markHeaderForeground);
+            else
+              model->setMarkHeaderForegroundColor(
+                  m_file_panel->tableView()
+                      ->palette()
+                      .brush(QWidget::backgroundRole())
+                      .color()
+                      .name());
           }
         }
       }
@@ -229,17 +243,19 @@ void Navi::initConfiguration() {
       sol::optional<sol::table> input_bar_table = ui_table["input_bar"];
 
       if (input_bar_table) {
-          auto input_bar = input_bar_table.value();
+        auto input_bar = input_bar_table.value();
 
-          auto foregroundColor = QString::fromStdString(input_bar["foreground"].get_or<std::string>(""));
-          auto backgroundColor = QString::fromStdString(input_bar["background"].get_or<std::string>(""));
-          auto font =
-              QString::fromStdString(input_bar["font"].get_or<std::string>(""));
+        auto foregroundColor = QString::fromStdString(
+            input_bar["foreground"].get_or<std::string>(""));
+        auto backgroundColor = QString::fromStdString(
+            input_bar["background"].get_or<std::string>(""));
+        auto font =
+            QString::fromStdString(input_bar["font"].get_or<std::string>(""));
 
-          // TODO: background unable to apply
-          m_inputbar->setForeground(foregroundColor);
-          m_inputbar->setBackground(backgroundColor);
-          m_inputbar->setFontFamily(font);
+        // TODO: background unable to apply
+        m_inputbar->setForeground(foregroundColor);
+        m_inputbar->setBackground(backgroundColor);
+        m_inputbar->setFontFamily(font);
       }
     }
   }
@@ -249,38 +265,34 @@ void Navi::initConfiguration() {
 
   if (keybindings_table_opt) {
 
-      sol::table keybindings_table = keybindings_table_opt.value();
-      m_keybind_list.reserve(keybindings_table.size());
-      for (std::size_t i = 1; i <= keybindings_table.size(); i++) {
-          sol::table entry = keybindings_table[i];
-          if (!entry)
-              continue;
+    sol::table keybindings_table = keybindings_table_opt.value();
+    m_keybind_list.reserve(keybindings_table.size());
+    for (std::size_t i = 1; i <= keybindings_table.size(); i++) {
+      sol::table entry = keybindings_table[i];
+      if (!entry)
+        continue;
 
-          auto key =
-              QString::fromStdString(entry["key"].get_or<std::string>(""));
+      auto key = QString::fromStdString(entry["key"].get_or<std::string>(""));
 
+      if (key.isEmpty() || key.isNull())
+        continue;
 
-          if (key.isEmpty() || key.isNull())
-              continue;
+      auto command =
+          QString::fromStdString(entry["command"].get_or<std::string>(""));
+      auto desc = QString::fromStdString(entry["desc"].get_or<std::string>(""));
 
-          auto command = QString::fromStdString(entry["command"].get_or<std::string>(""));
-          auto desc =
-              QString::fromStdString(entry["desc"].get_or<std::string>(""));
+      if (command.isEmpty() || command.isNull())
+        continue;
 
-          if (command.isEmpty() || command.isNull())
-              continue;
+      Keybind kb;
+      kb.key = key;
+      kb.command = command;
+      kb.desc = desc;
 
-          Keybind kb;
-          kb.key = key;
-          kb.command = command;
-          kb.desc = desc;
-
-          qDebug() << key << " " << command << " " << desc;
-
-          m_keybind_list.append(kb);
-      }
-          generateKeybinds();
-      }
+      m_keybind_list.append(kb);
+    }
+    generateKeybinds();
+  }
 
   m_statusbar->Message("Reading configuration file done!");
 }
@@ -288,11 +300,11 @@ void Navi::initConfiguration() {
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
 void Navi::generateKeybinds() noexcept {
 
-    for (const auto &keybind : m_keybind_list) {
-        QShortcut *shortcut = new QShortcut(QKeySequence(keybind.key), this);
-        connect(shortcut, &QShortcut::activated, this,
-                [&]() { ProcessCommand(keybind.command); });
-    }
+  for (const auto &keybind : m_keybind_list) {
+    QShortcut *shortcut = new QShortcut(QKeySequence(keybind.key), this);
+    connect(shortcut, &QShortcut::activated, this,
+            [&]() { ProcessCommand(keybind.command); });
+  }
 }
 
 void Navi::initBookmarks() noexcept {
@@ -350,7 +362,7 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["visual-select"] = [this](const QStringList &args) {
-      m_file_panel->ToggleVisualLine();
+    m_file_panel->ToggleVisualLine();
   };
 
   commandMap["shortcuts-pane"] = [this](const QStringList &args) {
@@ -362,7 +374,7 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["select-item"] = [this](const QStringList &args) {
-      m_file_panel->SelectItem();
+    m_file_panel->SelectItem();
   };
 
   commandMap["next-item"] = [this](const QStringList &args) {
@@ -370,11 +382,11 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["prev-item"] = [this](const QStringList &args) {
-      m_file_panel->PrevItem();
+    m_file_panel->PrevItem();
   };
 
   commandMap["first-item"] = [this](const QStringList &args) {
-      m_file_panel->GotoFirstItem();
+    m_file_panel->GotoFirstItem();
   };
 
   commandMap["last-item"] = [this](const QStringList &args) {
@@ -400,10 +412,10 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["echo-error"] = [this](const QStringList &args) {
-      if (args.isEmpty())
-          return;
+    if (args.isEmpty())
+      return;
 
-      m_statusbar->Message(args.join(" "), MessageType::ERROR);
+    m_statusbar->Message(args.join(" "), MessageType::ERROR);
   };
 
   commandMap["reload-config"] = [this](const QStringList &args) {
@@ -425,7 +437,7 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["sort-size-desc"] = [this](const QStringList &args) {
-      SortBySize(true);
+    SortBySize(true);
   };
 
   commandMap["toggle-cycle"] = [this](const QStringList &args) {
@@ -526,6 +538,10 @@ void Navi::setupCommandMap() noexcept {
     m_file_panel->ToggleMarkItem();
   };
 
+  commandMap["toggle-mark-dwim"] = [this](const QStringList &args) {
+    m_file_panel->ToggleMarkDWIM();
+  };
+
   commandMap["unmark"] = [this](const QStringList &args) {
     m_file_panel->UnmarkItem();
   };
@@ -582,7 +598,9 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["filter"] = [this](const QStringList &args) { Filter(); };
 
-  commandMap["reset-filter"] = [this](const QStringList &args) { ResetFilter(); };
+  commandMap["reset-filter"] = [this](const QStringList &args) {
+    ResetFilter();
+  };
 
   commandMap["refresh"] = [this](const QStringList &args) {
     m_file_panel->ForceUpdate();
@@ -1191,27 +1209,30 @@ void Navi::initMenubar() noexcept {
 
   connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
           [&](const bool &state) {
-              if (state) {
-                  if (m_sort_flags & QDir::SortFlag::Reversed) {
-                      m_sort_flags &= ~QDir::SortFlag::Reversed;
-                      m_file_panel->model()->setSortBy(m_sort_flags);
-                  }
+            if (state) {
+              if (m_sort_flags & QDir::SortFlag::Reversed) {
+                m_sort_flags &= ~QDir::SortFlag::Reversed;
+                m_file_panel->model()->setSortBy(m_sort_flags);
               }
+            }
           });
 
   connect(m_viewmenu__sort_descending, &QAction::triggered, this,
           [&](const bool &state) {
-              if (state) {
-                  if (m_sort_flags & QDir::SortFlag::Reversed)
-                      return;
-                  m_sort_flags |= QDir::SortFlag::Reversed;
-                  m_file_panel->model()->setSortBy(m_sort_flags);
-              }
+            if (state) {
+              if (m_sort_flags & QDir::SortFlag::Reversed)
+                return;
+              m_sort_flags |= QDir::SortFlag::Reversed;
+              m_file_panel->model()->setSortBy(m_sort_flags);
+            }
           });
 
-  connect(m_viewmenu__sort_by_name, &QAction::triggered, this, &Navi::SortByName);
-  connect(m_viewmenu__sort_by_date, &QAction::triggered, this, &Navi::SortByDate);
-  connect(m_viewmenu__sort_by_size, &QAction::triggered, this, &Navi::SortBySize);
+  connect(m_viewmenu__sort_by_name, &QAction::triggered, this,
+          &Navi::SortByName);
+  connect(m_viewmenu__sort_by_date, &QAction::triggered, this,
+          &Navi::SortByDate);
+  connect(m_viewmenu__sort_by_size, &QAction::triggered, this,
+          &Navi::SortBySize);
 
   connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
           [&](const bool &state) { ToggleMarksBuffer(state); });
@@ -1305,18 +1326,18 @@ void Navi::ToggleStatusBar() noexcept {
 }
 
 void Navi::Filter() noexcept {
-  m_statusbar->SetFilterMode(true);
   QString filterString = m_inputbar->getInput("Filter String");
   if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
-      ResetFilter();
-      return;
+    ResetFilter();
+    return;
   }
   m_file_panel->Filters(filterString);
+  m_statusbar->SetFilterMode(true);
 }
 
 void Navi::ResetFilter() noexcept {
-  m_statusbar->SetFilterMode(false);
   m_file_panel->ResetFilter();
+  m_statusbar->SetFilterMode(false);
 }
 
 void Navi::LogMessage(const QString &message,
@@ -1361,31 +1382,31 @@ void Navi::SaveBookmarkFile() noexcept {
 }
 
 void Navi::SortByName(const bool &reverse) noexcept {
-    m_sort_by = SortBy::Name;
-    m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
+  m_sort_by = SortBy::Name;
+  m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
 
-    if (reverse)
-        m_sort_flags |= QDir::SortFlag::Reversed;
+  if (reverse)
+    m_sort_flags |= QDir::SortFlag::Reversed;
 
-    m_file_panel->model()->setSortBy(m_sort_flags);
+  m_file_panel->model()->setSortBy(m_sort_flags);
 }
 
 void Navi::SortBySize(const bool &reverse) noexcept {
-      m_sort_by = SortBy::Size;
-      m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
+  m_sort_by = SortBy::Size;
+  m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
 
-      if (reverse)
-          m_sort_flags |= QDir::SortFlag::Reversed;
+  if (reverse)
+    m_sort_flags |= QDir::SortFlag::Reversed;
 
-      m_file_panel->model()->setSortBy(m_sort_flags);
+  m_file_panel->model()->setSortBy(m_sort_flags);
 }
 
 void Navi::SortByDate(const bool &reverse) noexcept {
-      m_sort_by = SortBy::Date;
-      m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
+  m_sort_by = SortBy::Date;
+  m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
 
-      if (reverse)
-          m_sort_flags |= QDir::SortFlag::Reversed;
+  if (reverse)
+    m_sort_flags |= QDir::SortFlag::Reversed;
 
-      m_file_panel->model()->setSortBy(m_sort_flags);
+  m_file_panel->model()->setSortBy(m_sort_flags);
 }

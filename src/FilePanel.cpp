@@ -19,6 +19,9 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
   initSignalsSlots();
   initContextMenu();
 
+
+  m_table_view->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+  // m_table_view->horizontalHeader()->resizeSections(i, QHeaderView::Interactive);
   setAcceptDrops(true);
   this->show();
 }
@@ -118,13 +121,16 @@ void FilePanel::initSignalsSlots() noexcept {
   connect(m_table_view, &QTableView::doubleClicked, this,
           &FilePanel::handleItemDoubleClicked);
 
+  auto file_name_column_index = m_model->fileNameColumnIndex();
+
   connect(m_table_view->selectionModel(), &QItemSelectionModel::currentChanged,
-          this,
-          [this](const QModelIndex &current, const QModelIndex &previous) {
+          this, [&](const QModelIndex &current, const QModelIndex &previous) {
+            QModelIndex fileNameIndex =
+                current.siblingAtColumn(file_name_column_index);
             emit currentItemChanged(
                 m_current_dir + QDir::separator() +
-                m_model->data(current, Qt::DisplayRole).toString());
-          });
+                m_model->data(fileNameIndex, Qt::DisplayRole).toString());
+  });
 
   connect(this, &FilePanel::dropCopyRequested, this,
           &FilePanel::DropCopyRequested);
@@ -266,29 +272,28 @@ FilePanel::~FilePanel() {}
 ///////////////////////////
 
 void FilePanel::NextItem() noexcept {
-    QModelIndex currentIndex = m_table_view->currentIndex();
-    int nextRow = currentIndex.row() + 1;
+  QModelIndex currentIndex = m_table_view->currentIndex();
+  int nextRow = currentIndex.row() + 1;
 
-    // Loop to start
-    if (m_cycle_item && nextRow >= m_model->rowCount(m_table_view->rootIndex()))
-        nextRow = 0;
+  // Loop to start
+  if (m_cycle_item && nextRow >= m_model->rowCount(m_table_view->rootIndex()))
+    nextRow = 0;
 
-    QModelIndex nextIndex = m_model->index(nextRow, 0);
-    if (nextIndex.isValid()) {
-        m_table_view->setCurrentIndex(nextIndex);
-        m_table_view->scrollTo(nextIndex);
+  QModelIndex nextIndex = m_model->index(nextRow, 0);
+  if (nextIndex.isValid()) {
+    m_table_view->setCurrentIndex(nextIndex);
+    m_table_view->scrollTo(nextIndex);
 
-        if (m_visual_line_mode) {
-            // Update selection to include the new index
-            QItemSelection selection(m_visual_start_index, nextIndex);
-            m_table_view->selectionModel()->select(
-                selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
-            m_table_view->selectionModel()->setCurrentIndex(
-                nextIndex, QItemSelectionModel::NoUpdate);
-        }
+    if (m_visual_line_mode) {
+      // Update selection to include the new index
+      QItemSelection selection(m_visual_start_index, nextIndex);
+      m_table_view->selectionModel()->select(
+          selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                     QItemSelectionModel::SelectionFlag::Rows);
+      m_table_view->selectionModel()->setCurrentIndex(
+          nextIndex, QItemSelectionModel::NoUpdate);
     }
-
-
+  }
 
   // TODO: Add hook
 }
@@ -309,7 +314,9 @@ void FilePanel::PrevItem() noexcept {
     if (m_visual_line_mode) {
       // Update selection to include the new index
       QItemSelection selection(m_visual_start_index, prevIndex);
-      m_table_view->selectionModel()->select(selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+      m_table_view->selectionModel()->select(
+          selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                     QItemSelectionModel::SelectionFlag::Rows);
       m_table_view->selectionModel()->setCurrentIndex(
           prevIndex, QItemSelectionModel::NoUpdate);
     }
@@ -363,23 +370,20 @@ void FilePanel::ToggleMarkItem() noexcept {
 }
 
 void FilePanel::ToggleMarkDWIM() noexcept {
-    if (m_table_view->selectionModel()->hasSelection()) {
-        auto indexes = m_table_view->selectionModel()->selectedIndexes();
+  if (m_table_view->selectionModel()->hasSelection()) {
+    auto indexes = m_table_view->selectionModel()->selectedIndexes();
 
-        for (const auto &index : indexes) {
-          if (m_model->data(index, static_cast<int>(Role::Marked))
-                  .toBool()) {
-            m_model->setData(index, false,
-                             static_cast<int>(Role::Marked));
-            m_model->removeMarkedFile(index);
-          } else {
-            m_model->setData(index, true,
-                             static_cast<int>(Role::Marked));
-          }
-        }
-    } else {
-      ToggleMarkItem();
+    for (const auto &index : indexes) {
+      if (m_model->data(index, static_cast<int>(Role::Marked)).toBool()) {
+        m_model->setData(index, false, static_cast<int>(Role::Marked));
+        m_model->removeMarkedFile(index);
+      } else {
+        m_model->setData(index, true, static_cast<int>(Role::Marked));
+      }
     }
+  } else {
+    ToggleMarkItem();
+  }
 }
 
 void FilePanel::MarkItem() noexcept {
@@ -388,22 +392,22 @@ void FilePanel::MarkItem() noexcept {
 }
 
 void FilePanel::MarkItems(const QModelIndexList &list) noexcept {
-    for (auto index : list)
-      m_model->setData(index, true, static_cast<int>(Role::Marked));
+  for (auto index : list)
+    m_model->setData(index, true, static_cast<int>(Role::Marked));
 }
 
 void FilePanel::MarkDWIM() noexcept {
-    if (m_table_view->selectionModel()->hasSelection()) {
-        MarkItems(m_table_view->selectionModel()->selectedIndexes());
-    } else {
+  if (m_table_view->selectionModel()->hasSelection()) {
+    MarkItems(m_table_view->selectionModel()->selectedIndexes());
+  } else {
     MarkItem();
   }
 }
 
 void FilePanel::UnmarkDWIM() noexcept {
-    if (m_table_view->selectionModel()->hasSelection()) {
-        UnmarkItems(m_table_view->selectionModel()->selectedIndexes());
-    } else {
+  if (m_table_view->selectionModel()->hasSelection()) {
+    UnmarkItems(m_table_view->selectionModel()->selectedIndexes());
+  } else {
     MarkItem();
   }
 }
@@ -421,9 +425,11 @@ void FilePanel::UnmarkItem() noexcept {
 }
 
 void FilePanel::UnmarkItemsGlobal() noexcept {
-    if (m_model->hasMarks()) {
+  if (m_model->hasMarks()) {
     QString confirm =
-        m_inputbar->getInput(QString("Do you want to clear %1 global marks ? (y/N)").arg(m_model->getMarkedFilesCount()))
+        m_inputbar
+            ->getInput(QString("Do you want to clear %1 global marks ? (y/N)")
+                           .arg(m_model->getMarkedFilesCount()))
             .toLower();
 
     if (confirm == "y")
@@ -451,17 +457,18 @@ void FilePanel::UnmarkItemsLocal() noexcept {
 }
 
 void FilePanel::GotoFirstItem() noexcept {
-    QModelIndex index = m_model->index(0, 0);
-    m_table_view->setCurrentIndex(index);
+  QModelIndex index = m_model->index(0, 0);
+  m_table_view->setCurrentIndex(index);
 
-    if (m_visual_line_mode) {
-      // Update selection to include the new index
-      QItemSelection selection(m_visual_start_index, index);
-      m_table_view->selectionModel()->select(
-          selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
-      m_table_view->selectionModel()->setCurrentIndex(
-          index, QItemSelectionModel::NoUpdate);
-    }
+  if (m_visual_line_mode) {
+    // Update selection to include the new index
+    QItemSelection selection(m_visual_start_index, index);
+    m_table_view->selectionModel()->select(
+        selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                   QItemSelectionModel::SelectionFlag::Rows);
+    m_table_view->selectionModel()->setCurrentIndex(
+        index, QItemSelectionModel::NoUpdate);
+  }
 }
 
 void FilePanel::GotoLastItem() noexcept {
@@ -473,43 +480,46 @@ void FilePanel::GotoLastItem() noexcept {
     // Update selection to include the new index
     QItemSelection selection(m_visual_start_index, index);
     m_table_view->selectionModel()->select(
-        selection, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+        selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                   QItemSelectionModel::SelectionFlag::Rows);
     m_table_view->selectionModel()->setCurrentIndex(
         index, QItemSelectionModel::NoUpdate);
-    }
+  }
 }
 
 void FilePanel::GotoItem(const uint &itemNum) noexcept {
-    if (itemNum >= 0 &&
-        itemNum <= m_model->rowCount(m_table_view->rootIndex()) - 1) {
-        QModelIndex index = m_model->index(itemNum, 0);
-        m_table_view->setCurrentIndex(index);
-
-        if (m_visual_line_mode) {
-            // Update selection to include the new index
-            QItemSelection selection(m_visual_start_index, index);
-            m_table_view->selectionModel()->select(selection,
-                                                   QItemSelectionModel::SelectionFlag::ClearAndSelect);
-            m_table_view->selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
-
-        }
-    }
-}
-
-void FilePanel::GotoMiddleItem() noexcept {
-    unsigned int middleRow = m_model->rowCount() / 2;
-
-    QModelIndex index = m_model->index(middleRow, 0);
+  if (itemNum >= 0 &&
+      itemNum <= m_model->rowCount(m_table_view->rootIndex()) - 1) {
+    QModelIndex index = m_model->index(itemNum, 0);
     m_table_view->setCurrentIndex(index);
 
     if (m_visual_line_mode) {
-        // Update selection to include the new index
-        QItemSelection selection(m_visual_start_index, index);
-        m_table_view->selectionModel()->select(selection,
-                                               QItemSelectionModel::SelectionFlag::ClearAndSelect);
-        m_table_view->selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
-
+      // Update selection to include the new index
+      QItemSelection selection(m_visual_start_index, index);
+      m_table_view->selectionModel()->select(
+          selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                     QItemSelectionModel::SelectionFlag::Rows);
+      m_table_view->selectionModel()->setCurrentIndex(
+          index, QItemSelectionModel::NoUpdate);
     }
+  }
+}
+
+void FilePanel::GotoMiddleItem() noexcept {
+  unsigned int middleRow = m_model->rowCount() / 2;
+
+  QModelIndex index = m_model->index(middleRow, 0);
+  m_table_view->setCurrentIndex(index);
+
+  if (m_visual_line_mode) {
+    // Update selection to include the new index
+    QItemSelection selection(m_visual_start_index, index);
+    m_table_view->selectionModel()->select(
+        selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                   QItemSelectionModel::SelectionFlag::Rows);
+    m_table_view->selectionModel()->setCurrentIndex(
+        index, QItemSelectionModel::NoUpdate);
+  }
 }
 
 void FilePanel::TrashItem() noexcept {
@@ -526,58 +536,57 @@ void FilePanel::TrashItem() noexcept {
 }
 
 void FilePanel::TrashItems(const QStringList &files) noexcept {
-    bool check = true;
-    for (const auto &filePath : files) {
-        if (check) {
-            QString inputConfirm =
-                m_inputbar
-            ->getInput(QString("Do you want to delete %1 and all of it's "
-                               "subitems ? (y, N, y!, n!)")
-                           .arg(filePath))
-            .toLower();
-            if (inputConfirm == "y") {
-                if (QFile::moveToTrash(filePath)) {
-                    m_model->removeMarkedFile(filePath);
-                    m_statusbar->Message(QString("Trashed item %1 successfully!")
-                             .arg(QFileInfo(filePath).fileName()));
-                } else
-                    m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                             .arg(QFileInfo(filePath).fileName()));
-            }
-            else if (inputConfirm == "y!") {
-                check = false;
-                if (QFile::moveToTrash(filePath)) {
-                    m_model->removeMarkedFile(filePath);
-                    m_statusbar->Message(QString("Trashed item %1 successfully!")
-                             .arg(QFileInfo(filePath).fileName()));
-                } else
-                    m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                             .arg(QFileInfo(filePath).fileName()));
-            } else if (inputConfirm == "n!") {
-                m_statusbar->Message("Trash operation cancelled");
-                return;
-            }
-        } else {
-            if (QFile::moveToTrash(filePath)) {
-                m_model->removeMarkedFile(filePath);
-                m_statusbar->Message(QString("Trashed item %1 successfully!")
-                             .arg(QFileInfo(filePath).fileName()));
-            } else
-                m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                             .arg(QFileInfo(filePath).fileName()));
-        }
+  bool check = true;
+  for (const auto &filePath : files) {
+    if (check) {
+      QString inputConfirm =
+          m_inputbar
+              ->getInput(QString("Do you want to delete %1 and all of it's "
+                                 "subitems ? (y, N, y!, n!)")
+                             .arg(filePath))
+              .toLower();
+      if (inputConfirm == "y") {
+        if (QFile::moveToTrash(filePath)) {
+          m_model->removeMarkedFile(filePath);
+          m_statusbar->Message(QString("Trashed item %1 successfully!")
+                                   .arg(QFileInfo(filePath).fileName()));
+        } else
+          m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                                   .arg(QFileInfo(filePath).fileName()));
+      } else if (inputConfirm == "y!") {
+        check = false;
+        if (QFile::moveToTrash(filePath)) {
+          m_model->removeMarkedFile(filePath);
+          m_statusbar->Message(QString("Trashed item %1 successfully!")
+                                   .arg(QFileInfo(filePath).fileName()));
+        } else
+          m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                                   .arg(QFileInfo(filePath).fileName()));
+      } else if (inputConfirm == "n!") {
+        m_statusbar->Message("Trash operation cancelled");
+        return;
+      }
+    } else {
+      if (QFile::moveToTrash(filePath)) {
+        m_model->removeMarkedFile(filePath);
+        m_statusbar->Message(QString("Trashed item %1 successfully!")
+                                 .arg(QFileInfo(filePath).fileName()));
+      } else
+        m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                                 .arg(QFileInfo(filePath).fileName()));
     }
+  }
 }
 
 void FilePanel::TrashDWIM() noexcept {
-    auto localMarks = m_model->getMarkedFilesLocal();
+  auto localMarks = m_model->getMarkedFilesLocal();
 
-    if (localMarks.isEmpty()) {
-        TrashItem();
-        return;
-    }
+  if (localMarks.isEmpty()) {
+    TrashItem();
+    return;
+  }
 
-    TrashItems(localMarks);
+  TrashItems(localMarks);
 }
 
 void FilePanel::TrashItemsLocal() noexcept {
@@ -806,143 +815,143 @@ void FilePanel::RenameItemsLocal() noexcept {
 
 void FilePanel::RenameItems(const QStringList &files) noexcept {
 
-    for (const auto &filepath : files) {
+  for (const auto &filepath : files) {
 
-        QFileInfo fileInfo(filepath);
-        const QString &oldFilePath = fileInfo.filePath();
-        const QString &oldName = fileInfo.fileName();
-        QString newFileName;
+    QFileInfo fileInfo(filepath);
+    const QString &oldFilePath = fileInfo.filePath();
+    const QString &oldName = fileInfo.fileName();
+    QString newFileName;
 
-        if (fileInfo.isFile())
-            newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
-                                               oldName, fileInfo.baseName());
-        else if (fileInfo.isDir())
-            newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
-                                               oldName, oldName);
+    if (fileInfo.isFile())
+      newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                                         oldName, fileInfo.baseName());
+    else if (fileInfo.isDir())
+      newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                                         oldName, oldName);
 
-        // If user cancels or the new file name is empty
-        if (newFileName.isEmpty() || newFileName.isNull()) {
-            m_statusbar->Message("Operation Cancelled", MessageType::WARNING);
-            return;
-        }
-
-        if (newFileName == oldName) {
-            m_statusbar->Message("Filename is the same.", MessageType::WARNING);
-            return;
-        }
-
-        bool state = QFile::rename(
-                                   oldFilePath, m_current_dir + QDir::separator() + newFileName);
-        if (state) {
-            m_model->removeMarkedFile(oldFilePath);
-            m_statusbar->Message(QString("Renamed %1 to %2")
-                                     .arg(oldName)
-                                 .arg(newFileName));
-        }
+    // If user cancels or the new file name is empty
+    if (newFileName.isEmpty() || newFileName.isNull()) {
+      m_statusbar->Message("Operation Cancelled", MessageType::WARNING);
+      return;
     }
+
+    if (newFileName == oldName) {
+      m_statusbar->Message("Filename is the same.", MessageType::WARNING);
+      return;
+    }
+
+    bool state = QFile::rename(oldFilePath,
+                               m_current_dir + QDir::separator() + newFileName);
+    if (state) {
+      m_model->removeMarkedFile(oldFilePath);
+      m_statusbar->Message(
+          QString("Renamed %1 to %2").arg(oldName).arg(newFileName));
+    }
+  }
 }
 
 void FilePanel::RenameDWIM() noexcept {
-    // If there are local marks
-    auto localMarks = m_model->getMarkedFilesLocal();
-    if (localMarks.isEmpty()) {
-        RenameItem();
-        return;
-    }
+  // If there are local marks
+  auto localMarks = m_model->getMarkedFilesLocal();
+  if (localMarks.isEmpty()) {
+    RenameItem();
+    return;
+  }
 
-    if (localMarks.size() > m_bulk_rename_threshold) {
-        BulkRename(localMarks);
-    } else
-        RenameItems(localMarks);
+  if (localMarks.size() > m_bulk_rename_threshold) {
+    BulkRename(localMarks);
+  } else
+    RenameItems(localMarks);
 }
 
 void FilePanel::DeleteDWIM() noexcept {
-    auto localMarks = m_model->getMarkedFilesLocal();
-    // TODO: Fix some wierd behavior
-    if (localMarks.isEmpty()) {
-        DeleteItem();
-        return;
-    }
-    DeleteItems(localMarks);
+  auto localMarks = m_model->getMarkedFilesLocal();
+  // TODO: Fix some wierd behavior
+  if (localMarks.isEmpty()) {
+    DeleteItem();
+    return;
+  }
+  DeleteItems(localMarks);
 }
 
 void FilePanel::DeleteItems(const QStringList &files) noexcept {
-    bool check = true;
-    for (const auto &itemPath : files) {
-        QFileInfo file(itemPath);
-        if (file.isDir()) {
-            QDir dir(itemPath);
+  bool check = true;
+  for (const auto &itemPath : files) {
+    QFileInfo file(itemPath);
+    if (file.isDir()) {
+      QDir dir(itemPath);
 
-            if (check) {
-                QString inputConfirm =
-                    m_inputbar
-            ->getInput(QString("Do you want to delete %1 and all of it's "
-                               "subitems ? (y, N, y!, n!)")
-                           .arg(itemPath))
-            .toLower();
-                if (inputConfirm == "y") {
-                    if (dir.removeRecursively()) {
-                        m_statusbar->Message(QString("Deleted %1").arg(itemPath));
-                        m_model->removeMarkedFile(itemPath);
-                    } else
-                        m_statusbar->Message(QString("Error deleting %1").arg(itemPath), MessageType::ERROR);
-                } else if (inputConfirm == "y!") {
-                    dir.removeRecursively();
-                    m_statusbar->Message(QString("Deleted %1").arg(itemPath));
-                    m_model->removeMarkedFile(itemPath);
-                    check = false;
-                } else if (inputConfirm == "n!") {
-                    m_statusbar->Message("Delete operation cancelled!");
-                    return;
-                }
-            } else {
-                if (dir.removeRecursively()) {
-                    m_statusbar->Message(QString("Deleted %1").arg(itemPath));
-                    m_model->removeMarkedFile(itemPath);
-                } else
-                    m_statusbar->Message(QString("Error deleting %1").arg(itemPath), MessageType::ERROR);
-            }
-        } else {
-            QString inputConfirm =
-                m_inputbar
-                  ->getInput(QString("Do you want to delete %1 ? (y, N, y!, n!)")
-                                 .arg(itemPath))
-                  .toLower();
-
-            if (check) {
-                if (inputConfirm == "y") {
-                    if (QFile::remove(itemPath))
-                        m_model->removeMarkedFile(itemPath);
-                    else
-                        m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
-                } else if (inputConfirm == "y!") {
-                    check = false;
-                    if (QFile::remove(itemPath)) {
-                        m_model->removeMarkedFile(itemPath);
-                        m_statusbar->Message(QString("Deleted %1").arg(itemPath));
-                    }
-                    else
-                        m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
-                } else if (inputConfirm == "n!") {
-                    m_statusbar->Message("Delete operation cancelled");
-                    return;
-                } else if (inputConfirm == "n") {}
-            } else {
-                if (QFile::remove(itemPath)) {
-                    m_model->removeMarkedFile(itemPath);
-                    m_statusbar->Message(QString("Deleted %1").arg(itemPath));
-                }
-                else
-                    m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
-            }
+      if (check) {
+        QString inputConfirm =
+            m_inputbar
+                ->getInput(QString("Do you want to delete %1 and all of it's "
+                                   "subitems ? (y, N, y!, n!)")
+                               .arg(itemPath))
+                .toLower();
+        if (inputConfirm == "y") {
+          if (dir.removeRecursively()) {
+            m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+            m_model->removeMarkedFile(itemPath);
+          } else
+            m_statusbar->Message(QString("Error deleting %1").arg(itemPath),
+                                 MessageType::ERROR);
+        } else if (inputConfirm == "y!") {
+          dir.removeRecursively();
+          m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+          m_model->removeMarkedFile(itemPath);
+          check = false;
+        } else if (inputConfirm == "n!") {
+          m_statusbar->Message("Delete operation cancelled!");
+          return;
         }
+      } else {
+        if (dir.removeRecursively()) {
+          m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+          m_model->removeMarkedFile(itemPath);
+        } else
+          m_statusbar->Message(QString("Error deleting %1").arg(itemPath),
+                               MessageType::ERROR);
+      }
+    } else {
+      QString inputConfirm =
+          m_inputbar
+              ->getInput(QString("Do you want to delete %1 ? (y, N, y!, n!)")
+                             .arg(itemPath))
+              .toLower();
+
+      if (check) {
+        if (inputConfirm == "y") {
+          if (QFile::remove(itemPath))
+            m_model->removeMarkedFile(itemPath);
+          else
+            m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
+        } else if (inputConfirm == "y!") {
+          check = false;
+          if (QFile::remove(itemPath)) {
+            m_model->removeMarkedFile(itemPath);
+            m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+          } else
+            m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
+        } else if (inputConfirm == "n!") {
+          m_statusbar->Message("Delete operation cancelled");
+          return;
+        } else if (inputConfirm == "n") {
+        }
+      } else {
+        if (QFile::remove(itemPath)) {
+          m_model->removeMarkedFile(itemPath);
+          m_statusbar->Message(QString("Deleted %1").arg(itemPath));
+        } else
+          m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
+      }
     }
+  }
 }
 
 void FilePanel::DeleteItem() noexcept {
   QString itemPath = getCurrentItem();
   if (m_model->isDir(m_table_view->currentIndex())) {
-      QDir dir(itemPath);
+    QDir dir(itemPath);
 
     QString inputConfirm =
         m_inputbar
@@ -1013,10 +1022,10 @@ void FilePanel::DeleteItemsLocal() noexcept {
             check = false;
             _removeFile(itemPath);
           } else if (confirm == "y")
-              _removeFile(itemPath);
+            _removeFile(itemPath);
           else if (confirm == "n!") {
-              m_statusbar->Message("Delete operation cancelled!");
-              return;
+            m_statusbar->Message("Delete operation cancelled!");
+            return;
           }
         } else
           _removeFile(itemPath);
@@ -1035,8 +1044,8 @@ void FilePanel::DeleteItemsLocal() noexcept {
           } else if (confirm == "y")
             _removeDir(itemPath);
           else if (confirm == "n!") {
-              m_statusbar->Message("Delete operation cancelled!");
-              return;
+            m_statusbar->Message("Delete operation cancelled!");
+            return;
           }
         } else
           _removeDir(itemPath);
@@ -1171,70 +1180,74 @@ bool FilePanel::SetPermissions(const QString &filePath,
 }
 
 void FilePanel::ChmodItem() noexcept {
-    QString permString = m_inputbar->getInput("Enter permission number: ");
-    QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
-    QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
+  QString permString = m_inputbar->getInput("Enter permission number: ");
+  QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
+  QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
-    if (permissionMatch.hasMatch()) {
-        QString filePath = getCurrentItem();
-        if (SetPermissions(filePath, permString)) {
-            m_statusbar->Message("Permission changed successfully");
-        } else {
-            m_statusbar->Message("Error setting permission", MessageType::ERROR);
-        }
+  if (permissionMatch.hasMatch()) {
+    QString filePath = getCurrentItem();
+    if (SetPermissions(filePath, permString)) {
+      m_statusbar->Message("Permission changed successfully");
     } else {
-        m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+      m_statusbar->Message("Error setting permission", MessageType::ERROR);
     }
+  } else {
+    m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+  }
 }
 
 void FilePanel::ChmodItemsLocal() noexcept {
-    auto localMarkedFiles = m_model->getMarkedFilesLocal();
-    if (localMarkedFiles.size() == 0) {
-        m_statusbar->Message("No local marks found", MessageType::WARNING);
-        return;
-    }
+  auto localMarkedFiles = m_model->getMarkedFilesLocal();
+  if (localMarkedFiles.size() == 0) {
+    m_statusbar->Message("No local marks found", MessageType::WARNING);
+    return;
+  }
 
-    QString permString = m_inputbar->getInput("Enter permission number: ");
-    QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
-    QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
+  QString permString = m_inputbar->getInput("Enter permission number: ");
+  QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
+  QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
-    if (permissionMatch.hasMatch()) {
-        for (const auto &filePath : localMarkedFiles) {
-            if (SetPermissions(filePath, permString)) {
-                m_statusbar->Message(QString("Permission changed for %1").arg(filePath));
-            } else {
-              m_statusbar->Message(QString("Error setting permission for %1").arg(filePath),
-                                   MessageType::ERROR);
-            }
-        }
-    } else {
-        m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+  if (permissionMatch.hasMatch()) {
+    for (const auto &filePath : localMarkedFiles) {
+      if (SetPermissions(filePath, permString)) {
+        m_statusbar->Message(
+            QString("Permission changed for %1").arg(filePath));
+      } else {
+        m_statusbar->Message(
+            QString("Error setting permission for %1").arg(filePath),
+            MessageType::ERROR);
+      }
     }
+  } else {
+    m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+  }
 }
 
 void FilePanel::ChmodItemsGlobal() noexcept {
-    auto localMarkedFiles = m_model->getMarkedFiles();
-    if (localMarkedFiles.size() == 0) {
-        m_statusbar->Message("No marks found", MessageType::WARNING);
-        return;
-    }
+  auto localMarkedFiles = m_model->getMarkedFiles();
+  if (localMarkedFiles.size() == 0) {
+    m_statusbar->Message("No marks found", MessageType::WARNING);
+    return;
+  }
 
-    QString permString = m_inputbar->getInput("Enter permission number: ");
-    QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
-    QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
+  QString permString = m_inputbar->getInput("Enter permission number: ");
+  QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
+  QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
-    if (permissionMatch.hasMatch()) {
-        for (const auto &filePath : localMarkedFiles) {
-            if (SetPermissions(filePath, permString)) {
-                m_statusbar->Message(QString("Permission changed for %1").arg(filePath));
-            } else {
-              m_statusbar->Message(QString("Error setting permission for %1").arg(filePath),
-                                   MessageType::ERROR);
-            }
-        }
-    } else {
-        m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+  if (permissionMatch.hasMatch()) {
+    for (const auto &filePath : localMarkedFiles) {
+      if (SetPermissions(filePath, permString)) {
+        m_statusbar->Message(
+            QString("Permission changed for %1").arg(filePath));
+      } else {
+        m_statusbar->Message(
+            QString("Error setting permission for %1").arg(filePath),
+            MessageType::ERROR);
+      }
     }
+  } else {
+    m_statusbar->Message("Invalid permission number", MessageType::WARNING);
+  }
 }
 
 void FilePanel::PasteItems() noexcept {
@@ -1272,19 +1285,19 @@ void FilePanel::PasteItems() noexcept {
 
 void FilePanel::CopyDWIM() noexcept {
 
-    auto localMarks = m_model->getMarkedFilesLocal();
+  auto localMarks = m_model->getMarkedFilesLocal();
 
-    if (localMarks.isEmpty()) {
-        CopyItem();
-        return;
-    }
-    m_file_op_type = FileOPType::COPY;
-    m_register_files_list = localMarks;
+  if (localMarks.isEmpty()) {
+    CopyItem();
+    return;
+  }
+  m_file_op_type = FileOPType::COPY;
+  m_register_files_list = localMarks;
 }
 
 void FilePanel::CopyItem() noexcept {
-    m_file_op_type = FileOPType::COPY;
-    m_register_files_list = {getCurrentItem()};
+  m_file_op_type = FileOPType::COPY;
+  m_register_files_list = {getCurrentItem()};
 }
 
 void FilePanel::CopyItemsLocal() noexcept {
@@ -1299,15 +1312,15 @@ void FilePanel::CopyItemsGlobal() noexcept {
 
 void FilePanel::CutDWIM() noexcept {
 
-    auto localMarks = m_model->getMarkedFilesLocal();
+  auto localMarks = m_model->getMarkedFilesLocal();
 
-    if (localMarks.isEmpty()) {
-        CutItem();
-        return;
-    }
+  if (localMarks.isEmpty()) {
+    CutItem();
+    return;
+  }
 
-    m_file_op_type = FileOPType::CUT;
-    m_register_files_list = localMarks;
+  m_file_op_type = FileOPType::CUT;
+  m_register_files_list = localMarks;
 }
 
 void FilePanel::CutItem() noexcept {
@@ -1479,21 +1492,21 @@ void FilePanel::NewFile(const QStringList &fileNames) noexcept {
 }
 
 void FilePanel::wheelEvent(QWheelEvent *e) {
-    if (m_scroll_action) {
-        auto angleDeltaY = e->angleDelta().y();
-        if (angleDeltaY > 0)
-            PrevItem();
-        else if (angleDeltaY < 0)
-            NextItem();
-    }
+  if (m_scroll_action) {
+    auto angleDeltaY = e->angleDelta().y();
+    if (angleDeltaY > 0)
+      PrevItem();
+    else if (angleDeltaY < 0)
+      NextItem();
+  }
 }
 
 void FilePanel::ToggleMouseScroll() noexcept {
-    m_scroll_action = !m_scroll_action;
+  m_scroll_action = !m_scroll_action;
 }
 
 void FilePanel::ToggleMouseScroll(const bool &state) noexcept {
-    m_scroll_action = state;
+  m_scroll_action = state;
 }
 
 void FilePanel::dragRequested() noexcept {
@@ -1527,12 +1540,12 @@ void FilePanel::dragRequested() noexcept {
 }
 
 void FilePanel::ToggleHeaders(const bool &state) noexcept {
-    m_table_view->horizontalHeader()->setVisible(state);
+  m_table_view->horizontalHeader()->setVisible(state);
 }
 
 void FilePanel::ToggleHeaders() noexcept {
-  m_table_view->horizontalHeader()->setVisible(!m_table_view->horizontalHeader()->isVisible());
-
+  m_table_view->horizontalHeader()->setVisible(
+      !m_table_view->horizontalHeader()->isVisible());
 }
 
 void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
@@ -1540,18 +1553,21 @@ void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
 void FilePanel::ToggleCycle() noexcept { m_cycle_item = !m_cycle_item; }
 
 void FilePanel::ToggleVisualLine() noexcept {
-    m_visual_line_mode = !m_visual_line_mode;
-    if (m_visual_line_mode) {
-        m_visual_start_index = m_table_view->currentIndex();
-        m_table_view->selectionModel()->select(m_visual_start_index,
-                                               QItemSelectionModel::Current);
-        m_table_view->setSelectionMode(QAbstractItemView::MultiSelection);
-    } else {
-        m_table_view->clearSelection();
-        m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
-    }
+  m_visual_line_mode = !m_visual_line_mode;
+  if (m_visual_line_mode) {
+    m_visual_start_index = m_table_view->currentIndex();
+    m_table_view->selectionModel()->select(m_visual_start_index,
+                                           QItemSelectionModel::Rows);
+    m_table_view->setSelectionMode(QAbstractItemView::MultiSelection);
+  } else {
+    m_table_view->clearSelection();
+    m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_table_view->selectionModel()->setCurrentIndex(m_table_view->selectionModel()->currentIndex(),
+                                                    QItemSelectionModel::Select | QItemSelectionModel::Rows);
 
-    m_statusbar->SetVisualLineMode(m_visual_line_mode);
+  }
+
+  m_statusbar->SetVisualLineMode(m_visual_line_mode);
 }
 
 void FilePanel::ToggleVisualLine(const bool &state) noexcept {
@@ -1559,20 +1575,18 @@ void FilePanel::ToggleVisualLine(const bool &state) noexcept {
   if (state) {
     m_visual_start_index = m_table_view->currentIndex();
     m_table_view->selectionModel()->select(m_visual_start_index,
-                                           QItemSelectionModel::Current);
+                                           QItemSelectionModel::Rows);
     m_table_view->setSelectionMode(QAbstractItemView::MultiSelection);
   } else {
-      m_table_view->clearSelection();
+    m_table_view->clearSelection();
     m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_table_view->selectionModel()->setCurrentIndex(m_table_view->selectionModel()->currentIndex(),
+                                                    QItemSelectionModel::Select | QItemSelectionModel::Rows);
   }
 
   m_statusbar->SetVisualLineMode(state);
 }
 
-void FilePanel::AsyncShellCommand(const QString &command) noexcept {
+void FilePanel::AsyncShellCommand(const QString &command) noexcept {}
 
-}
-
-void FilePanel::ShellCommand(const QString &command) noexcept {
-
-}
+void FilePanel::ShellCommand(const QString &command) noexcept {}

@@ -121,6 +121,10 @@ Marks the current item.
 *** toggle-mark
 Toggle the mark of the current item.
 
+*** toggle-mark-dwim
+
+DWIM version of =toggle-mark= command
+
 *** mark-all
 Marks all the items in the current directory.
 
