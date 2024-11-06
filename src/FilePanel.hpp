@@ -132,6 +132,9 @@ public:
     void ToggleVisualLine() noexcept;
     void ToggleVisualLine(const bool &state) noexcept;
 
+    void ToggleMouseScroll() noexcept;
+    void ToggleMouseScroll(const bool &state) noexcept;
+
 signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
@@ -204,6 +207,7 @@ private:
 
     bool m_cycle_item = true;
     bool m_visual_line_mode = false;
+    bool m_scroll_action = true;
 
     unsigned int m_bulk_rename_threshold = 5;
     QModelIndex m_visual_start_index;

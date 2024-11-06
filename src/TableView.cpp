@@ -22,7 +22,6 @@ TableView::~TableView() {}
 
 void TableView::keyPressEvent(QKeyEvent *e) { e->ignore(); }
 
-
 void TableView::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)

@@ -22,7 +22,6 @@
 #include <QDebug>
 #include <QStringView>
 #include <QActionGroup>
-
 #include "sol/sol.hpp"
 
 // Config related things
@@ -303,6 +302,7 @@ private:
       "reload-config",
       "execute-extended-command",
       "visual-select",
+      "mouse-scroll",
 
     };
 

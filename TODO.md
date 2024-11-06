@@ -69,3 +69,4 @@
 - [ ] Dual Pane
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [ ] Keybinds from Lua
+- [ ] Mount drives

@@ -1479,11 +1479,21 @@ void FilePanel::NewFile(const QStringList &fileNames) noexcept {
 }
 
 void FilePanel::wheelEvent(QWheelEvent *e) {
-  auto angleDeltaY = e->angleDelta().y();
-  if (angleDeltaY > 0)
-    PrevItem();
-  else if (angleDeltaY < 0)
-    NextItem();
+    if (m_scroll_action) {
+        auto angleDeltaY = e->angleDelta().y();
+        if (angleDeltaY > 0)
+            PrevItem();
+        else if (angleDeltaY < 0)
+            NextItem();
+    }
+}
+
+void FilePanel::ToggleMouseScroll() noexcept {
+    m_scroll_action = !m_scroll_action;
+}
+
+void FilePanel::ToggleMouseScroll(const bool &state) noexcept {
+    m_scroll_action = state;
 }
 
 void FilePanel::dragRequested() noexcept {

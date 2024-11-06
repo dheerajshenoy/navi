@@ -72,6 +72,48 @@ Do What I Mean version of commands. If no local marks are present, run the comma
 Below is an exhaustive list of commands that are currently available in
 Navi.
 
+** Navigation
+*** next-item
+
+Go to the next item
+
+*** prev-item
+
+Go to the previous item
+
+*** select-item
+
+Select the current item
+
+*** middle-item
+
+Go to the middle item
+
+*** up-directory
+
+Go to the parent directory
+
+*** first-item
+
+Go to the first item
+
+*** last-item
+
+Go to the last item
+
+** Echo (Printing) Commands
+*** echo-info
+
+Echos or prints the information given as argument with the /info-face/ font
+
+*** echo-warn
+
+Echos or prints the information given as argument with the /warning-face/ font
+
+*** echo-error
+
+Echos or prints the information given as argument with the /error-face/ font
+
 ** Marking Item
 *** mark
 Marks the current item.
@@ -251,6 +293,14 @@ Force refresh the current directory.
 *NOTE: By default, Navi watches the directory for changes and loads
 them, so there is no requirement to refresh the directory. This command
 is there just in case something does not look right.*
+
+*** mouse-scroll
+
+Toggle mouse scroll support for file panel
+
+*** reload-config
+
+Re-reads the configuration file if it exists and loads the configurations.
 
 ** Shell Commands
 *** TODO shell-command

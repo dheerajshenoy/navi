@@ -345,6 +345,10 @@ void Navi::setupCommandMap() noexcept {
     ExecuteExtendedCommand();
   };
 
+  commandMap["mouse-scroll"] = [this](const QStringList &args) {
+    m_file_panel->ToggleMouseScroll();
+  };
+
   commandMap["visual-select"] = [this](const QStringList &args) {
       m_file_panel->ToggleVisualLine();
   };
