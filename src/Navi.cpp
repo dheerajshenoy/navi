@@ -440,11 +440,11 @@ void Navi::setupCommandMap() noexcept {
     SortBySize(true);
   };
 
-  commandMap["toggle-cycle"] = [this](const QStringList &args) {
+  commandMap["cycle"] = [this](const QStringList &args) {
     m_file_panel->ToggleCycle();
   };
 
-  commandMap["toggle-header"] = [this](const QStringList &args) {
+  commandMap["header"] = [this](const QStringList &args) {
     m_file_panel->ToggleHeaders();
   };
 
@@ -586,8 +586,12 @@ void Navi::setupCommandMap() noexcept {
     ToggleMessagesBuffer();
   };
 
-  commandMap["toggle-hidden-files"] = [this](const QStringList &args) {
-    m_file_panel->ToggleHiddenFiles();
+  commandMap["hidden-files"] = [this](const QStringList &args) {
+    ToggleHiddenFiles();
+  };
+
+  commandMap["dot-dot"] = [this](const QStringList &args) {
+    ToggleDotDot();
   };
 
   commandMap["preview-pane"] = [this](const QStringList &args) {
@@ -824,17 +828,25 @@ void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
 }
 
 void Navi::ToggleShortcutsBuffer() noexcept {
-  // if (m_log_buffer->isVisible())
-  //   m_log_buffer->hide();
-  // else
-  //   m_log_buffer->show();
+    if (m_shortcuts_widget && m_shortcuts_widget->isVisible()) {
+        m_shortcuts_widget->close();
+        delete m_shortcuts_widget;
+        m_shortcuts_widget = nullptr;
+        disconnect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, 0, 0);
+    }
+    else {
+        m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
+        connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
+                [&](const bool &state) { m_viewmenu__shortcuts_widget->setChecked(state); });
+        m_shortcuts_widget->show();
+    }
 }
 
 void Navi::ToggleShortcutsBuffer(const bool &state) noexcept {
-  // if (state)
-  //   m_log_buffer->show();
-  // else
-  //   m_log_buffer->hide();
+  if (state)
+    m_log_buffer->show();
+  else
+    m_log_buffer->hide();
 }
 
 void Navi::ToggleMessagesBuffer() noexcept {
@@ -1060,8 +1072,10 @@ void Navi::initKeybinds() noexcept {
   connect(kb_unmark_items_local, &QShortcut::activated, this,
           [&]() { m_file_panel->UnmarkItemsLocal(); });
 
-  connect(kb_toggle_hidden_files, &QShortcut::activated, m_file_panel,
-          &FilePanel::ToggleHiddenFiles);
+  connect(kb_toggle_hidden_files, &QShortcut::activated, this,
+          [&]() {
+            ToggleHiddenFiles();
+          });
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
@@ -1116,6 +1130,9 @@ void Navi::initMenubar() noexcept {
 
   m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
   m_viewmenu__bookmarks_buffer->setCheckable(true);
+
+  m_viewmenu__shortcuts_widget = new QAction("Shortcuts");
+  m_viewmenu__shortcuts_widget->setCheckable(true);
 
   m_viewmenu__sort_menu = new QMenu("Sort by");
 
@@ -1174,6 +1191,7 @@ void Navi::initMenubar() noexcept {
   m_viewmenu->addAction(m_viewmenu__statusbar);
   m_viewmenu->addAction(m_viewmenu__messages);
   m_viewmenu->addAction(m_viewmenu__marks_buffer);
+  m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
 
   m_tools_menu = new QMenu("Tools");
 
@@ -1241,6 +1259,9 @@ void Navi::initMenubar() noexcept {
           [&](const bool &state) { // ToggleBookmarksBuffer(state); });
           });
 
+  connect(m_viewmenu__files_menu__dotdot, &QAction::triggered, this,
+          [&](const bool &state) { ToggleDotDot(state); });
+
   connect(m_viewmenu__preview_panel, &QAction::triggered, this,
           [&](const bool &state) { TogglePreviewPanel(state); });
 
@@ -1256,8 +1277,9 @@ void Navi::initMenubar() noexcept {
   connect(m_tools_menu__search, &QAction::triggered, this,
           [&]() { m_file_panel->Search(); });
 
-  connect(m_viewmenu__files_menu__hidden, &QAction::triggered, m_file_panel,
-          &FilePanel::ToggleHiddenFiles);
+  connect(m_viewmenu__files_menu__hidden, &QAction::triggered, this, [&](const bool &state) {
+      ToggleHiddenFiles(state);
+  });
 
   connect(m_viewmenu__menubar, &QAction::triggered, this,
           [&](const bool &state) { Navi::ToggleMenuBar(state); });
@@ -1282,7 +1304,8 @@ void Navi::initMenubar() noexcept {
 
   connect(
       m_marks_buffer, &MarksBuffer::visibilityChanged, this,
-      [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
+          [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
+
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {}
@@ -1409,4 +1432,32 @@ void Navi::SortByDate(const bool &reverse) noexcept {
     m_sort_flags |= QDir::SortFlag::Reversed;
 
   m_file_panel->model()->setSortBy(m_sort_flags);
+}
+
+void Navi::ToggleHiddenFiles(const bool &state) noexcept {
+    m_viewmenu__files_menu__hidden->setChecked(state);
+    m_file_panel->ToggleHiddenFiles();
+}
+
+void Navi::ToggleHiddenFiles() noexcept {
+    if (m_viewmenu__files_menu__hidden->isChecked())
+        m_viewmenu__files_menu__hidden->setChecked(false);
+    else
+        m_viewmenu__files_menu__hidden->setChecked(true);
+
+    m_file_panel->ToggleHiddenFiles();
+}
+
+void Navi::ToggleDotDot(const bool &state) noexcept {
+    m_viewmenu__files_menu__dotdot->setChecked(state);
+    m_file_panel->ToggleDotDot();
+}
+
+void Navi::ToggleDotDot() noexcept {
+    if (m_viewmenu__files_menu__dotdot->isChecked())
+        m_viewmenu__files_menu__dotdot->setChecked(false);
+    else
+        m_viewmenu__files_menu__dotdot->setChecked(true);
+
+    m_file_panel->ToggleDotDot();
 }

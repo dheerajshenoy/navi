@@ -97,6 +97,7 @@ public:
     void TrashItemsGlobal() noexcept;
     void TrashDWIM() noexcept;
 
+    void ToggleDotDot() noexcept;
     void ToggleHiddenFiles() noexcept;
     void Search(QString searchText = "") noexcept;
     void SearchNext() noexcept;
@@ -168,6 +169,7 @@ private:
     QString m_current_dir;
 
     bool m_hidden_files_shown = false;
+    bool m_dot_dot_shown = false;
 
     QAction *m_context_action_open = nullptr;
     QAction *m_context_action_open_with = nullptr;

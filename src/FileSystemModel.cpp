@@ -497,3 +497,13 @@ void FileSystemModel::setSortBy(const QDir::SortFlags &sortFlags) noexcept {
   m_dir_sort_flags = sortFlags;
   loadDirectory(m_root_path);
 }
+
+void FileSystemModel::addDirFilter(const QDir::Filters &filter) noexcept {
+    if (!(m_dir_filters & filter))
+        m_dir_filters |= filter;
+}
+
+void FileSystemModel::removeDirFilter(const QDir::Filters &filter) noexcept {
+    if (m_dir_filters & filter)
+        m_dir_filters &= ~filter;
+}

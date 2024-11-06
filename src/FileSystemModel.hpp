@@ -67,6 +67,9 @@ public:
     void setMarkHeaderFontItalic(const bool &state) noexcept;
     void setMarkHeaderFontBold(const bool &state) noexcept;
 
+    void addDirFilter(const QDir::Filters &) noexcept;
+    void removeDirFilter(const QDir::Filters &) noexcept;
+
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;

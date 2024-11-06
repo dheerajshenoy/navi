@@ -40,6 +40,7 @@ qt_add_executable(${PROJECT_NAME}
     src/FilePropertyWidget.cpp
     src/BookmarkManager.cpp
     src/BookmarkWidget.cpp
+    src/ShortcutsWidget.cpp
 
     src/FileWorker.hpp
     src/FileSystemModel.cpp

@@ -58,9 +58,11 @@
 - [x] Close button for properties dialog
 - [x] Do what I mean (dwim) for all functions
 - [x] Background for vertical headers
+- [x] Keybinds from Lua
+- [x] Bookmark file ignore comments and empty lines
+- [x] Shortcuts Widget
 - [ ] Open with menu
 - [ ] Rich text in file panel
-- [ ] Bookmark file ignore comments and empty lines
 - [ ] Shell commands
 - [ ] Undo Operations
 - [ ] Show search match count
@@ -68,5 +70,5 @@
 - [ ] Select renamed file after renaming
 - [ ] Dual Pane
 - [ ] Wonky file completion in the file path widget when "~" is present
-- [ ] Keybinds from Lua
 - [ ] Mount drives
+- [ ] Tabs

@@ -24,6 +24,8 @@
 #include <QActionGroup>
 #include "sol/sol.hpp"
 
+class ShortcutWidget;
+
 // Config related things
 static const QString APP_NAME = "navi";
 static const QString CONFIG_DIR_PATH =
@@ -42,6 +44,7 @@ static const QString CONFIG_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + CO
 #include "MarksBuffer.hpp"
 #include "BookmarkManager.hpp"
 #include "BookmarkWidget.hpp"
+#include "ShortcutsWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -109,11 +112,11 @@ public:
     void ToggleShortcutsBuffer(const bool &state) noexcept;
     void ToggleShortcutsBuffer() noexcept;
 
-    struct Keybind {
-        QString key;
-        QString command;
-        QString desc;
-    };
+    void ToggleHiddenFiles(const bool &state) noexcept;
+    void ToggleHiddenFiles() noexcept;
+
+    void ToggleDotDot(const bool &state) noexcept;
+    void ToggleDotDot() noexcept;
 
 private:
     void initConfiguration();
@@ -155,6 +158,7 @@ private:
     QAction *m_viewmenu__messages = nullptr;
     QAction *m_viewmenu__marks_buffer = nullptr;
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
+    QAction *m_viewmenu__shortcuts_widget = nullptr;
 
     QMenu *m_viewmenu__sort_menu = nullptr;
 
@@ -295,11 +299,12 @@ private:
       "reset-filter",
       "refresh",
       "hidden-files",
+      "dot-dot",
       "menu-bar",
       "focus-path",
       "item-property",
-      "toggle-cycle",
-      "toggle-header",
+      "cycle",
+      "header",
       "reload-config",
       "execute-extended-command",
       "visual-select",
@@ -319,6 +324,8 @@ private:
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
     sol::state lua;
+
+    ShortcutsWidget *m_shortcuts_widget = nullptr;
 
     QList<Keybind> m_keybind_list;
 };

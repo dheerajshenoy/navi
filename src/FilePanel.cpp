@@ -1056,13 +1056,21 @@ void FilePanel::DeleteItemsLocal() noexcept {
 }
 
 void FilePanel::ToggleHiddenFiles() noexcept {
-  m_hidden_files_shown = !m_hidden_files_shown;
-  if (m_hidden_files_shown)
-    m_model->setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot |
-                       QDir::Hidden);
-  else
-    m_model->setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
-  ForceUpdate();
+    m_hidden_files_shown = !m_hidden_files_shown;
+    if (m_hidden_files_shown)
+        m_model->addDirFilter(QDir::Hidden);
+    else
+        m_model->removeDirFilter(QDir::Hidden);
+    ForceUpdate();
+}
+
+void FilePanel::ToggleDotDot() noexcept {
+    m_dot_dot_shown = !m_dot_dot_shown;
+    if (m_dot_dot_shown)
+        m_model->removeDirFilter(QDir::NoDotDot);
+    else
+        m_model->addDirFilter(QDir::NoDotDot);
+    ForceUpdate();
 }
 
 void FilePanel::Search(QString searchExpression) noexcept {
