@@ -43,11 +43,8 @@ items (more than one items).
 
 ## Types of Command
 
-There are three variants for most of the commands: `Current`, `Local`
-and `Global`. If any interactive command has scope available, they are
-named accordingly. For example, the `rename` command is actually the
-`Current` scoped command. It's other variants are `rename-local` and
-`rename-global` for `Local` and `Global` scope respectively.
+There are four variants for most of the commands: `Current`, `Local` and
+`Global` and `DWIM` (Do What I Mean).
 
 ### Current Scope
 
@@ -72,16 +69,18 @@ that are present in any directory.
 
 **This does not include mouse highlighting**.
 
+### DWIM
+
+[DWIM wikipedia page](https://en.wikipedia.org/wiki/DWIM)
+
+Do What I Mean version of commands. If no local marks are present, run
+the command on the current item, otherwise run the commands on the
+marks.
+
 # Commands List
 
 Below is an exhaustive list of commands that are currently available in
-Navi. The default keybindings associated with them are mentioned. Below
-is a mapping of what some keys mean.
-
-1.  `C` - Control
-2.  `M` - Meta (Alt Key)
-3.  `S` - Shift
-4.  `SPC` - Space
+Navi.
 
 ## Marking Item
 
@@ -93,19 +92,17 @@ Marks the current item.
 
 Toggle the mark of the current item.
 
-Default keybinding: `SPC`
-
 ### mark-all
 
 Marks all the items in the current directory.
-
-Default keybinding: `C-a`
 
 ### mark-inverse
 
 Inverses the marks in the current directory.
 
-Default keybinding: `S-SPC`
+### mark-dwim
+
+DWIM version of `toggle-mark`
 
 ## Unmarking Item
 
@@ -117,13 +114,16 @@ Unmarks the current item.
 
 `unmark` for **Local Marks**
 
-Default keybinding: `S-u`
-
 ### unmark-global
 
 `unmark` for **Global Marks**
 
-Default keybinding: `C-S-u`
+## Selecting Item
+
+### visual-select
+
+Enters into *visual selection* mode. Navigation is followed by selection
+until the mode is toggled off.
 
 ## Change Permission
 
@@ -141,6 +141,8 @@ Similar to `chmod` for **Local Marks**
 
 Similar to `chmod` for **Global Marks**
 
+### chmod-dwim
+
 ## Renaming Files
 
 \*NOTE: Renaming more than one item leads to *bulk renaming*. This is
@@ -152,8 +154,6 @@ files once you save and close the said "rename file"\*
 
 Rename the highlighted item.
 
-Default keybinding: `S-r`
-
 ### rename-local
 
 `rename` for **Local Marks**
@@ -162,13 +162,13 @@ Default keybinding: `S-r`
 
 `rename` for **Global Marks**
 
+### rename-dwim
+
 ## Cutting Files
 
 ### cut
 
 Cut (prepare for moving) the current item.
-
-Default keybinding: `C-x`
 
 ### cut-local
 
@@ -178,13 +178,13 @@ Default keybinding: `C-x`
 
 `cut` for **Global Marks**
 
+### cut-dwim
+
 ## Copying Files
 
 ### copy
 
 Copy the current item.
-
-Default keybinding: `C-c`
 
 ### copy-local
 
@@ -194,13 +194,13 @@ Default keybinding: `C-c`
 
 `copy` for **Global Marks**
 
+### copy-dwim
+
 ## Pasting (Moving) Files
 
 ### paste
 
 Paste (Move) the current item.
-
-Default keybinding: `p`
 
 ## Deleting Files
 
@@ -212,8 +212,6 @@ Delete the highlighted items(s).
 trash the items, it directly deletes them. If you want to trash use the
 *trash* command\*
 
-Default keybinding: `S-d`
-
 ### delete-local
 
 `delete` for **Local Marks**
@@ -222,50 +220,40 @@ Default keybinding: `S-d`
 
 `delete` for **Global Marks**
 
+### delete-dwim
+
 ## Trashing Files
 
 ### trash
 
 Trash the current item.
 
-Default keybinding: `S-t`
-
 ### trash-local
 
 `trash` for **Local Marks**
-
-Default keybinding: `S-t`
 
 ### trash-global
 
 `trash` for **Global Marks**
 
-Default keybinding: `S-t`
+### trash-dwim
 
-## filter
+## Filtering Items
+
+### filter
 
 Set a filter to directory.
 
 Example: `*` displays everything, `*.csv` displays only the csv files,
 `*.png` displays only the png files
 
-## unfilter
+### reset-filter
 
 Reset the appplied filter.
 
-## refresh
-
-Force refresh the current directory.
-
-\*NOTE: By default, Navi watches the directory for changes and loads
-them, so there is no requirement to refresh the directory. This command
-is there just in case something does not look right.\*
-
-## hidden-files
+### hidden-files
 
 Toggles the hidden files.
-
-Default keybinding: `C-h`
 
 NOTE: Hidden files are those items whose name start with a period like
 `.config`, `.gitignore` etc.
@@ -288,27 +276,30 @@ Opens the messages list.
 
 Toggles the preview pane.
 
-Default keybinding: `C-p`
-
 The preview pane handles previewing images (good number of formats) and
 PDF documents (first page) `asynchronously`. This means that the
 previewing experience will be seamless and without any lag. Navi uses
 `ImageMagick` library under the hood for previewing images and therefore
 any image formats supported my ImageMagick is supported by Navi.
 
+### shortcuts-pane
+
+This displays the list of all the shortcuts that have been assigned.
+
 ## Misc
+
+### execute-extended-command
+
+This is the function that pops up the inputbar to enter the interactive
+commands.
 
 ### menu-bar
 
 Toggles the menu bar.
 
-Default keybinding: `C-m`
-
 ### focus-path
 
 Focuses the path widget and sets it in edit mode.
-
-Default keybinding: `C-l`
 
 ### item-property
 
@@ -322,6 +313,14 @@ Toggle the display of header information.
 
 Toggle the cycle (last item to first item and vice-versa) during
 navigation.
+
+### refresh
+
+Force refresh the current directory.
+
+\*NOTE: By default, Navi watches the directory for changes and loads
+them, so there is no requirement to refresh the directory. This command
+is there just in case something does not look right.\*
 
 ## Shell Commands
 
@@ -383,19 +382,45 @@ the file that you want to look for.
 
 Searches the current directory for the search term
 
-Default Keybinding: `/`
-
 ### search-next
 
 Goes to the next best match for the search term
-
-Default Keybinding: `n`
 
 ### search-prev
 
 Goes to the previous best match for the search term
 
-Default Keybinding: `S-n`
+## Sorting Items
+
+### sort-name
+
+Sorts the directory by *name* in **ascending order** with the
+directories listed first.
+
+### sort-name-desc
+
+Sorts the directory by *name* in **descending order** with the
+directories listed first.
+
+### sort-date
+
+Sorts the directory by *date* in **ascending order** with the
+directories listed first.
+
+### sort-date-desc
+
+Sorts the directory by *date* in **descending order** with the
+directories listed first.
+
+### sort-size
+
+Sorts the directory by *size* in **ascending order** with the
+directories listed first.
+
+### sort-size-desc
+
+Sorts the directory by *size* in **descending order** with the
+directories listed first.
 
 # Linux Only
 
@@ -449,7 +474,7 @@ settings = {
         file_pane = {
             symlink = {
                 shown = true,
-                foreground = "#FF5000", -- TODO: not yet implemented
+                foreground = "#FF5000",
                 separator = "->",
             },
 
@@ -457,7 +482,7 @@ settings = {
                 name = "NAME",
                 -- permission = "PERM",
                 -- modified_date = "Date",
-                -- size = "SIZE",
+                -- size = "SIZE"
             },
             headers = false,
             cycle = true,
@@ -478,7 +503,33 @@ settings = {
     }
 }
 
-keybinds = {
+keybindings = {
+    { key = "h", command = "up-directory", desc = "Go to the parent directory" },
+    { key = "j", command = "next-item", desc = "Go to the next item" },
+    { key = "k", command = "prev-item", desc = "Go to the previous item" },
+    { key = "l", command = "select-item", desc = "Select item" },
+    { key = "f", command = "filter", desc = "Filter item visibility" },
+    { key = "g,g", command = "first-item", desc = "Go to the first item" },
+    { key = "z,z", command = "middle-item", desc = "Go to middle item" },
+    { key = "Shift+g", command = "last-item", desc = "Go to the last item" },
+    { key = "Shift+r", command = "rename-dwim", desc = "Rename item(s)" },
+    { key = "Shift+d", command = "delete-dwim", desc = "Delete item(s)" },
+    { key = "Space", command = "toggle-mark", desc = "Mark item(s)" },
+    { key = "F5", command = "refresh", desc = "Refresh current directory" },
+    { key = "Shift+Space", command = "mark-inverse", desc = "Mark inverse item(s)" },
+    { key = "Shift+v", command = "visual-select", desc = "Visual selection mode" },
+    { key = ":", command = "execute-extended-command", desc = "Execute extended command" },
+    { key = "y,y", command = "copy-dwim", desc = "Copy item(s)" },
+    { key = "p", command = "paste", desc = "Paste item(s)" },
+    { key = "Shift+u", command = "unmark-local", desc = "Unmark all item(s)" },
+    { key = "/", command = "search", desc = "Search (regex)" },
+    { key = "n", command = "search-next", desc = "Search next" },
+    { key = "Shift+n", command = "search-prev", desc = "Search previous" },
+    { key = "Ctrl+m", command = "toggle-menu-bar", desc = "Toggle menu bar" },
+    { key = "Ctrl+p", command = "preview-pane", desc = "Toggle preview pane" },
+    { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
+    { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
+    { key = ".", command = "toggle-hidden-files", desc = "Toggle hidden items" },
 }
 ```
 

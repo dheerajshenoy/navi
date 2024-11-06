@@ -341,6 +341,14 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
+  commandMap["execute-extended-command"] = [this](const QStringList &args) {
+    ExecuteExtendedCommand();
+  };
+
+  commandMap["visual-select"] = [this](const QStringList &args) {
+      m_file_panel->ToggleVisualLine();
+  };
+
   commandMap["shortcuts-pane"] = [this](const QStringList &args) {
     ToggleShortcutsBuffer();
   };
@@ -570,7 +578,7 @@ void Navi::setupCommandMap() noexcept {
 
   commandMap["filter"] = [this](const QStringList &args) { Filter(); };
 
-  commandMap["unfilter"] = [this](const QStringList &args) { ResetFilter(); };
+  commandMap["reset-filter"] = [this](const QStringList &args) { ResetFilter(); };
 
   commandMap["refresh"] = [this](const QStringList &args) {
     m_file_panel->ForceUpdate();
@@ -1295,6 +1303,10 @@ void Navi::ToggleStatusBar() noexcept {
 void Navi::Filter() noexcept {
   m_statusbar->SetFilterMode(true);
   QString filterString = m_inputbar->getInput("Filter String");
+  if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
+      ResetFilter();
+      return;
+  }
   m_file_panel->Filters(filterString);
 }
 

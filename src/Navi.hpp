@@ -292,7 +292,7 @@ private:
 
       // misc
       "filter",
-      "unfilter",
+      "reset-filter",
       "refresh",
       "hidden-files",
       "menu-bar",
@@ -301,6 +301,8 @@ private:
       "toggle-cycle",
       "toggle-header",
       "reload-config",
+      "execute-extended-command",
+      "visual-select",
 
     };
 
