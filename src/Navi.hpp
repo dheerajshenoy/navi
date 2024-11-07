@@ -22,8 +22,6 @@
 #include <QDebug>
 #include <QStringView>
 #include <QActionGroup>
-#include "sol/sol.hpp"
-#include "argparse.hpp"
 
 class ShortcutWidget;
 
@@ -47,6 +45,9 @@ static const QString CONFIG_FILE_PATH =
 #include "BookmarkManager.hpp"
 #include "BookmarkWidget.hpp"
 #include "ShortcutsWidget.hpp"
+#include "TabBarWidget.hpp"
+#include "sol/sol.hpp"
+#include "argparse.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -124,7 +125,7 @@ public:
     void readArgumentParser(argparse::ArgumentParser &parser);
 
 private:
-    void initConfiguration();
+    void initConfiguration() noexcept;
     void chmodHelper() noexcept;
     void initBookmarks() noexcept;
     void initLayout() noexcept;
@@ -137,6 +138,7 @@ private:
     QString getCurrentFile() noexcept;
     void ProcessCommand(const QString &commandtext) noexcept;
     void generateKeybinds() noexcept;
+    void initTabBar() noexcept;
 
 
     QWidget *m_widget = new QWidget();
@@ -333,6 +335,8 @@ private:
     ShortcutsWidget *m_shortcuts_widget = nullptr;
 
     QList<Keybind> m_keybind_list;
+
+    TabBarWidget *m_tab_bar = nullptr;
 
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;

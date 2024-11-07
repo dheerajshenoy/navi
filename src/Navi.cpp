@@ -16,10 +16,15 @@ void Navi::initThings() noexcept {
     else
         initKeybinds();
 
+    initTabBar();
     setCurrentDir("~"); // set the current directory
 }
 
-void Navi::initConfiguration() {
+void Navi::initTabBar() noexcept {
+    // m_tab_bar->addTab(new FilePanel(m_inputbar, m_statusbar), );
+}
+
+void Navi::initConfiguration() noexcept {
 
   lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
 
@@ -41,7 +46,20 @@ void Navi::initConfiguration() {
     sol::table settings_table = settings_table_opt.value();
     sol::optional<sol::table> ui_table_opt = settings_table["ui"];
     if (ui_table_opt) {
-      sol::table ui_table = ui_table_opt.value();
+        sol::table ui_table = ui_table_opt.value();
+
+        // tabs
+        sol::optional<sol::table> tabs_table = ui_table["tabs"];
+
+        if (tabs_table) {
+            sol::table tabs = tabs_table.value();
+
+            auto shown_on_multiple = tabs["shown_on_multiple"].get_or(true);
+
+            // TODO: shown only on multiple tabs
+            // if (!shown_on_multiple)
+            //     m_tab_bar->setVisible(true);
+        }
 
       // Preview pane
       sol::optional<sol::table> preview_pane_table = ui_table["preview_pane"];
@@ -376,6 +394,7 @@ void Navi::initSignalsSlots() noexcept {
 
   connect(m_file_panel->model(), &FileSystemModel::marksListChanged,
           m_marks_buffer, &MarksBuffer::refreshMarksList);
+
 }
 
 // Help for HELP interactive function
@@ -972,9 +991,12 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
+    m_tab_bar = new TabBarWidget();
   m_inputbar = new Inputbar();
   m_statusbar = new Statusbar();
   m_file_panel = new FilePanel(m_inputbar, m_statusbar);
+
+  // m_tab_bar->setVisible(false);
 
   m_preview_panel = new PreviewPanel();
   m_file_path_widget = new FilePathWidget();
@@ -989,6 +1011,7 @@ void Navi::initLayout() noexcept {
   m_file_path_widget->setContentsMargins(0, 0, 0, 0);
   this->setContentsMargins(0, 0, 0, 0);
 
+  // m_layout->addWidget(m_tab_bar);
   m_layout->addWidget(m_file_path_widget);
   m_layout->addWidget(m_splitter);
   m_layout->addWidget(m_inputbar);

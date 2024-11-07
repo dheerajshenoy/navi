@@ -68,7 +68,6 @@
 - [ ] Show search match count
 - [ ] Add file operation cancel UI
 - [ ] Select renamed file after renaming
-- [ ] Dual Pane
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [ ] Mount drives
 - [ ] Tabs

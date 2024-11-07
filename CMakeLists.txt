@@ -18,6 +18,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
 add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(MUPDF REQUIRED mupdf)
 find_package(Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
@@ -40,6 +42,7 @@ qt_add_executable(${PROJECT_NAME}
   src/BookmarkManager.cpp
   src/BookmarkWidget.cpp
   src/ShortcutsWidget.cpp
+  src/NaviWindow.cpp
 
   src/FileWorker.hpp
   src/FileSystemModel.cpp
@@ -49,13 +52,14 @@ qt_add_executable(${PROJECT_NAME}
   src/TableHeaderView.hpp
   src/VerticalHeaderView.hpp
   src/argparse.hpp
+  src/TabBarWidget.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-python ${LUA_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-python ${LUA_LIBRARIES} ${MUPDF_LIBRARIES})
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${MUPDF_INCLUDE_DIRS})
 
 add_custom_target(run
   COMMAND Navi
