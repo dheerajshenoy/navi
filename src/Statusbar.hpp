@@ -12,6 +12,7 @@
 #include <QWidget>
 #include "utils.hpp"
 
+
 enum class MessageType { INFO = 0, WARNING, ERROR };
 
 class Statusbar : public QWidget {
@@ -19,12 +20,13 @@ class Statusbar : public QWidget {
 
 
 signals:
-  void visibilityChanged(const bool &state);
+    void visibilityChanged(const bool &state);
     void logMessage(const QString &message, const MessageType &type);
 
 public:
     Statusbar(QWidget *parent = nullptr);
     ~Statusbar();
+
 
     void SetVisualLineMode(const bool &state) noexcept;
     void Message(const QString &message, MessageType type = MessageType::INFO,
@@ -43,6 +45,7 @@ public:
         emit visibilityChanged(false);
         QWidget::hide();
     }
+
 
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();

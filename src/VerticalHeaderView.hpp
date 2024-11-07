@@ -35,6 +35,12 @@ protected:
             }
 
 
+            // Optional: Draw border
+            painter->setPen(Qt::gray);
+            painter->drawRect(rect.adjusted(0, 0, -1, -1));
+
+            QVariant text = model()->headerData(logicalIndex, orientation(),
+                                                Qt::DisplayRole);
 
             // Get foreground color from model
             QVariant foregroundData = model()->headerData(logicalIndex, orientation(), Qt::ForegroundRole);
@@ -46,11 +52,6 @@ protected:
                 painter->setPen(palette().color(foregroundRole()));
             }
 
-            // Optional: Draw border
-            painter->setPen(Qt::gray);
-            painter->drawRect(rect.adjusted(0, 0, -1, -1));
-
-            QVariant text = model()->headerData(logicalIndex, orientation(), Qt::DisplayRole);
             painter->drawText(rect, Qt::AlignCenter, text.toString());
 
         }

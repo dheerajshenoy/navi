@@ -133,7 +133,7 @@ int FileSystemModel::columnCount(const QModelIndex &parent) const {
 
 void FileSystemModel::setMarkForegroundColor(const QString &color) noexcept {
   if (color.isEmpty() || color.isNull())
-    m_markBackgroundColor = QColor();
+    m_markForegroundColor = QColor();
   else
     m_markForegroundColor = QColor(color);
 }
@@ -146,7 +146,7 @@ void FileSystemModel::setMarkBackgroundColor(const QString &color) noexcept {
 }
 
 void FileSystemModel::setMarkHeaderForegroundColor(
-    const QString &color) noexcept {
+                                                   const QString &color) noexcept {
   m_markHeaderForegroundColor = QColor(color);
 }
 
@@ -259,7 +259,7 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
     } break;
 
     case Qt::ForegroundRole: {
-      bool isMarked = m_markedFiles.contains(getPathFromRow(section));
+        bool isMarked = m_markedFiles.contains(getPathFromRow(section));
       if (isMarked)
         return m_markHeaderForegroundColor;
     } break;

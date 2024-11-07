@@ -16,6 +16,7 @@
 #include <QHeaderView>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QStyledItemDelegate>
 
 #include "FileSystemModel.hpp"
 #include "TableHeaderView.hpp"

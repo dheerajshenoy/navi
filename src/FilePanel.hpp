@@ -136,6 +136,30 @@ public:
     void ToggleMouseScroll() noexcept;
     void ToggleMouseScroll(const bool &state) noexcept;
 
+    inline void setCurrentForeground(const QString &color) noexcept {
+        m_current_foreground = color;
+
+        m_table_view->setStyleSheet(QString("QTableView::item:selected"
+                                            "{"
+                                            "background-color : %1;"
+                                            "selection-color : %2;"
+                                            "}")
+                                  .arg(m_current_background.name())
+                                  .arg(m_current_foreground.name()));
+    }
+
+    inline void setCurrentBackground(const QString &color) noexcept {
+        m_current_background = color;
+
+        m_table_view->setStyleSheet(QString("QTableView::item:selected"
+                                            "{"
+                                            "background-color : %1;"
+                                            "selection-color : %2;"
+                                            "}")
+                                  .arg(m_current_background.name())
+                                  .arg(m_current_foreground.name()));
+    }
+
 signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
@@ -214,4 +238,6 @@ private:
     unsigned int m_bulk_rename_threshold = 5;
     QModelIndex m_visual_start_index;
 
+    int m_file_name_column_index = -1;
+    QColor m_current_background, m_current_foreground;
 };

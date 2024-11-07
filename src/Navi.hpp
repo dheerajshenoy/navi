@@ -23,6 +23,7 @@
 #include <QStringView>
 #include <QActionGroup>
 #include "sol/sol.hpp"
+#include "argparse.hpp"
 
 class ShortcutWidget;
 
@@ -32,7 +33,8 @@ static const QString CONFIG_DIR_PATH =
     QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) +
     QDir::separator() + APP_NAME;
 static const QString CONFIG_FILE_NAME = "config.lua";
-static const QString CONFIG_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + CONFIG_FILE_NAME;
+static const QString CONFIG_FILE_PATH =
+    CONFIG_DIR_PATH + QDir::separator() + CONFIG_FILE_NAME;
 
 // Local includes
 #include "FilePathWidget.hpp"
@@ -72,6 +74,7 @@ public:
     Navi(QWidget *parent = nullptr);
     ~Navi();
 
+    void initThings() noexcept;
     void setCurrentDir(const QString &path) noexcept;
     // Interactive Functions
     void ExecuteExtendedCommand() noexcept;
@@ -117,6 +120,8 @@ public:
 
     void ToggleDotDot(const bool &state) noexcept;
     void ToggleDotDot() noexcept;
+
+    void readArgumentParser(argparse::ArgumentParser &parser);
 
 private:
     void initConfiguration();
@@ -328,4 +333,8 @@ private:
     ShortcutsWidget *m_shortcuts_widget = nullptr;
 
     QList<Keybind> m_keybind_list;
+
+    QString m_config_location = CONFIG_FILE_PATH;
+    bool m_load_config = true;
+
 };

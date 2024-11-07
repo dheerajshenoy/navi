@@ -53,6 +53,8 @@ public:
         m_layout->addWidget(m_marks_list_view);
         m_marks_list_view->setModel(m_model);
 
+        this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
         QPushButton *m_close_btn = new QPushButton("Close");
         m_layout->addWidget(m_close_btn);
 

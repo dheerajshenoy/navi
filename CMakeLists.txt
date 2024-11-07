@@ -15,7 +15,6 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-
 add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
 add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
@@ -27,28 +26,29 @@ find_package(Lua REQUIRED)
 qt_standard_project_setup()
 # define an executable built from a source file
 qt_add_executable(${PROJECT_NAME}
-    src/main.cpp
-    src/Navi.cpp
-    src/FilePanel.cpp
-    src/PreviewPanel.cpp
-    src/TableView.cpp
-    src/FilePathWidget.cpp
-    src/Statusbar.cpp
-    src/Inputbar.cpp
-    src/utils.cpp
-    src/TreeSitterTextEdit.cpp
-    src/FilePropertyWidget.cpp
-    src/BookmarkManager.cpp
-    src/BookmarkWidget.cpp
-    src/ShortcutsWidget.cpp
+  src/main.cpp
+  src/Navi.cpp
+  src/FilePanel.cpp
+  src/PreviewPanel.cpp
+  src/TableView.cpp
+  src/FilePathWidget.cpp
+  src/Statusbar.cpp
+  src/Inputbar.cpp
+  src/utils.cpp
+  src/TreeSitterTextEdit.cpp
+  src/FilePropertyWidget.cpp
+  src/BookmarkManager.cpp
+  src/BookmarkWidget.cpp
+  src/ShortcutsWidget.cpp
 
-    src/FileWorker.hpp
-    src/FileSystemModel.cpp
-    src/MessagesBuffer.hpp
-    src/FilePreviewWorker.hpp
-    src/MarksBuffer.hpp
-    src/TableHeaderView.hpp
-    src/VerticalHeaderView.hpp
+  src/FileWorker.hpp
+  src/FileSystemModel.cpp
+  src/MessagesBuffer.hpp
+  src/FilePreviewWorker.hpp
+  src/MarksBuffer.hpp
+  src/TableHeaderView.hpp
+  src/VerticalHeaderView.hpp
+  src/argparse.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
@@ -58,7 +58,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagi
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
 
 add_custom_target(run
-    COMMAND Navi
-    DEPENDS Navi
-    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+  COMMAND Navi
+  DEPENDS Navi
+  WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )

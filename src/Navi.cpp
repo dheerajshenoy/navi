@@ -1,17 +1,22 @@
 #include "Navi.hpp"
+#include "argparse.hpp"
 #include "sol/sol.hpp"
 
-Navi::Navi(QWidget *parent) : QMainWindow(parent) {
+Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
-  initLayout();       // init layout
-  initMenubar();      // init menubar
-  initSignalsSlots(); // init signals and slots
-  // initKeybinds();
-  setupCommandMap();
-  initBookmarks();
+void Navi::initThings() noexcept {
+    initLayout();       // init layout
+    initMenubar();      // init menubar
+    initSignalsSlots(); // init signals and slots
+    setupCommandMap();
+    initBookmarks();
 
-  initConfiguration();
-  setCurrentDir("~"); // set the current directory
+    if (m_load_config)
+        initConfiguration();
+    else
+        initKeybinds();
+
+    setCurrentDir("~"); // set the current directory
 }
 
 void Navi::initConfiguration() {
@@ -19,10 +24,11 @@ void Navi::initConfiguration() {
   lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
 
   try {
-    lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
+    lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
   } catch (const sol::error &e) {
-    m_statusbar->Message("No configuration file found."
-                         "Skipping initializing configurations");
+    m_statusbar->Message(QString::fromStdString(e.what()));
+    initKeybinds();
+
     return;
   }
 
@@ -89,14 +95,15 @@ void Navi::initConfiguration() {
           sol::table columns = columns_table.value();
           for (std::size_t i = 1; i < columns.size(); i++) {
             auto col = columns[i];
-            auto name = QString::fromStdString(col["name"].get_or<std::string>(""));
-            auto type = QString::fromStdString(col["type"].get_or<std::string>(""));
+            auto name =
+                QString::fromStdString(col["name"].get_or<std::string>(""));
+            auto type =
+                QString::fromStdString(col["type"].get_or<std::string>(""));
 
             if (type == "file_name") {
-                column.type = FileSystemModel::ColumnType::FileName;
-                file_name_type_check = true;
-            }
-            else if (type == "file_size")
+              column.type = FileSystemModel::ColumnType::FileName;
+              file_name_type_check = true;
+            } else if (type == "file_size")
               column.type = FileSystemModel::ColumnType::FileSize;
             else if (type == "file_date")
               column.type = FileSystemModel::ColumnType::FileModifiedDate;
@@ -112,10 +119,13 @@ void Navi::initConfiguration() {
             columnList.append(column);
           }
 
-          // If file_name type is not found in the configuration, inform the user
+          // If file_name type is not found in the configuration, inform the
+          // user
           if (!file_name_type_check) {
-            m_statusbar->Message("*file_name* key is mandatory in the columns table."
-                                 "Consider adding it to get the columns working", MessageType::ERROR);
+            m_statusbar->Message(
+                "*file_name* key is mandatory in the columns table."
+                "Consider adding it to get the columns working",
+                MessageType::ERROR);
           }
 
           model->setColumns(columnList);
@@ -149,6 +159,26 @@ void Navi::initConfiguration() {
           model->setSymlinkForeground(foreground);
         }
 
+        // highlight
+        sol::optional<sol::table> highlight_table =
+            file_pane_table["highlight"];
+        if (highlight_table) {
+          auto highlight = highlight_table.value();
+
+          auto foreground = QString::fromStdString(
+              highlight["foreground"].get_or<std::string>(""));
+          auto background = QString::fromStdString(
+              highlight["background"].get_or<std::string>(""));
+
+          if (!(foreground.isNull() || foreground.isEmpty())) {
+            m_file_panel->setCurrentForeground(foreground);
+          }
+
+          if (!(background.isNull() || background.isEmpty())) {
+            m_file_panel->setCurrentBackground(background);
+          }
+        }
+
         // marks
         sol::optional<sol::table> mark_table = file_pane_table["mark"];
         if (mark_table) {
@@ -156,7 +186,7 @@ void Navi::initConfiguration() {
           auto markBackground = QString::fromStdString(
               mark["background"].get_or<std::string>(""));
           auto markForeground = QString::fromStdString(
-              mark["foreground"].get_or<std::string>("#FF5000"));
+              mark["foreground"].get_or<std::string>(""));
           auto markFont =
               QString::fromStdString(mark["font"].get_or<std::string>(""));
           auto markItalic = mark["italic"].get_or(false);
@@ -198,7 +228,7 @@ void Navi::initConfiguration() {
             auto markHeaderBackground = QString::fromStdString(
                 header["background"].get_or<std::string>(""));
             auto markHeaderForeground = QString::fromStdString(
-                header["foreground"].get_or<std::string>("#FF5000"));
+                header["foreground"].get_or<std::string>(""));
 
             auto markFont =
                 QString::fromStdString(header["font"].get_or<std::string>(""));
@@ -590,9 +620,7 @@ void Navi::setupCommandMap() noexcept {
     ToggleHiddenFiles();
   };
 
-  commandMap["dot-dot"] = [this](const QStringList &args) {
-    ToggleDotDot();
-  };
+  commandMap["dot-dot"] = [this](const QStringList &args) { ToggleDotDot(); };
 
   commandMap["preview-pane"] = [this](const QStringList &args) {
     TogglePreviewPanel();
@@ -828,18 +856,19 @@ void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
 }
 
 void Navi::ToggleShortcutsBuffer() noexcept {
-    if (m_shortcuts_widget && m_shortcuts_widget->isVisible()) {
-        m_shortcuts_widget->close();
-        delete m_shortcuts_widget;
-        m_shortcuts_widget = nullptr;
-        disconnect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, 0, 0);
-    }
-    else {
-        m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
-        connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
-                [&](const bool &state) { m_viewmenu__shortcuts_widget->setChecked(state); });
-        m_shortcuts_widget->show();
-    }
+  if (m_shortcuts_widget && m_shortcuts_widget->isVisible()) {
+    m_shortcuts_widget->close();
+    delete m_shortcuts_widget;
+    m_shortcuts_widget = nullptr;
+    disconnect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, 0, 0);
+  } else {
+    m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
+    connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
+            [&](const bool &state) {
+              m_viewmenu__shortcuts_widget->setChecked(state);
+            });
+    m_shortcuts_widget->show();
+  }
 }
 
 void Navi::ToggleShortcutsBuffer(const bool &state) noexcept {
@@ -949,8 +978,8 @@ void Navi::initLayout() noexcept {
 
   m_preview_panel = new PreviewPanel();
   m_file_path_widget = new FilePathWidget();
-  m_log_buffer = new MessagesBuffer();
-  m_marks_buffer = new MarksBuffer();
+  m_log_buffer = new MessagesBuffer(this);
+  m_marks_buffer = new MarksBuffer(this);
 
   m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
@@ -1073,9 +1102,7 @@ void Navi::initKeybinds() noexcept {
           [&]() { m_file_panel->UnmarkItemsLocal(); });
 
   connect(kb_toggle_hidden_files, &QShortcut::activated, this,
-          [&]() {
-            ToggleHiddenFiles();
-          });
+          [&]() { ToggleHiddenFiles(); });
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
@@ -1277,9 +1304,8 @@ void Navi::initMenubar() noexcept {
   connect(m_tools_menu__search, &QAction::triggered, this,
           [&]() { m_file_panel->Search(); });
 
-  connect(m_viewmenu__files_menu__hidden, &QAction::triggered, this, [&](const bool &state) {
-      ToggleHiddenFiles(state);
-  });
+  connect(m_viewmenu__files_menu__hidden, &QAction::triggered, this,
+          [&](const bool &state) { ToggleHiddenFiles(state); });
 
   connect(m_viewmenu__menubar, &QAction::triggered, this,
           [&](const bool &state) { Navi::ToggleMenuBar(state); });
@@ -1304,8 +1330,7 @@ void Navi::initMenubar() noexcept {
 
   connect(
       m_marks_buffer, &MarksBuffer::visibilityChanged, this,
-          [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
-
+      [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {}
@@ -1435,29 +1460,55 @@ void Navi::SortByDate(const bool &reverse) noexcept {
 }
 
 void Navi::ToggleHiddenFiles(const bool &state) noexcept {
-    m_viewmenu__files_menu__hidden->setChecked(state);
-    m_file_panel->ToggleHiddenFiles();
+  m_viewmenu__files_menu__hidden->setChecked(state);
+  m_file_panel->ToggleHiddenFiles();
 }
 
 void Navi::ToggleHiddenFiles() noexcept {
-    if (m_viewmenu__files_menu__hidden->isChecked())
-        m_viewmenu__files_menu__hidden->setChecked(false);
-    else
-        m_viewmenu__files_menu__hidden->setChecked(true);
+  if (m_viewmenu__files_menu__hidden->isChecked())
+    m_viewmenu__files_menu__hidden->setChecked(false);
+  else
+    m_viewmenu__files_menu__hidden->setChecked(true);
 
-    m_file_panel->ToggleHiddenFiles();
+  m_file_panel->ToggleHiddenFiles();
 }
 
 void Navi::ToggleDotDot(const bool &state) noexcept {
-    m_viewmenu__files_menu__dotdot->setChecked(state);
-    m_file_panel->ToggleDotDot();
+  m_viewmenu__files_menu__dotdot->setChecked(state);
+  m_file_panel->ToggleDotDot();
 }
 
 void Navi::ToggleDotDot() noexcept {
-    if (m_viewmenu__files_menu__dotdot->isChecked())
-        m_viewmenu__files_menu__dotdot->setChecked(false);
-    else
-        m_viewmenu__files_menu__dotdot->setChecked(true);
+  if (m_viewmenu__files_menu__dotdot->isChecked())
+    m_viewmenu__files_menu__dotdot->setChecked(false);
+  else
+    m_viewmenu__files_menu__dotdot->setChecked(true);
 
-    m_file_panel->ToggleDotDot();
+  m_file_panel->ToggleDotDot();
+}
+
+void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
+
+    if (parser.is_used("--config")) {
+        m_config_location = QString::fromStdString(parser.get<std::string>("--config"));
+    }
+
+    if (parser.is_used("--quick")) {
+        qDebug() << "DD";
+        m_load_config = false;
+    }
+
+    if (parser.is_used("--bookmark-file")) {
+      m_bookmark_manager->loadBookmarks(
+                                        QString::fromStdString(parser.get<std::string>("--bookmark-file")));
+    }
+
+    if (parser.is_used("--working-directory")) {
+        auto paths = parser.get<std::vector<std::string>>("--working-directory");
+
+        m_file_panel->setCurrentDir(QString::fromStdString(paths.at(0)));
+
+        // TODO: dual pane location
+    }
+
 }
