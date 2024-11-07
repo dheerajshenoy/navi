@@ -2,11 +2,26 @@
 cmake_minimum_required(VERSION 3.16.0)
 
 # defines a project with a version
-project(Navi VERSION 1.0.0 LANGUAGES CXX)
+project(navi VERSION 1.0.0 LANGUAGES CXX)
 
 # pick the C++ standard to use, in this case C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Set installation prefix (default is /usr/local)
+set(CMAKE_INSTALL_PREFIX "/usr/")
+
+# Enable verbose output during build
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+# Build type of Release/Debug
+set(CMAKE_BUILD_TYPE "Release")
+
+# Export compile_commands.json for IDE integration
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Set flags for compilers
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")  # Add more flags as necessary
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
 set(CMAKE_AUTOMOC ON)
@@ -62,7 +77,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagi
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
 
 add_custom_target(run
-  COMMAND Navi
-  DEPENDS Navi
+  COMMAND ${PROJECT_NAME}
+  DEPENDS ${PROJECT_NAME}
   WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
+
+# Install the executable
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin)

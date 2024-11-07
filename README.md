@@ -18,7 +18,6 @@ A file manager for the minimalist & impatient
 
 This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++.
 
-
 <a id="org326bc2f"></a>
 
 # Why another file manager ?
@@ -44,6 +43,8 @@ The file managers for linux aren’t that great for me. So I decided to write my
 
 <a id="org2eefded"></a>
 
+
+# Screenshots
 # TODOs
 
 Please refer to [this file](./TODO.md)
@@ -54,4 +55,3 @@ Please refer to [this file](./TODO.md)
 # Wiki
 
 Please refer to [this file](./wiki.md)
-

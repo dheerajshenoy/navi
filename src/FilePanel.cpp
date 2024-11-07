@@ -324,18 +324,19 @@ void FilePanel::PrevItem() noexcept {
 
 void FilePanel::selectHelper(const QModelIndex &index,
                              const bool selectFirst) noexcept {
-  QString filepath = m_model->filePath(index);
+    QString filepath = m_model->filePath(index);
   if (m_model->isDir(index)) {
     setCurrentDir(filepath, selectFirst);
   } else {
-    // TODO: handle File
     QDesktopServices::openUrl(QUrl::fromLocalFile(filepath));
   }
   // TODO: Add hook
 }
 
 void FilePanel::SelectItem() noexcept {
-  QModelIndex currentIndex = m_table_view->currentIndex();
+    QModelIndex currentIndex = m_table_view->currentIndex();
+    if (m_visual_line_mode)
+        m_visual_line_mode = false;
   selectHelper(currentIndex, true);
 }
 
@@ -1271,8 +1272,10 @@ void FilePanel::PasteItems() noexcept {
 
     connect(thread, &QThread::started, worker, &FileWorker::performOperation);
 
-    connect(worker, &FileWorker::finished, this,
-            [&]() { emit fileOperationDone(true); });
+    connect(worker, &FileWorker::finished, this, [&]() {
+        emit fileOperationDone(true);
+        m_model->removeMarkedFiles(filesList);
+    });
 
     connect(worker, &FileWorker::error, this, [&](const QString &reason) {
       emit fileOperationDone(false, reason);

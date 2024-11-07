@@ -105,6 +105,7 @@ public:
 
     bool removeMarkedFile(const QString &path) noexcept;
     void removeMarkedFiles() noexcept;
+    void removeMarkedFiles(const QStringList &paths) noexcept;
     bool removeMarkedFile(const QModelIndex &index) noexcept;
     // QMimeData *mimeData(const QModelIndexList &indexes) const override;
     // bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
@@ -175,7 +176,7 @@ private:
            m_markHeaderBackgroundColor = Qt::transparent;
 
     QFont m_markHeaderFont, m_markFont;
-    QString m_symlink_separator;
+    QString m_symlink_separator = "->";
     QColor m_symlink_foreground;
     bool m_show_symlink;
     unsigned int m_file_name_column_index = -1;

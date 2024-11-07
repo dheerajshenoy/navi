@@ -55,7 +55,7 @@ QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
   return m_root_path + QDir::separator() +
          index.data()
              .toString()
-             .split(QString(") %1 ").arg(m_symlink_separator))
+             .split(QString(" %1 ").arg(m_symlink_separator))
              .at(0);
 }
 
@@ -326,6 +326,15 @@ bool FileSystemModel::removeMarkedFile(const QString &path) noexcept {
     }
   }
   return false;
+}
+
+void FileSystemModel::removeMarkedFiles(const QStringList &paths) noexcept {
+  for (const auto &mark : paths) {
+    QModelIndex index = getIndexFromString(mark);
+    setData(index, false, static_cast<int>(Role::Marked));
+    m_markedFiles.remove(mark);
+  }
+  emit marksListChanged();
 }
 
 void FileSystemModel::removeMarkedFiles() noexcept {

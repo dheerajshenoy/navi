@@ -266,6 +266,10 @@ private:
       "bookmark-go",
       "bookmarks-save",
 
+      // Creation
+      "new-file",
+      "new-folder",
+
       // Panes
       "messages-pane",
       "preview-pane",
