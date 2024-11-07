@@ -26,16 +26,17 @@ The file managers for linux aren’t that great for me. So I decided to write my
 
 # Features
 
-1.  Display Images
-2.  Async File Operations
-3.  Keyboard driven
-4.  [Bookmarks](./wiki.org#bookmarks)
-5.  [Scoped Commands](./wiki.org#types-of-command)
-6.  Shell Command Executions
-7.  [Linux Only](./wiki.org#linux-only)
-8.  Drag and Drop
-9.  [Configuration with Lua](./wiki.org#lua-configuration)
-10. [Scripting with Lua](./wiki.org#scripting-with-lua)
+1. Image and text file preview
+2. PDF file preview
+2. Async File Operations
+3. Keyboard driven
+4. [Bookmarks](./wiki.md#bookmarks)
+5. [Scoped Commands](./wiki.md#types-of-command)
+6. Shell Command Executions
+7. [Linux Only](./wiki.md#linux-only)
+8. Drag and Drop
+9. [Configuration with Lua](./wiki.md#lua-configuration)
+10. [Scripting with Lua](./wiki.md#scripting-with-lua)
 
 <a id="org2eefded"></a>
 
