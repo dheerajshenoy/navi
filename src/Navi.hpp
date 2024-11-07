@@ -76,7 +76,6 @@ public:
     ~Navi();
 
     void initThings() noexcept;
-    void setCurrentDir(const QString &path) noexcept;
     // Interactive Functions
     void ExecuteExtendedCommand() noexcept;
     void NewFolder(const QStringList &folders = {}) noexcept;
@@ -341,4 +340,5 @@ private:
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
 
+    QStringList m_default_location_list;
 };

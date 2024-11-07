@@ -17,7 +17,11 @@ void Navi::initThings() noexcept {
         initKeybinds();
 
     initTabBar();
-    setCurrentDir("~"); // set the current directory
+
+    if (m_default_location_list.isEmpty())
+        m_file_panel->setCurrentDir("~", true);
+    else
+        m_file_panel->setCurrentDir(m_default_location_list.at(0), true);
 }
 
 void Navi::initTabBar() noexcept {
@@ -1358,10 +1362,6 @@ void Navi::initMenubar() noexcept {
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {}
 
-void Navi::setCurrentDir(const QString &path) noexcept {
-  m_file_panel->setCurrentDir(path, true);
-}
-
 void Navi::ToggleMenuBar(const bool &state) noexcept {
   if (state) {
     m_menubar->show();
@@ -1431,7 +1431,19 @@ void Navi::LogMessage(const QString &message,
   m_log_buffer->AppendText(coloredMessage);
 }
 
-Navi::~Navi() {}
+Navi::~Navi() {
+
+delete m_bookmark_manager;
+delete m_tab_bar;
+delete m_inputbar;
+delete m_statusbar;
+delete m_file_panel;
+delete m_preview_panel;
+delete m_file_path_widget;
+delete m_log_buffer;
+delete m_marks_buffer;
+delete m_menubar;
+}
 
 void Navi::chmodHelper() noexcept {
   QString permString = m_inputbar->getInput("Permission Number");
@@ -1517,7 +1529,6 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
     }
 
     if (parser.is_used("--quick")) {
-        qDebug() << "DD";
         m_load_config = false;
     }
 
@@ -1526,12 +1537,12 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
                                         QString::fromStdString(parser.get<std::string>("--bookmark-file")));
     }
 
-    if (parser.is_used("--working-directory")) {
-        auto paths = parser.get<std::vector<std::string>>("--working-directory");
+    if (parser.is_used("files")) {
+        auto paths = parser.get<std::vector<std::string>>("files");
 
-        m_file_panel->setCurrentDir(QString::fromStdString(paths.at(0)));
-
-        // TODO: dual pane location
+        for (const auto &path : paths) {
+            m_default_location_list.append(QString::fromStdString(path));
+        }
     }
 
 }

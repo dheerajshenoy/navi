@@ -9,9 +9,9 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <Magick++.h>
-#include <mupdf/fitz.h>
-#include <mupdf/fitz/geometry.h>
+#include <poppler/qt6/poppler-qt6.h>
 #include <QPainter>
+#include <qnamespace.h>
 
 class FilePreviewWorker : public QObject {
     Q_OBJECT
@@ -28,13 +28,6 @@ public slots:
 
         if (isCancelled) return; // Check for cancellation
 
-        // Do not preview if file size is greater than ‘max_preview_threshold’
-        QFileInfo file(filePath);
-        if (file.size() > m_max_preview_threshold) {
-            emit clearPreview();
-            return;
-        }
-
         QMimeDatabase mimeDatabase;
         QMimeType mimeType =
             mimeDatabase.mimeTypeForFile(filePath, QMimeDatabase::MatchContent);
@@ -42,6 +35,13 @@ public slots:
         QString mimeName = mimeType.name();
 
         if (mimeName.startsWith("image/")) {
+
+            // Do not preview if file size is greater than ‘max_preview_threshold’
+            QFileInfo file(filePath);
+            if (file.size() > m_max_preview_threshold) {
+                emit clearPreview();
+                return;
+            }
 
             Magick::InitializeMagick(nullptr);
             Magick::Image image;
@@ -63,6 +63,12 @@ public slots:
             emit imagePreviewReady(QPixmap::fromImage(qimage.copy()));
             // Use ImageMagick to load the image
         } else if (mimeName.startsWith("text/")) {
+            // Do not preview if file size is greater than ‘max_preview_threshold’
+            QFileInfo _file(filePath);
+            if (_file.size() > m_max_preview_threshold) {
+                emit clearPreview();
+                return;
+            }
             // Load text preview
             QFile file(filePath);
             if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -75,65 +81,27 @@ public slots:
             }
         } else if (mimeName == "application/pdf") {
 
-        // Handle PDF preview using MuPDF
-        if (isCancelled) return; // Check for cancellation again
+            // Handle PDF preview using MuPDF
+            if (isCancelled)
+                return; // Check for cancellation again
 
-        fz_context *context = fz_new_context(nullptr, nullptr, FZ_STORE_DEFAULT);
-        if (!context) {
-            emit errorOccurred("Failed to initialize MuPDF context.");
-            return;
+            std::unique_ptr<Poppler::Document> document = Poppler::Document::load(filePath);
+            if (!document || document->isLocked()) {
+                emit errorOccurred("Could not open PDF");
+                return;
+            }
+
+            std::unique_ptr<Poppler::Page> page = document->page(0);
+            if (!page) {
+                emit errorOccurred("Could not load first page of the PDF");
+                return;
+            }
+
+            QImage image = page->renderToImage(300, 300);
+            emit imagePreviewReady(QPixmap::fromImage(image.copy()));
         }
-        /* Register the default file types to handle. */
-        fz_try(context)
-        fz_register_document_handlers(context);
-        fz_catch(context)
-        {
-            emit errorOccurred("Failed to initialize MuPDF context.");
-            return;
-        }
-
-        fz_document *doc = fz_open_document(context, filePath.toUtf8().constData());
-        int pageCount = fz_count_pages(context, doc);
-        if (pageCount <= 0) {
-            fz_drop_document(context, doc);
-            fz_drop_context(context);
-            emit errorOccurred("No pages in PDF document.");
-            return;
-        }
-
-        // Render the first page
-        fz_page *page = fz_load_page(context, doc, 0);  // Load first page (0-based index)
-        if (!page) {
-            fz_drop_document(context, doc);
-            fz_drop_context(context);
-            emit errorOccurred("Failed to load first page.");
-            return;
-        }
-
-        fz_matrix transform = fz_scale(1.0f, 1.0f);
-        fz_pixmap *pix = fz_new_pixmap_from_page_number(
-                                                        context, doc, 0, transform, fz_device_rgb(context), 0);
-
-
-        // Create QImage
-        QImage qImage(pix->samples, pix->w, pix->h, pix->stride, QImage::Format_RGB888);
-
-        // Render page to QImage
-        fz_device *device = fz_new_draw_device(context, transform, pix);
-        fz_run_page(context, page, device, transform, nullptr);
-        fz_drop_device(context, device);
-
-        // Send image preview
-        emit imagePreviewReady(QPixmap::fromImage(qImage.copy()));
-
-        // Clean up
-        fz_drop_page(context, page);
-        fz_drop_document(context, doc);
-        fz_drop_context(context);
-
-        } else {
+        else
             emit errorOccurred("Unsupported file type for preview.");
-        }
     }
 
     void cancel() {

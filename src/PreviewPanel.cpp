@@ -42,7 +42,7 @@ PreviewPanel::~PreviewPanel() {
 
 void PreviewPanel::showImagePreview(const QPixmap &preview) noexcept {
     this->setCurrentIndex(1);
-    m_img_preview_widget->setPixmap(preview.scaled(400, 400, Qt::KeepAspectRatio));
+    m_img_preview_widget->setPixmap(preview.scaled(400, 400, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 void PreviewPanel::showTextPreview(const QString &preview) noexcept {
