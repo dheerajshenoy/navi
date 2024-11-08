@@ -408,7 +408,7 @@ Opens the marks list.
 
 Opens the messages list.
 
-<img src="./screenshot/messages_pane.png" height="400px" width="600px" />
+<img src="./screenshot/messages_pane.png" height="800px" width="600px" />
 
 `preview-pane`
 
