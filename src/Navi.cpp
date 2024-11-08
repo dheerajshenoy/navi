@@ -410,6 +410,27 @@ void Navi::setupCommandMap() noexcept {
     ExecuteExtendedCommand();
   };
 
+  commandMap["get-input"] = [this](const QStringList &args) {
+      if (args.isEmpty())
+          return;
+      auto size = args.size();
+      switch (size) {
+      case 1:
+          m_inputbar->getInput(args.at(0));
+          break;
+
+      case 2:
+          m_inputbar->getInput(args.at(0), args.at(1));
+          break;
+
+      case 3:
+          m_inputbar->getInput(args.at(0), args.at(1), args.at(2));
+          break;
+      }
+
+      // TODO: redirect the output somehow
+  };
+
   commandMap["mouse-scroll"] = [this](const QStringList &args) {
     m_file_panel->ToggleMouseScroll();
   };
@@ -1133,12 +1154,9 @@ void Navi::initKeybinds() noexcept {
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-  // m_minibuffer->ExecuteCommand();
   m_inputbar->enableCommandCompletions();
   QString command = m_inputbar->getInput("Command");
   ProcessCommand(command);
-  m_inputbar->disableCommandCompletions();
-  // m_file_panel->setFocus();
 }
 
 void Navi::initMenubar() noexcept {

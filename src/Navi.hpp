@@ -304,6 +304,9 @@ private:
       "echo-warn",
       "echo-error",
 
+      // Input,
+      "get-input",
+
       // misc
       "filter",
       "reset-filter",

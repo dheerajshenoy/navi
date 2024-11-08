@@ -8,8 +8,20 @@ Navi can be built from source. The following libraries are dependencies for navi
 + [[https://www.lua.org/start.html][Lua]]
 + [[https://imagemagick.org/script/magick++.php][ImageMagick (Magick++)]]
 + [[https://poppler.freedesktop.org/api/qt6/][Poppler (Poppler-Qt6)]]
-+ [[https://github.com/p-ranav/argparse][ArgParse]]
-+ [[https://github.com/ThePhD/sol2][Sol2]]
+
+If you're on ArchLinux you can copy paste the following =pacman= code to install these dependencies:
+
+#+begin_src bash
+sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6
+#+end_src
+
+If you're on Ubuntu/Debian based distribution, you can paste the following =apt= code to install the dependencies:
+
+#+begin_src bash
+sudo apt install qt6-base-dev lua5.4 libmagick++-dev libpoppler-dev libpoppler-cpp-dev libpoppler-qt6-dev
+#+end_src
+
+*NOTE*: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.
 
 After installing these dependencies on your system and cloning this project repository, you can build navi by using the following command (inside the project’s directory):
 
@@ -535,3 +547,9 @@ keybindings = {
     { key = ".", command = "toggle-hidden-files", desc = "Toggle hidden items" },
 }
 #+end_src
+* Acknowledgement
+
+Navi uses the following header-only C++ libraries. Thanks to the authors of the following libraries:
+
++ [[https://github.com/p-ranav/argparse][ArgParse]] (for parsing command line arguments)
++ [[https://github.com/ThePhD/sol2][Sol2]] (for lua integration)
