@@ -113,165 +113,165 @@ Below is an exhaustive list of commands that are currently available in Navi.
 
 ### Navigation
 
-#### next-item
+`next-item`
 
 Go to the next item
 
-#### prev-item
+`prev-item`
 
 Go to the previous item
 
-#### select-item
+`select-item`
 
 Select the current item
 
-#### middle-item
+`middle-item`
 
 Go to the middle item
 
-#### up-directory
+`up-directory`
 
 Go to the parent directory
 
-#### first-item
+`first-item`
 
 Go to the first item
 
-#### last-item
+`last-item`
 
 Go to the last item
 
 ### Echo (Printing) Commands
 
-#### echo-info
+`echo-info`
 
 Echos or prints the information given as argument with the *info-face* font
 
-#### echo-warn
+`echo-warn`
 
 Echos or prints the information given as argument with the *warning-face* font
 
-#### echo-error
+`echo-error`
 
 Echos or prints the information given as argument with the *error-face* font
 
 ### Marking Item
 
-#### mark
+`mark`
 
 Marks the current item.
 
-#### toggle-mark
+`toggle-mark`
 
 Toggle the mark of the current item.
 
-#### toggle-mark-dwim
+`toggle-mark-dwim`
 
 DWIM version of `toggle-mark` command
 
-#### mark-all
+`mark-all`
 
 Marks all the items in the current directory.
 
-#### mark-inverse
+`mark-inverse`
 
 Inverses the marks in the current directory.
 
-#### mark-dwim
+`mark-dwim`
 
 DWIM version of `toggle-mark`
 
 ### Unmarking Item
 
-#### unmark
+`unmark`
 
 Unmarks the current item.
 
-#### unmark-local
+`unmark-local`
 
 `unmark` for **Local Marks**
 
-#### unmark-global
+`unmark-global`
 
 `unmark` for **Global Marks**
 
 ### Selecting Item
 
-#### visual-select
+`visual-select`
 
 Enters into *visual selection* mode. Navigation is followed by selection until the mode is toggled off.
 
 ### Change Permission
 
-#### chmod
+`chmod`
 
 Change the permission of the current item using three digit numbers
 
 Example: 777, 666, 000 etc.
 
-#### chmod-local
+`chmod-local`
 
 Similar to `chmod` for **Local Marks**
 
-#### chmod-global
+`chmod-global`
 
 Similar to `chmod` for **Global Marks**
 
-#### chmod-dwim
+`chmod-dwim`
 
 ### Renaming Files
 
 **NOTE: Renaming more than one item leads to *bulk renaming*. This is where a text editor of your choice (set it in the configuration) opens up a temporary "rename file" and enables you to rename all the marked files once you save and close the said "rename file"**
 
-#### rename
+`rename`
 
 Rename the highlighted item.
 
-#### rename-local
+`rename-local`
 
 `rename` for **Local Marks**
 
-#### rename-global
+`rename-global`
 
 `rename` for **Global Marks**
 
-#### rename-dwim
+`rename-dwim`
 
 ### Cutting Files
 
-#### cut
+`cut`
 
 Cut (prepare for moving) the current item.
 
-#### cut-local
+`cut-local`
 
 `cut` for **Local Marks**
 
-#### cut-global
+`cut-global`
 
 `cut` for **Global Marks**
 
-#### cut-dwim
+`cut-dwim`
 
 ### Copying Files
 
-#### copy
+`copy`
 
 Copy the current item.
 
-#### copy-local
+`copy-local`
 
 `copy` for **Local Marks**
 
-#### copy-global
+`copy-global`
 
 `copy` for **Global Marks**
 
-#### copy-dwim
+`copy-dwim`
 
 ### Pasting (Moving) Files
 
-#### paste
+`paste`
 
 Paste (Move) the current item.
 
@@ -279,50 +279,50 @@ Paste (Move) the current item.
 
 **WARNING: Please be careful when using delete commands, this does not trash the items, it directly deletes them. If you want to trash use the *trash* command**
 
-#### delete
+`delete`
 
 Delete the highlighted items(s).
 
 
-#### delete-local
+`delete-local`
 
 `delete` for **Local Marks**
 
-#### delete-global
+`delete-global`
 
 `delete` for **Global Marks**
 
-#### delete-dwim
+`delete-dwim`
 
 ### Trashing Files
 
-#### trash
+`trash`
 
 Trash the current item.
 
-#### trash-local
+`trash-local`
 
 `trash` for **Local Marks**
 
-#### trash-global
+`trash-global`
 
 `trash` for **Global Marks**
 
-#### trash-dwim
+`trash-dwim`
 
 ### Filtering Items
 
-#### filter
+`filter`
 
 Set a filter to directory.
 
 Example: `*` displays everything, `*.csv` displays only the csv files, `*.png` displays only the png files
 
-#### reset-filter
+`reset-filter`
 
 Reset the appplied filter.
 
-#### hidden-files
+`hidden-files`
 
 Toggles the hidden files.
 
@@ -330,31 +330,31 @@ Toggles the hidden files.
 
 ### Panes
 
-#### bookmark-pane
+`bookmark-pane`
 
 Opens the bookmarks list.
 
-    TODO: work in progress
+TODO: work in progress
 
-#### marks-pane
+`marks-pane`
 
 Opens the marks list.
 
 <img src="./screenshot/marks-pane-demo.gif" height="400px" width="600px" />
 
-#### messages-pane
+`messages-pane`
 
 Opens the messages list.
 
 <img src="./screenshot/messages_pane.png" height="400px" width="600px" />
 
-#### preview-pane
+`preview-pane`
 
 Toggles the preview pane.
 
 The preview pane handles previewing images (good number of formats) and PDF documents (first page) `asynchronously`. This means that the previewing experience will be seamless and without any lag. Navi uses `ImageMagick` library under the hood for previewing images and therefore any image formats supported my ImageMagick is supported by Navi.
 
-#### shortcuts-pane
+`shortcuts-pane`
 
 This displays the list of all the shortcuts.
 
@@ -362,45 +362,45 @@ This displays the list of all the shortcuts.
 
 ### Misc
 
-#### execute-extended-command
+`execute-extended-command`
 
 This is the function that pops up the inputbar to enter the interactive commands.
 
-#### menu-bar
+`menu-bar`
 
 Toggles the menu bar.
 
-#### focus-path
+`focus-path`
 
 Focuses the path widget and sets it in edit mode.
 
-#### item-property
+`item-property`
 
 Display the property of the currently focused item.
 
-#### toggle-header
+`toggle-header`
 
 Toggle the display of header information.
 
-#### toggle-cycle
+`toggle-cycle`
 
 Toggle the cycle (last item to first item and vice-versa) during navigation.
 
-#### refresh
+`refresh`
 
 Force refresh the current directory.
 
 **NOTE: By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.**
 
-#### mouse-scroll
+`mouse-scroll`
 
 Toggle mouse scroll support for file panel
 
-#### reload-config
+`reload-config`
 
 Re-reads the configuration file if it exists and loads the configurations.
 
-#### get-input
+`get-input`
 
 Get input from the user and store the result.
 
@@ -416,13 +416,13 @@ Args:
 
 ### Shell Commands
 
-#### <span class="todo TODO">TODO</span> shell-command
+`<span class="todo TODO">TODO</span> shell-command`
 
 Run a shell command *synchronously* (blocking).
 
 **NOTE: This blocks the main GUI thread until the command finished executing**
 
-#### <span class="todo TODO">TODO</span> shell-command-async
+`<span class="todo TODO">TODO</span> shell-command-async`
 
 Run a shell command *asynchronously* (non-blocking).
 
@@ -432,15 +432,15 @@ The running commands can be seen in the `Task Widget`
 
 ### Bookmarks
 
-#### bookmark-add
+`bookmark-add`
 
 Add a new non-existing bookmark
 
-#### bookmark-remove
+`bookmark-remove`
 
 Remove an existing bookmark
 
-#### bookmark-edit
+`bookmark-edit`
 
 Edit an existing bookmark
 
@@ -449,7 +449,7 @@ Edit an existing bookmark
 * Title `required` - this tells Navi to edit the bookmark title
 * Path `required` - this tells Navi to edit the bookmark directory that the bookmark points to
 
-#### bookmark-go
+`bookmark-go`
 
 Go to the directory pointed by the bookmark
 
@@ -457,7 +457,7 @@ Go to the directory pointed by the bookmark
 
 * Bookmark Name `required` - a unique bookmark name
 
-5.  bookmark-save
+`  bookmark-save`
 
 Save the bookmarks that have been added.
 
@@ -467,47 +467,47 @@ Save the bookmarks that have been added.
 
 Searching is **Regular Expression** enabled. So you can pinpoint exactly the file that you want to look for.
 
-#### search
+`search`
 
 Searches the current directory for the search term
 
-#### search-next
+`search-next`
 
 Goes to the next best match for the search term
 
-#### search-prev
+`search-prev`
 
 Goes to the previous best match for the search term
 
 ### Sorting Items
 
-#### sort-name
+`sort-name`
 
 Sorts the directory by *name* in **ascending order** with the directories listed first.
 
-#### sort-name-desc
+`sort-name-desc`
 
 Sorts the directory by *name* in **descending order** with the directories listed first.
 
-#### sort-date
+`sort-date`
 
 Sorts the directory by *date* in **ascending order** with the directories listed first.
 
-#### sort-date-desc
+`sort-date-desc`
 
 Sorts the directory by *date* in **descending order** with the directories listed first.
 
-#### sort-size
+`sort-size`
 
 Sorts the directory by *size* in **ascending order** with the directories listed first.
 
-#### sort-size-desc
+`sort-size-desc`
 
 Sorts the directory by *size* in **descending order** with the directories listed first.
 
 ### Storage Device
 
-#### drives
+`drives`
 
 Opens a dialog with all the drives (mounted and unmounted). You can double click on a drive to mount (or load it if it's already mounted) or use the mount and unmount buttons.
 
