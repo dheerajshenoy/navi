@@ -58,6 +58,7 @@ qt_add_executable(${PROJECT_NAME}
   src/BookmarkWidget.cpp
   src/ShortcutsWidget.cpp
   src/NaviWindow.cpp
+  src/DriveWidget.cpp
 
   src/FileWorker.hpp
   src/FileSystemModel.cpp
@@ -68,6 +69,7 @@ qt_add_executable(${PROJECT_NAME}
   src/VerticalHeaderView.hpp
   src/argparse.hpp
   src/TabBarWidget.hpp
+  src/StorageDevice.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
@@ -84,4 +86,4 @@ add_custom_target(run
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION bin)
+  RUNTIME DESTINATION bin)

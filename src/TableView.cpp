@@ -15,7 +15,6 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     //setFrameStyle(0);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-
 }
 
 TableView::~TableView() {}

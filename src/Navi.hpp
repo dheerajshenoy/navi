@@ -22,8 +22,7 @@
 #include <QDebug>
 #include <QStringView>
 #include <QActionGroup>
-
-class ShortcutWidget;
+#include "StorageDevice.hpp"
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -48,6 +47,7 @@ static const QString CONFIG_FILE_PATH =
 #include "TabBarWidget.hpp"
 #include "sol/sol.hpp"
 #include "argparse.hpp"
+#include "DriveWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -97,6 +97,9 @@ public:
     void SortByDate(const bool &reverse = false) noexcept;
     void SortBySize(const bool &reverse = false) noexcept;
 
+    void ToggleDrivesWidget(const bool &state) noexcept;
+    void ToggleDrivesWidget() noexcept;
+
     void ToggleStatusBar(const bool &state) noexcept;
     void ToggleStatusBar() noexcept;
 
@@ -121,6 +124,7 @@ public:
     void ToggleDotDot(const bool &state) noexcept;
     void ToggleDotDot() noexcept;
 
+    void MountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
 
 private:
@@ -165,6 +169,7 @@ private:
     QAction *m_viewmenu__marks_buffer = nullptr;
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
     QAction *m_viewmenu__shortcuts_widget = nullptr;
+    QAction *m_viewmenu__drives_widget = nullptr;
 
     QMenu *m_viewmenu__sort_menu = nullptr;
 
@@ -322,6 +327,7 @@ private:
       "execute-extended-command",
       "visual-select",
       "mouse-scroll",
+      "drives",
 
     };
 
@@ -348,4 +354,5 @@ private:
     bool m_load_config = true;
 
     QStringList m_default_location_list;
+    DriveWidget *m_drives_widget = new DriveWidget();
 };

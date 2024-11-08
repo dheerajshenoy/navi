@@ -4,6 +4,9 @@
 #include <QFileInfo>
 #include <tuple>
 #include <QRegularExpression>
+#include <QList>
+#include <QProcess>
+#include "StorageDevice.hpp"
 
 class utils {
 
@@ -15,4 +18,6 @@ public:
     static bool isValidPath(const QString &path) noexcept;
     static QStringList splitPreservingQuotes(const QString& input) noexcept;
     static qint64 parseFileSize(const QString& sizeStr) noexcept;
+    static QList<StorageDevice> getDrives() noexcept;
+    static bool mountDrive(const QString &driveName) noexcept;
 };

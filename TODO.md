@@ -61,6 +61,8 @@
 - [x] Keybinds from Lua
 - [x] Bookmark file ignore comments and empty lines
 - [x] Shortcuts Widget
+- [x] Mount drives
+- [x] List drives
 - [ ] Open with menu
 - [ ] Rich text in file panel
 - [ ] Shell commands
@@ -69,7 +71,5 @@
 - [ ] Add file operation cancel UI
 - [ ] Select renamed file after renaming
 - [ ] Wonky file completion in the file path widget when "~" is present
-- [ ] Mount drives
-- [ ] List drives
 - [ ] Tabs
 - [ ] History for inputbar

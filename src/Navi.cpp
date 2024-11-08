@@ -1,4 +1,5 @@
 #include "Navi.hpp"
+#include "DriveWidget.hpp"
 #include "argparse.hpp"
 #include "sol/sol.hpp"
 
@@ -30,374 +31,388 @@ void Navi::initTabBar() noexcept {
 
 void Navi::initConfiguration() noexcept {
 
-  lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
+    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
 
-  try {
-    lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
-  } catch (const sol::error &e) {
-    m_statusbar->Message(QString::fromStdString(e.what()));
-    initKeybinds();
+    try {
+        lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
+    } catch (const sol::error &e) {
+        m_statusbar->Message(QString::fromStdString(e.what()));
+        initKeybinds();
 
-    return;
-  }
+        return;
+    }
 
-  auto model = m_file_panel->model();
+    auto model = m_file_panel->model();
 
-  // Read the SETTINGS table
-  sol::optional<sol::table> settings_table_opt = lua["settings"];
+    // Read the SETTINGS table
+    sol::optional<sol::table> settings_table_opt = lua["settings"];
 
-  if (settings_table_opt) {
-    sol::table settings_table = settings_table_opt.value();
-    sol::optional<sol::table> ui_table_opt = settings_table["ui"];
-    if (ui_table_opt) {
-        sol::table ui_table = ui_table_opt.value();
+    if (settings_table_opt) {
+        sol::table settings_table = settings_table_opt.value();
+        sol::optional<sol::table> ui_table_opt = settings_table["ui"];
+        if (ui_table_opt) {
+            sol::table ui_table = ui_table_opt.value();
 
-        // tabs
-        sol::optional<sol::table> tabs_table = ui_table["tabs"];
+            // tabs
+            sol::optional<sol::table> tabs_table = ui_table["tabs"];
 
-        if (tabs_table) {
-            sol::table tabs = tabs_table.value();
+            if (tabs_table) {
+                sol::table tabs = tabs_table.value();
 
-            auto shown_on_multiple = tabs["shown_on_multiple"].get_or(true);
+                auto shown_on_multiple = tabs["shown_on_multiple"].get_or(true);
 
-            // TODO: shown only on multiple tabs
-            // if (!shown_on_multiple)
-            //     m_tab_bar->setVisible(true);
-        }
-
-      // Preview pane
-      sol::optional<sol::table> preview_pane_table = ui_table["preview_pane"];
-
-      if (preview_pane_table) {
-        auto preview_pane = preview_pane_table.value();
-        auto shown = preview_pane["shown"].get_or(true);
-        TogglePreviewPanel(shown);
-
-        auto fraction = preview_pane["fraction"].get_or(0.5);
-        auto totalSize = m_splitter->width();
-        QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
-                            static_cast<int>(totalSize * fraction)};
-        m_splitter->setSizes(sizes);
-
-        auto max_file_size = QString::fromStdString(
-            preview_pane["max_size"].get_or<std::string>("10M"));
-
-        auto max_file_bytes = utils::parseFileSize(max_file_size);
-        m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
-      }
-
-      // Menu bar
-      sol::optional<sol::table> menu_bar_table = ui_table["menu_bar"];
-
-      if (menu_bar_table) {
-        auto menu_bar = menu_bar_table.value();
-        auto shown = menu_bar["shown"].get_or(true);
-        ToggleMenuBar(shown);
-      }
-
-      // Status bar
-      sol::optional<sol::table> status_bar_table = ui_table["status_bar"];
-
-      if (status_bar_table) {
-        auto status_bar = status_bar_table.value();
-        auto shown = status_bar["shown"].get_or(true);
-        ToggleStatusBar(shown);
-      }
-
-      // File Pane
-      sol::table file_pane_table = ui_table["file_pane"];
-
-      if (file_pane_table.valid()) {
-        sol::optional<sol::table> columns_table = file_pane_table["columns"];
-        if (columns_table.has_value()) {
-          QList<FileSystemModel::Column>
-              columnList; // List to store column configuration
-          FileSystemModel::Column column;
-          bool file_name_type_check = false;
-          sol::table columns = columns_table.value();
-          for (std::size_t i = 1; i < columns.size(); i++) {
-            auto col = columns[i];
-            auto name =
-                QString::fromStdString(col["name"].get_or<std::string>(""));
-            auto type =
-                QString::fromStdString(col["type"].get_or<std::string>(""));
-
-            if (type == "file_name") {
-              column.type = FileSystemModel::ColumnType::FileName;
-              file_name_type_check = true;
-            } else if (type == "file_size")
-              column.type = FileSystemModel::ColumnType::FileSize;
-            else if (type == "file_date")
-              column.type = FileSystemModel::ColumnType::FileModifiedDate;
-            else if (type == "file_permission")
-              column.type = FileSystemModel::ColumnType::FilePermission;
-            else {
-              m_statusbar->Message(QString("Unknown column type %1").arg(type),
-                                   MessageType::WARNING);
-              continue;
+                // TODO: shown only on multiple tabs
+                // if (!shown_on_multiple)
+                //     m_tab_bar->setVisible(true);
             }
 
-            column.name = name;
-            columnList.append(column);
-          }
+            // Preview pane
+            sol::optional<sol::table> preview_pane_table = ui_table["preview_pane"];
 
-          // If file_name type is not found in the configuration, inform the
-          // user
-          if (!file_name_type_check) {
-            m_statusbar->Message(
-                "*file_name* key is mandatory in the columns table."
-                "Consider adding it to get the columns working",
-                MessageType::ERROR);
-          }
+            if (preview_pane_table) {
+                auto preview_pane = preview_pane_table.value();
+                auto shown = preview_pane["shown"].get_or(true);
+                TogglePreviewPanel(shown);
 
-          model->setColumns(columnList);
-        }
+                auto fraction = preview_pane["fraction"].get_or(0.5);
+                auto totalSize = m_splitter->width();
+                QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
+                            static_cast<int>(totalSize * fraction)};
+                m_splitter->setSizes(sizes);
 
-        // headers
-        sol::optional<bool> headers_visible = file_pane_table["headers"];
-        if (headers_visible) {
-          m_file_panel->ToggleHeaders(headers_visible.value());
-        }
+                auto max_file_size = QString::fromStdString(
+                                                            preview_pane["max_size"].get_or<std::string>("10M"));
 
-        // cycle
-        sol::optional<bool> cycle = file_pane_table["cycle"];
-        if (cycle) {
-          m_file_panel->SetCycle(cycle.value());
-        }
+                auto max_file_bytes = utils::parseFileSize(max_file_size);
+                m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
+            }
 
-        // symlink
-        sol::optional<sol::table> symlink_table = file_pane_table["symlink"];
-        if (symlink_table) {
-          auto symlink = symlink_table.value();
+            // Menu bar
+            sol::optional<sol::table> menu_bar_table = ui_table["menu_bar"];
 
-          auto shown = symlink["shown"].get_or(true);
-          auto foreground = QString::fromStdString(
-              symlink["foreground"].get_or<std::string>(""));
-          auto separator = QString::fromStdString(
-              symlink["separator"].get_or<std::string>("->"));
+            if (menu_bar_table) {
+                auto menu_bar = menu_bar_table.value();
+                auto shown = menu_bar["shown"].get_or(true);
+                ToggleMenuBar(shown);
+            }
 
-          model->setSymlinkVisible(shown);
-          model->setSymlinkSeparator(separator);
-          model->setSymlinkForeground(foreground);
-        }
+            // Status bar
+            sol::optional<sol::table> status_bar_table = ui_table["status_bar"];
 
-        // highlight
-        sol::optional<sol::table> highlight_table =
-            file_pane_table["highlight"];
-        if (highlight_table) {
-          auto highlight = highlight_table.value();
+            if (status_bar_table) {
+                auto status_bar = status_bar_table.value();
+                auto shown = status_bar["shown"].get_or(true);
+                ToggleStatusBar(shown);
+            }
 
-          auto foreground = QString::fromStdString(
-              highlight["foreground"].get_or<std::string>(""));
-          auto background = QString::fromStdString(
-              highlight["background"].get_or<std::string>(""));
+            // File Pane
+            sol::table file_pane_table = ui_table["file_pane"];
 
-          if (!(foreground.isNull() || foreground.isEmpty())) {
-            m_file_panel->setCurrentForeground(foreground);
-          }
+            if (file_pane_table.valid()) {
+                sol::optional<sol::table> columns_table = file_pane_table["columns"];
+                if (columns_table.has_value()) {
+                    QList<FileSystemModel::Column>
+                    columnList; // List to store column configuration
+                    FileSystemModel::Column column;
+                    bool file_name_type_check = false;
+                    sol::table columns = columns_table.value();
+                    for (std::size_t i = 1; i < columns.size(); i++) {
+                        auto col = columns[i];
+                        auto name =
+                            QString::fromStdString(col["name"].get_or<std::string>(""));
+                        auto type =
+                            QString::fromStdString(col["type"].get_or<std::string>(""));
 
-          if (!(background.isNull() || background.isEmpty())) {
-            m_file_panel->setCurrentBackground(background);
-          }
-        }
+                        if (type == "file_name") {
+                            column.type = FileSystemModel::ColumnType::FileName;
+                            file_name_type_check = true;
+                        } else if (type == "file_size")
+                            column.type = FileSystemModel::ColumnType::FileSize;
+                        else if (type == "file_date")
+                            column.type = FileSystemModel::ColumnType::FileModifiedDate;
+                        else if (type == "file_permission")
+                            column.type = FileSystemModel::ColumnType::FilePermission;
+                        else {
+                            m_statusbar->Message(QString("Unknown column type %1").arg(type),
+                                                 MessageType::WARNING);
+                            continue;
+                        }
 
-        // marks
-        sol::optional<sol::table> mark_table = file_pane_table["mark"];
-        if (mark_table) {
-          auto mark = mark_table.value();
-          auto markBackground = QString::fromStdString(
-              mark["background"].get_or<std::string>(""));
-          auto markForeground = QString::fromStdString(
-              mark["foreground"].get_or<std::string>(""));
-          auto markFont =
-              QString::fromStdString(mark["font"].get_or<std::string>(""));
-          auto markItalic = mark["italic"].get_or(false);
-          auto markBold = mark["bold"].get_or(false);
+                        column.name = name;
+                        columnList.append(column);
+                    }
 
-          if (!(markFont.isEmpty() || markFont.isNull()))
-            model->setMarkHeaderFontFamily(markFont);
+                    // If file_name type is not found in the configuration, inform the
+                    // user
+                    if (!file_name_type_check) {
+                        m_statusbar->Message(
+                                             "*file_name* key is mandatory in the columns table."
+                                             "Consider adding it to get the columns working",
+                                             MessageType::ERROR);
+                    }
 
-          if (markItalic)
-            model->setMarkFontItalic(true);
+                    model->setColumns(columnList);
+                }
 
-          if (markBold)
-            model->setMarkFontBold(true);
+                // headers
+                sol::optional<bool> headers_visible = file_pane_table["headers"];
+                if (headers_visible) {
+                    m_file_panel->ToggleHeaders(headers_visible.value());
+                }
 
-          if (!(markBackground.isNull() || markBackground.isEmpty()))
-            model->setMarkBackgroundColor(markBackground);
-          else
-            model->setMarkBackgroundColor(m_file_panel->tableView()
+                // cycle
+                sol::optional<bool> cycle = file_pane_table["cycle"];
+                if (cycle) {
+                    m_file_panel->SetCycle(cycle.value());
+                }
+
+                // symlink
+                sol::optional<sol::table> symlink_table = file_pane_table["symlink"];
+                if (symlink_table) {
+                    auto symlink = symlink_table.value();
+
+                    auto shown = symlink["shown"].get_or(true);
+                    auto foreground = QString::fromStdString(
+                                                             symlink["foreground"].get_or<std::string>(""));
+                    auto separator = QString::fromStdString(
+                                                            symlink["separator"].get_or<std::string>("->"));
+
+                    model->setSymlinkVisible(shown);
+                    model->setSymlinkSeparator(separator);
+                    model->setSymlinkForeground(foreground);
+                }
+
+                // highlight
+                sol::optional<sol::table> highlight_table =
+                    file_pane_table["highlight"];
+                if (highlight_table) {
+                    auto highlight = highlight_table.value();
+
+                    auto foreground = QString::fromStdString(
+                                                             highlight["foreground"].get_or<std::string>(""));
+                    auto background = QString::fromStdString(
+                                                             highlight["background"].get_or<std::string>(""));
+
+                    if (!(foreground.isNull() || foreground.isEmpty())) {
+                        m_file_panel->setCurrentForeground(foreground);
+                    }
+
+                    if (!(background.isNull() || background.isEmpty())) {
+                        m_file_panel->setCurrentBackground(background);
+                    }
+                }
+
+                // marks
+                sol::optional<sol::table> mark_table = file_pane_table["mark"];
+                if (mark_table) {
+                    auto mark = mark_table.value();
+                    auto markBackground = QString::fromStdString(
+                                                                 mark["background"].get_or<std::string>(""));
+                    auto markForeground = QString::fromStdString(
+                                                                 mark["foreground"].get_or<std::string>(""));
+                    auto markFont =
+                        QString::fromStdString(mark["font"].get_or<std::string>(""));
+                    auto markItalic = mark["italic"].get_or(false);
+                    auto markBold = mark["bold"].get_or(false);
+
+                    if (!(markFont.isEmpty() || markFont.isNull()))
+                        model->setMarkHeaderFontFamily(markFont);
+
+                    if (markItalic)
+                        model->setMarkFontItalic(true);
+
+                    if (markBold)
+                        model->setMarkFontBold(true);
+
+                    if (!(markBackground.isNull() || markBackground.isEmpty()))
+                        model->setMarkBackgroundColor(markBackground);
+                    else
+                        model->setMarkBackgroundColor(m_file_panel->tableView()
                                               ->palette()
                                               .brush(QWidget::backgroundRole())
-                                              .color()
+                                                                                .color()
                                               .name());
 
-          if (!(markForeground.isNull() || markForeground.isEmpty()))
-            model->setMarkForegroundColor(markForeground);
-          else
-            model->setMarkForegroundColor(m_file_panel->tableView()
+                    if (!(markForeground.isNull() || markForeground.isEmpty()))
+                        model->setMarkForegroundColor(markForeground);
+                    else
+                        model->setMarkForegroundColor(m_file_panel->tableView()
                                               ->palette()
                                               .brush(QWidget::backgroundRole())
-                                              .color()
+                                                                                .color()
                                               .name());
 
-          // header
-          sol::optional<sol::table> header_table = mark["header"];
+                    // header
+                    sol::optional<sol::table> header_table = mark["header"];
 
-          if (header_table) {
-            auto header = header_table.value();
+                    if (header_table) {
+                        auto header = header_table.value();
 
-            auto markHeaderBackground = QString::fromStdString(
-                header["background"].get_or<std::string>(""));
-            auto markHeaderForeground = QString::fromStdString(
-                header["foreground"].get_or<std::string>(""));
+                        auto markHeaderBackground = QString::fromStdString(
+                                                                           header["background"].get_or<std::string>(""));
+                        auto markHeaderForeground = QString::fromStdString(
+                                                                           header["foreground"].get_or<std::string>(""));
 
-            auto markFont =
-                QString::fromStdString(header["font"].get_or<std::string>(""));
-            auto markItalic = header["italic"].get_or(false);
-            auto markBold = header["bold"].get_or(false);
+                        auto markFont =
+                            QString::fromStdString(header["font"].get_or<std::string>(""));
+                        auto markItalic = header["italic"].get_or(false);
+                        auto markBold = header["bold"].get_or(false);
 
-            if (!(markFont.isEmpty() || markFont.isNull()))
-              model->setMarkHeaderFontFamily(markFont);
+                        if (!(markFont.isEmpty() || markFont.isNull()))
+                            model->setMarkHeaderFontFamily(markFont);
 
-            if (markItalic)
-              model->setMarkHeaderFontItalic(true);
+                        if (markItalic)
+                            model->setMarkHeaderFontItalic(true);
 
-            if (markBold)
-              model->setMarkHeaderFontBold(true);
+                        if (markBold)
+                            model->setMarkHeaderFontBold(true);
 
-            if (!(markHeaderBackground.isNull() ||
-                  markHeaderBackground.isEmpty()))
-              model->setMarkHeaderBackgroundColor(markHeaderBackground);
-            else
-              model->setMarkHeaderBackgroundColor(
-                  m_file_panel->tableView()
+                        if (!(markHeaderBackground.isNull() ||
+                              markHeaderBackground.isEmpty()))
+                            model->setMarkHeaderBackgroundColor(markHeaderBackground);
+                        else
+                            model->setMarkHeaderBackgroundColor(
+                                                                m_file_panel->tableView()
                       ->palette()
                       .brush(QWidget::backgroundRole())
                       .color()
                       .name());
 
-            if (!(markHeaderForeground.isNull() ||
-                  markHeaderForeground.isEmpty()))
-              model->setMarkHeaderForegroundColor(markHeaderForeground);
-            else
-              model->setMarkHeaderForegroundColor(
-                  m_file_panel->tableView()
+                        if (!(markHeaderForeground.isNull() ||
+                              markHeaderForeground.isEmpty()))
+                            model->setMarkHeaderForegroundColor(markHeaderForeground);
+                        else
+                            model->setMarkHeaderForegroundColor(
+                                                                m_file_panel->tableView()
                       ->palette()
                       .brush(QWidget::backgroundRole())
                       .color()
                       .name());
-          }
+                    }
+                }
+            }
+
+            // input_bar
+            sol::optional<sol::table> input_bar_table = ui_table["input_bar"];
+
+            if (input_bar_table) {
+                auto input_bar = input_bar_table.value();
+
+                auto foregroundColor = QString::fromStdString(
+                                                              input_bar["foreground"].get_or<std::string>(""));
+                auto backgroundColor = QString::fromStdString(
+                                                              input_bar["background"].get_or<std::string>(""));
+                auto font =
+                    QString::fromStdString(input_bar["font"].get_or<std::string>(""));
+
+                // TODO: background unable to apply
+                m_inputbar->setForeground(foregroundColor);
+                m_inputbar->setBackground(backgroundColor);
+                m_inputbar->setFontFamily(font);
+            }
         }
-      }
-
-      // input_bar
-      sol::optional<sol::table> input_bar_table = ui_table["input_bar"];
-
-      if (input_bar_table) {
-        auto input_bar = input_bar_table.value();
-
-        auto foregroundColor = QString::fromStdString(
-            input_bar["foreground"].get_or<std::string>(""));
-        auto backgroundColor = QString::fromStdString(
-            input_bar["background"].get_or<std::string>(""));
-        auto font =
-            QString::fromStdString(input_bar["font"].get_or<std::string>(""));
-
-        // TODO: background unable to apply
-        m_inputbar->setForeground(foregroundColor);
-        m_inputbar->setBackground(backgroundColor);
-        m_inputbar->setFontFamily(font);
-      }
     }
-  }
 
-  // Read the KEYBINDINGS table
-  sol::optional<sol::table> keybindings_table_opt = lua["keybindings"];
+    // Read the KEYBINDINGS table
+    sol::optional<sol::table> keybindings_table_opt = lua["keybindings"];
 
-  if (keybindings_table_opt) {
+    if (keybindings_table_opt) {
 
-    sol::table keybindings_table = keybindings_table_opt.value();
-    m_keybind_list.reserve(keybindings_table.size());
-    for (std::size_t i = 1; i <= keybindings_table.size(); i++) {
-      sol::table entry = keybindings_table[i];
-      if (!entry)
-        continue;
+        sol::table keybindings_table = keybindings_table_opt.value();
+        m_keybind_list.reserve(keybindings_table.size());
+        for (std::size_t i = 1; i <= keybindings_table.size(); i++) {
+            sol::table entry = keybindings_table[i];
+            if (!entry)
+                continue;
 
-      auto key = QString::fromStdString(entry["key"].get_or<std::string>(""));
+            auto key = QString::fromStdString(entry["key"].get_or<std::string>(""));
 
-      if (key.isEmpty() || key.isNull())
-        continue;
+            if (key.isEmpty() || key.isNull())
+                continue;
 
-      auto command =
-          QString::fromStdString(entry["command"].get_or<std::string>(""));
-      auto desc = QString::fromStdString(entry["desc"].get_or<std::string>(""));
+            auto command =
+                QString::fromStdString(entry["command"].get_or<std::string>(""));
+            auto desc = QString::fromStdString(entry["desc"].get_or<std::string>(""));
 
-      if (command.isEmpty() || command.isNull())
-        continue;
+            if (command.isEmpty() || command.isNull())
+                continue;
 
-      Keybind kb;
-      kb.key = key;
-      kb.command = command;
-      kb.desc = desc;
+            Keybind kb;
+            kb.key = key;
+            kb.command = command;
+            kb.desc = desc;
 
-      m_keybind_list.append(kb);
+            m_keybind_list.append(kb);
+        }
+        generateKeybinds();
     }
-    generateKeybinds();
-  }
 
-  m_statusbar->Message("Reading configuration file done!");
+    m_statusbar->Message("Reading configuration file done!");
 }
 
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
 void Navi::generateKeybinds() noexcept {
 
-  for (const auto &keybind : m_keybind_list) {
-    QShortcut *shortcut = new QShortcut(QKeySequence(keybind.key), this);
-    connect(shortcut, &QShortcut::activated, this,
-            [&]() { ProcessCommand(keybind.command); });
-  }
+    for (const auto &keybind : m_keybind_list) {
+        QShortcut *shortcut = new QShortcut(QKeySequence(keybind.key), this);
+        connect(shortcut, &QShortcut::activated, this,
+                [&]() { ProcessCommand(keybind.command); });
+    }
 }
 
 void Navi::initBookmarks() noexcept {
-  // TODO: load bookmarks from config directory
-  m_bookmark_manager = new BookmarkManager();
+    // TODO: load bookmarks from config directory
+    m_bookmark_manager = new BookmarkManager();
 }
 
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
-  connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-          &PreviewPanel::onFileSelected);
 
-  connect(m_file_panel, &FilePanel::currentItemChanged, m_statusbar,
-          &Statusbar::SetFile);
+    connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
+            [&](const QString &mountPoint) {
+                m_file_panel->setCurrentDir(mountPoint);
+            });
+    connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
+            [&](const QString &driveName) {
+                QString confirm =
+                    m_inputbar->getInput(QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+                    return;
+                MountDrive(driveName);
+            });
 
-  connect(m_file_panel, &FilePanel::afterDirChange, m_file_path_widget,
-          &FilePathWidget::setCurrentDir);
+    connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+            &PreviewPanel::onFileSelected);
 
-  connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
-          m_file_panel, [&](const QString &dirName) {
-            m_file_panel->setCurrentDir(dirName, true);
-          });
+    connect(m_file_panel, &FilePanel::currentItemChanged, m_statusbar,
+            &Statusbar::SetFile);
 
-  connect(m_file_panel, &FilePanel::dirItemCount, m_statusbar,
-          &Statusbar::SetNumItems);
+    connect(m_file_panel, &FilePanel::afterDirChange, m_file_path_widget,
+            &FilePathWidget::setCurrentDir);
 
-  connect(m_file_panel, &FilePanel::fileOperationDone, this,
-          [&](const bool &state, const QString &reason) {
-            if (state)
-              m_statusbar->Message("Operation Successful");
-            else
-              m_statusbar->Message(
-                  QString("Error during file operation! (%1)").arg(reason),
-                  MessageType::ERROR, 5);
-          });
+    connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
+            m_file_panel, [&](const QString &dirName) {
+        m_file_panel->setCurrentDir(dirName, true);
+    });
 
-  connect(m_statusbar, &Statusbar::logMessage, this, &Navi::LogMessage);
+    connect(m_file_panel, &FilePanel::dirItemCount, m_statusbar,
+            &Statusbar::SetNumItems);
 
-  connect(m_file_panel->model(), &FileSystemModel::marksListChanged,
-          m_marks_buffer, &MarksBuffer::refreshMarksList);
+    connect(m_file_panel, &FilePanel::fileOperationDone, this,
+            [&](const bool &state, const QString &reason) {
+                if (state)
+                    m_statusbar->Message("Operation Successful");
+                else
+                    m_statusbar->Message(
+                                         QString("Error during file operation! (%1)").arg(reason),
+                                         MessageType::ERROR, 5);
+            });
+
+    connect(m_statusbar, &Statusbar::logMessage, this, &Navi::LogMessage);
+
+    connect(m_file_panel->model(), &FileSystemModel::marksListChanged,
+            m_marks_buffer, &MarksBuffer::refreshMarksList);
 
 }
 
@@ -406,798 +421,802 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
-  commandMap["execute-extended-command"] = [this](const QStringList &args) {
-    ExecuteExtendedCommand();
-  };
+    commandMap["execute-extended-command"] = [this](const QStringList &args) {
+        ExecuteExtendedCommand();
+    };
 
-  commandMap["get-input"] = [this](const QStringList &args) {
-      if (args.isEmpty())
-          return;
-      auto size = args.size();
-      switch (size) {
-      case 1:
-          m_inputbar->getInput(args.at(0));
-          break;
+    commandMap["drives"] = [this](const QStringList &args) {
+        ToggleDrivesWidget();
+    };
 
-      case 2:
-          m_inputbar->getInput(args.at(0), args.at(1));
-          break;
+    commandMap["get-input"] = [this](const QStringList &args) {
+        if (args.isEmpty())
+            return;
+        auto size = args.size();
+        switch (size) {
+        case 1:
+            m_inputbar->getInput(args.at(0));
+            break;
 
-      case 3:
-          m_inputbar->getInput(args.at(0), args.at(1), args.at(2));
-          break;
-      }
+        case 2:
+            m_inputbar->getInput(args.at(0), args.at(1));
+            break;
 
-      // TODO: redirect the output somehow
-  };
+        case 3:
+            m_inputbar->getInput(args.at(0), args.at(1), args.at(2));
+            break;
+        }
 
-  commandMap["mouse-scroll"] = [this](const QStringList &args) {
-    m_file_panel->ToggleMouseScroll();
-  };
+        // TODO: redirect the output somehow
+    };
 
-  commandMap["visual-select"] = [this](const QStringList &args) {
-    m_file_panel->ToggleVisualLine();
-  };
+    commandMap["mouse-scroll"] = [this](const QStringList &args) {
+        m_file_panel->ToggleMouseScroll();
+    };
 
-  commandMap["shortcuts-pane"] = [this](const QStringList &args) {
-    ToggleShortcutsBuffer();
-  };
+    commandMap["visual-select"] = [this](const QStringList &args) {
+        m_file_panel->ToggleVisualLine();
+    };
 
-  commandMap["up-directory"] = [this](const QStringList &args) {
-    m_file_panel->UpDirectory();
-  };
+    commandMap["shortcuts-pane"] = [this](const QStringList &args) {
+        ToggleShortcutsBuffer();
+    };
 
-  commandMap["select-item"] = [this](const QStringList &args) {
-    m_file_panel->SelectItem();
-  };
+    commandMap["up-directory"] = [this](const QStringList &args) {
+        m_file_panel->UpDirectory();
+    };
 
-  commandMap["next-item"] = [this](const QStringList &args) {
-    m_file_panel->NextItem();
-  };
+    commandMap["select-item"] = [this](const QStringList &args) {
+        m_file_panel->SelectItem();
+    };
 
-  commandMap["prev-item"] = [this](const QStringList &args) {
-    m_file_panel->PrevItem();
-  };
+    commandMap["next-item"] = [this](const QStringList &args) {
+        m_file_panel->NextItem();
+    };
 
-  commandMap["first-item"] = [this](const QStringList &args) {
-    m_file_panel->GotoFirstItem();
-  };
+    commandMap["prev-item"] = [this](const QStringList &args) {
+        m_file_panel->PrevItem();
+    };
 
-  commandMap["last-item"] = [this](const QStringList &args) {
-    m_file_panel->GotoLastItem();
-  };
+    commandMap["first-item"] = [this](const QStringList &args) {
+        m_file_panel->GotoFirstItem();
+    };
 
-  commandMap["middle-item"] = [this](const QStringList &args) {
-    m_file_panel->GotoMiddleItem();
-  };
+    commandMap["last-item"] = [this](const QStringList &args) {
+        m_file_panel->GotoLastItem();
+    };
 
-  commandMap["echo-info"] = [this](const QStringList &args) {
-    if (args.isEmpty())
-      return;
+    commandMap["middle-item"] = [this](const QStringList &args) {
+        m_file_panel->GotoMiddleItem();
+    };
 
-    m_statusbar->Message(args.join(" "), MessageType::INFO);
-  };
+    commandMap["echo-info"] = [this](const QStringList &args) {
+        if (args.isEmpty())
+            return;
 
-  commandMap["echo-warn"] = [this](const QStringList &args) {
-    if (args.isEmpty())
-      return;
+        m_statusbar->Message(args.join(" "), MessageType::INFO);
+    };
 
-    m_statusbar->Message(args.join(" "), MessageType::WARNING);
-  };
+    commandMap["echo-warn"] = [this](const QStringList &args) {
+        if (args.isEmpty())
+            return;
 
-  commandMap["echo-error"] = [this](const QStringList &args) {
-    if (args.isEmpty())
-      return;
+        m_statusbar->Message(args.join(" "), MessageType::WARNING);
+    };
 
-    m_statusbar->Message(args.join(" "), MessageType::ERROR);
-  };
+    commandMap["echo-error"] = [this](const QStringList &args) {
+        if (args.isEmpty())
+            return;
 
-  commandMap["reload-config"] = [this](const QStringList &args) {
-    initConfiguration();
-  };
+        m_statusbar->Message(args.join(" "), MessageType::ERROR);
+    };
 
-  commandMap["sort-name"] = [this](const QStringList &args) { SortByName(); };
+    commandMap["reload-config"] = [this](const QStringList &args) {
+        initConfiguration();
+    };
 
-  commandMap["sort-date"] = [this](const QStringList &args) { SortByDate(); };
+    commandMap["sort-name"] = [this](const QStringList &args) { SortByName(); };
 
-  commandMap["sort-size"] = [this](const QStringList &args) { SortBySize(); };
+    commandMap["sort-date"] = [this](const QStringList &args) { SortByDate(); };
 
-  commandMap["sort-name-desc"] = [this](const QStringList &args) {
-    SortByName(true);
-  };
+    commandMap["sort-size"] = [this](const QStringList &args) { SortBySize(); };
 
-  commandMap["sort-date-desc"] = [this](const QStringList &args) {
-    SortByDate(true);
-  };
+    commandMap["sort-name-desc"] = [this](const QStringList &args) {
+        SortByName(true);
+    };
 
-  commandMap["sort-size-desc"] = [this](const QStringList &args) {
-    SortBySize(true);
-  };
+    commandMap["sort-date-desc"] = [this](const QStringList &args) {
+        SortByDate(true);
+    };
 
-  commandMap["cycle"] = [this](const QStringList &args) {
-    m_file_panel->ToggleCycle();
-  };
+    commandMap["sort-size-desc"] = [this](const QStringList &args) {
+        SortBySize(true);
+    };
 
-  commandMap["header"] = [this](const QStringList &args) {
-    m_file_panel->ToggleHeaders();
-  };
+    commandMap["cycle"] = [this](const QStringList &args) {
+        m_file_panel->ToggleCycle();
+    };
 
-  commandMap["rename"] = [this](const QStringList &args) {
-    m_file_panel->RenameItem();
-  };
+    commandMap["header"] = [this](const QStringList &args) {
+        m_file_panel->ToggleHeaders();
+    };
 
-  commandMap["rename-global"] = [this](const QStringList &args) {
-    m_file_panel->RenameItemsGlobal();
-  };
+    commandMap["rename"] = [this](const QStringList &args) {
+        m_file_panel->RenameItem();
+    };
 
-  commandMap["rename-local"] = [this](const QStringList &args) {
-    m_file_panel->RenameItemsLocal();
-  };
+    commandMap["rename-global"] = [this](const QStringList &args) {
+        m_file_panel->RenameItemsGlobal();
+    };
 
-  commandMap["rename-dwim"] = [this](const QStringList &args) {
-    m_file_panel->RenameDWIM();
-  };
+    commandMap["rename-local"] = [this](const QStringList &args) {
+        m_file_panel->RenameItemsLocal();
+    };
 
-  commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
-
-  commandMap["copy"] = [this](const QStringList &args) {
-    m_file_panel->CopyItem();
-  };
-
-  commandMap["copy-global"] = [this](const QStringList &args) {
-    m_file_panel->CopyItemsGlobal();
-  };
-
-  commandMap["copy-local"] = [this](const QStringList &args) {
-    m_file_panel->CopyItemsLocal();
-  };
-
-  commandMap["copy-dwim"] = [this](const QStringList &args) {
-    m_file_panel->CopyDWIM();
-  };
-
-  commandMap["cut"] = [this](const QStringList &args) {
-    m_file_panel->CutItem();
-  };
-
-  commandMap["cut-global"] = [this](const QStringList &args) {
-    m_file_panel->CutItemsGlobal();
-  };
-
-  commandMap["cut-local"] = [this](const QStringList &args) {
-    m_file_panel->CutItemsLocal();
-  };
+    commandMap["rename-dwim"] = [this](const QStringList &args) {
+        m_file_panel->RenameDWIM();
+    };
 
-  commandMap["cut-dwim"] = [this](const QStringList &args) {
-    m_file_panel->CutDWIM();
-  };
+    commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
+
+    commandMap["copy"] = [this](const QStringList &args) {
+        m_file_panel->CopyItem();
+    };
+
+    commandMap["copy-global"] = [this](const QStringList &args) {
+        m_file_panel->CopyItemsGlobal();
+    };
+
+    commandMap["copy-local"] = [this](const QStringList &args) {
+        m_file_panel->CopyItemsLocal();
+    };
+
+    commandMap["copy-dwim"] = [this](const QStringList &args) {
+        m_file_panel->CopyDWIM();
+    };
+
+    commandMap["cut"] = [this](const QStringList &args) {
+        m_file_panel->CutItem();
+    };
+
+    commandMap["cut-global"] = [this](const QStringList &args) {
+        m_file_panel->CutItemsGlobal();
+    };
+
+    commandMap["cut-local"] = [this](const QStringList &args) {
+        m_file_panel->CutItemsLocal();
+    };
 
-  commandMap["paste"] = [this](const QStringList &args) {
-    m_file_panel->PasteItems();
-  };
+    commandMap["cut-dwim"] = [this](const QStringList &args) {
+        m_file_panel->CutDWIM();
+    };
 
-  commandMap["delete"] = [this](const QStringList &args) {
-    m_file_panel->DeleteItem();
-  };
+    commandMap["paste"] = [this](const QStringList &args) {
+        m_file_panel->PasteItems();
+    };
 
-  commandMap["delete-global"] = [this](const QStringList &args) {
-    m_file_panel->DeleteItemsGlobal();
-  };
+    commandMap["delete"] = [this](const QStringList &args) {
+        m_file_panel->DeleteItem();
+    };
 
-  commandMap["delete-local"] = [this](const QStringList &args) {
-    m_file_panel->DeleteItemsLocal();
-  };
+    commandMap["delete-global"] = [this](const QStringList &args) {
+        m_file_panel->DeleteItemsGlobal();
+    };
 
-  commandMap["delete-dwim"] = [this](const QStringList &args) {
-    m_file_panel->DeleteDWIM();
-  };
+    commandMap["delete-local"] = [this](const QStringList &args) {
+        m_file_panel->DeleteItemsLocal();
+    };
 
-  commandMap["mark"] = [this](const QStringList &args) {
-    m_file_panel->MarkItem();
-  };
+    commandMap["delete-dwim"] = [this](const QStringList &args) {
+        m_file_panel->DeleteDWIM();
+    };
 
-  commandMap["mark-inverse"] = [this](const QStringList &args) {
-    m_file_panel->MarkInverse();
-  };
+    commandMap["mark"] = [this](const QStringList &args) {
+        m_file_panel->MarkItem();
+    };
 
-  commandMap["mark-all"] = [this](const QStringList &args) {
-    m_file_panel->MarkAllItems();
-  };
+    commandMap["mark-inverse"] = [this](const QStringList &args) {
+        m_file_panel->MarkInverse();
+    };
 
-  commandMap["mark-dwim"] = [this](const QStringList &args) {
-    m_file_panel->MarkDWIM();
-  };
+    commandMap["mark-all"] = [this](const QStringList &args) {
+        m_file_panel->MarkAllItems();
+    };
 
-  commandMap["toggle-mark"] = [this](const QStringList &args) {
-    m_file_panel->ToggleMarkItem();
-  };
+    commandMap["mark-dwim"] = [this](const QStringList &args) {
+        m_file_panel->MarkDWIM();
+    };
 
-  commandMap["toggle-mark-dwim"] = [this](const QStringList &args) {
-    m_file_panel->ToggleMarkDWIM();
-  };
+    commandMap["toggle-mark"] = [this](const QStringList &args) {
+        m_file_panel->ToggleMarkItem();
+    };
 
-  commandMap["unmark"] = [this](const QStringList &args) {
-    m_file_panel->UnmarkItem();
-  };
+    commandMap["toggle-mark-dwim"] = [this](const QStringList &args) {
+        m_file_panel->ToggleMarkDWIM();
+    };
 
-  commandMap["unmark-local"] = [this](const QStringList &args) {
-    m_file_panel->UnmarkItemsLocal();
-  };
+    commandMap["unmark"] = [this](const QStringList &args) {
+        m_file_panel->UnmarkItem();
+    };
 
-  commandMap["unmark-global"] = [this](const QStringList &args) {
-    m_file_panel->UnmarkItemsGlobal();
-  };
+    commandMap["unmark-local"] = [this](const QStringList &args) {
+        m_file_panel->UnmarkItemsLocal();
+    };
 
-  commandMap["new-file"] = [this](const QStringList &args) {
-    m_file_panel->NewFile(args);
-  };
+    commandMap["unmark-global"] = [this](const QStringList &args) {
+        m_file_panel->UnmarkItemsGlobal();
+    };
 
-  commandMap["new-folder"] = [this](const QStringList &args) {
-    m_file_panel->NewFolder(args);
-  };
+    commandMap["new-file"] = [this](const QStringList &args) {
+        m_file_panel->NewFile(args);
+    };
 
-  commandMap["trash"] = [this](const QStringList &args) {
-    m_file_panel->TrashItem();
-  };
-
-  commandMap["trash-local"] = [this](const QStringList &args) {
-    m_file_panel->TrashItemsLocal();
-  };
+    commandMap["new-folder"] = [this](const QStringList &args) {
+        m_file_panel->NewFolder(args);
+    };
 
-  commandMap["trash-global"] = [this](const QStringList &args) {
-    m_file_panel->TrashItemsGlobal();
-  };
+    commandMap["trash"] = [this](const QStringList &args) {
+        m_file_panel->TrashItem();
+    };
+
+    commandMap["trash-local"] = [this](const QStringList &args) {
+        m_file_panel->TrashItemsLocal();
+    };
 
-  commandMap["trash-dwim"] = [this](const QStringList &args) {
-    m_file_panel->TrashDWIM();
-  };
+    commandMap["trash-global"] = [this](const QStringList &args) {
+        m_file_panel->TrashItemsGlobal();
+    };
 
-  commandMap["exit"] = [this](const QStringList &args) {
-    QApplication::quit();
-  };
+    commandMap["trash-dwim"] = [this](const QStringList &args) {
+        m_file_panel->TrashDWIM();
+    };
 
-  commandMap["messages-pane"] = [this](const QStringList &args) {
-    ToggleMessagesBuffer();
-  };
+    commandMap["exit"] = [this](const QStringList &args) {
+        QApplication::quit();
+    };
 
-  commandMap["hidden-files"] = [this](const QStringList &args) {
-    ToggleHiddenFiles();
-  };
+    commandMap["messages-pane"] = [this](const QStringList &args) {
+        ToggleMessagesBuffer();
+    };
 
-  commandMap["dot-dot"] = [this](const QStringList &args) { ToggleDotDot(); };
+    commandMap["hidden-files"] = [this](const QStringList &args) {
+        ToggleHiddenFiles();
+    };
 
-  commandMap["preview-pane"] = [this](const QStringList &args) {
-    TogglePreviewPanel();
-  };
+    commandMap["dot-dot"] = [this](const QStringList &args) { ToggleDotDot(); };
 
-  commandMap["menu-bar"] = [this](const QStringList &args) { ToggleMenuBar(); };
+    commandMap["preview-pane"] = [this](const QStringList &args) {
+        TogglePreviewPanel();
+    };
 
-  commandMap["filter"] = [this](const QStringList &args) { Filter(); };
+    commandMap["menu-bar"] = [this](const QStringList &args) { ToggleMenuBar(); };
 
-  commandMap["reset-filter"] = [this](const QStringList &args) {
-    ResetFilter();
-  };
+    commandMap["filter"] = [this](const QStringList &args) { Filter(); };
 
-  commandMap["refresh"] = [this](const QStringList &args) {
-    m_file_panel->ForceUpdate();
-  };
+    commandMap["reset-filter"] = [this](const QStringList &args) {
+        ResetFilter();
+    };
 
-  commandMap["chmod"] = [this](const QStringList &args) {
-    m_file_panel->ChmodItem();
-  };
+    commandMap["refresh"] = [this](const QStringList &args) {
+        m_file_panel->ForceUpdate();
+    };
 
-  commandMap["chmod-local"] = [this](const QStringList &args) {
-    m_file_panel->ChmodItemsLocal();
-  };
+    commandMap["chmod"] = [this](const QStringList &args) {
+        m_file_panel->ChmodItem();
+    };
 
-  commandMap["chmod-global"] = [this](const QStringList &args) {
-    m_file_panel->ChmodItemsGlobal();
-  };
+    commandMap["chmod-local"] = [this](const QStringList &args) {
+        m_file_panel->ChmodItemsLocal();
+    };
 
-  commandMap["marks-pane"] = [this](const QStringList &args) {
-    ToggleMarksBuffer();
-  };
+    commandMap["chmod-global"] = [this](const QStringList &args) {
+        m_file_panel->ChmodItemsGlobal();
+    };
 
-  commandMap["focus-path"] = [&](const QStringList &args) {
-    m_file_path_widget->FocusLineEdit();
-  };
+    commandMap["marks-pane"] = [this](const QStringList &args) {
+        ToggleMarksBuffer();
+    };
 
-  commandMap["item-property"] = [&](const QStringList &args) {
-    m_file_panel->ItemProperty();
-  };
+    commandMap["focus-path"] = [&](const QStringList &args) {
+        m_file_path_widget->FocusLineEdit();
+    };
 
-  commandMap["bookmarks-pane"] = [&](const QStringList &args) {
-    // ToggleBookmarksBuffer();
-  };
+    commandMap["item-property"] = [&](const QStringList &args) {
+        m_file_panel->ItemProperty();
+    };
 
-  commandMap["bookmark-go"] = [&](const QStringList &args) {
-    GoBookmark(args);
-  };
+    commandMap["bookmarks-pane"] = [&](const QStringList &args) {
+        // ToggleBookmarksBuffer();
+    };
 
-  commandMap["bookmark-add"] = [&](const QStringList &args) {
-    AddBookmark(args);
-  };
+    commandMap["bookmark-go"] = [&](const QStringList &args) {
+        GoBookmark(args);
+    };
 
-  commandMap["bookmark-remove"] = [&](const QStringList &args) {
-    RemoveBookmark(args);
-  };
+    commandMap["bookmark-add"] = [&](const QStringList &args) {
+        AddBookmark(args);
+    };
 
-  commandMap["bookmark-edit"] = [&](const QStringList &args) {
-    EditBookmark(args);
-  };
+    commandMap["bookmark-remove"] = [&](const QStringList &args) {
+        RemoveBookmark(args);
+    };
 
-  commandMap["bookmarks-save"] = [&](const QStringList &args) {
-    SaveBookmarkFile();
-  };
+    commandMap["bookmark-edit"] = [&](const QStringList &args) {
+        EditBookmark(args);
+    };
 
-  commandMap["search"] = [&](const QStringList &args) {
-    m_file_panel->Search();
-  };
-  commandMap["search-next"] = [&](const QStringList &args) {
-    m_file_panel->SearchNext();
-  };
-  commandMap["search-prev"] = [&](const QStringList &args) {
-    m_file_panel->SearchPrev();
-  };
+    commandMap["bookmarks-save"] = [&](const QStringList &args) {
+        SaveBookmarkFile();
+    };
 
-  m_input_completion_model = new QStringListModel(m_valid_command_list);
-  m_inputbar->setCompleterModel(m_input_completion_model);
+    commandMap["search"] = [&](const QStringList &args) {
+        m_file_panel->Search();
+    };
+    commandMap["search-next"] = [&](const QStringList &args) {
+        m_file_panel->SearchNext();
+    };
+    commandMap["search-prev"] = [&](const QStringList &args) {
+        m_file_panel->SearchPrev();
+    };
+
+    m_input_completion_model = new QStringListModel(m_valid_command_list);
+    m_inputbar->setCompleterModel(m_input_completion_model);
 }
 
 void Navi::EditBookmark(const QStringList &args) noexcept {
 
-  // TODO: interactive
-  if (args.isEmpty() || args.size() < 2)
-    return;
+    // TODO: interactive
+    if (args.isEmpty() || args.size() < 2)
+        return;
 
-  // Change can be title or path for bookmark title or
-  // file path that the bookmark points to
-  QString changeType = args.at(0).toLower();
+    // Change can be title or path for bookmark title or
+    // file path that the bookmark points to
+    QString changeType = args.at(0).toLower();
 
-  QString bookmarkName = args.at(1);
+    QString bookmarkName = args.at(1);
 
-  if (changeType == "title") {
-    QString newBookmarkName =
-        m_inputbar->getInput("New bookmark title", bookmarkName);
+    if (changeType == "title") {
+        QString newBookmarkName =
+            m_inputbar->getInput("New bookmark title", bookmarkName);
 
-    // If the bookmark title name is null, do nothing and return
-    if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
-      m_statusbar->Message("Error: No bookmark title provided!",
-                           MessageType::ERROR, 5);
-      return;
-    }
+        // If the bookmark title name is null, do nothing and return
+        if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
+            m_statusbar->Message("Error: No bookmark title provided!",
+                                 MessageType::ERROR, 5);
+            return;
+        }
 
-    // If bookmark title is provided
-    if (m_bookmark_manager->setBookmarkName(bookmarkName, newBookmarkName)) {
-      m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
+        // If bookmark title is provided
+        if (m_bookmark_manager->setBookmarkName(bookmarkName, newBookmarkName)) {
+            m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
                                .arg(bookmarkName)
                                .arg(newBookmarkName));
-      return;
-    } else {
-      m_statusbar->Message("Error changing bookmark title name!",
-                           MessageType::ERROR, 5);
-      return;
-    }
-  } else if (changeType == "path") {
-    QString newBookmarkPath =
-        m_inputbar->getInput(QString("New bookmark path (Default: %1)")
+            return;
+        } else {
+            m_statusbar->Message("Error changing bookmark title name!",
+                                 MessageType::ERROR, 5);
+            return;
+        }
+    } else if (changeType == "path") {
+        QString newBookmarkPath =
+            m_inputbar->getInput(QString("New bookmark path (Default: %1)")
                                  .arg(m_file_panel->getCurrentDir()),
-                             bookmarkName);
+                                 bookmarkName);
 
-    // If the bookmark title name is null, do nothing and return
-    if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
-      m_statusbar->Message("Error: No bookmark path provided!",
-                           MessageType::ERROR, 5);
-      return;
-    }
+        // If the bookmark title name is null, do nothing and return
+        if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
+            m_statusbar->Message("Error: No bookmark path provided!",
+                                 MessageType::ERROR, 5);
+            return;
+        }
 
-    // If bookmark title is provided
-    QString oldBookmarkPath =
-        m_bookmark_manager->getBookmarkFilePath(bookmarkName);
-    if (m_bookmark_manager->setBookmarkFile(bookmarkName, newBookmarkPath)) {
-      m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
+        // If bookmark title is provided
+        QString oldBookmarkPath =
+            m_bookmark_manager->getBookmarkFilePath(bookmarkName);
+        if (m_bookmark_manager->setBookmarkFile(bookmarkName, newBookmarkPath)) {
+            m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
                                .arg(oldBookmarkPath)
                                .arg(newBookmarkPath));
-      return;
-    } else {
-      m_statusbar->Message("Error changing bookmark title name!",
-                           MessageType::ERROR, 5);
-      return;
+            return;
+        } else {
+            m_statusbar->Message("Error changing bookmark title name!",
+                                 MessageType::ERROR, 5);
+            return;
+        }
     }
-  }
 }
 
 void Navi::AddBookmark(const QStringList &args) noexcept {
 
-  // If no arg is supplied
-  if (args.isEmpty()) {
-  } else {
-    QString bookmarkName = args.at(0);
-    if (m_bookmark_manager->addBookmark(bookmarkName,
-                                        m_file_panel->getCurrentDir())) {
-      m_statusbar->Message("Added bookmark");
-    } else
-      m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
-  }
+    // If no arg is supplied
+    if (args.isEmpty()) {
+    } else {
+        QString bookmarkName = args.at(0);
+        if (m_bookmark_manager->addBookmark(bookmarkName,
+                                            m_file_panel->getCurrentDir())) {
+            m_statusbar->Message("Added bookmark");
+        } else
+            m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
+    }
 }
 
 void Navi::RemoveBookmark(const QStringList &args) noexcept {
 
-  // TODO: Interactive removal
-  if (args.isEmpty())
-    return;
+    // TODO: Interactive removal
+    if (args.isEmpty())
+        return;
 
-  QString bookmarkName = args.at(0);
-  if (m_bookmark_manager->removeBookmark(bookmarkName))
-    m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
-  else
-    m_statusbar->Message(
-        QString("Error removing bookmark %1").arg(bookmarkName),
-        MessageType::ERROR, 5);
+    QString bookmarkName = args.at(0);
+    if (m_bookmark_manager->removeBookmark(bookmarkName))
+        m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
+    else
+        m_statusbar->Message(
+                             QString("Error removing bookmark %1").arg(bookmarkName),
+                             MessageType::ERROR, 5);
 }
 
 void Navi::LoadBookmarkFile(const QStringList &args) noexcept {
 
-  // TODO: Interactive
-  if (args.isEmpty())
-    return;
+    // TODO: Interactive
+    if (args.isEmpty())
+        return;
 
-  QString bookmarkFileName = args.at(0);
-  if (m_bookmark_manager->loadBookmarks(bookmarkFileName))
-    m_statusbar->Message(
-        QString("Bookmark loaded from %1!").arg(bookmarkFileName));
-  else
-    m_statusbar->Message(
-        QString("Error loading bookmark file %1").arg(bookmarkFileName),
-        MessageType::ERROR, 5);
+    QString bookmarkFileName = args.at(0);
+    if (m_bookmark_manager->loadBookmarks(bookmarkFileName))
+        m_statusbar->Message(
+                             QString("Bookmark loaded from %1!").arg(bookmarkFileName));
+    else
+        m_statusbar->Message(
+                             QString("Error loading bookmark file %1").arg(bookmarkFileName),
+                             MessageType::ERROR, 5);
 }
 
 void Navi::GoBookmark(const QStringList &bookmarkName) noexcept {
 
-  // TODO: interactive
-  if (bookmarkName.isEmpty())
-    return;
+    // TODO: interactive
+    if (bookmarkName.isEmpty())
+        return;
 
-  QString bookmarkPath = m_bookmark_manager->getBookmark(bookmarkName.at(0));
-  if (bookmarkPath.isNull() || bookmarkPath.isEmpty())
-    m_statusbar->Message(
-        QString("Bookmark %1 not found!").arg(bookmarkName.at(0)),
-        MessageType::ERROR, 5);
-  else
-    m_file_panel->setCurrentDir(bookmarkPath, true);
+    QString bookmarkPath = m_bookmark_manager->getBookmark(bookmarkName.at(0));
+    if (bookmarkPath.isNull() || bookmarkPath.isEmpty())
+        m_statusbar->Message(
+                             QString("Bookmark %1 not found!").arg(bookmarkName.at(0)),
+                             MessageType::ERROR, 5);
+    else
+        m_file_panel->setCurrentDir(bookmarkPath, true);
 }
 
 void Navi::ToggleBookmarksBuffer() noexcept {
-  if (m_bookmarks_buffer->isVisible()) {
-    m_bookmarks_buffer->hide();
-    delete m_bookmarks_buffer;
-    m_bookmarks_buffer = nullptr;
-    disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
-  } else {
-    m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
-    m_bookmarks_buffer->show();
-    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
-            [&](const bool &state) {
-              m_viewmenu__bookmarks_buffer->setChecked(state);
-            });
-  }
+    if (m_bookmarks_buffer->isVisible()) {
+        m_bookmarks_buffer->hide();
+        delete m_bookmarks_buffer;
+        m_bookmarks_buffer = nullptr;
+        disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
+    } else {
+        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
+        m_bookmarks_buffer->show();
+        connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
+                [&](const bool &state) {
+                    m_viewmenu__bookmarks_buffer->setChecked(state);
+                });
+    }
 }
 
 void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
-  if (state) {
-    m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
-    m_bookmarks_buffer->show();
-    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
-            [&](const bool &state) {
-              m_viewmenu__bookmarks_buffer->setChecked(state);
-            });
-  } else {
-    m_bookmarks_buffer->hide();
-    delete m_bookmarks_buffer;
-    m_bookmarks_buffer = nullptr;
-    disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
-  }
+    if (state) {
+        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
+        m_bookmarks_buffer->show();
+        connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
+                [&](const bool &state) {
+                    m_viewmenu__bookmarks_buffer->setChecked(state);
+                });
+    } else {
+        m_bookmarks_buffer->hide();
+        delete m_bookmarks_buffer;
+        m_bookmarks_buffer = nullptr;
+        disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
+    }
 }
 
 void Navi::ToggleShortcutsBuffer() noexcept {
-  if (m_shortcuts_widget && m_shortcuts_widget->isVisible()) {
-    m_shortcuts_widget->close();
-    delete m_shortcuts_widget;
-    m_shortcuts_widget = nullptr;
-    disconnect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, 0, 0);
-  } else {
-    m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
-    connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
-            [&](const bool &state) {
-              m_viewmenu__shortcuts_widget->setChecked(state);
-            });
-    m_shortcuts_widget->show();
-  }
+    if (m_shortcuts_widget && m_shortcuts_widget->isVisible()) {
+        m_shortcuts_widget->close();
+        delete m_shortcuts_widget;
+        m_shortcuts_widget = nullptr;
+        disconnect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, 0, 0);
+    } else {
+        m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
+        connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
+                [&](const bool &state) {
+                    m_viewmenu__shortcuts_widget->setChecked(state);
+                });
+        m_shortcuts_widget->show();
+    }
 }
 
 void Navi::ToggleShortcutsBuffer(const bool &state) noexcept {
-  if (state)
-    m_log_buffer->show();
-  else
-    m_log_buffer->hide();
+    if (state)
+        m_log_buffer->show();
+    else
+        m_log_buffer->hide();
 }
 
 void Navi::ToggleMessagesBuffer() noexcept {
-  if (m_log_buffer->isVisible())
-    m_log_buffer->hide();
-  else
-    m_log_buffer->show();
+    if (m_log_buffer->isVisible())
+        m_log_buffer->hide();
+    else
+        m_log_buffer->show();
 }
 
 void Navi::ToggleMessagesBuffer(const bool &state) noexcept {
-  if (state)
-    m_log_buffer->show();
-  else
-    m_log_buffer->hide();
+    if (state)
+        m_log_buffer->show();
+    else
+        m_log_buffer->hide();
 }
 
 void Navi::ToggleMarksBuffer() noexcept {
-  if (m_marks_buffer->isVisible())
-    m_marks_buffer->hide();
-  else
-    m_marks_buffer->show();
+    if (m_marks_buffer->isVisible())
+        m_marks_buffer->hide();
+    else
+        m_marks_buffer->show();
 }
 
 void Navi::ToggleMarksBuffer(const bool &state) noexcept {
-  if (state)
-    m_marks_buffer->show();
-  else
-    m_marks_buffer->hide();
+    if (state)
+        m_marks_buffer->show();
+    else
+        m_marks_buffer->hide();
 }
 
 // Minibuffer process commands
 void Navi::ProcessCommand(const QString &commandtext) noexcept {
-  // QStringList commandlist = commandtext.split(" && ");
-  QStringList commandlist =
-      commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
+    // QStringList commandlist = commandtext.split(" && ");
+    QStringList commandlist =
+        commandtext.split(QRegularExpression("\\s*&&\\s*"), Qt::SkipEmptyParts);
 
-  if (commandlist.isEmpty())
-    return;
+    if (commandlist.isEmpty())
+        return;
 
-  auto [isNumber, num] = utils::isNumber(commandlist.at(0));
-  if (isNumber) {
-    m_file_panel->GotoItem(num);
-    return;
-  }
-
-  //        COMMAND1       &&        COMMAND2
-  // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
-
-  for (const auto &commands : commandlist) {
-    QStringList command = utils::splitPreservingQuotes(commands);
-    QString subcommand = command.takeFirst();
-    QStringList args = command;
-
-    if (commandMap.contains(subcommand)) {
-      commandMap[subcommand](args); // Call the associated function
-    } else {
-      m_statusbar->Message(
-          QString("Command %1 is not a valid interactive command")
-              .arg(subcommand),
-          MessageType::ERROR, 5);
+    auto [isNumber, num] = utils::isNumber(commandlist.at(0));
+    if (isNumber) {
+        m_file_panel->GotoItem(num);
+        return;
     }
-  }
+
+    //        COMMAND1       &&        COMMAND2
+    // SUBCOMMAND1 ARG1 ARG2 && SUBCOMMAND2 ARG1 ARG2
+
+    for (const auto &commands : commandlist) {
+        QStringList command = utils::splitPreservingQuotes(commands);
+        QString subcommand = command.takeFirst();
+        QStringList args = command;
+
+        if (commandMap.contains(subcommand)) {
+            commandMap[subcommand](args); // Call the associated function
+        } else {
+            m_statusbar->Message(
+                                 QString("Command %1 is not a valid interactive command")
+              .arg(subcommand),
+                                 MessageType::ERROR, 5);
+        }
+    }
 }
 
 void Navi::TogglePreviewPanel(const bool &state) noexcept {
-  if (state) {
-    m_preview_panel->show();
-    connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-            &PreviewPanel::onFileSelected);
-    m_preview_panel->onFileSelected(getCurrentFile());
-  } else {
-    m_preview_panel->hide();
-    disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-               &PreviewPanel::onFileSelected);
-  }
+    if (state) {
+        m_preview_panel->show();
+        connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+                &PreviewPanel::onFileSelected);
+        m_preview_panel->onFileSelected(getCurrentFile());
+    } else {
+        m_preview_panel->hide();
+        disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+                   &PreviewPanel::onFileSelected);
+    }
 }
 
 void Navi::TogglePreviewPanel() noexcept {
-  bool visible = m_preview_panel->isVisible();
-  if (visible) {
-    m_preview_panel->hide();
-    disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-               &PreviewPanel::onFileSelected);
-  } else {
-    m_preview_panel->show();
-    connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
-            &PreviewPanel::onFileSelected);
-    m_preview_panel->onFileSelected(getCurrentFile());
-  }
+    bool visible = m_preview_panel->isVisible();
+    if (visible) {
+        m_preview_panel->hide();
+        disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+                   &PreviewPanel::onFileSelected);
+    } else {
+        m_preview_panel->show();
+        connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
+                &PreviewPanel::onFileSelected);
+        m_preview_panel->onFileSelected(getCurrentFile());
+    }
 }
 
 QString Navi::getCurrentFile() noexcept {
-  return m_file_panel->getCurrentItem();
+    return m_file_panel->getCurrentItem();
 }
 
 void Navi::initLayout() noexcept {
     m_tab_bar = new TabBarWidget();
-  m_inputbar = new Inputbar();
-  m_statusbar = new Statusbar();
-  m_file_panel = new FilePanel(m_inputbar, m_statusbar);
+    m_inputbar = new Inputbar();
+    m_statusbar = new Statusbar();
+    m_file_panel = new FilePanel(m_inputbar, m_statusbar);
 
-  // m_tab_bar->setVisible(false);
+    // m_tab_bar->setVisible(false);
 
-  m_preview_panel = new PreviewPanel();
-  m_file_path_widget = new FilePathWidget();
-  m_log_buffer = new MessagesBuffer(this);
-  m_marks_buffer = new MarksBuffer(this);
+    m_preview_panel = new PreviewPanel();
+    m_file_path_widget = new FilePathWidget();
+    m_log_buffer = new MessagesBuffer(this);
+    m_marks_buffer = new MarksBuffer(this);
 
-  m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
+    m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
-  m_file_panel->setFocus();
-  m_inputbar->hide();
+    m_file_panel->setFocus();
+    m_inputbar->hide();
 
-  m_file_path_widget->setContentsMargins(0, 0, 0, 0);
-  this->setContentsMargins(0, 0, 0, 0);
+    m_file_path_widget->setContentsMargins(0, 0, 0, 0);
+    this->setContentsMargins(0, 0, 0, 0);
 
-  // m_layout->addWidget(m_tab_bar);
-  m_layout->addWidget(m_file_path_widget);
-  m_layout->addWidget(m_splitter);
-  m_layout->addWidget(m_inputbar);
-  m_layout->addWidget(m_statusbar);
+    // m_layout->addWidget(m_tab_bar);
+    m_layout->addWidget(m_file_path_widget);
+    m_layout->addWidget(m_splitter);
+    m_layout->addWidget(m_inputbar);
+    m_layout->addWidget(m_statusbar);
 
-  m_splitter->addWidget(m_file_panel);
-  m_splitter->addWidget(m_preview_panel);
+    m_splitter->addWidget(m_file_panel);
+    m_splitter->addWidget(m_preview_panel);
 
-  m_widget->setLayout(m_layout);
-  this->setCentralWidget(m_widget);
-  this->show();
+    m_widget->setLayout(m_layout);
+    this->setCentralWidget(m_widget);
+    this->show();
 }
 
 void Navi::initKeybinds() noexcept {
 
-  QShortcut *kb_up_directory = new QShortcut(QKeySequence("h"), this);
-  QShortcut *kb_next_item = new QShortcut(QKeySequence("j"), this);
-  QShortcut *kb_prev_item = new QShortcut(QKeySequence("k"), this);
-  QShortcut *kb_select_item = new QShortcut(QKeySequence("l"), this);
-  QShortcut *kb_goto_first_item = new QShortcut(QKeySequence("g,g"), this);
-  QShortcut *kb_goto_last_item = new QShortcut(QKeySequence("Shift+g"), this);
+    QShortcut *kb_up_directory = new QShortcut(QKeySequence("h"), this);
+    QShortcut *kb_next_item = new QShortcut(QKeySequence("j"), this);
+    QShortcut *kb_prev_item = new QShortcut(QKeySequence("k"), this);
+    QShortcut *kb_select_item = new QShortcut(QKeySequence("l"), this);
+    QShortcut *kb_goto_first_item = new QShortcut(QKeySequence("g,g"), this);
+    QShortcut *kb_goto_last_item = new QShortcut(QKeySequence("Shift+g"), this);
 
-  QShortcut *kb_mark_item = new QShortcut(QKeySequence("Space"), this);
-  QShortcut *kb_mark_inverse = new QShortcut(QKeySequence("Shift+Space"), this);
-  QShortcut *kb_mark_all = new QShortcut(QKeySequence("Ctrl+a"), this);
+    QShortcut *kb_mark_item = new QShortcut(QKeySequence("Space"), this);
+    QShortcut *kb_mark_inverse = new QShortcut(QKeySequence("Shift+Space"), this);
+    QShortcut *kb_mark_all = new QShortcut(QKeySequence("Ctrl+a"), this);
 
-  QShortcut *kb_command = new QShortcut(QKeySequence(":"), this);
-  QShortcut *kb_rename_items = new QShortcut(QKeySequence("Shift+r"), this);
-  QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
-  QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
-  QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
-  QShortcut *kb_unmark_items_local =
-      new QShortcut(QKeySequence("Shift+u"), this);
-  QShortcut *kb_toggle_hidden_files = new QShortcut(QKeySequence("."), this);
+    QShortcut *kb_command = new QShortcut(QKeySequence(":"), this);
+    QShortcut *kb_rename_items = new QShortcut(QKeySequence("Shift+r"), this);
+    QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
+    QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
+    QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
+    QShortcut *kb_unmark_items_local =
+        new QShortcut(QKeySequence("Shift+u"), this);
+    QShortcut *kb_toggle_hidden_files = new QShortcut(QKeySequence("."), this);
 
-  QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
-  QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
-  QShortcut *kb_search_prev = new QShortcut(QKeySequence("Shift+n"), this);
-  QShortcut *kb_toggle_menubar = new QShortcut(QKeySequence("Ctrl+m"), this);
-  QShortcut *kb_toggle_preview_panel =
-      new QShortcut(QKeySequence("Ctrl+p"), this);
-  QShortcut *kb_focus_file_path_widget =
-      new QShortcut(QKeySequence("Ctrl+l"), this);
+    QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
+    QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
+    QShortcut *kb_search_prev = new QShortcut(QKeySequence("Shift+n"), this);
+    QShortcut *kb_toggle_menubar = new QShortcut(QKeySequence("Ctrl+m"), this);
+    QShortcut *kb_toggle_preview_panel =
+        new QShortcut(QKeySequence("Ctrl+p"), this);
+    QShortcut *kb_focus_file_path_widget =
+        new QShortcut(QKeySequence("Ctrl+l"), this);
 
-  QShortcut *kb_visual_line = new QShortcut(QKeySequence("Shift+v"), this);
+    QShortcut *kb_visual_line = new QShortcut(QKeySequence("Shift+v"), this);
 
-  connect(kb_visual_line, &QShortcut::activated, this,
-          [&]() { m_file_panel->ToggleVisualLine(); });
+    connect(kb_visual_line, &QShortcut::activated, this,
+            [&]() { m_file_panel->ToggleVisualLine(); });
 
-  connect(kb_mark_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::ToggleMarkDWIM);
+    connect(kb_mark_item, &QShortcut::activated, m_file_panel,
+            &FilePanel::ToggleMarkDWIM);
 
-  connect(kb_mark_inverse, &QShortcut::activated, m_file_panel,
-          &FilePanel::MarkInverse);
+    connect(kb_mark_inverse, &QShortcut::activated, m_file_panel,
+            &FilePanel::MarkInverse);
 
-  connect(kb_mark_all, &QShortcut::activated, m_file_panel,
-          &FilePanel::MarkAllItems);
+    connect(kb_mark_all, &QShortcut::activated, m_file_panel,
+            &FilePanel::MarkAllItems);
 
-  connect(kb_next_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::NextItem);
+    connect(kb_next_item, &QShortcut::activated, m_file_panel,
+            &FilePanel::NextItem);
 
-  connect(kb_prev_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::PrevItem);
+    connect(kb_prev_item, &QShortcut::activated, m_file_panel,
+            &FilePanel::PrevItem);
 
-  connect(kb_select_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::SelectItem);
+    connect(kb_select_item, &QShortcut::activated, m_file_panel,
+            &FilePanel::SelectItem);
 
-  connect(kb_up_directory, &QShortcut::activated, m_file_panel,
-          &FilePanel::UpDirectory);
+    connect(kb_up_directory, &QShortcut::activated, m_file_panel,
+            &FilePanel::UpDirectory);
 
-  connect(kb_goto_last_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::GotoLastItem);
+    connect(kb_goto_last_item, &QShortcut::activated, m_file_panel,
+            &FilePanel::GotoLastItem);
 
-  connect(kb_goto_first_item, &QShortcut::activated, m_file_panel,
-          &FilePanel::GotoFirstItem);
+    connect(kb_goto_first_item, &QShortcut::activated, m_file_panel,
+            &FilePanel::GotoFirstItem);
 
-  connect(kb_command, &QShortcut::activated, this,
-          &Navi::ExecuteExtendedCommand);
+    connect(kb_command, &QShortcut::activated, this,
+            &Navi::ExecuteExtendedCommand);
 
-  connect(kb_rename_items, &QShortcut::activated, this,
-          [&]() { m_file_panel->RenameDWIM(); });
+    connect(kb_rename_items, &QShortcut::activated, this,
+            [&]() { m_file_panel->RenameDWIM(); });
 
-  connect(kb_delete_items, &QShortcut::activated, this,
-          [&]() { m_file_panel->DeleteDWIM(); });
+    connect(kb_delete_items, &QShortcut::activated, this,
+            [&]() { m_file_panel->DeleteDWIM(); });
 
-  connect(kb_search, &QShortcut::activated, m_file_panel,
-          [&]() { m_file_panel->Search(); });
+    connect(kb_search, &QShortcut::activated, m_file_panel,
+            [&]() { m_file_panel->Search(); });
 
-  connect(kb_search_next, &QShortcut::activated, m_file_panel,
-          &FilePanel::SearchNext);
+    connect(kb_search_next, &QShortcut::activated, m_file_panel,
+            &FilePanel::SearchNext);
 
-  connect(kb_search_prev, &QShortcut::activated, m_file_panel,
-          &FilePanel::SearchPrev);
+    connect(kb_search_prev, &QShortcut::activated, m_file_panel,
+            &FilePanel::SearchPrev);
 
-  connect(kb_toggle_menubar, &QShortcut::activated, this,
-          [this]() { ToggleMenuBar(); });
+    connect(kb_toggle_menubar, &QShortcut::activated, this,
+            [this]() { ToggleMenuBar(); });
 
-  connect(kb_toggle_preview_panel, &QShortcut::activated, this,
-          [this]() { TogglePreviewPanel(); });
+    connect(kb_toggle_preview_panel, &QShortcut::activated, this,
+            [this]() { TogglePreviewPanel(); });
 
-  connect(kb_focus_file_path_widget, &QShortcut::activated, this,
-          [this]() { m_file_path_widget->FocusLineEdit(); });
+    connect(kb_focus_file_path_widget, &QShortcut::activated, this,
+            [this]() { m_file_path_widget->FocusLineEdit(); });
 
-  connect(kb_paste_items, &QShortcut::activated, m_file_panel,
-          &FilePanel::PasteItems);
+    connect(kb_paste_items, &QShortcut::activated, m_file_panel,
+            &FilePanel::PasteItems);
 
-  connect(kb_copy_items, &QShortcut::activated, m_file_panel,
-          &FilePanel::CopyItem);
+    connect(kb_copy_items, &QShortcut::activated, m_file_panel,
+            &FilePanel::CopyItem);
 
-  connect(kb_unmark_items_local, &QShortcut::activated, this,
-          [&]() { m_file_panel->UnmarkItemsLocal(); });
+    connect(kb_unmark_items_local, &QShortcut::activated, this,
+            [&]() { m_file_panel->UnmarkItemsLocal(); });
 
-  connect(kb_toggle_hidden_files, &QShortcut::activated, this,
-          [&]() { ToggleHiddenFiles(); });
+    connect(kb_toggle_hidden_files, &QShortcut::activated, this,
+            [&]() { ToggleHiddenFiles(); });
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-  m_inputbar->enableCommandCompletions();
-  QString command = m_inputbar->getInput("Command");
-  ProcessCommand(command);
+    m_inputbar->enableCommandCompletions();
+    QString command = m_inputbar->getInput("Command");
+    ProcessCommand(command);
 }
 
 void Navi::initMenubar() noexcept {
-  m_menubar = new Menubar();
-  this->setMenuBar(m_menubar);
+    m_menubar = new Menubar();
+    this->setMenuBar(m_menubar);
 
-  m_filemenu = new QMenu("File");
+    m_filemenu = new QMenu("File");
 
-  m_filemenu__new_window = new QAction("New Window");
-  m_filemenu__new_tab = new QAction("New Tab");
-  m_filemenu__create_new_menu = new QMenu("Create New");
+    m_filemenu__new_window = new QAction("New Window");
+    m_filemenu__new_tab = new QAction("New Tab");
+    m_filemenu__create_new_menu = new QMenu("Create New");
 
-  m_filemenu__create_new_folder = new QAction("New Folder");
-  m_filemenu__create_new_file = new QAction("New File");
+    m_filemenu__create_new_folder = new QAction("New Folder");
+    m_filemenu__create_new_file = new QAction("New File");
 
-  m_filemenu->addAction(m_filemenu__new_window);
-  m_filemenu->addAction(m_filemenu__new_tab);
-  m_filemenu->addMenu(m_filemenu__create_new_menu);
+    m_filemenu->addAction(m_filemenu__new_window);
+    m_filemenu->addAction(m_filemenu__new_tab);
+    m_filemenu->addMenu(m_filemenu__create_new_menu);
 
-  m_filemenu__create_new_menu->addAction(m_filemenu__create_new_folder);
-  m_filemenu__create_new_menu->addAction(m_filemenu__create_new_file);
+    m_filemenu__create_new_menu->addAction(m_filemenu__create_new_folder);
+    m_filemenu__create_new_menu->addAction(m_filemenu__create_new_file);
 
-  m_viewmenu = new QMenu("View");
+    m_viewmenu = new QMenu("View");
 
-  m_viewmenu__menubar = new QAction("Menubar");
-  m_viewmenu__menubar->setCheckable(true);
+    m_viewmenu__menubar = new QAction("Menubar");
+    m_viewmenu__menubar->setCheckable(true);
 
-  m_viewmenu__statusbar = new QAction("Statusbar");
-  m_viewmenu__statusbar->setCheckable(true);
+    m_viewmenu__statusbar = new QAction("Statusbar");
+    m_viewmenu__statusbar->setCheckable(true);
 
-  m_viewmenu__headers = new QAction("Headers");
-  m_viewmenu__headers->setCheckable(true);
+    m_viewmenu__headers = new QAction("Headers");
+    m_viewmenu__headers->setCheckable(true);
 
-  m_viewmenu__preview_panel = new QAction("Preview Panel");
-  m_viewmenu__preview_panel->setCheckable(true);
-  m_viewmenu__preview_panel->setChecked(true);
+    m_viewmenu__preview_panel = new QAction("Preview Panel");
+    m_viewmenu__preview_panel->setCheckable(true);
+    m_viewmenu__preview_panel->setChecked(true);
 
-  m_viewmenu__messages = new QAction("Messages");
-  m_viewmenu__messages->setCheckable(true);
+    m_viewmenu__messages = new QAction("Messages");
+    m_viewmenu__messages->setCheckable(true);
 
-  m_viewmenu__marks_buffer = new QAction("Marks List");
+    m_viewmenu__marks_buffer = new QAction("Marks List");
   m_viewmenu__marks_buffer->setCheckable(true);
 
   m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
@@ -1205,6 +1224,9 @@ void Navi::initMenubar() noexcept {
 
   m_viewmenu__shortcuts_widget = new QAction("Shortcuts");
   m_viewmenu__shortcuts_widget->setCheckable(true);
+
+  m_viewmenu__drives_widget = new QAction("Drives");
+  m_viewmenu__drives_widget->setCheckable(true);
 
   m_viewmenu__sort_menu = new QMenu("Sort by");
 
@@ -1359,6 +1381,9 @@ void Navi::initMenubar() noexcept {
           [&](const bool &state) { Navi::ToggleStatusBar(state); });
 
   // Handle visibility state change to reflect in the checkbox of the menu item
+
+  connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
+          [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
 
   connect(m_menubar, &Menubar::visibilityChanged, this,
           [&](const bool &state) { m_viewmenu__menubar->setChecked(state); });
@@ -1563,4 +1588,52 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
         }
     }
 
+}
+
+void Navi::ToggleDrivesWidget() noexcept {
+    if (m_drives_widget->isVisible())
+        m_drives_widget->hide();
+    else
+        m_drives_widget->show();
+}
+
+void Navi::ToggleDrivesWidget(const bool &state) noexcept {
+    m_drives_widget->setVisible(state);
+}
+
+void Navi::MountDrive(const QString &driveName) noexcept {
+    if (driveName.isEmpty() || driveName.isNull()) {
+        m_statusbar->Message("Drive name empty!", MessageType::ERROR);
+        return;
+    }
+
+    QProcess process;
+
+    // Assemble the command and arguments
+    QString program = "udisksctl";
+    QStringList arguments;
+    arguments << "mount" << "-b" << driveName;
+
+    // Start the process
+    process.start(program, arguments);
+
+    // Wait for the process to finish
+    if (!process.waitForFinished()) {
+        m_statusbar->Message(QString("Failed to mount device: %1").arg(process.errorString()), MessageType::ERROR);
+        return;
+    }
+
+    // Get the output of the command
+    QString output = process.readAllStandardOutput();
+    QString error = process.readAllStandardError();
+
+    if (!output.isEmpty()) {
+      m_statusbar->Message(
+                           QString("Mount Successful (%1)").arg(output.trimmed()));
+      return;
+    }
+
+    if (!error.isEmpty()) {
+        m_statusbar->Message(QString("Mount error (%1)").arg(error.trimmed()), MessageType::ERROR);
+    }
 }

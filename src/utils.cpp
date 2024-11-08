@@ -96,3 +96,42 @@ qint64 utils::parseFileSize(const QString& sizeStr) noexcept {
 
     return -1; // Return an error if the suffix is unrecognized
 }
+
+QList<StorageDevice> utils::getDrives() noexcept {
+    // Function to run lsblk and parse output
+    QList<StorageDevice> devices;
+
+    const char *command = "lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT,LABEL -n -r | cut -d ' ' -f1- --output-delimiter=,";
+    // Run lsblk command with columns for name, mountpoint, type, and size
+    std::array<char, 128> buffer;
+    QString result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(
+                                                  popen(command, "r"), pclose);
+
+    if (!pipe) {
+        return {};
+    }
+
+    // Read output of lsblk command
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+
+    // Parse each line of lsblk output
+    QTextStream stream(&result);
+    QString line;
+    while (stream.readLineInto(&line)) {
+        StorageDevice device;
+        line = line.replace("\\x20", " ");
+        QStringList ops = line.split(",");
+        device.name = ops.at(0);
+        device.size = ops.at(1);
+        device.type = ops.at(2);
+        device.fstype = ops.at(3);
+        device.mountPoint = ops.at(4);
+        device.label = ops.at(5);
+
+        devices.push_back(device);
+    }
+    return devices;
+}
