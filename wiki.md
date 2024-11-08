@@ -1,5 +1,51 @@
 **NOTE: This page is still a work in progress.**
 
+# Table of Contents
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+
+- [Table of Contents](#table-of-contents)
+- [Installation](#installation)
+- [Using Navi](#using-navi)
+    - [Naming Conventions](#naming-conventions)
+    - [Bookmarks](#bookmarks)
+    - [Interactive Commands](#interactive-commands)
+        - [Types of Command](#types-of-command)
+            - [Current Scope](#current-scope)
+            - [Local Scope](#local-scope)
+            - [Global Scope](#global-scope)
+            - [DWIM](#dwim)
+    - [Commands List](#commands-list)
+        - [Navigation](#navigation)
+        - [Echo (Printing) Commands](#echo-printing-commands)
+        - [Marking Item](#marking-item)
+        - [Unmarking Item](#unmarking-item)
+        - [Selecting Item](#selecting-item)
+        - [Change Permission](#change-permission)
+        - [Renaming Files](#renaming-files)
+        - [Cutting Files](#cutting-files)
+        - [Copying Files](#copying-files)
+        - [Pasting (Moving) Files](#pasting-moving-files)
+        - [Deleting Files](#deleting-files)
+        - [Trashing Files](#trashing-files)
+        - [Filtering Items](#filtering-items)
+        - [Panes](#panes)
+        - [Misc](#misc)
+        - [Shell Commands](#shell-commands)
+        - [Bookmarks](#bookmarks-1)
+        - [Searching Items](#searching-items)
+        - [Sorting Items](#sorting-items)
+        - [Storage Device](#storage-device)
+    - [Linux Only](#linux-only)
+    - [Theming](#theming)
+    - [<span class="todo TODO">TODO</span> Scripting with Lua [scripting-with-lua]](#span-classtodo-todotodospan-scripting-with-lua-scripting-with-lua)
+    - [Configuration with Lua](#configuration-with-lua)
+- [Acknowledgement](#acknowledgement)
+
+<!-- markdown-toc end -->
+
+
+
+
 # Installation
 
 Navi can be built from source. The following libraries are dependencies
