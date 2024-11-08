@@ -375,11 +375,20 @@ void Navi::initSignalsSlots() noexcept {
             });
     connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
             [&](const QString &driveName) {
+              QString confirm = m_inputbar->getInput(
+                  QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+              if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+                return;
+              MountDrive(driveName);
+            });
+
+    connect(m_drives_widget, &DriveWidget::driveUnmountRequested, this,
+            [&](const QString &driveName) {
                 QString confirm =
-                    m_inputbar->getInput(QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+                    m_inputbar->getInput(QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
                 if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
                     return;
-                MountDrive(driveName);
+                UnmountDrive(driveName);
             });
 
     connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
@@ -1628,12 +1637,48 @@ void Navi::MountDrive(const QString &driveName) noexcept {
     QString error = process.readAllStandardError();
 
     if (!output.isEmpty()) {
-      m_statusbar->Message(
-                           QString("Mount Successful (%1)").arg(output.trimmed()));
-      return;
+        m_statusbar->Message(
+                             QString("Mount Successful (%1)").arg(output.trimmed()));
+        return;
     }
 
     if (!error.isEmpty()) {
         m_statusbar->Message(QString("Mount error (%1)").arg(error.trimmed()), MessageType::ERROR);
+    }
+}
+
+void Navi::UnmountDrive(const QString &driveName) noexcept {
+    if (driveName.isEmpty() || driveName.isNull()) {
+        m_statusbar->Message("Drive name empty!", MessageType::ERROR);
+        return;
+    }
+
+    QProcess process;
+
+    // Assemble the command and arguments
+    QString program = "udisksctl";
+    QStringList arguments;
+    arguments << "unmount" << "-b" << driveName;
+
+    // Start the process
+    process.start(program, arguments);
+
+    // Wait for the process to finish
+    if (!process.waitForFinished()) {
+        m_statusbar->Message(QString("Failed to unmount device: %1").arg(process.errorString()), MessageType::ERROR);
+        return;
+    }
+
+    // Get the output of the command
+    QString output = process.readAllStandardOutput();
+    QString error = process.readAllStandardError();
+
+    if (!output.isEmpty()) {
+        m_statusbar->Message(QString("Unmount Successful (%1)").arg(output.trimmed()));
+        return;
+    }
+
+    if (!error.isEmpty()) {
+        m_statusbar->Message(QString("Unmount error (%1)").arg(error.trimmed()), MessageType::ERROR);
     }
 }

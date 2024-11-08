@@ -125,6 +125,7 @@ public:
     void ToggleDotDot() noexcept;
 
     void MountDrive(const QString &driveName) noexcept;
+    void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
 
 private:

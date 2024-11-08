@@ -115,7 +115,7 @@ private:
     QList<Keybind> m_keyBinds;  // Stores the keybinds
 };
 
-class ShortcutsWidget : public QWidget {
+class ShortcutsWidget : public QDialog {
 Q_OBJECT
 public:
   ShortcutsWidget(const QList<Keybind> &, QWidget *parent = nullptr);
@@ -126,12 +126,12 @@ public:
 
     void show() noexcept {
         emit visibilityChanged(true);
-        QWidget::show();
+        QDialog::show();
     }
 
     void hide() noexcept {
         emit visibilityChanged(false);
-        QWidget::hide();
+        QDialog::hide();
     }
 
 signals:

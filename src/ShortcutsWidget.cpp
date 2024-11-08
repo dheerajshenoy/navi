@@ -1,6 +1,6 @@
 #include "ShortcutsWidget.hpp"
 
-ShortcutsWidget::ShortcutsWidget(const QList<Keybind> &keybinds, QWidget *parent) : QWidget(parent) {
+ShortcutsWidget::ShortcutsWidget(const QList<Keybind> &keybinds, QWidget *parent) : QDialog(parent) {
     m_model->setKeyBinds(keybinds);
     m_layout->addWidget(m_line_edit);
     m_layout->addWidget(m_table_view);

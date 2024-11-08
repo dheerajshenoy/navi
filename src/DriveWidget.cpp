@@ -8,16 +8,21 @@ DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
     auto mountedVolumes = QStorageInfo::mountedVolumes();
 
     // m_drives_table_widget->horizontalHeader()->setStretchLastSection(true);
-
     m_drives_table_widget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     // m_drives_table_widget->setRowCount(mountedVolumes.size());
 
     auto header = m_drives_table_widget->horizontalHeader();
     m_drives_table_widget->setColumnCount(4);
-    m_drives_table_widget->setHorizontalHeaderLabels({"Drive", "FS Type", "Size", "Mount Point"});
-    header->setStretchLastSection(true);
+    m_drives_table_widget->setHorizontalHeaderLabels(
+                                                     {"Drive", "FS Type", "Size", "Mount Point"});
+
+    header->setSectionResizeMode(0, QHeaderView::ResizeMode::Stretch);
+
+    for (int i=1; i < 4;i++)
+        header->setSectionResizeMode(i, QHeaderView::ResizeMode::ResizeToContents);
+    // header->setStretchLastSection(true);
     m_drives_table_widget->setEditTriggers(QTableWidget::EditTrigger::NoEditTriggers);
-    header->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    // header->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 
     this->setLayout(m_layout);
 
@@ -26,7 +31,64 @@ DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
 
     loadDrives();
     m_drives_watcher->addPath("/dev/");
-    connect(m_drives_table_widget, &QTableWidget::cellDoubleClicked, this, &DriveWidget::cellDoubleClicked);
+    connect(m_drives_table_widget, &QTableWidget::cellDoubleClicked, this,
+            &DriveWidget::cellDoubleClicked);
+
+    QHBoxLayout *btn_layout = new QHBoxLayout();
+
+    btn_layout->addWidget(m_mount_btn);
+    btn_layout->addWidget(m_unmount_btn);
+    btn_layout->addStretch(1);
+    btn_layout->addWidget(m_close_btn);
+    m_layout->addWidget(new QLabel("Double click to mount/load a drive"));
+    m_layout->addLayout(btn_layout);
+
+    // m_unmount_btn->setEnabled(false);
+    // m_mount_btn->setEnabled(false);
+
+    m_drives_table_widget->setSelectionMode(
+                                            QAbstractItemView::SelectionMode::SingleSelection);
+
+    connect(m_close_btn, &QPushButton::clicked, this, [&]() {
+        this->close();
+    });
+
+    connect(m_drives_table_widget, &QTableWidget::currentCellChanged, this,
+            [&](const int &crow, const int &ccol, const int &prow, const int &pcol) {
+                if (crow == -1)
+                    return;
+                auto item = m_drives_table_widget->item(crow, 3);
+                auto isMounted = !item->text().isEmpty();
+                if (isMounted) {
+                    m_unmount_btn->setEnabled(true);
+                    m_mount_btn->setEnabled(false);
+                } else {
+                    m_mount_btn->setEnabled(true);
+                    m_unmount_btn->setEnabled(false);
+                }
+            });
+
+    connect(m_mount_btn, &QPushButton::clicked, this, [&]() {
+      int row = m_drives_table_widget->currentRow();
+      auto mountPoint = m_drives_table_widget->item(row, 3)->text();
+      auto driveName = m_drives_table_widget->item(row, 0)->text();
+      driveName = QString("/dev") + QDir::separator() + driveName;
+      if (mountPoint.isEmpty() || mountPoint.isNull()) {
+        emit driveMountRequested(driveName);
+      } else
+        emit driveLoadRequested(mountPoint);
+    });
+
+    connect(m_unmount_btn, &QPushButton::clicked, this, [&]() {
+        int row = m_drives_table_widget->currentRow();
+        auto mountPoint = m_drives_table_widget->item(row, 3)->text();
+        auto driveName = m_drives_table_widget->item(row, 0)->text();
+        driveName = QString("/dev") + QDir::separator() + driveName;
+        if (mountPoint.isEmpty() || mountPoint.isNull()) {
+            return;
+        } else
+            emit driveUnmountRequested(driveName);
+    });
 }
 
 void DriveWidget::loadDrives() noexcept {

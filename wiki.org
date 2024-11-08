@@ -284,13 +284,21 @@ NOTE: Hidden files are those items whose name start with a period like
 **** bookmark-pane
 Opens the bookmarks list.
 
+TODO: work in progress
+
 **** marks-pane
 Opens the marks list.
 
+[[./screenshot/marks-pane-demo.gif]]
+
 **** messages-pane
+
 Opens the messages list.
 
+[[./screenshot/messages_pane.png]]
+
 **** preview-pane
+
 Toggles the preview pane.
 
 The preview pane handles previewing images (good number of formats) and
@@ -301,7 +309,9 @@ any image formats supported my ImageMagick is supported by Navi.
 
 **** shortcuts-pane
 
-This displays the list of all the shortcuts that have been assigned.
+This displays the list of all the shortcuts.
+
+[[./screenshot/shortcuts_pane.png]]
 
 *** Misc
 **** execute-extended-command
@@ -440,7 +450,10 @@ Sorts the directory by /size/ in *descending order* with the directories listed 
 
 **** drives
 
-Opens a dialog with all the drives (mounted and unmounted). You can double click on a drive to mount (or load it if it's already mounted).
+Opens a dialog with all the drives (mounted and unmounted). You can double click on a drive to mount (or load it if it's already mounted) or use the mount and unmount buttons.
+
+[[./screenshot/drives.png]]
+
 
 ** Linux Only
 
