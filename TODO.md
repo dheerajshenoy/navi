@@ -71,3 +71,4 @@
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [ ] Mount drives
 - [ ] Tabs
+- [ ] History for inputbar
