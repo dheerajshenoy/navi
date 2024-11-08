@@ -73,6 +73,7 @@ public:
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
+    QModelIndex getIndexFromBaseName(const QString &path) const noexcept;
     uint getMarkedFilesCount() noexcept;
     uint getMarkedFilesCountLocal() noexcept;
     void clearMarkedFilesList() noexcept;
@@ -107,13 +108,11 @@ public:
     void removeMarkedFiles() noexcept;
     void removeMarkedFiles(const QStringList &paths) noexcept;
     bool removeMarkedFile(const QModelIndex &index) noexcept;
-    // QMimeData *mimeData(const QModelIndexList &indexes) const override;
-    // bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
-    QString getStringFromIndex(const QModelIndex &index) const noexcept {
+    inline QString getStringFromIndex(const QModelIndex &index) const noexcept {
         return this->data(index, Qt::DisplayRole).toString();
     }
 
-    QStringList getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept {
+    inline QStringList getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept {
         QStringList stringList;
         stringList.reserve(indexList.size());
         for (const auto &index : indexList)
@@ -121,24 +120,29 @@ public:
         return stringList;
     }
 
-    QString getStringFromRow(const int &row, const int &col = 0) const noexcept {
+    inline QString getStringFromRow(const int &row, const int &col = 0) const noexcept {
         return index(row, col).data().toString();
     }
 
-    QString getPathFromIndex(const QModelIndex &index) const noexcept {
+    inline QString getPathFromIndex(const QModelIndex &index) const noexcept {
         return rootPath() + QDir::separator() + getStringFromIndex(index);
     }
 
-    QString getPathFromRow(const int &row) const noexcept {
+    inline QString getPathFromRow(const int &row) const noexcept {
         return rootPath() + QDir::separator() + getStringFromRow(row);
     }
+
+    inline QString getSymlinkSeparator() const noexcept {
+        return m_symlink_separator;
+    }
+
 
     // void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
 
     signals:
-    void directoryLoaded(const QString &path);
+    void directoryLoaded(const int &rowCount);
     void directoryLoadProgress(const int &progress);
     void marksListChanged();
     void dropCopyRequested(const QStringList &sourceFilePath);

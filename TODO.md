@@ -73,3 +73,4 @@
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [ ] Tabs
 - [ ] History for inputbar
+- [ ] Dotfiles focus file

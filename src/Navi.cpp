@@ -375,11 +375,11 @@ void Navi::initSignalsSlots() noexcept {
             });
     connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
             [&](const QString &driveName) {
-              QString confirm = m_inputbar->getInput(
-                  QString("Do you want to mount %1 ? (y, N)").arg(driveName));
-              if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-                return;
-              MountDrive(driveName);
+                QString confirm = m_inputbar->getInput(
+                                                       QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+                    return;
+                MountDrive(driveName);
             });
 
     connect(m_drives_widget, &DriveWidget::driveUnmountRequested, this,
@@ -404,9 +404,6 @@ void Navi::initSignalsSlots() noexcept {
             m_file_panel, [&](const QString &dirName) {
         m_file_panel->setCurrentDir(dirName, true);
     });
-
-    connect(m_file_panel, &FilePanel::dirItemCount, m_statusbar,
-            &Statusbar::SetNumItems);
 
     connect(m_file_panel, &FilePanel::fileOperationDone, this,
             [&](const bool &state, const QString &reason) {
@@ -1226,352 +1223,352 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__messages->setCheckable(true);
 
     m_viewmenu__marks_buffer = new QAction("Marks List");
-  m_viewmenu__marks_buffer->setCheckable(true);
+    m_viewmenu__marks_buffer->setCheckable(true);
 
-  m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
-  m_viewmenu__bookmarks_buffer->setCheckable(true);
+    m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
+    m_viewmenu__bookmarks_buffer->setCheckable(true);
 
-  m_viewmenu__shortcuts_widget = new QAction("Shortcuts");
-  m_viewmenu__shortcuts_widget->setCheckable(true);
+    m_viewmenu__shortcuts_widget = new QAction("Shortcuts");
+    m_viewmenu__shortcuts_widget->setCheckable(true);
 
-  m_viewmenu__drives_widget = new QAction("Drives");
-  m_viewmenu__drives_widget->setCheckable(true);
+    m_viewmenu__drives_widget = new QAction("Drives");
+    m_viewmenu__drives_widget->setCheckable(true);
 
-  m_viewmenu__sort_menu = new QMenu("Sort by");
+    m_viewmenu__sort_menu = new QMenu("Sort by");
 
-  m_viewmenu__sort_by_name = new QAction("Name");
-  m_viewmenu__sort_by_name->setCheckable(true);
-  m_viewmenu__sort_by_name->setChecked(true);
+    m_viewmenu__sort_by_name = new QAction("Name");
+    m_viewmenu__sort_by_name->setCheckable(true);
+    m_viewmenu__sort_by_name->setChecked(true);
 
-  m_viewmenu__sort_by_size = new QAction("Size");
-  m_viewmenu__sort_by_size->setCheckable(true);
+    m_viewmenu__sort_by_size = new QAction("Size");
+    m_viewmenu__sort_by_size->setCheckable(true);
 
-  m_viewmenu__sort_by_date = new QAction("Modified Date");
-  m_viewmenu__sort_by_date->setCheckable(true);
+    m_viewmenu__sort_by_date = new QAction("Modified Date");
+    m_viewmenu__sort_by_date->setCheckable(true);
 
-  m_viewmenu__sort_by_group = new QActionGroup(m_viewmenu__sort_menu);
-  m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_name);
-  m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_size);
-  m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_date);
+    m_viewmenu__sort_by_group = new QActionGroup(m_viewmenu__sort_menu);
+    m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_name);
+    m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_size);
+    m_viewmenu__sort_by_group->addAction(m_viewmenu__sort_by_date);
 
-  m_viewmenu__sort_ascending = new QAction("Ascending");
-  m_viewmenu__sort_ascending->setCheckable(true);
-  m_viewmenu__sort_ascending->setChecked(true);
+    m_viewmenu__sort_ascending = new QAction("Ascending");
+    m_viewmenu__sort_ascending->setCheckable(true);
+    m_viewmenu__sort_ascending->setChecked(true);
 
-  m_viewmenu__sort_descending = new QAction("Descending");
-  m_viewmenu__sort_descending->setCheckable(true);
+    m_viewmenu__sort_descending = new QAction("Descending");
+    m_viewmenu__sort_descending->setCheckable(true);
 
-  m_viewmenu__sort_asc_desc_group = new QActionGroup(m_viewmenu__sort_menu);
-  m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_ascending);
-  m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_descending);
+    m_viewmenu__sort_asc_desc_group = new QActionGroup(m_viewmenu__sort_menu);
+    m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_ascending);
+    m_viewmenu__sort_asc_desc_group->addAction(m_viewmenu__sort_descending);
 
-  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_ascending);
-  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_descending);
-  m_viewmenu__sort_menu->addSeparator();
-  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_name);
-  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_size);
-  m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_date);
-  m_viewmenu->addMenu(m_viewmenu__sort_menu);
+    m_viewmenu__sort_menu->addAction(m_viewmenu__sort_ascending);
+    m_viewmenu__sort_menu->addAction(m_viewmenu__sort_descending);
+    m_viewmenu__sort_menu->addSeparator();
+    m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_name);
+    m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_size);
+    m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_date);
+    m_viewmenu->addMenu(m_viewmenu__sort_menu);
 
-  m_viewmenu__sort_ascending->setCheckable(true);
-  m_viewmenu__sort_ascending->setChecked(true);
+    m_viewmenu__sort_ascending->setCheckable(true);
+    m_viewmenu__sort_ascending->setChecked(true);
 
-  m_viewmenu__files_menu = new QMenu("Files");
+    m_viewmenu__files_menu = new QMenu("Files");
 
-  m_viewmenu__files_menu__hidden = new QAction("Hidden");
-  m_viewmenu__files_menu__hidden->setCheckable(true);
+    m_viewmenu__files_menu__hidden = new QAction("Hidden");
+    m_viewmenu__files_menu__hidden->setCheckable(true);
 
-  m_viewmenu__files_menu__dotdot = new QAction("DotDot");
-  m_viewmenu__files_menu__dotdot->setCheckable(true);
+    m_viewmenu__files_menu__dotdot = new QAction("DotDot");
+    m_viewmenu__files_menu__dotdot->setCheckable(true);
 
-  m_viewmenu->addMenu(m_viewmenu__files_menu);
-  m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__hidden);
-  m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__dotdot);
+    m_viewmenu->addMenu(m_viewmenu__files_menu);
+    m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__hidden);
+    m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__dotdot);
 
-  m_viewmenu->addAction(m_viewmenu__headers);
-  m_viewmenu->addAction(m_viewmenu__preview_panel);
-  m_viewmenu->addAction(m_viewmenu__menubar);
-  m_viewmenu->addAction(m_viewmenu__statusbar);
-  m_viewmenu->addAction(m_viewmenu__messages);
-  m_viewmenu->addAction(m_viewmenu__marks_buffer);
-  m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
+    m_viewmenu->addAction(m_viewmenu__headers);
+    m_viewmenu->addAction(m_viewmenu__preview_panel);
+    m_viewmenu->addAction(m_viewmenu__menubar);
+    m_viewmenu->addAction(m_viewmenu__statusbar);
+    m_viewmenu->addAction(m_viewmenu__messages);
+    m_viewmenu->addAction(m_viewmenu__marks_buffer);
+    m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
 
-  m_tools_menu = new QMenu("Tools");
+    m_tools_menu = new QMenu("Tools");
 
-  m_tools_menu__search = new QAction("Search");
-  m_tools_menu__command_in_folder = new QAction("Command in Folder");
+    m_tools_menu__search = new QAction("Search");
+    m_tools_menu__command_in_folder = new QAction("Command in Folder");
 
-  m_tools_menu->addAction(m_tools_menu__search);
-  m_tools_menu->addAction(m_tools_menu__command_in_folder);
+    m_tools_menu->addAction(m_tools_menu__search);
+    m_tools_menu->addAction(m_tools_menu__command_in_folder);
 
-  m_edit_menu = new QMenu("Edit");
+    m_edit_menu = new QMenu("Edit");
 
-  m_edit_menu__copy = new QAction("Copy");
-  m_edit_menu__paste = new QAction("Paste");
-  m_edit_menu__rename = new QAction("Rename");
-  m_edit_menu__delete = new QAction("Delete");
-  m_edit_menu__trash = new QAction("Trash");
-  m_edit_menu__cut = new QAction("Cut");
+    m_edit_menu__copy = new QAction("Copy");
+    m_edit_menu__paste = new QAction("Paste");
+    m_edit_menu__rename = new QAction("Rename");
+    m_edit_menu__delete = new QAction("Delete");
+    m_edit_menu__trash = new QAction("Trash");
+    m_edit_menu__cut = new QAction("Cut");
 
-  m_edit_menu->addAction(m_edit_menu__cut);
-  m_edit_menu->addAction(m_edit_menu__copy);
-  m_edit_menu->addAction(m_edit_menu__paste);
-  m_edit_menu->addAction(m_edit_menu__rename);
-  m_edit_menu->addAction(m_edit_menu__trash);
-  m_edit_menu->addAction(m_edit_menu__delete);
+    m_edit_menu->addAction(m_edit_menu__cut);
+    m_edit_menu->addAction(m_edit_menu__copy);
+    m_edit_menu->addAction(m_edit_menu__paste);
+    m_edit_menu->addAction(m_edit_menu__rename);
+    m_edit_menu->addAction(m_edit_menu__trash);
+    m_edit_menu->addAction(m_edit_menu__delete);
 
-  m_menubar->addMenu(m_filemenu);
-  m_menubar->addMenu(m_edit_menu);
-  m_menubar->addMenu(m_viewmenu);
-  m_menubar->addMenu(m_tools_menu);
+    m_menubar->addMenu(m_filemenu);
+    m_menubar->addMenu(m_edit_menu);
+    m_menubar->addMenu(m_viewmenu);
+    m_menubar->addMenu(m_tools_menu);
 
-  connect(m_viewmenu__headers, &QAction::triggered, this,
-          [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
+    connect(m_viewmenu__headers, &QAction::triggered, this,
+            [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
-  connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
-          [&](const bool &state) {
-            if (state) {
-              if (m_sort_flags & QDir::SortFlag::Reversed) {
-                m_sort_flags &= ~QDir::SortFlag::Reversed;
-                m_file_panel->model()->setSortBy(m_sort_flags);
-              }
-            }
-          });
+    connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
+            [&](const bool &state) {
+                if (state) {
+                    if (m_sort_flags & QDir::SortFlag::Reversed) {
+                        m_sort_flags &= ~QDir::SortFlag::Reversed;
+                        m_file_panel->model()->setSortBy(m_sort_flags);
+                    }
+                }
+            });
 
-  connect(m_viewmenu__sort_descending, &QAction::triggered, this,
-          [&](const bool &state) {
-            if (state) {
-              if (m_sort_flags & QDir::SortFlag::Reversed)
-                return;
-              m_sort_flags |= QDir::SortFlag::Reversed;
-              m_file_panel->model()->setSortBy(m_sort_flags);
-            }
-          });
+    connect(m_viewmenu__sort_descending, &QAction::triggered, this,
+            [&](const bool &state) {
+                if (state) {
+                    if (m_sort_flags & QDir::SortFlag::Reversed)
+                        return;
+                    m_sort_flags |= QDir::SortFlag::Reversed;
+                    m_file_panel->model()->setSortBy(m_sort_flags);
+                }
+            });
 
-  connect(m_viewmenu__sort_by_name, &QAction::triggered, this,
-          &Navi::SortByName);
-  connect(m_viewmenu__sort_by_date, &QAction::triggered, this,
-          &Navi::SortByDate);
-  connect(m_viewmenu__sort_by_size, &QAction::triggered, this,
-          &Navi::SortBySize);
+    connect(m_viewmenu__sort_by_name, &QAction::triggered, this,
+            &Navi::SortByName);
+    connect(m_viewmenu__sort_by_date, &QAction::triggered, this,
+            &Navi::SortByDate);
+    connect(m_viewmenu__sort_by_size, &QAction::triggered, this,
+            &Navi::SortBySize);
 
-  connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
-          [&](const bool &state) { ToggleMarksBuffer(state); });
+    connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
+            [&](const bool &state) { ToggleMarksBuffer(state); });
 
-  connect(m_viewmenu__bookmarks_buffer, &QAction::triggered, this,
-          [&](const bool &state) { // ToggleBookmarksBuffer(state); });
-          });
+    connect(m_viewmenu__bookmarks_buffer, &QAction::triggered, this,
+            [&](const bool &state) { // ToggleBookmarksBuffer(state); });
+            });
 
-  connect(m_viewmenu__files_menu__dotdot, &QAction::triggered, this,
-          [&](const bool &state) { ToggleDotDot(state); });
+    connect(m_viewmenu__files_menu__dotdot, &QAction::triggered, this,
+            [&](const bool &state) { ToggleDotDot(state); });
 
-  connect(m_viewmenu__preview_panel, &QAction::triggered, this,
-          [&](const bool &state) { TogglePreviewPanel(state); });
+    connect(m_viewmenu__preview_panel, &QAction::triggered, this,
+            [&](const bool &state) { TogglePreviewPanel(state); });
 
-  connect(m_viewmenu__messages, &QAction::triggered, this,
-          [&](const bool &state) { ToggleMessagesBuffer(state); });
+    connect(m_viewmenu__messages, &QAction::triggered, this,
+            [&](const bool &state) { ToggleMessagesBuffer(state); });
 
-  connect(m_filemenu__create_new_file, &QAction::triggered, this,
-          [&]() { m_file_panel->NewFile(); });
+    connect(m_filemenu__create_new_file, &QAction::triggered, this,
+            [&]() { m_file_panel->NewFile(); });
 
-  connect(m_filemenu__create_new_folder, &QAction::triggered, this,
-          [&]() { m_file_panel->NewFolder(); });
+    connect(m_filemenu__create_new_folder, &QAction::triggered, this,
+            [&]() { m_file_panel->NewFolder(); });
 
-  connect(m_tools_menu__search, &QAction::triggered, this,
-          [&]() { m_file_panel->Search(); });
+    connect(m_tools_menu__search, &QAction::triggered, this,
+            [&]() { m_file_panel->Search(); });
 
-  connect(m_viewmenu__files_menu__hidden, &QAction::triggered, this,
-          [&](const bool &state) { ToggleHiddenFiles(state); });
+    connect(m_viewmenu__files_menu__hidden, &QAction::triggered, this,
+            [&](const bool &state) { ToggleHiddenFiles(state); });
 
-  connect(m_viewmenu__menubar, &QAction::triggered, this,
-          [&](const bool &state) { Navi::ToggleMenuBar(state); });
+    connect(m_viewmenu__menubar, &QAction::triggered, this,
+            [&](const bool &state) { Navi::ToggleMenuBar(state); });
 
-  connect(m_viewmenu__menubar, &QAction::triggered, this,
-          [&](const bool &state) { Navi::ToggleStatusBar(state); });
+    connect(m_viewmenu__menubar, &QAction::triggered, this,
+            [&](const bool &state) { Navi::ToggleStatusBar(state); });
 
-  // Handle visibility state change to reflect in the checkbox of the menu item
+    // Handle visibility state change to reflect in the checkbox of the menu item
 
-  connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
-          [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
+    connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
 
-  connect(m_menubar, &Menubar::visibilityChanged, this,
-          [&](const bool &state) { m_viewmenu__menubar->setChecked(state); });
+    connect(m_menubar, &Menubar::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__menubar->setChecked(state); });
 
-  connect(m_statusbar, &Statusbar::visibilityChanged, this,
-          [&](const bool &state) { m_viewmenu__statusbar->setChecked(state); });
+    connect(m_statusbar, &Statusbar::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__statusbar->setChecked(state); });
 
-  connect(
-      m_preview_panel, &PreviewPanel::visibilityChanged, this,
-      [&](const bool &state) { m_viewmenu__preview_panel->setChecked(state); });
+    connect(
+            m_preview_panel, &PreviewPanel::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__preview_panel->setChecked(state); });
 
-  connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
-          [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
+    connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
 
-  connect(
-      m_marks_buffer, &MarksBuffer::visibilityChanged, this,
-      [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
+    connect(
+            m_marks_buffer, &MarksBuffer::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {}
 
 void Navi::ToggleMenuBar(const bool &state) noexcept {
-  if (state) {
-    m_menubar->show();
-  } else {
-    m_menubar->hide();
-  }
+    if (state) {
+        m_menubar->show();
+    } else {
+        m_menubar->hide();
+    }
 }
 
 void Navi::ToggleMenuBar() noexcept {
-  bool visible = m_menubar->isVisible();
-  if (!visible) {
-    m_menubar->show();
-  } else {
-    m_menubar->hide();
-  }
+    bool visible = m_menubar->isVisible();
+    if (!visible) {
+        m_menubar->show();
+    } else {
+        m_menubar->hide();
+    }
 }
 
 void Navi::ToggleStatusBar(const bool &state) noexcept {
-  if (state) {
-    m_statusbar->show();
-  } else {
-    m_statusbar->hide();
-  }
+    if (state) {
+        m_statusbar->show();
+    } else {
+        m_statusbar->hide();
+    }
 }
 
 void Navi::ToggleStatusBar() noexcept {
-  bool visible = m_statusbar->isVisible();
-  if (!visible) {
-    m_statusbar->show();
-  } else {
-    m_statusbar->hide();
-  }
+    bool visible = m_statusbar->isVisible();
+    if (!visible) {
+        m_statusbar->show();
+    } else {
+        m_statusbar->hide();
+    }
 }
 
 void Navi::Filter() noexcept {
-  QString filterString = m_inputbar->getInput("Filter String");
-  if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
-    ResetFilter();
-    return;
-  }
-  m_file_panel->Filters(filterString);
-  m_statusbar->SetFilterMode(true);
+    QString filterString = m_inputbar->getInput("Filter String");
+    if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
+        ResetFilter();
+        return;
+    }
+    m_file_panel->Filters(filterString);
+    m_statusbar->SetFilterMode(true);
 }
 
 void Navi::ResetFilter() noexcept {
-  m_file_panel->ResetFilter();
-  m_statusbar->SetFilterMode(false);
+    m_file_panel->ResetFilter();
+    m_statusbar->SetFilterMode(false);
 }
 
 void Navi::LogMessage(const QString &message,
                       const MessageType &type) noexcept {
-  QString coloredMessage = message;
-  switch (type) {
+    QString coloredMessage = message;
+    switch (type) {
 
-  case MessageType::INFO:
-    coloredMessage = "<font color='white'>" + message + "</font>";
-    break;
+    case MessageType::INFO:
+        coloredMessage = "<font color='white'>" + message + "</font>";
+        break;
 
-  case MessageType::WARNING:
-    coloredMessage = "<font color='yellow'>" + message + "</font>";
-    break;
+    case MessageType::WARNING:
+        coloredMessage = "<font color='yellow'>" + message + "</font>";
+        break;
 
-  case MessageType::ERROR:
-    coloredMessage = "<font color='red'>" + message + "</font>";
-    break;
-  }
-  m_log_buffer->AppendText(coloredMessage);
+    case MessageType::ERROR:
+        coloredMessage = "<font color='red'>" + message + "</font>";
+        break;
+    }
+    m_log_buffer->AppendText(coloredMessage);
 }
 
 Navi::~Navi() {
 
-delete m_bookmark_manager;
-delete m_tab_bar;
-delete m_inputbar;
-delete m_statusbar;
-delete m_file_panel;
-delete m_preview_panel;
-delete m_file_path_widget;
-delete m_log_buffer;
-delete m_marks_buffer;
-delete m_menubar;
+    delete m_bookmark_manager;
+    delete m_tab_bar;
+    delete m_inputbar;
+    delete m_statusbar;
+    delete m_file_panel;
+    delete m_preview_panel;
+    delete m_file_path_widget;
+    delete m_log_buffer;
+    delete m_marks_buffer;
+    delete m_menubar;
 }
 
 void Navi::chmodHelper() noexcept {
-  QString permString = m_inputbar->getInput("Permission Number");
-  if (permString.length() != 3 ||
-      !permString.contains(QRegularExpression("^[0-7]{3}$"))) {
-    m_statusbar->Message("Invalid permission string."
-                         "Expected a three-digit octal string like '755'.",
-                         MessageType::ERROR, 5);
-    return;
-  }
+    QString permString = m_inputbar->getInput("Permission Number");
+    if (permString.length() != 3 ||
+        !permString.contains(QRegularExpression("^[0-7]{3}$"))) {
+        m_statusbar->Message("Invalid permission string."
+                             "Expected a three-digit octal string like '755'.",
+                             MessageType::ERROR, 5);
+        return;
+    }
 }
 
 void Navi::SaveBookmarkFile() noexcept {
-  if (m_bookmark_manager->saveBookmarksFile()) {
-    m_statusbar->Message("Bookmark save successful!");
-  } else {
-    m_statusbar->Message("Error saving bookmarks!", MessageType::ERROR);
-  }
+    if (m_bookmark_manager->saveBookmarksFile()) {
+        m_statusbar->Message("Bookmark save successful!");
+    } else {
+        m_statusbar->Message("Error saving bookmarks!", MessageType::ERROR);
+    }
 }
 
 void Navi::SortByName(const bool &reverse) noexcept {
-  m_sort_by = SortBy::Name;
-  m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
+    m_sort_by = SortBy::Name;
+    m_sort_flags = QDir::SortFlag::Name | QDir::SortFlag::DirsFirst;
 
-  if (reverse)
-    m_sort_flags |= QDir::SortFlag::Reversed;
+    if (reverse)
+        m_sort_flags |= QDir::SortFlag::Reversed;
 
-  m_file_panel->model()->setSortBy(m_sort_flags);
+    m_file_panel->model()->setSortBy(m_sort_flags);
 }
 
 void Navi::SortBySize(const bool &reverse) noexcept {
-  m_sort_by = SortBy::Size;
-  m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
+    m_sort_by = SortBy::Size;
+    m_sort_flags = QDir::SortFlag::Size | QDir::SortFlag::DirsFirst;
 
-  if (reverse)
-    m_sort_flags |= QDir::SortFlag::Reversed;
+    if (reverse)
+        m_sort_flags |= QDir::SortFlag::Reversed;
 
-  m_file_panel->model()->setSortBy(m_sort_flags);
+    m_file_panel->model()->setSortBy(m_sort_flags);
 }
 
 void Navi::SortByDate(const bool &reverse) noexcept {
-  m_sort_by = SortBy::Date;
-  m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
+    m_sort_by = SortBy::Date;
+    m_sort_flags = QDir::SortFlag::Time | QDir::SortFlag::DirsFirst;
 
-  if (reverse)
-    m_sort_flags |= QDir::SortFlag::Reversed;
+    if (reverse)
+        m_sort_flags |= QDir::SortFlag::Reversed;
 
-  m_file_panel->model()->setSortBy(m_sort_flags);
+    m_file_panel->model()->setSortBy(m_sort_flags);
 }
 
 void Navi::ToggleHiddenFiles(const bool &state) noexcept {
-  m_viewmenu__files_menu__hidden->setChecked(state);
-  m_file_panel->ToggleHiddenFiles();
+    m_viewmenu__files_menu__hidden->setChecked(state);
+    m_file_panel->ToggleHiddenFiles();
 }
 
 void Navi::ToggleHiddenFiles() noexcept {
-  if (m_viewmenu__files_menu__hidden->isChecked())
-    m_viewmenu__files_menu__hidden->setChecked(false);
-  else
-    m_viewmenu__files_menu__hidden->setChecked(true);
+    if (m_viewmenu__files_menu__hidden->isChecked())
+        m_viewmenu__files_menu__hidden->setChecked(false);
+    else
+        m_viewmenu__files_menu__hidden->setChecked(true);
 
-  m_file_panel->ToggleHiddenFiles();
+    m_file_panel->ToggleHiddenFiles();
 }
 
 void Navi::ToggleDotDot(const bool &state) noexcept {
-  m_viewmenu__files_menu__dotdot->setChecked(state);
-  m_file_panel->ToggleDotDot();
+    m_viewmenu__files_menu__dotdot->setChecked(state);
+    m_file_panel->ToggleDotDot();
 }
 
 void Navi::ToggleDotDot() noexcept {
-  if (m_viewmenu__files_menu__dotdot->isChecked())
-    m_viewmenu__files_menu__dotdot->setChecked(false);
-  else
-    m_viewmenu__files_menu__dotdot->setChecked(true);
+    if (m_viewmenu__files_menu__dotdot->isChecked())
+        m_viewmenu__files_menu__dotdot->setChecked(false);
+    else
+        m_viewmenu__files_menu__dotdot->setChecked(true);
 
-  m_file_panel->ToggleDotDot();
+    m_file_panel->ToggleDotDot();
 }
 
 void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
@@ -1585,8 +1582,8 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
     }
 
     if (parser.is_used("--bookmark-file")) {
-      m_bookmark_manager->loadBookmarks(
-                                        QString::fromStdString(parser.get<std::string>("--bookmark-file")));
+        m_bookmark_manager->loadBookmarks(
+                                          QString::fromStdString(parser.get<std::string>("--bookmark-file")));
     }
 
     if (parser.is_used("files")) {

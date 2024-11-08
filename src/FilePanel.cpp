@@ -99,16 +99,6 @@ void FilePanel::initSignalsSlots() noexcept {
     connect(m_table_view, &TableView::dragRequested, this,
             &FilePanel::dragRequested);
 
-    // Select the first item after the directory has loaded for the first time
-    // after the application starts.
-    // We disconnect the signal because we do not want to select the first item
-    // when we come up the directory and so we handle it manually without the
-    // signal
-    connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
-        selectFirstItem();
-        disconnect(m_model, &FileSystemModel::directoryLoaded, 0, 0);
-    });
-
     connect(m_model, &FileSystemModel::directoryLoadProgress, this,
             [&](const int &progress) {});
 
@@ -144,19 +134,45 @@ void FilePanel::initSignalsSlots() noexcept {
     connect(this, &FilePanel::dropCutRequested, this,
             &FilePanel::DropCutRequested);
 
-    connect(m_model, &FileSystemModel::directoryLoaded, this, [&]() {
-        // if (m_old_item_name.isEmpty() || m_old_item_name.isNull())
-        //     return;
-        // QModelIndex newIndex = m_model->getIndexFromString(m_old_item_name);
-        // if (newIndex.isValid())
-        //     m_table_view->setCurrentIndex(newIndex);
-    });
+    connect(m_model, &FileSystemModel::directoryLoaded, this,
+            [&](const int &rowCount) {
+                m_statusbar->SetNumItems(rowCount);
+                if (rowCount == 0) {
+                    m_table_view->clearSelection();
+                    return;
+                }
+                if (m_hidden_files_just_toggled) {
+                    if (!(m_highlight_text.isEmpty() ||
+                          m_highlight_text.isNull())) {
+                        QModelIndex index =
+                            m_model->getIndexFromBaseName(m_highlight_text);
+                        if (index.isValid()) {
+                            m_table_view->setCurrentIndex(index);
+                            m_table_view->scrollTo(index);
+                            return;
+                        }
+                        m_table_view->clearSelection();
+                        return;
+                    }
+                    m_hidden_files_just_toggled = false;
+                } else {
+                    qDebug() << m_highlight_row;
+                    if (m_highlight_row < rowCount) {
+                        m_table_view->selectRow(m_highlight_row);
+                    } else if (m_highlight_row > 0) {
+                        m_table_view->selectRow(m_highlight_row - 1);
+                    } else if (m_highlight_row == -1) {
+                        m_table_view->selectRow(0);
+                    }
+                    else
+                        m_table_view->clearSelection();
+                }
+            });
 
     connect(m_model->getFileSystemWatcher(),
             &QFileSystemWatcher::directoryChanged, m_model,
             [&](const QString &path) {
-                // QModelIndex oldIndex = m_table_view->currentIndex();
-                // m_old_item_name = getCurrentItemBaseName();
+                m_highlight_row = m_table_view->currentIndex().row();
                 m_model->loadDirectory(path);
             });
 }
@@ -222,27 +238,10 @@ QString FilePanel::getCurrentItem() noexcept {
 }
 
 QString FilePanel::getCurrentItemFileName() noexcept {
-    return m_model->data(m_table_view->currentIndex()).toString();
-}
-
-void FilePanel::selectFirstItem() noexcept {
-    // QTimer::singleShot(0, [&]() {
-    QModelIndex rootIndex = m_table_view->rootIndex();
-    m_item_count = m_model->rowCount(rootIndex);
-
-    // Select the first item if available
-    if (m_item_count > 0) {
-        QModelIndex firstItemIndex = m_model->index(0, 0);
-        if (firstItemIndex.isValid()) {
-            m_table_view->setCurrentIndex(firstItemIndex);
-            m_table_view->scrollTo(firstItemIndex);
-            m_table_view->selectionModel()->select(firstItemIndex,
-                                                   QItemSelectionModel::Select);
-        }
-    }
-    // Emit signal for number of items in this directory
-    emit dirItemCount(m_item_count);
-    // });
+    return m_model->data(m_table_view->currentIndex())
+      .toString()
+      .split(m_model->getSymlinkSeparator())
+      .at(0);
 }
 
 void FilePanel::handleItemDoubleClicked(const QModelIndex &index) noexcept {
@@ -263,7 +262,7 @@ void FilePanel::setCurrentDir(QString path,
         m_current_dir = path;
 
         if (SelectFirstItem)
-            selectFirstItem();
+            m_table_view->selectRow(0);
         m_search_new_directory = true;
         emit afterDirChange(m_current_dir);
     }
@@ -279,6 +278,8 @@ FilePanel::~FilePanel() {}
 
 void FilePanel::NextItem() noexcept {
     QModelIndex currentIndex = m_table_view->currentIndex();
+    if (!currentIndex.isValid())
+        return;
     int nextRow = currentIndex.row() + 1;
 
     // Loop to start
@@ -306,6 +307,8 @@ void FilePanel::NextItem() noexcept {
 
 void FilePanel::PrevItem() noexcept {
     QModelIndex currentIndex = m_table_view->currentIndex();
+    if (!currentIndex.isValid())
+        return;
     int prevRow = currentIndex.row() - 1;
 
     // // Loop
@@ -350,6 +353,10 @@ void FilePanel::SelectItem() noexcept {
 void FilePanel::SelectItemHavingString(const QString &itemName) noexcept {
     QModelIndex currentIndex = m_model->getIndexFromString(itemName);
     selectHelper(currentIndex, true);
+}
+
+void FilePanel::highlightIndex(const QModelIndex &index) noexcept {
+    m_table_view->setCurrentIndex(index);
 }
 
 void FilePanel::UpDirectory() noexcept {
@@ -921,14 +928,11 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
 
 void FilePanel::DeleteItem() noexcept {
     QString itemPath = getCurrentItem();
+    QModelIndex currentIndex = m_table_view->currentIndex();
     if (m_model->isDir(m_table_view->currentIndex())) {
         QDir dir(itemPath);
         QString inputConfirm =
-            m_inputbar
-            ->getInput(QString("Do you want to delete %1 and all of it's "
-                               "subitems ? (y, N)")
-                           .arg(itemPath))
-            .toLower();
+            m_inputbar->getInput(QString("Do you want to delete %1 and all of it's subitems ? (y, N)").arg(itemPath)).toLower();
         if (inputConfirm == "y") {
             dir.removeRecursively();
             m_statusbar->Message(QString("Deleted %1 successfully").arg(itemPath));
@@ -939,9 +943,7 @@ void FilePanel::DeleteItem() noexcept {
         }
     } else {
         QString inputConfirm =
-            m_inputbar
-            ->getInput(
-                       QString("Do you want to delete %1 ? (y, N)").arg(itemPath))
+            m_inputbar->getInput(QString("Do you want to delete %1 ? (y, N)").arg(itemPath))
             .toLower();
         if (inputConfirm == "y") {
             if (QFile::remove(itemPath)) {
@@ -955,6 +957,10 @@ void FilePanel::DeleteItem() noexcept {
             return;
         }
     }
+
+    m_highlight_row = currentIndex.row();
+    m_hidden_files_just_toggled = false;
+    m_highlight_text.clear();
 }
 
 void FilePanel::DeleteItemsGlobal() noexcept {
@@ -963,7 +969,7 @@ void FilePanel::DeleteItemsGlobal() noexcept {
     if (m_model->hasMarks()) {
         auto markedFiles = m_model->getMarkedFiles();
         QString confirm = m_inputbar->getInput(
-            QString("Do you want to delete %1 files ? (y/N)")
+                                               QString("Do you want to delete %1 files ? (y/N)")
                 .arg(markedFiles.size()))
                 .toLower();
         if (confirm == "n" || confirm.isEmpty() || confirm.isNull()) {
@@ -993,7 +999,6 @@ void FilePanel::DeleteItemsGlobal() noexcept {
         }
         m_statusbar->Message(QString("%1/%2 items deleted successfully").arg(itemsDeleted).arg(markedFiles.size()));
     }
-    selectFirstItem();
 }
 
 void FilePanel::DeleteItemsLocal() noexcept {
@@ -1002,7 +1007,7 @@ void FilePanel::DeleteItemsLocal() noexcept {
     if (m_model->hasMarksLocal()) {
         auto markedLocalFiles = m_model->getMarkedFilesLocal();
         QString confirm = m_inputbar->getInput(
-            QString("Do you want to delete %1 files ? (y/N)")
+                                               QString("Do you want to delete %1 files ? (y/N)")
                 .arg(markedLocalFiles.size()))
                 .toLower();
         if (confirm == "n" || confirm.isEmpty() || confirm.isNull()) {
@@ -1032,16 +1037,21 @@ void FilePanel::DeleteItemsLocal() noexcept {
         }
         m_statusbar->Message(QString("%1/%2 items deleted successfully").arg(itemsDeleted).arg(markedLocalFiles.size()));
     }
-    selectFirstItem();
 }
 
 void FilePanel::ToggleHiddenFiles() noexcept {
-    m_hidden_files_shown = !m_hidden_files_shown;
-    if (m_hidden_files_shown)
+  m_hidden_files_shown = !m_hidden_files_shown;
+  m_hidden_files_just_toggled = m_hidden_files_shown;
+    if (m_hidden_files_shown) {
+        m_highlight_row = m_table_view->currentIndex().row();
         m_model->addDirFilter(QDir::Hidden);
-    else
+        m_highlight_text = getCurrentItemFileName();
+    }
+    else {
         m_model->removeDirFilter(QDir::Hidden);
-    ForceUpdate();
+        m_highlight_text = getCurrentItemFileName();
+    }
+    m_model->loadDirectory(m_current_dir);
 }
 
 void FilePanel::ToggleDotDot() noexcept {
@@ -1050,7 +1060,9 @@ void FilePanel::ToggleDotDot() noexcept {
         m_model->removeDirFilter(QDir::NoDotDot);
     else
         m_model->addDirFilter(QDir::NoDotDot);
-    ForceUpdate();
+
+    m_highlight_row = m_table_view->currentIndex().row();
+    m_model->loadDirectory(m_current_dir);
 }
 
 void FilePanel::Search(QString searchExpression) noexcept {
@@ -1176,7 +1188,7 @@ void FilePanel::ChmodItem() noexcept {
     if (permissionMatch.hasMatch()) {
         QString filePath = getCurrentItem();
         if (SetPermissions(filePath, permString)) {
-            m_statusbar->Message("Permission changed successfully");
+            m_statusbar->Message(QString("Permission changed for %1 successfully").arg(filePath));
         } else {
             m_statusbar->Message("Error setting permission", MessageType::ERROR);
         }
@@ -1199,11 +1211,9 @@ void FilePanel::ChmodItemsLocal() noexcept {
     if (permissionMatch.hasMatch()) {
         for (const auto &filePath : localMarkedFiles) {
             if (SetPermissions(filePath, permString)) {
-                m_statusbar->Message(
-                                     QString("Permission changed for %1").arg(filePath));
+                m_statusbar->Message(QString("Permission changed for %1").arg(filePath));
             } else {
-                m_statusbar->Message(
-                                     QString("Error setting permission for %1").arg(filePath),
+                m_statusbar->Message(QString("Error setting permission for %1").arg(filePath),
                                      MessageType::ERROR);
             }
         }
@@ -1501,8 +1511,6 @@ void FilePanel::ToggleMouseScroll(const bool &state) noexcept {
 }
 
 void FilePanel::dragRequested() noexcept {
-
-    qDebug() << "DD";
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
@@ -1516,8 +1524,6 @@ void FilePanel::dragRequested() noexcept {
 
     mimeData->setUrls(urls);
     drag->setMimeData(mimeData);
-
-    qDebug() << static_cast<int>(m_file_op_type);
 
     Qt::DropAction dropAction;
     switch (m_file_op_type) {

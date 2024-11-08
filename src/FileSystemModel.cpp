@@ -118,7 +118,7 @@ void FileSystemModel::loadDirectory(const QString &path) noexcept {
     }
 
     endResetModel();
-    emit directoryLoaded(path);
+    emit directoryLoaded(m_fileInfoList.size());
 }
 
 int FileSystemModel::rowCount(const QModelIndex &parent) const {
@@ -352,6 +352,17 @@ FileSystemModel::getIndexFromString(const QString &path) const noexcept {
     // path
     for (int i = 0; i < m_fileInfoList.size(); ++i) {
         if (m_fileInfoList.at(i).absoluteFilePath() == path) {
+            return index(i, 0); // Return the index for the matching item
+        }
+    }
+    return QModelIndex(); // Return an invalid index if not found
+}
+
+QModelIndex FileSystemModel::getIndexFromBaseName(const QString &path) const noexcept {
+    // Iterate through m_fileInfoList to find the file info matching the given
+    // path
+    for (int i = 0; i < m_fileInfoList.size(); ++i) {
+        if (m_fileInfoList.at(i).fileName() == path) {
             return index(i, 0); // Return the index for the matching item
         }
     }

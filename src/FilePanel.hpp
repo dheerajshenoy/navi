@@ -45,6 +45,7 @@ public:
     QSet<QString> *getMarksSetPTR() noexcept { return &m_model->m_markedFiles; }
     FileSystemModel* model() noexcept { return m_model; }
 
+    void highlightIndex(const QModelIndex &index) noexcept;
     void NewFolder(const QStringList &folderName = {}) noexcept;
     void NewFile(const QStringList &fileName = {}) noexcept;
     QString getCurrentItem() noexcept;
@@ -164,7 +165,6 @@ public:
 signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
-    void dirItemCount(const int &numItems);
     void fileOperationDone(const bool &result, const QString &reason = 0);
     void dropCopyRequested(const QStringList &sourcePath);
     void dropCutRequested(const QStringList &sourcePath);
@@ -194,6 +194,7 @@ private:
     QString m_current_dir;
 
     bool m_hidden_files_shown = false;
+    bool m_hidden_files_just_toggled = false;
     bool m_dot_dot_shown = false;
 
     QAction *m_context_action_open = nullptr;
@@ -241,4 +242,6 @@ private:
 
     int m_file_name_column_index = -1;
     QColor m_current_background, m_current_foreground;
+    int m_highlight_row;
+    QString m_highlight_text;
 };
