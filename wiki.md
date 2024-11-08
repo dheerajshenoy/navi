@@ -189,11 +189,11 @@ Unmarks the current item.
 
 `unmark-local`
 
-`unmark` for **Local Marks**
+Unmarks **Local Marks**
 
 `unmark-global`
 
-`unmark` for **Global Marks**
+Unmarks **Global Marks**
 
 ### Selecting Item
 
@@ -211,13 +211,15 @@ Example: 777, 666, 000 etc.
 
 `chmod-local`
 
-Similar to `chmod` for **Local Marks**
+Change permission for **Local Marks**
 
 `chmod-global`
 
-Similar to `chmod` for **Global Marks**
+Change permission for **Global Marks**
 
 `chmod-dwim`
+
+Change permission **DWIM** style
 
 ### Renaming Files
 
@@ -229,13 +231,15 @@ Rename the highlighted item.
 
 `rename-local`
 
-`rename` for **Local Marks**
+Renames items in the **Local Marks**
 
 `rename-global`
 
-`rename` for **Global Marks**
+Renames items in the **Global Marks**
 
 `rename-dwim`
+
+Renames items in **DWIM** style
 
 ### Cutting Files
 
@@ -245,13 +249,15 @@ Cut (prepare for moving) the current item.
 
 `cut-local`
 
-`cut` for **Local Marks**
+Register cut for **Local Marks**
 
 `cut-global`
 
-`cut` for **Global Marks**
+Register cut for **Global Marks**
 
 `cut-dwim`
+
+Register cut in **DWIM** style
 
 ### Copying Files
 
@@ -261,13 +267,15 @@ Copy the current item.
 
 `copy-local`
 
-`copy` for **Local Marks**
+Register copy for **Local Marks**
 
 `copy-global`
 
-`copy` for **Global Marks**
+Register copy for **Global Marks**
 
 `copy-dwim`
+
+Register copy in **DWIM** style
 
 ### Pasting (Moving) Files
 
@@ -286,13 +294,15 @@ Delete the highlighted items(s).
 
 `delete-local`
 
-`delete` for **Local Marks**
+Deletes items in the **Local Marks**
 
 `delete-global`
 
-`delete` for **Global Marks**
+Deletes items in the **Global Marks**
 
 `delete-dwim`
+
+Deletes items in **DWIM** style
 
 ### Trashing Files
 
@@ -302,13 +312,15 @@ Trash the current item.
 
 `trash-local`
 
-`trash` for **Local Marks**
+Trashes items in **Local Marks**
 
 `trash-global`
 
-`trash` for **Global Marks**
+Trashes items in **Global Marks**
 
 `trash-dwim`
+
+Trashes items in **DWIM** style
 
 ### Filtering Items
 
@@ -327,6 +339,10 @@ Reset the appplied filter.
 Toggles the hidden files.
 
 **NOTE**: Hidden files are those items whose name start with a period like `.config`, `.gitignore` etc.
+
+`dot-dot`
+
+Toggles the .. file item.
 
 ### Panes
 
