@@ -339,6 +339,21 @@ Toggle mouse scroll support for file panel
 
 Re-reads the configuration file if it exists and loads the configurations.
 
+**** get-input
+
+Get input from the user and store the result.
+
+Args:
+
+Takes 3 arguments.
+Arg1 - Prompt string =required=
+Arg2 - Default placeholder text =optional=
+Arg3 - Selection text (piece of text that has to be selected by default) =optional=
+
+*NOTE*: This command does not return any input as of now.
+
+*TL; DR*: This feature does not work
+
 *** Shell Commands
 **** TODO shell-command
 Run a shell command /synchronously/ (blocking).
