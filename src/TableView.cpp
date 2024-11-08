@@ -39,3 +39,7 @@ void TableView::mouseMoveEvent(QMouseEvent *event) {
 
     emit dragRequested();
 }
+
+void TableView::wheelEvent(QWheelEvent *event) {
+    event->ignore();
+}

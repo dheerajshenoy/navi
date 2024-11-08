@@ -17,6 +17,7 @@
 #include <QMouseEvent>
 #include <QApplication>
 #include <QStyledItemDelegate>
+#include <QWheelEvent>
 
 #include "FileSystemModel.hpp"
 #include "TableHeaderView.hpp"
@@ -36,6 +37,7 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
  private:
     QPoint m_drag_start_position;
