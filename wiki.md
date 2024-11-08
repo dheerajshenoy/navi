@@ -408,7 +408,7 @@ Opens the marks list.
 
 Opens the messages list.
 
-<img src="./screenshot/messages_pane.png" height="800px" width="600px" />
+<img src="./screenshot/messages_pane.png" height="400px" width="500px" />
 
 `preview-pane`
 
@@ -421,6 +421,7 @@ The preview pane handles previewing images (good number of formats) and PDF docu
 This displays the list of all the shortcuts.
 
 <img src="./screenshot/shortcuts_pane.png" height="400px" width="600px" />
+
 
 ### Misc
 
