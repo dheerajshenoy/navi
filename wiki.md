@@ -10,8 +10,24 @@ for navi:
 -   [ImageMagick
     (Magick++)](https://imagemagick.org/script/magick++.php)
 -   [Poppler (Poppler-Qt6)](https://poppler.freedesktop.org/api/qt6/)
--   [ArgParse](https://github.com/p-ranav/argparse)
--   [Sol2](https://github.com/ThePhD/sol2)
+-   [Udisks](https://www.freedesktop.org/wiki/Software/udisks/)
+
+If you're on ArchLinux you can copy paste the following `pacman` code to
+install these dependencies:
+
+``` bash
+sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6 udisks2
+```
+
+If you're on Ubuntu/Debian based distribution, you can paste the
+following `apt` code to install the dependencies:
+
+``` bash
+sudo apt install qt6-base-dev lua5.4 libmagick++-dev libpoppler-dev libpoppler-cpp-dev libpoppler-qt6-dev udisks2
+```
+
+**NOTE**: I have not tested Navi on an Ubuntu machine. If there are any
+problems, please open an issue.
 
 After installing these dependencies on your system and cloning this
 project repository, you can build navi by using the following command
@@ -341,13 +357,19 @@ files once you save and close the said "rename file"\*
 
     Opens the bookmarks list.
 
+    TODO: work in progress
+
 2.  marks-pane
 
     Opens the marks list.
 
+    ![](./screenshot/marks-pane-demo.gif)
+
 3.  messages-pane
 
     Opens the messages list.
+
+    ![](./screenshot/messages_pane.png)
 
 4.  preview-pane
 
@@ -362,7 +384,9 @@ files once you save and close the said "rename file"\*
 
 5.  shortcuts-pane
 
-    This displays the list of all the shortcuts that have been assigned.
+    This displays the list of all the shortcuts.
+
+    ![](./screenshot/shortcuts_pane.png)
 
 ### Misc
 
@@ -408,6 +432,20 @@ files once you save and close the said "rename file"\*
 
     Re-reads the configuration file if it exists and loads the
     configurations.
+
+10. get-input
+
+    Get input from the user and store the result.
+
+    Args:
+
+    Takes 3 arguments. Arg1 - Prompt string `required` Arg2 - Default
+    placeholder text `optional` Arg3 - Selection text (piece of text
+    that has to be selected by default) `optional`
+
+    **NOTE**: This command does not return any input as of now.
+
+    **TL; DR**: This feature does not work
 
 ### Shell Commands
 
@@ -508,6 +546,16 @@ the file that you want to look for.
 
     Sorts the directory by *size* in **descending order** with the
     directories listed first.
+
+### Storage Device
+
+1.  drives
+
+    Opens a dialog with all the drives (mounted and unmounted). You can
+    double click on a drive to mount (or load it if it's already
+    mounted) or use the mount and unmount buttons.
+
+    ![](./screenshot/drives.png)
 
 ## Linux Only
 
@@ -643,3 +691,12 @@ keybindings = {
     { key = ".", command = "toggle-hidden-files", desc = "Toggle hidden items" },
 }
 ```
+
+# Acknowledgement
+
+Navi uses the following header-only C++ libraries. Thanks to the authors
+of the following libraries:
+
+-   [ArgParse](https://github.com/p-ranav/argparse) (for parsing command
+    line arguments)
+-   [Sol2](https://github.com/ThePhD/sol2) (for lua integration)
