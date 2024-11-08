@@ -129,6 +129,7 @@ public:
     void ToggleHeaders() noexcept;
     void SetCycle(const bool &state) noexcept;
     void ToggleCycle() noexcept;
+    void OpenWith() noexcept;
 
     void ToggleVisualLine() noexcept;
     void ToggleVisualLine(const bool &state) noexcept;
@@ -218,7 +219,7 @@ private:
 
     // This is for storing the recent file operation action like COPY, PASTE.
     // Depending on which we perform the necessary action.
-    FileOPType m_file_op_type;
+    FileOPType m_file_op_type = FileOPType::COPY;
 
     QString m_terminal = getenv("TERMINAL");
     QStringList m_terminal_args;

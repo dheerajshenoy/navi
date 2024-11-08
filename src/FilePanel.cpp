@@ -48,14 +48,21 @@ void FilePanel::initContextMenu() noexcept {
     connect(m_context_action_rename, &QAction::triggered, this,
             [&]() { RenameDWIM(); });
 
+    connect(m_context_action_cut, &QAction::triggered, this,
+            [&]() { CutDWIM(); });
+
     connect(m_context_action_open_terminal, &QAction::triggered, this,
             [&]() { OpenTerminal(); });
 
     connect(m_context_action_open, &QAction::triggered, this,
             [&]() { SelectItem(); });
 
+    connect(m_context_action_open_with, &QAction::triggered, this,
+            [&]() { OpenWith(); });
+
     connect(m_context_action_copy, &QAction::triggered, this,
             [&]() { CopyDWIM(); });
+
     connect(m_context_action_paste, &QAction::triggered, this,
             [&]() { PasteItems(); });
 
@@ -1495,6 +1502,7 @@ void FilePanel::ToggleMouseScroll(const bool &state) noexcept {
 
 void FilePanel::dragRequested() noexcept {
 
+    qDebug() << "DD";
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
@@ -1509,8 +1517,9 @@ void FilePanel::dragRequested() noexcept {
     mimeData->setUrls(urls);
     drag->setMimeData(mimeData);
 
-    Qt::DropAction dropAction;
+    qDebug() << static_cast<int>(m_file_op_type);
 
+    Qt::DropAction dropAction;
     switch (m_file_op_type) {
 
     case FileOPType::COPY:
@@ -1575,3 +1584,8 @@ void FilePanel::ToggleVisualLine(const bool &state) noexcept {
 void FilePanel::AsyncShellCommand(const QString &command) noexcept {}
 
 void FilePanel::ShellCommand(const QString &command) noexcept {}
+
+void FilePanel::OpenWith() noexcept {
+
+
+}
