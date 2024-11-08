@@ -69,9 +69,10 @@ directly from a text file. Bookmarks are read and stored in plain text
 files that has the following structure:
 
 ```python
-​# This is a comment – Any lines that begin with \# are ignored and empty lines are ignored as well.
+​# This is a comment – Any lines that begin with # are ignored and empty lines are ignored as well.
 
-bookmarktitle1 bookmarkdirectorypath1 bookmarktitle2 bookmarkdirectorypath2
+bookmarktitle1 bookmarkdirectorypath1
+bookmarktitle2 bookmarkdirectorypath2
 ```
 
 ## Interactive Commands
