@@ -80,11 +80,14 @@ void Navi::initConfiguration() noexcept {
                             static_cast<int>(totalSize * fraction)};
                 m_splitter->setSizes(sizes);
 
-                auto max_file_size = QString::fromStdString(
-                                                            preview_pane["max_size"].get_or<std::string>("10M"));
+                auto max_file_size = QString::fromStdString(preview_pane["max_size"].get_or<std::string>("10M"));
 
                 auto max_file_bytes = utils::parseFileSize(max_file_size);
                 m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
+
+                auto syntax_highlighting =
+                    preview_pane["syntax_highlighting"].get_or(true);
+                m_preview_panel->SetSyntaxHighlighting(syntax_highlighting);
             }
 
             // Menu bar
@@ -427,8 +430,12 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
-    commandMap["execute-extended-command"] = [this](const QStringList &args) {
-        ExecuteExtendedCommand();
+  commandMap["execute-extended-command"] = [this](const QStringList &args) {
+    ExecuteExtendedCommand();
+  };
+
+  commandMap["syntax-highlight"] = [this](const QStringList &args) {
+      m_preview_panel->ToggleSyntaxHighlight();
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
@@ -765,8 +772,12 @@ void Navi::setupCommandMap() noexcept {
         m_file_panel->SearchPrev();
     };
 
-    m_input_completion_model = new QStringListModel(m_valid_command_list);
-    m_inputbar->setCompleterModel(m_input_completion_model);
+    m_command_completion_model = new QStringListModel(m_valid_command_list);
+    m_inputbar->addCompleterModel(m_command_completion_model,
+                                  Inputbar::CompletionModelType::COMMAND);
+
+    m_search_completion_model = new QStringListModel(m_search_history_list);
+    m_inputbar->addCompleterModel(m_search_completion_model, Inputbar::CompletionModelType::SEARCH);
 }
 
 void Navi::EditBookmark(const QStringList &args) noexcept {
@@ -1148,7 +1159,7 @@ void Navi::initKeybinds() noexcept {
             [&]() { m_file_panel->DeleteDWIM(); });
 
     connect(kb_search, &QShortcut::activated, m_file_panel,
-            [&]() { m_file_panel->Search(); });
+            [&]() { Search(); });
 
     connect(kb_search_next, &QShortcut::activated, m_file_panel,
             &FilePanel::SearchNext);
@@ -1179,7 +1190,8 @@ void Navi::initKeybinds() noexcept {
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-    m_inputbar->enableCommandCompletions();
+    // m_inputbar->enableCommandCompletions();
+    m_inputbar->setCurrentCompletionModel(Inputbar::CompletionModelType::COMMAND);
     QString command = m_inputbar->getInput("Command");
     ProcessCommand(command);
 }
@@ -1678,4 +1690,11 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
     if (!error.isEmpty()) {
         m_statusbar->Message(QString("Unmount error (%1)").arg(error.trimmed()), MessageType::ERROR);
     }
+}
+
+void Navi::Search() noexcept {
+    m_inputbar->setCurrentCompletionModel(Inputbar::CompletionModelType::SEARCH);
+    QString searchText = m_inputbar->getInput("Search");
+    m_search_history_list.append(searchText);
+    m_file_panel->Search(searchText);
 }

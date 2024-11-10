@@ -63,14 +63,14 @@
 - [x] Shortcuts Widget
 - [x] Mount drives
 - [x] List drives
+- [x] Dotfiles focus file
+- [x] Select renamed file after renaming
+- [x] History for inputbar
+- [x] Show search match count
 - [ ] Open with menu
 - [ ] Rich text in file panel
 - [ ] Shell commands
 - [ ] Undo Operations
-- [ ] Show search match count
 - [ ] Add file operation cancel UI
-- [ ] Select renamed file after renaming
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [ ] Tabs
-- [ ] History for inputbar
-- [ ] Dotfiles focus file

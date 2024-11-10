@@ -12,12 +12,10 @@
 #include <QWidget>
 #include "utils.hpp"
 
-
 enum class MessageType { INFO = 0, WARNING, ERROR };
 
 class Statusbar : public QWidget {
     Q_OBJECT
-
 
 signals:
     void visibilityChanged(const bool &state);
@@ -35,6 +33,8 @@ public:
     void UpdateFile() noexcept;
     void SetFilterMode(const bool state) noexcept;
     void SetNumItems(const int &numItems) noexcept;
+    void SetSearchMatchCount(const int &totalCount) noexcept;
+    void SetSearchMatchIndex(const int &matchIndex) noexcept;
 
     void show() noexcept {
         emit visibilityChanged(true);
@@ -58,6 +58,10 @@ private:
     QLabel *m_filter_label = new QLabel("FILTER");
     QLabel *m_num_items_label = new QLabel();
     QLabel *m_visual_line_mode_label = new QLabel("VISUAL LINE");
+    QLabel *m_search_match_label = new QLabel();
+
+    int m_search_total_count = -1;
+    int m_search_current_index = -1;
 
     QLocale m_locale;
     QString m_file_path;

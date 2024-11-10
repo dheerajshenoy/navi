@@ -1,4 +1,5 @@
 #include "Inputbar.hpp"
+#include "FilePathWidget.hpp"
 
 Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     this->setLayout(m_layout);
@@ -10,11 +11,12 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     m_layout->addWidget(m_line_edit);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
-
+    connect(m_line_edit, &LineEdit::historyUp, this, &Inputbar::historyUp);
+    connect(m_line_edit, &LineEdit::historyDown, this, &Inputbar::historyDown);
     connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
-
     connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {
         this->hide();
+        m_history_index = -1;
     });
 }
 
@@ -43,7 +45,18 @@ QString Inputbar::getInput(const QString &prompt,
 
     // Capture input and exit the loop upon Enter press
     auto captureInput = [this, &userInput, &loop]() {
+
+
         userInput = m_line_edit->text();
+        switch (m_current_completion_type) {
+        case CompletionModelType::SEARCH:
+            m_search_history_list.append(userInput);
+            break;
+
+        case CompletionModelType::COMMAND:
+            m_command_history_list.append(userInput);
+            break;
+        }
         loop.quit();
     };
 
@@ -62,8 +75,16 @@ QString Inputbar::getInput(const QString &prompt,
 
 Inputbar::~Inputbar() {}
 
-void Inputbar::setCompleterModel(QAbstractItemModel *model) noexcept {
-    m_line_edit_completer->setModel(model);
+void Inputbar::addCompleterModel(QAbstractItemModel *model,
+                                 const CompletionModelType &type) noexcept {
+    m_completer_hash.insert(type, model);
+    // m_line_edit_completer->setModel(model);
+}
+
+void Inputbar::setCurrentCompletionModel(const CompletionModelType &type) noexcept {
+    if (m_completer_hash.contains(type))
+        m_line_edit_completer->setModel(m_completer_hash[type]);
+    m_current_completion_type = type;
 }
 
 void Inputbar::enableCommandCompletions() noexcept {
@@ -91,4 +112,68 @@ void Inputbar::setFontFamily(const QString &family) noexcept {
     QFont font = m_line_edit->font();
     font.setFamily(family);
     m_line_edit->setFont(font);
+}
+
+void Inputbar::historyUp() noexcept {
+    QString historyText;
+
+    qDebug() << m_history_index << m_search_history_list.size();
+    switch (m_current_completion_type) {
+
+    case CompletionModelType::SEARCH: {
+        auto size = m_search_history_list.size();
+        if (m_search_history_list.isEmpty() ||
+            m_history_index >= size - 1)
+            return;
+        m_history_index++;
+        historyText = m_search_history_list.at(size - m_history_index - 1);
+        if (historyText.isEmpty() || historyText.isNull())
+            return;
+    } break;
+
+    case CompletionModelType::COMMAND: {
+        auto size = m_command_history_list.size();
+        if (m_command_history_list.isEmpty() ||
+            m_history_index >= size - 1)
+            return;
+        m_history_index++;
+        historyText = m_command_history_list.at(size - m_history_index - 1);
+        if (historyText.isEmpty() || historyText.isNull())
+            return;
+    } break;
+
+    default:
+        return;
+    }
+
+    m_line_edit->setText(historyText);
+
+}
+
+void Inputbar::historyDown() noexcept {
+    QString historyText;
+    switch (m_current_completion_type) {
+
+    case CompletionModelType::SEARCH: {
+        if (m_search_history_list.isEmpty() || m_history_index <= 0)
+            return;
+        auto size = m_command_history_list.size();
+        m_history_index--;
+        historyText = m_search_history_list.at(size - m_history_index - 1);
+        if (historyText.isEmpty() || historyText.isNull())
+            return;
+    } break;
+
+    case CompletionModelType::COMMAND: {
+        if (m_command_history_list.isEmpty() || m_history_index <= 0)
+            return;
+        auto size = m_command_history_list.size();
+        m_history_index--;
+        historyText = m_command_history_list.at(size - m_history_index - 1);
+        if (historyText.isEmpty() || historyText.isNull())
+            return;
+    } break;
+    }
+
+    m_line_edit->setText(historyText);
 }

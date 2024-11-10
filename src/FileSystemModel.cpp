@@ -369,6 +369,15 @@ QModelIndex FileSystemModel::getIndexFromBaseName(const QString &path) const noe
     return QModelIndex(); // Return an invalid index if not found
 }
 
+int FileSystemModel::getRowFromBaseName(const QString &path) const noexcept {
+
+    for (int i=0; i < m_fileInfoList.size(); ++i)
+        if (m_fileInfoList.at(i).fileName() == path)
+            return i;
+
+    return -1;
+}
+
 bool FileSystemModel::removeMarkedFile(const QModelIndex &index) noexcept {
     QString path = getPathFromIndex(index);
     if (m_markedFiles.contains(path) && m_markedFiles.remove(path)) {

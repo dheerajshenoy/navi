@@ -97,6 +97,8 @@ public:
     void SortByDate(const bool &reverse = false) noexcept;
     void SortBySize(const bool &reverse = false) noexcept;
 
+    void Search() noexcept;
+
     void ToggleDrivesWidget(const bool &state) noexcept;
     void ToggleDrivesWidget() noexcept;
 
@@ -329,10 +331,12 @@ private:
       "visual-select",
       "mouse-scroll",
       "drives",
+      "syntax-highlight",
 
     };
 
-    QStringListModel *m_input_completion_model = nullptr;
+    QStringListModel *m_command_completion_model = nullptr;
+    QStringListModel *m_search_completion_model = nullptr;
 
     MessagesBuffer *m_log_buffer = nullptr;
     MarksBuffer *m_marks_buffer = nullptr;
@@ -344,16 +348,12 @@ private:
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
     sol::state lua;
-
     ShortcutsWidget *m_shortcuts_widget = nullptr;
-
     QList<Keybind> m_keybind_list;
-
     TabBarWidget *m_tab_bar = nullptr;
-
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
-
     QStringList m_default_location_list;
     DriveWidget *m_drives_widget = new DriveWidget();
+    QStringList m_search_history_list = {};
 };

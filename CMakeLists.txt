@@ -52,24 +52,27 @@ qt_add_executable(${PROJECT_NAME}
   src/Statusbar.cpp
   src/Inputbar.cpp
   src/utils.cpp
-  src/TreeSitterTextEdit.cpp
+  # src/TreeSitterTextEdit.cpp
   src/FilePropertyWidget.cpp
   src/BookmarkManager.cpp
   src/BookmarkWidget.cpp
   src/ShortcutsWidget.cpp
   src/NaviWindow.cpp
   src/DriveWidget.cpp
+  src/SyntaxHighlighter.cpp
 
+  src/TextEdit.hpp
   src/FileWorker.hpp
   src/FileSystemModel.cpp
   src/MessagesBuffer.hpp
-  src/FilePreviewWorker.hpp
   src/MarksBuffer.hpp
   src/TableHeaderView.hpp
   src/VerticalHeaderView.hpp
   src/argparse.hpp
   src/TabBarWidget.hpp
   src/StorageDevice.hpp
+  src/ImageWidget.hpp
+  src/FilePreviewWorker.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules

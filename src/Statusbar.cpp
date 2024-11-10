@@ -15,6 +15,8 @@ Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
   m_layout->addStretch();
   m_layout->addWidget(m_filter_label);
   m_layout->addSpacing(10);
+  m_layout->addWidget(m_search_match_label);
+  m_layout->addSpacing(10);
   m_layout->addWidget(new QLabel("Items: "));
   m_layout->addWidget(m_num_items_label);
   m_layout->addSpacing(10);
@@ -93,4 +95,14 @@ void Statusbar::SetVisualLineMode(const bool &state) noexcept {
     m_visual_line_mode_label->show();
   else
     m_visual_line_mode_label->hide();
+}
+
+void Statusbar::SetSearchMatchIndex(const int &searchIndex) noexcept {
+    m_search_current_index = searchIndex + 1;
+    m_search_match_label->setText(QString("[%1/%2]").arg(m_search_current_index).arg(m_search_total_count));
+
+}
+
+void Statusbar::SetSearchMatchCount(const int &totalCount) noexcept {
+    m_search_total_count = totalCount;
 }

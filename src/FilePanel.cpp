@@ -156,7 +156,13 @@ void FilePanel::initSignalsSlots() noexcept {
                     }
                     m_hidden_files_just_toggled = false;
                 } else {
-                    qDebug() << m_highlight_row;
+
+                    if (!(m_highlight_text.isEmpty())) {
+                        m_table_view->selectRow(m_model->getRowFromBaseName(m_highlight_text));
+                        m_highlight_text.clear();
+                        return;
+                    }
+
                     if (m_highlight_row < rowCount) {
                         m_table_view->selectRow(m_highlight_row);
                     } else if (m_highlight_row > 0) {
@@ -680,6 +686,8 @@ void FilePanel::RenameItem() noexcept {
         m_statusbar->Message("Rename successful");
         m_model->removeMarkedFile(oldName);
     }
+
+    m_highlight_text = newFileName;
 }
 
 void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
@@ -1079,6 +1087,8 @@ void FilePanel::Search(QString searchExpression) noexcept {
     m_search_index_list_index = 0;
     m_search_new_directory = false;
     m_search_text = searchExpression;
+    m_statusbar->SetSearchMatchCount(m_search_index_list.size());
+    m_statusbar->SetSearchMatchIndex(m_search_index_list_index);
 }
 
 void FilePanel::SearchNext() noexcept {
@@ -1093,11 +1103,11 @@ void FilePanel::SearchNext() noexcept {
     m_search_index_list_index++;
     if (m_search_index_list_index > m_search_index_list.size() - 1) {
         m_search_index_list_index = 0;
-        m_statusbar->Message("Search reached BOTTOM of the directory");
+        m_statusbar->Message("Search reached TOP of the directory");
     }
 
-    m_table_view->setCurrentIndex(
-                                  m_search_index_list.at(m_search_index_list_index));
+    m_table_view->setCurrentIndex(m_search_index_list.at(m_search_index_list_index));
+    m_statusbar->SetSearchMatchIndex(m_search_index_list_index);
 }
 
 void FilePanel::SearchPrev() noexcept {
@@ -1113,10 +1123,11 @@ void FilePanel::SearchPrev() noexcept {
     m_search_index_list_index--;
     if (m_search_index_list_index < 0) {
         m_search_index_list_index = m_search_index_list.size() - 1;
-        m_table_view->setCurrentIndex(
-                                      m_search_index_list.at(m_search_index_list_index));
-        m_statusbar->Message("Search reached TOP of the directory");
+        m_statusbar->Message("Search reached BOTTOM of the directory");
     }
+
+    m_table_view->setCurrentIndex(m_search_index_list.at(m_search_index_list_index));
+    m_statusbar->SetSearchMatchIndex(m_search_index_list_index);
 }
 
 void FilePanel::contextMenuEvent(QContextMenuEvent *event) {

@@ -4,16 +4,21 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
     // this->setContentsMargins(0, 0, 0, 0);
 
-    m_img_preview_widget->setHidden(true);
+    m_img_widget->setHidden(true);
     m_text_preview_widget->setHidden(true);
 
+    // m_img_widget->setAlignment(Qt::AlignmentFlag::AlignTop);
+    m_img_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    m_img_preview_widget->setAlignment(Qt::AlignmentFlag::AlignTop);
-    m_img_preview_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_text_preview_widget->setAcceptRichText(true);
     m_text_preview_widget->setReadOnly(true);
     // m_text_preview_widget->setFrameShadow(QTextEdit::Shadow::Plain);
     // m_text_preview_widget->setFrameStyle(0);
+
+    m_image_preview_timer = new QTimer(this);
+    m_image_preview_timer->setSingleShot(true);
+
+    connect(m_image_preview_timer, &QTimer::timeout, this, &PreviewPanel::loadImageAfterDelay);
 
     m_worker = new FilePreviewWorker();
     m_workerThread = new QThread(this);
@@ -27,39 +32,44 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
     });
 
     this->addWidget(m_text_preview_widget);
-    this->addWidget(m_img_preview_widget);
+    this->addWidget(m_img_widget);
     this->addWidget(m_empty_widget);
 
     m_workerThread->start();
 }
 
 PreviewPanel::~PreviewPanel() {
-    cancelPreview();
     m_workerThread->quit();
     m_workerThread->wait();  // Ensure the worker thread stops before cleanup
     delete m_worker;
 }
 
-void PreviewPanel::showImagePreview(const QPixmap &preview) noexcept {
+void PreviewPanel::showImagePreview(const QImage &image) noexcept {
     this->setCurrentIndex(1);
-    m_img_preview_widget->setPixmap(preview.scaled(400, 400, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    m_img_widget->setImage(image);
 }
 
-void PreviewPanel::showTextPreview(const QString &preview) noexcept {
+void PreviewPanel::showTextPreview(const QString &preview,
+                                   const SyntaxHighlighter::Language &language) noexcept {
     this->setCurrentIndex(0);
+
+    if (m_syntax_highlighting_enabled)
+        m_text_preview_widget->setLanguage(language);
     m_text_preview_widget->setText(preview);
 }
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
-    cancelPreview();  // Cancel any ongoing preview
-    m_worker->reset(); // Reset the worker's cancellation state
-    QMetaObject::invokeMethod(m_worker, "loadPreview", Q_ARG(QString, filePath));
+    m_img_widget->clear();
+    m_image_filepath = filePath;
+    m_image_preview_timer->start(150);
 }
 
-void PreviewPanel::cancelPreview() noexcept {
-    m_worker->cancel();  // Signal cancellation to the worker
+void PreviewPanel::loadImageAfterDelay() noexcept {
+    QMetaObject::invokeMethod(m_worker, "loadPreview",
+                              Q_ARG(QString, m_image_filepath));
 }
 
 void PreviewPanel::clearPreview() noexcept {
-    m_img_preview_widget->clear();
+    m_img_widget->clear();
+
 }

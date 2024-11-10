@@ -74,6 +74,7 @@ public:
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
     QModelIndex getIndexFromBaseName(const QString &path) const noexcept;
+    int getRowFromBaseName(const QString &path) const noexcept;
     uint getMarkedFilesCount() noexcept;
     uint getMarkedFilesCountLocal() noexcept;
     void clearMarkedFilesList() noexcept;
