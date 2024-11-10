@@ -441,17 +441,21 @@ Focuses the path widget and sets it in edit mode.
 
 Display the property of the currently focused item.
 
-`toggle-header`
+`header`
 
 Toggle the display of header information.
 
-`toggle-cycle`
+`cycle`
 
 Toggle the cycle (last item to first item and vice-versa) during navigation.
 
 `refresh`
 
 Force refresh the current directory.
+
+`syntax-highlight`
+
+Toggle the syntax highlight for text preview
 
 **NOTE: By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.**
 
@@ -607,17 +611,18 @@ settings = {
         },
 
         preview_pane = {
-            shown = false, -- visibility
+            shown = false,
             max_file_size = "10M", -- max file size to preview
-            fraction = 0.2, -- fraction of width for preview pane
+            fraction = 0.2,
+            syntax_highlight = true,
         },
 
         menu_bar = {
-            shown = false -- visibility
+            shown = false
         },
 
         status_bar = {
-            shown = true -- visibility
+            shown = true
         },
 
         input_bar = {
@@ -627,31 +632,27 @@ settings = {
         },
 
         path_bar = {
-            shown = true, -- visibility
+            shown = true,
         },
 
         file_pane = {
             symlink = {
-                shown = true, -- visibility
+                shown = true,
                 foreground = "#FF5000",
-                separator = "->", -- separator between item name and symlink name
+                separator = "->",
             },
             highlight = {
                 foreground = "#000",
                 background = "#f05af4",
             },
-
-            -- name can be anything
-            -- type can only be file_name, file_permission, file_size, file_date
-            -- *Atleast one file_name type is required*
             columns = {
                 { name = "NAME", type = "file_name" },
                 { name = "PERM", type = "file_permission"},
                 -- modified_date = "Date",
                 -- size = "SIZE"
             },
-            headers = false, -- headers visibility
-            cycle = false, -- cycle for last item and first item
+            headers = false,
+            cycle = false,
             mark = {
                 foreground = "#FF5000",
                 background = nil,
@@ -691,11 +692,11 @@ keybindings = {
     { key = "/", command = "search", desc = "Search (regex)" },
     { key = "n", command = "search-next", desc = "Search next" },
     { key = "Shift+n", command = "search-prev", desc = "Search previous" },
-    { key = "Ctrl+m", command = "toggle-menu-bar", desc = "Toggle menu bar" },
+    { key = "Ctrl+m", command = "menu-bar", desc = "Toggle menu bar" },
     { key = "Ctrl+p", command = "preview-pane", desc = "Toggle preview pane" },
     { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
     { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
-    { key = ".", command = "toggle-hidden-files", desc = "Toggle hidden items" },
+    { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
 }
 ```
 

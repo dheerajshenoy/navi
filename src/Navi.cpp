@@ -86,7 +86,7 @@ void Navi::initConfiguration() noexcept {
                 m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
 
                 auto syntax_highlighting =
-                    preview_pane["syntax_highlighting"].get_or(true);
+                    preview_pane["syntax_highlight"].get_or(true);
                 m_preview_panel->SetSyntaxHighlighting(syntax_highlighting);
             }
 
