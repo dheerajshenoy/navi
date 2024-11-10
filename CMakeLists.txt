@@ -63,6 +63,7 @@ qt_add_executable(${PROJECT_NAME}
   src/DriveWidget.cpp
   src/SyntaxHighlighter.cpp
   src/SyntaxHighlighterTS.cpp
+  src/FilePanelWidget.cpp
 
   src/TextEdit.hpp
   src/FileWorker.hpp
@@ -72,10 +73,11 @@ qt_add_executable(${PROJECT_NAME}
   src/TableHeaderView.hpp
   src/VerticalHeaderView.hpp
   src/argparse.hpp
-  src/TabBarWidget.hpp
+  src/TabWidget.hpp
   src/StorageDevice.hpp
   src/ImageWidget.hpp
   src/FilePreviewWorker.hpp
+
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules

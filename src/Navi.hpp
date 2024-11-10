@@ -23,6 +23,7 @@
 #include <QStringView>
 #include <QActionGroup>
 #include "StorageDevice.hpp"
+#include "FilePanelWidget.hpp"
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -44,7 +45,7 @@ static const QString CONFIG_FILE_PATH =
 #include "BookmarkManager.hpp"
 #include "BookmarkWidget.hpp"
 #include "ShortcutsWidget.hpp"
-#include "TabBarWidget.hpp"
+#include "TabWidget.hpp"
 #include "sol/sol.hpp"
 #include "argparse.hpp"
 #include "DriveWidget.hpp"
@@ -96,6 +97,7 @@ public:
     void SortByName(const bool &reverse = false) noexcept;
     void SortByDate(const bool &reverse = false) noexcept;
     void SortBySize(const bool &reverse = false) noexcept;
+    void AddTab(const QString &filePath = "~") noexcept;
 
     void Search() noexcept;
 
@@ -126,11 +128,20 @@ public:
     void ToggleDotDot(const bool &state) noexcept;
     void ToggleDotDot() noexcept;
 
+    void TabNew() noexcept;
+    void TabDelete() noexcept;
+
     void MountDrive(const QString &driveName) noexcept;
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
 
+    FilePanel* getCurrentFilePanel() noexcept;
+    inline FilePanelWidget *getCurrentTab() noexcept {
+        return qobject_cast<FilePanelWidget*>(m_tab_widget->currentWidget());
+    }
+
 private:
+    void firstTab(const QString &filePath = "~") noexcept;
     void initConfiguration() noexcept;
     void chmodHelper() noexcept;
     void initBookmarks() noexcept;
@@ -144,7 +155,7 @@ private:
     QString getCurrentFile() noexcept;
     void ProcessCommand(const QString &commandtext) noexcept;
     void generateKeybinds() noexcept;
-    void initTabBar() noexcept;
+    void initTabs() noexcept;
 
 
     QWidget *m_widget = new QWidget();
@@ -163,7 +174,6 @@ private:
     QAction *m_filemenu__new_tab = nullptr;
     QAction *m_filemenu__create_new_folder = nullptr;
     QAction *m_filemenu__create_new_file = nullptr;
-
     QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
     QAction *m_viewmenu__statusbar = nullptr;
@@ -173,25 +183,19 @@ private:
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
     QAction *m_viewmenu__shortcuts_widget = nullptr;
     QAction *m_viewmenu__drives_widget = nullptr;
-
     QMenu *m_viewmenu__sort_menu = nullptr;
-
     QActionGroup *m_viewmenu__sort_by_group = nullptr;
     QAction *m_viewmenu__sort_by_name = nullptr;
     QAction *m_viewmenu__sort_by_size = nullptr;
     QAction *m_viewmenu__sort_by_date = nullptr;
-
     QActionGroup *m_viewmenu__sort_asc_desc_group = nullptr;
     QAction *m_viewmenu__sort_ascending = nullptr;
     QAction *m_viewmenu__sort_descending = nullptr;
-
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
     QAction *m_viewmenu__files_menu__hidden = nullptr;
-
     QAction *m_tools_menu__search = nullptr;
     QAction *m_tools_menu__command_in_folder = nullptr;
-
     QAction *m_edit_menu__copy = nullptr;
     QAction *m_edit_menu__paste = nullptr;
     QAction *m_edit_menu__cut = nullptr;
@@ -200,7 +204,6 @@ private:
     QAction *m_edit_menu__trash = nullptr;
 
     Inputbar *m_inputbar = nullptr;
-    FilePanel *m_file_panel = nullptr;
     PreviewPanel *m_preview_panel = nullptr;
     FilePathWidget *m_file_path_widget = nullptr;
     Statusbar *m_statusbar = nullptr;
@@ -315,6 +318,14 @@ private:
       // Input,
       "get-input",
 
+      // Tab,
+      "tab-new",
+      "tab-next",
+      "tab-prev",
+      "tab-delete",
+      "tab-move",
+      "tab-select",
+
       // misc
       "filter",
       "reset-filter",
@@ -350,7 +361,7 @@ private:
     sol::state lua;
     ShortcutsWidget *m_shortcuts_widget = nullptr;
     QList<Keybind> m_keybind_list;
-    TabBarWidget *m_tab_bar = nullptr;
+    TabWidget *m_tab_widget = nullptr;
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
     QStringList m_default_location_list;

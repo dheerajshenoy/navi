@@ -1,8 +1,9 @@
 #include "FilePanel.hpp"
-#include "FileWorker.hpp"
 
-FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
-: m_inputbar(inputBar), m_statusbar(statusBar), QWidget(parent) {
+FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar,
+                     QString initDirectory, QWidget *parent)
+: QWidget(parent), m_inputbar(inputBar), m_statusbar(statusBar), m_current_dir(initDirectory) {
+
     this->setLayout(m_layout);
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
@@ -25,6 +26,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
     // QHeaderView::Interactive);
     setAcceptDrops(true);
     this->show();
+    setCurrentDir(m_current_dir);
 }
 
 void FilePanel::ResetFilter() noexcept {
@@ -136,6 +138,7 @@ void FilePanel::initSignalsSlots() noexcept {
 
     connect(m_model, &FileSystemModel::directoryLoaded, this,
             [&](const int &rowCount) {
+                m_item_count = rowCount;
                 m_statusbar->SetNumItems(rowCount);
                 if (rowCount == 0) {
                     m_table_view->clearSelection();
@@ -1603,6 +1606,5 @@ void FilePanel::AsyncShellCommand(const QString &command) noexcept {}
 void FilePanel::ShellCommand(const QString &command) noexcept {}
 
 void FilePanel::OpenWith() noexcept {
-
 
 }

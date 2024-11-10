@@ -36,7 +36,9 @@
 class FilePanel : public QWidget {
     Q_OBJECT
 public:
-    FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
+  FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr,
+            QString initDirectory = "~",
+            QWidget *parent = nullptr);
     ~FilePanel();
 
     QTableView* tableView() { return m_table_view; }
@@ -135,6 +137,8 @@ public:
     void ToggleVisualLine() noexcept;
     void ToggleVisualLine(const bool &state) noexcept;
 
+    Inputbar *m_inputbar;
+    Statusbar *m_statusbar;
     void ToggleMouseScroll() noexcept;
     void ToggleMouseScroll(const bool &state) noexcept;
 
@@ -161,6 +165,8 @@ public:
                                   .arg(m_current_background.name())
                                   .arg(m_current_foreground.name()));
     }
+
+    inline unsigned int getNumItems() { return m_item_count; }
 
 signals:
     void afterDirChange(QString path);
@@ -191,7 +197,6 @@ private:
     TableView *m_table_view = new TableView();
     FileSystemModel *m_model = new FileSystemModel();
 
-    QString m_current_dir;
 
     bool m_hidden_files_shown = false;
     bool m_hidden_files_just_toggled = false;
@@ -225,8 +230,7 @@ private:
     QString m_terminal = getenv("TERMINAL");
     QStringList m_terminal_args;
 
-    Inputbar *m_inputbar;
-    Statusbar *m_statusbar;
+    QString m_current_dir;
 
     // This is used to store the filenames that are marked for cutting or copying.
     QStringList m_register_files_list;
