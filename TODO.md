@@ -67,6 +67,7 @@
 - [x] Select renamed file after renaming
 - [x] History for inputbar
 - [x] Show search match count
+- [x] Tree-sitter faster syntax highlighting support
 - [ ] Open with menu
 - [ ] Rich text in file panel
 - [ ] Shell commands

@@ -1,4 +1,5 @@
 #include "PreviewPanel.hpp"
+#include "SyntaxHighlighterTS.hpp"
 
 PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
@@ -50,9 +51,8 @@ void PreviewPanel::showImagePreview(const QImage &image) noexcept {
 }
 
 void PreviewPanel::showTextPreview(const QString &preview,
-                                   const SyntaxHighlighter::Language &language) noexcept {
+                                   const SyntaxHighlighterTS::Language &language) noexcept {
     this->setCurrentIndex(0);
-
     if (m_syntax_highlighting_enabled)
         m_text_preview_widget->setLanguage(language);
     m_text_preview_widget->setText(preview);
@@ -69,7 +69,4 @@ void PreviewPanel::loadImageAfterDelay() noexcept {
                               Q_ARG(QString, m_image_filepath));
 }
 
-void PreviewPanel::clearPreview() noexcept {
-    m_img_widget->clear();
-
-}
+void PreviewPanel::clearPreview() noexcept { m_img_widget->clear(); }

@@ -12,7 +12,7 @@
 #include <poppler/qt6/poppler-qt6.h>
 #include <QPainter>
 #include <qnamespace.h>
-#include "SyntaxHighlighter.hpp"
+#include "SyntaxHighlighterTS.hpp"
 
 class FilePreviewWorker : public QObject {
     Q_OBJECT
@@ -73,16 +73,19 @@ void loadPreview(const QString &filePath) {
             return;
         }
         // detect language
-        SyntaxHighlighter::Language language;
+        SyntaxHighlighterTS::Language language;
         QString lang = filePath.mid(filePath.lastIndexOf("."));
-        qDebug() << lang;
 
         if (lang == ".py" || lang == ".pyx" || lang == ".pyc")
-            language = SyntaxHighlighter::Language::PYTHON;
+            language = SyntaxHighlighterTS::Language::PYTHON;
         else if (lang == ".cpp" || lang == ".hpp")
-            language = SyntaxHighlighter::Language::CPP;
+            language = SyntaxHighlighterTS::Language::CPP;
         else if (lang == ".c" || lang == ".h")
-            language = SyntaxHighlighter::Language::C;
+            language = SyntaxHighlighterTS::Language::C;
+        else if (lang == ".md")
+            language = SyntaxHighlighterTS::Language::MARKDOWN;
+        else if (lang == ".lua")
+            language = SyntaxHighlighterTS::Language::LUA;
 
         // Load text preview
         QFile file(filePath);
@@ -122,7 +125,7 @@ signals:
     void imagePreviewReady(const QImage &pix);
     void errorOccurred(const QString &errorMessage);
     void textPreviewReady(const QString &textContent,
-                        const SyntaxHighlighter::Language &language);
+                        const SyntaxHighlighterTS::Language &language);
     void clearPreview();
 
 private:

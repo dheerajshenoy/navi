@@ -15,13 +15,14 @@ set(CMAKE_INSTALL_PREFIX "/usr/")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Build type of Release/Debug
-set(CMAKE_BUILD_TYPE "Release")
+# set(CMAKE_BUILD_TYPE "Release")
 
 # Export compile_commands.json for IDE integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# -O2
 # Set flags for compilers
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")  # Add more flags as necessary
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -Og")  # Add more flags as necessary
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
 set(CMAKE_AUTOMOC ON)
@@ -35,6 +36,7 @@ add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(POPPLER REQUIRED poppler poppler-cpp)
+pkg_check_modules(TreeSitter REQUIRED tree-sitter tree-sitter-query)
 find_package(Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
@@ -60,6 +62,7 @@ qt_add_executable(${PROJECT_NAME}
   src/NaviWindow.cpp
   src/DriveWidget.cpp
   src/SyntaxHighlighter.cpp
+  src/SyntaxHighlighterTS.cpp
 
   src/TextEdit.hpp
   src/FileWorker.hpp
@@ -76,10 +79,10 @@ qt_add_executable(${PROJECT_NAME}
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-python ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-query tree-sitter-python tree-sitter-c tree-sitter-lua tree-sitter-markdown ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6)
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${TREESITTER_INCLUDE_DIR} ${LUA_INCLUDE_DIR})
 
 add_custom_target(run
   COMMAND ${PROJECT_NAME}

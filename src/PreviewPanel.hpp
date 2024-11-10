@@ -17,6 +17,7 @@
 // #include "TreeSitterTextEdit.hpp"
 #include "TextEdit.hpp"
 #include "ImageWidget.hpp"
+#include "SyntaxHighlighterTS.hpp"
 
 class PreviewPanel : public QStackedWidget {
     Q_OBJECT
@@ -75,9 +76,8 @@ private:
 
     void showImagePreview(const QImage &image) noexcept;
     void showTextPreview(const QString &text,
-                         const SyntaxHighlighter::Language &language) noexcept;
+                         const SyntaxHighlighterTS::Language &language) noexcept;
     void clearPreview() noexcept;
-
     bool m_syntax_highlighting_enabled = false;
 
 };
