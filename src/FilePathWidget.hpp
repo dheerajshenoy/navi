@@ -64,13 +64,16 @@ class FilePathWidget : public QWidget {
     Q_OBJECT
 public:
     FilePathWidget(QWidget *parent = nullptr);
-    ~FilePathWidget();
 
     void setCurrentDir(const QString& path) noexcept;
 
-    void FocusLineEdit() noexcept {
-        m_path_line->Focus();
-    }
+    void FocusLineEdit() noexcept { m_path_line->Focus(); }
+
+    void setForegroundColor(const QString &color) noexcept;
+    void setBackgroundColor(const QString &color) noexcept;
+    void setItalic(const bool &state) noexcept;
+    void setBold(const bool &state) noexcept;
+    void setFont(const QString &name) noexcept;
 
 signals:
     void directoryChangeRequested(const QString& path);

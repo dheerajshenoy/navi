@@ -83,6 +83,34 @@ void Navi::initConfiguration() noexcept {
                 ToggleMenuBar(shown);
             }
 
+            // Path bar
+            sol::optional<sol::table> path_bar_table = ui_table["path_bar"];
+
+            if (path_bar_table) {
+                auto path_bar = path_bar_table.value();
+                auto shown = path_bar["shown"].get_or(true);
+                auto foreground = QString::fromStdString(path_bar["foreground"].get_or<std::string>(""));
+                auto background = QString::fromStdString(
+                                                         path_bar["background"].get_or<std::string>(""));
+                auto font = QString::fromStdString(path_bar["font"].get_or<std::string>(""));
+                auto italic = path_bar["italic"].get_or(false);
+                auto bold = path_bar["bold"].get_or(false);
+                TogglePathWidget(shown);
+
+                if (!foreground.isEmpty())
+                    m_file_path_widget->setForegroundColor(foreground);
+
+                if (!background.isEmpty())
+                    m_file_path_widget->setBackgroundColor(background);
+
+                m_file_path_widget->setBold(bold);
+                m_file_path_widget->setItalic(italic);
+
+                if (!font.isEmpty())
+                    m_file_path_widget->setFont(font);
+
+            }
+
             // Status bar
             sol::optional<sol::table> status_bar_table = ui_table["status_bar"];
 
@@ -1729,4 +1757,16 @@ void Navi::ToggleTasksWidget() noexcept {
 
 void Navi::ToggleTasksWidget(const bool &state) noexcept {
     m_tasks_widget->setVisible(state);
+}
+
+void Navi::TogglePathWidget() noexcept {
+  if (m_file_path_widget->isVisible()) {
+      m_file_path_widget->hide();
+  } else {
+      m_file_path_widget->show();
+  }
+}
+
+void Navi::TogglePathWidget(const bool &state) noexcept {
+    m_file_path_widget->setVisible(state);
 }

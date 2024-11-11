@@ -105,6 +105,9 @@ public:
     void ToggleDrivesWidget(const bool &state) noexcept;
     void ToggleDrivesWidget() noexcept;
 
+    void TogglePathWidget(const bool &state) noexcept;
+    void TogglePathWidget() noexcept;
+
     void ToggleStatusBar(const bool &state) noexcept;
     void ToggleStatusBar() noexcept;
 

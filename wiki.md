@@ -489,8 +489,6 @@ Args:
 
 Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.
 
-
-
 https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a
 
 ### Shell Commands

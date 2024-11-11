@@ -68,13 +68,16 @@ signals:
 
 public slots:
     void appendOutput(const QString &output) {
-    if (outputEdit) {
+        if (outputEdit) {
+            if (outputEdit->document()->lineCount() > m_command_output_threshold)
+                outputEdit->clear();
         outputEdit->append(output);
     }
 }
 
 private:
     Task *task;
-QTextEdit *outputEdit = nullptr;
-QPushButton *cancelBtn = new QPushButton("Cancel");
+    QTextEdit *outputEdit = nullptr;
+    QPushButton *cancelBtn = new QPushButton("Cancel");
+    unsigned int m_command_output_threshold = 4;
 };

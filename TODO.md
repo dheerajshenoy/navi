@@ -68,10 +68,10 @@
 - [x] History for inputbar
 - [x] Show search match count
 - [x] Tree-sitter faster syntax highlighting support
+- [x] Shell commands
 - [ ] Open with menu
 - [ ] Rich text in file panel
-- [ ] Shell commands
 - [ ] Undo Operations
 - [ ] Add file operation cancel UI
 - [ ] Wonky file completion in the file path widget when "~" is present
-- [ ] Tabs
+- ~~[ ] Tabs~~
