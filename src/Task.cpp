@@ -1,7 +1,6 @@
 #include "Task.hpp"
 
-Task::Task() {
-    m_uuid = QUuid::createUuid();
+Task::Task() : m_uuid(QUuid::createUuid()), process(new QProcess(this)) {
 }
 
 void Task::setTaskType(const TaskType &type) noexcept { m_type = type; }
@@ -26,15 +25,16 @@ void Task::setCommandString(const QString &command,
     m_command_args_list = args;
 }
 
-bool Task::stop() noexcept {}
+void Task::stop() noexcept {
+    if (process->state() != QProcess::NotRunning) {
+        process->terminate();
+        if (!process->waitForFinished(3000)) {
+            process->kill();
+        }
+    }
+}
 
 void Task::runCommand() noexcept {
-    QProcess *process = new QProcess(this);
-
-    process->setProgram(m_command);
-    if (!m_command_args_list.isEmpty()) {
-      process->setArguments(m_command_args_list);
-    }
 
     // QTemporaryFile tmpFile;
     // if (!tmpFile.open()) {
@@ -50,18 +50,21 @@ void Task::runCommand() noexcept {
     //         [&](const QString &fileName) {
     // });
 
-    connect(process, &QProcess::readyReadStandardOutput, this, [&]() {
-        qDebug() << process->readAllStandardOutput();
+    connect(process, &QProcess::readyReadStandardOutput, this,
+            [&]() { emit stdout(process->readAllStandardOutput()); });
+
+    connect(process, &QProcess::readyReadStandardError, this, [&]() {
+        emit stderr(process->readAllStandardError());
     });
 
     connect(process, &QProcess::finished, this, [&]() {
-        qDebug() << "finished";
-        emit finished(uuid());
-        // process->close();
+      emit finished(uuid());
+      // process->close();
     });
 
-    // process->waitForFinished(-1);
-    // process->waitForFinished();
-    process->start();
+    process->waitForFinished(-1);
+    process->waitForReadyRead(-1);
+
+    process->start(m_command, m_command_args_list);
 
 }

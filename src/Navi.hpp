@@ -22,9 +22,6 @@
 #include <QDebug>
 #include <QStringView>
 #include <QActionGroup>
-#include "StorageDevice.hpp"
-#include "Task.hpp"
-#include "TasksWidget.hpp"
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -50,6 +47,10 @@ static const QString CONFIG_FILE_PATH =
 #include "sol/sol.hpp"
 #include "argparse.hpp"
 #include "DriveWidget.hpp"
+#include "StorageDevice.hpp"
+#include "Task.hpp"
+#include "TaskManager.hpp"
+#include "TasksWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -128,6 +129,9 @@ public:
     void ToggleDotDot(const bool &state) noexcept;
     void ToggleDotDot() noexcept;
 
+    void ToggleTasksWidget() noexcept;
+    void ToggleTasksWidget(const bool &state) noexcept;
+
     void MountDrive(const QString &driveName) noexcept;
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
@@ -175,6 +179,7 @@ private:
     QAction *m_viewmenu__bookmarks_buffer = nullptr;
     QAction *m_viewmenu__shortcuts_widget = nullptr;
     QAction *m_viewmenu__drives_widget = nullptr;
+    QAction *m_viewmenu__tasks_widget = nullptr;
 
     QMenu *m_viewmenu__sort_menu = nullptr;
 
@@ -269,6 +274,9 @@ private:
       "trash-global",
       "trash-dwim",
 
+      // Task
+      "tasks",
+
       // Bookmarks
       "bookmark-add",
       "bookmark-remove",
@@ -352,11 +360,11 @@ private:
     sol::state lua;
     ShortcutsWidget *m_shortcuts_widget = nullptr;
     QList<Keybind> m_keybind_list;
-    TabBarWidget *m_tab_bar = nullptr;
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
     QStringList m_default_location_list;
-    DriveWidget *m_drives_widget = new DriveWidget();
+    DriveWidget *m_drives_widget = new DriveWidget(this);
     QStringList m_search_history_list = {};
-    TasksWidget *m_task_widget = new TasksWidget();
+    TaskManager *m_task_manager = new TaskManager(this);
+    TasksWidget *m_tasks_widget = nullptr;
 };

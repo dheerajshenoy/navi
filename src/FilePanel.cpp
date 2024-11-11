@@ -1261,12 +1261,11 @@ void FilePanel::ChmodItemsGlobal() noexcept {
 }
 
 void FilePanel::PasteItems() noexcept {
-    auto markedFiles = m_model->getMarkedFiles();
-    if (markedFiles.count() > 0) {
+    if (!m_register_files_list.isEmpty()) {
         QString destDir = m_current_dir;
 
         const QStringList &filesList =
-            QStringList(markedFiles.cbegin(), markedFiles.cend());
+            QStringList(m_register_files_list.cbegin(), m_register_files_list.cend());
 
         QThread *thread = new QThread();
         FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type);

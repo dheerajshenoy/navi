@@ -485,104 +485,27 @@ Args:
 
 **TL; DR**: This feature does not work
 
+`tasks`
+
+Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.
+
+![](./videos/tasks-demo.mp4)
+
 ### Shell Commands
 
-`<span class="todo TODO">TODO</span> shell-command`
+`shell`
 
 Run a shell command *synchronously* (blocking).
 
 **NOTE: This blocks the main GUI thread until the command finished executing**
 
-`<span class="todo TODO">TODO</span> shell-command-async`
+**NOTE: NOT YET IMPLEMENTED**
+
+`shell-async`
 
 Run a shell command *asynchronously* (non-blocking).
 
-The running commands can be seen in the `Task Widget`
-
-**NOTE**: Task widget is a work in progress
-
-### Bookmarks
-
-`bookmark-add`
-
-Add a new non-existing bookmark
-
-`bookmark-remove`
-
-Remove an existing bookmark
-
-`bookmark-edit`
-
-Edit an existing bookmark
-
-- Args:
-
-* Title `required` - this tells Navi to edit the bookmark title
-* Path `required` - this tells Navi to edit the bookmark directory that the bookmark points to
-
-`bookmark-go`
-
-Go to the directory pointed by the bookmark
-
-- Args:
-
-* Bookmark Name `required` - a unique bookmark name
-
-`  bookmark-save`
-
-Save the bookmarks that have been added.
-
-**NOTE: Saving of the bookmarks added is done when the application exits. If you feel insecure about losing your bookmarks, then you can run this command manually.**
-
-### Searching Items
-
-Searching is **Regular Expression** enabled. So you can pinpoint exactly the file that you want to look for.
-
-`search`
-
-Searches the current directory for the search term
-
-`search-next`
-
-Goes to the next best match for the search term
-
-`search-prev`
-
-Goes to the previous best match for the search term
-
-### Sorting Items
-
-`sort-name`
-
-Sorts the directory by *name* in **ascending order** with the directories listed first.
-
-`sort-name-desc`
-
-Sorts the directory by *name* in **descending order** with the directories listed first.
-
-`sort-date`
-
-Sorts the directory by *date* in **ascending order** with the directories listed first.
-
-`sort-date-desc`
-
-Sorts the directory by *date* in **descending order** with the directories listed first.
-
-`sort-size`
-
-Sorts the directory by *size* in **ascending order** with the directories listed first.
-
-`sort-size-desc`
-
-Sorts the directory by *size* in **descending order** with the directories listed first.
-
-### Storage Device
-
-`drives`
-
-Opens a dialog with all the drives (mounted and unmounted). You can double click on a drive to mount (or load it if it's already mounted) or use the mount and unmount buttons.
-
-<img src="./screenshot/drives.png" height="400px" width="600px" />
+The running commands can be seen in the `Task Widget` using the `tasks` command
 
 ## Tutorial
 

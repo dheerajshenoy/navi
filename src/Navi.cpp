@@ -6,27 +6,21 @@
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
 void Navi::initThings() noexcept {
+    m_tasks_widget = new TasksWidget(m_task_manager, this);
     initLayout();       // init layout
     initMenubar();      // init menubar
     initSignalsSlots(); // init signals and slots
     setupCommandMap();
     initBookmarks();
-
     if (m_load_config)
         initConfiguration();
     else
         initKeybinds();
 
-    initTabBar();
-
     if (m_default_location_list.isEmpty())
         m_file_panel->setCurrentDir("~", true);
     else
         m_file_panel->setCurrentDir(m_default_location_list.at(0), true);
-}
-
-void Navi::initTabBar() noexcept {
-    // m_tab_bar->addTab(new FilePanel(m_inputbar, m_statusbar), );
 }
 
 void Navi::initConfiguration() noexcept {
@@ -55,16 +49,6 @@ void Navi::initConfiguration() noexcept {
 
             // tabs
             sol::optional<sol::table> tabs_table = ui_table["tabs"];
-
-            if (tabs_table) {
-                sol::table tabs = tabs_table.value();
-
-                auto shown_on_multiple = tabs["shown_on_multiple"].get_or(true);
-
-                // TODO: shown only on multiple tabs
-                // if (!shown_on_multiple)
-                //     m_tab_bar->setVisible(true);
-            }
 
             // Preview pane
             sol::optional<sol::table> preview_pane_table = ui_table["preview_pane"];
@@ -432,6 +416,10 @@ void Navi::ShowHelp() noexcept {}
 void Navi::setupCommandMap() noexcept {
   commandMap["execute-extended-command"] = [this](const QStringList &args) {
     ExecuteExtendedCommand();
+  };
+
+  commandMap["tasks"] = [this](const QStringList &args) {
+      ToggleTasksWidget();
   };
 
   commandMap["shell"] = [this](const QStringList &args) {
@@ -918,7 +906,7 @@ void Navi::ToggleBookmarksBuffer() noexcept {
         m_bookmarks_buffer = nullptr;
         disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
     } else {
-        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
+        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager, this);
         m_bookmarks_buffer->show();
         connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
                 [&](const bool &state) {
@@ -929,7 +917,7 @@ void Navi::ToggleBookmarksBuffer() noexcept {
 
 void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
     if (state) {
-        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager);
+        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager, this);
         m_bookmarks_buffer->show();
         connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
                 [&](const bool &state) {
@@ -1060,12 +1048,9 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
-    m_tab_bar = new TabBarWidget();
-    m_inputbar = new Inputbar();
-    m_statusbar = new Statusbar();
-    m_file_panel = new FilePanel(m_inputbar, m_statusbar);
-
-    // m_tab_bar->setVisible(false);
+    m_inputbar = new Inputbar(this);
+    m_statusbar = new Statusbar(this);
+    m_file_panel = new FilePanel(m_inputbar, m_statusbar, this);
 
     m_preview_panel = new PreviewPanel();
     m_file_path_widget = new FilePathWidget();
@@ -1080,7 +1065,6 @@ void Navi::initLayout() noexcept {
     m_file_path_widget->setContentsMargins(0, 0, 0, 0);
     this->setContentsMargins(0, 0, 0, 0);
 
-    // m_layout->addWidget(m_tab_bar);
     m_layout->addWidget(m_file_path_widget);
     m_layout->addWidget(m_splitter);
     m_layout->addWidget(m_inputbar);
@@ -1254,6 +1238,9 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__drives_widget = new QAction("Drives");
     m_viewmenu__drives_widget->setCheckable(true);
 
+    m_viewmenu__tasks_widget = new QAction("Tasks");
+    m_viewmenu__tasks_widget->setCheckable(true);
+
     m_viewmenu__sort_menu = new QMenu("Sort by");
 
     m_viewmenu__sort_by_name = new QAction("Name");
@@ -1312,6 +1299,7 @@ void Navi::initMenubar() noexcept {
     m_viewmenu->addAction(m_viewmenu__messages);
     m_viewmenu->addAction(m_viewmenu__marks_buffer);
     m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
+    m_viewmenu->addAction(m_viewmenu__tasks_widget);
 
     m_tools_menu = new QMenu("Tools");
 
@@ -1341,6 +1329,9 @@ void Navi::initMenubar() noexcept {
     m_menubar->addMenu(m_edit_menu);
     m_menubar->addMenu(m_viewmenu);
     m_menubar->addMenu(m_tools_menu);
+
+    connect(m_viewmenu__tasks_widget, &QAction::triggered, this,
+            [&](const bool &state) { ToggleTasksWidget(state); });
 
     connect(m_viewmenu__headers, &QAction::triggered, this,
             [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
@@ -1407,6 +1398,11 @@ void Navi::initMenubar() noexcept {
             [&](const bool &state) { Navi::ToggleStatusBar(state); });
 
     // Handle visibility state change to reflect in the checkbox of the menu item
+
+    connect(m_tasks_widget, &TasksWidget::visibilityChanged, this,
+            [&](const bool &state) {
+              m_viewmenu__tasks_widget->setChecked(state);
+            });
 
     connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
@@ -1503,7 +1499,6 @@ void Navi::LogMessage(const QString &message,
 Navi::~Navi() {
 
     delete m_bookmark_manager;
-    delete m_tab_bar;
     delete m_inputbar;
     delete m_statusbar;
     delete m_file_panel;
@@ -1721,22 +1716,17 @@ void Navi::ShellCommandAsync() noexcept {
     auto args = split.mid(1);
     auto command = split.at(0);
     task->setCommandString(command, args);
-    // QThread *thread = new QThread();
-    // task->moveToThread(thread);
-    // thread->start();
+    m_task_manager->addTask(task);
+}
 
-    connect(task, &Task::finished, this, [&](const QUuid &uuid) {
-        qDebug() << uuid.toString();
-    });
+void Navi::ToggleTasksWidget() noexcept {
+  if (m_tasks_widget->isVisible()) {
+      m_tasks_widget->hide();
+  } else {
+      m_tasks_widget->show();
+  }
+}
 
-    // connect(thread, &QThread::finished, this, [&]() {
-    //     thread->wait();
-    //     thread->exit();
-    //     thread->deleteLater();
-    // });
-
-    // connect(thread, &QThread::started, this, [task]() {
-    //     task->run();
-    // });
-    task->run();
+void Navi::ToggleTasksWidget(const bool &state) noexcept {
+    m_tasks_widget->setVisible(state);
 }

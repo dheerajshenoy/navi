@@ -117,7 +117,6 @@ void Inputbar::setFontFamily(const QString &family) noexcept {
 void Inputbar::historyUp() noexcept {
     QString historyText;
 
-    qDebug() << m_history_index << m_search_history_list.size();
     switch (m_current_completion_type) {
 
     case CompletionModelType::SEARCH: {

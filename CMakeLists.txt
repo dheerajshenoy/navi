@@ -65,6 +65,7 @@ qt_add_executable(${PROJECT_NAME}
   src/SyntaxHighlighterTS.cpp
   src/TasksWidget.cpp
   src/Task.cpp
+  src/TaskManager.cpp
 
   src/TextEdit.hpp
   src/FileWorker.hpp
@@ -78,7 +79,9 @@ qt_add_executable(${PROJECT_NAME}
   src/StorageDevice.hpp
   src/ImageWidget.hpp
   src/FilePreviewWorker.hpp
+  src/TaskCardTemplate.hpp
 )
+
 
 # tell cmake to link the executable to the Qt 6 core and test modules
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-query tree-sitter-python tree-sitter-c tree-sitter-lua tree-sitter-markdown ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6)
