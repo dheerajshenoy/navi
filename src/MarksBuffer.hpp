@@ -4,41 +4,25 @@
 #include <QTreeView>
 #include <QStringListModel>
 #include <QVBoxLayout>
-#include <QAbstractListModel>
+#include <QStandardItemModel>
 #include "FilePanelWidget.hpp"
+#include <QUuid>
+#include <QHash>
 
-class MarksListModel : public QAbstractListModel {
+class MarksListModel : public QStandardItemModel {
     Q_OBJECT
 public:
     // Constructor that accepts a pointer to an external QSet
-    explicit MarksListModel(const QSet<QString>* set = nullptr, QObject *parent = nullptr)
-        : QAbstractListModel(parent), m_set(set) {}
+  explicit MarksListModel(QObject *parent = nullptr)
+      : QStandardItemModel(parent) {}
 
-    // Override rowCount
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override {
-        Q_UNUSED(parent);
-        return m_set ? m_set->size() : 0;
-    }
+  void addSetPTR(QSet<QString> *PTR, const QUuid &uuid) noexcept {
+      set_hash.insert(uuid, PTR);
+  }
 
-    void setSetPtr(const QSet<QString> *set_ptr) noexcept {
-        m_set = set_ptr;
-    }
-
-    // Override data
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
-        if (!index.isValid() || role != Qt::DisplayRole || !m_set)
-            return QVariant();
-        return *std::next(m_set->begin(), index.row());
-    }
-
-    // Public method to notify the model of external updates
-    void refreshModel() noexcept {
-        beginResetModel();
-        endResetModel();
-    }
+  QHash<QUuid, QSet<QString> *> set_hash; // Pointer to the external QSet
 
 private:
-    const QSet<QString>* m_set;  // Pointer to the external QSet
 };
 
 
@@ -72,12 +56,24 @@ public:
         QWidget::hide();
     }
 
-    void setMarksSet(const QSet<QString> *setPTR) noexcept {
-        m_model->setSetPtr(setPTR);
+    void addMarksSet(QSet<QString> *setPTR, const QUuid &uuid) noexcept {
+        m_model->addSetPTR(setPTR, uuid);
     }
 
     void refreshMarksList() noexcept {
-        m_model->refreshModel();
+    m_model->clear();
+        // Populate the model with the data from the manager
+        for (auto it = m_model->set_hash.constBegin(); it != m_model->set_hash.constEnd(); ++it) {
+            QStandardItem *tabItem = new QStandardItem(it.key().toString());  // Tab ID as root item
+
+            // Add each file in the QSet as a child item
+            for (const QString &fileName : *it.value()) {
+                QStandardItem *fileItem = new QStandardItem(fileName);
+                tabItem->appendRow(fileItem);
+            }
+
+            m_model->appendRow(tabItem);  // Add the tab item as a top-level item
+        }
     }
 
 private:

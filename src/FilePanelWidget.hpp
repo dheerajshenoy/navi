@@ -7,6 +7,7 @@
 #include "Inputbar.hpp"
 #include "sol/sol.hpp"
 #include <QVBoxLayout>
+#include <QUuid>
 
 class FilePanelWidget : public QWidget {
     Q_OBJECT
@@ -17,6 +18,8 @@ public:
     FilePanel *filePanel() { return m_file_panel; }
     PreviewPanel *previewPanel() { return m_preview_panel; }
     QSplitter *splitter() { return m_splitter; }
+    QString uuid_string() { return m_uuid.toString(); }
+    QUuid uuid() { return m_uuid; }
 
     FilePanelWidget *clone(Statusbar *sb, Inputbar *ib,
                            const QString &initDirectory = "~", QWidget *parent = nullptr) {
@@ -44,4 +47,5 @@ private:
     QVBoxLayout *m_layout = nullptr;
     sol::table m_file_pane_table;
     sol::table m_preview_pane_conf_table;
+    QUuid m_uuid;
 };

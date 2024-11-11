@@ -59,6 +59,7 @@ void Navi::AddTab(const QString &directory) noexcept {
       qobject_cast<FilePanelWidget *>(m_tab_widget->widget(0))
           ->clone(m_statusbar, m_inputbar, directory);
 
+  m_marks_buffer->addMarksSet(filepanelwidget->filePanel()->getMarksSetPTR(), filepanelwidget->uuid());
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             filepanelwidget->filePanel(),
             [&](const QString &path) { getCurrentFilePanel()->setCurrentDir(path); });
@@ -80,6 +81,7 @@ void Navi::firstTab(const QString &directory) noexcept {
     auto filepanelwidget =
         new FilePanelWidget(m_statusbar, m_inputbar, directory, this);
 
+    m_marks_buffer->addMarksSet(filepanelwidget->filePanel()->getMarksSetPTR(), filepanelwidget->uuid());
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             filepanelwidget->filePanel(),
             [&](const QString &path) { getCurrentFilePanel()->setCurrentDir(path); });
@@ -1170,7 +1172,6 @@ void Navi::initLayout() noexcept {
     m_log_buffer = new MessagesBuffer(this);
     m_marks_buffer = new MarksBuffer(this);
 
-    // m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
     m_inputbar->hide();
 

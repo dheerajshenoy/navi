@@ -13,6 +13,8 @@ FilePanelWidget::FilePanelWidget(Statusbar *sb, Inputbar *ib,
     m_layout->addWidget(m_splitter);
     this->setLayout(m_layout);
 
+    m_uuid = QUuid::createUuid();
+
     connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
             &PreviewPanel::onFileSelected);
 
