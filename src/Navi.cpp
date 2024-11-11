@@ -59,9 +59,6 @@ void Navi::AddTab(const QString &directory) noexcept {
       qobject_cast<FilePanelWidget *>(m_tab_widget->widget(0))
           ->clone(m_statusbar, m_inputbar, directory);
 
-    connect(filepanelwidget->filePanel(), &FilePanel::afterDirChange, m_file_path_widget,
-            &FilePathWidget::setCurrentDir);
-
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             filepanelwidget->filePanel(),
             [&](const QString &path) { getCurrentFilePanel()->setCurrentDir(path); });
@@ -69,6 +66,12 @@ void Navi::AddTab(const QString &directory) noexcept {
     connect(filepanelwidget->filePanel()->model(),
             &FileSystemModel::marksListChanged, m_marks_buffer,
             &MarksBuffer::refreshMarksList);
+
+  connect(filepanelwidget->filePanel(), &FilePanel::afterDirChange, this,
+          [&](const QString &dirName) {
+              m_file_path_widget->setCurrentDir(dirName);
+              m_tab_widget->setTabText(m_tab_widget->currentIndex(), dirName);
+          });
 
     m_tab_widget->addTab(filepanelwidget, directory);
 }
@@ -77,9 +80,6 @@ void Navi::firstTab(const QString &directory) noexcept {
     auto filepanelwidget =
         new FilePanelWidget(m_statusbar, m_inputbar, directory, this);
 
-    connect(filepanelwidget->filePanel(), &FilePanel::afterDirChange, m_file_path_widget,
-            &FilePathWidget::setCurrentDir);
-
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             filepanelwidget->filePanel(),
             [&](const QString &path) { getCurrentFilePanel()->setCurrentDir(path); });
@@ -87,6 +87,12 @@ void Navi::firstTab(const QString &directory) noexcept {
     connect(filepanelwidget->filePanel()->model(),
             &FileSystemModel::marksListChanged, m_marks_buffer,
             &MarksBuffer::refreshMarksList);
+
+  connect(filepanelwidget->filePanel(), &FilePanel::afterDirChange, this,
+          [&](const QString &dirName) {
+              m_file_path_widget->setCurrentDir(dirName);
+              m_tab_widget->setTabText(m_tab_widget->currentIndex(), dirName);
+          });
 
     m_tab_widget->addTab(filepanelwidget, directory);
 }
@@ -99,7 +105,7 @@ void Navi::initConfiguration() noexcept {
         lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
     } catch (const sol::error &e) {
         m_statusbar->Message(QString::fromStdString(e.what()));
-        initKeybinds();
+        initKeybinds()  ;
 
         return;
     }
@@ -137,18 +143,18 @@ void Navi::initConfiguration() noexcept {
 
             if (preview_pane_table) {
                 auto preview_pane = preview_pane_table.value();
+                currentTab->SavePreviewPanelConfiguration(preview_pane);
                 auto shown = preview_pane["shown"].get_or(true);
-                // TogglePreviewPanel(shown);
-                preview_panel->show();
+                preview_panel->setVisible(shown);
 
                 auto fraction = preview_pane["fraction"].get_or(0.5);
                 auto totalSize = splitter->width();
-                QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
-                            static_cast<int>(totalSize * fraction)};
+                QList<int> sizes = {
+                    static_cast<int>(totalSize * (1 - fraction)),
+                    static_cast<int>(totalSize * fraction)};
                 splitter->setSizes(sizes);
 
                 auto max_file_size = QString::fromStdString(preview_pane["max_size"].get_or<std::string>("10M"));
-
                 auto max_file_bytes = utils::parseFileSize(max_file_size);
                 preview_panel->SetMaxPreviewThreshold(max_file_bytes);
 
@@ -182,7 +188,7 @@ void Navi::initConfiguration() noexcept {
             if (file_pane_table_opt) {
                 auto file_pane_table = file_pane_table_opt.value();
                 if (file_pane_table.valid()) {
-                    currentTab->SaveConfiguration(file_pane_table);
+                    currentTab->SaveFilePanelConfiguration(file_pane_table);
                     sol::optional<sol::table> columns_table =
                         file_pane_table["columns"];
                     if (columns_table.has_value()) {
@@ -532,7 +538,7 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["syntax-highlight"] = [this](const QStringList &args) {
-      m_preview_panel->ToggleSyntaxHighlight();
+      getCurrentTab()->previewPanel()->ToggleSyntaxHighlight();
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
@@ -1124,7 +1130,7 @@ void Navi::TogglePreviewPanel(const bool &state) noexcept {
         previewPanel->show();
         connect(tab->filePanel(), &FilePanel::currentItemChanged, previewPanel,
                 &PreviewPanel::onFileSelected);
-        m_preview_panel->onFileSelected(getCurrentFile());
+        previewPanel->onFileSelected(getCurrentFile());
     } else {
         previewPanel->hide();
         disconnect(tab->filePanel(), &FilePanel::currentItemChanged, previewPanel,
@@ -1160,7 +1166,6 @@ void Navi::initLayout() noexcept {
 
     // m_tab_bar->setVisible(false);
 
-    m_preview_panel = new PreviewPanel();
     m_file_path_widget = new FilePathWidget();
     m_log_buffer = new MessagesBuffer(this);
     m_marks_buffer = new MarksBuffer(this);
@@ -1505,12 +1510,12 @@ void Navi::initMenubar() noexcept {
     connect(m_statusbar, &Statusbar::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__statusbar->setChecked(state); });
 
-    connect(
-            m_preview_panel, &PreviewPanel::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__preview_panel->setChecked(state); });
-
     connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
+
+    // connect(
+    //         m_preview_panel, &PreviewPanel::visibilityChanged, this,
+    //         [&](const bool &state) { m_viewmenu__preview_panel->setChecked(state); });
 
     connect(
             m_marks_buffer, &MarksBuffer::visibilityChanged, this,
@@ -1594,7 +1599,6 @@ Navi::~Navi() {
     delete m_tab_widget;
     delete m_inputbar;
     delete m_statusbar;
-    delete m_preview_panel;
     delete m_file_path_widget;
     delete m_log_buffer;
     delete m_marks_buffer;

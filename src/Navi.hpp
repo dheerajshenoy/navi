@@ -204,7 +204,6 @@ private:
     QAction *m_edit_menu__trash = nullptr;
 
     Inputbar *m_inputbar = nullptr;
-    PreviewPanel *m_preview_panel = nullptr;
     FilePathWidget *m_file_path_widget = nullptr;
     Statusbar *m_statusbar = nullptr;
 

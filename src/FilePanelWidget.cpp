@@ -217,4 +217,28 @@ void FilePanelWidget::applyConfiguration(FilePanelWidget *widget) noexcept {
             }
         }
     }
+
+    if (m_preview_pane_conf_table.valid()) {
+        auto shown =m_preview_pane_conf_table["shown"].get_or(true);
+        // TogglePreviewPanel(shown);
+        auto previewPanel = widget->previewPanel();
+        auto splitter = widget->splitter();
+        previewPanel->setVisible(shown);
+
+        auto fraction =m_preview_pane_conf_table["fraction"].get_or(0.5);
+        auto totalSize = splitter->width();
+        QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
+                            static_cast<int>(totalSize * fraction)};
+        splitter->setSizes(sizes);
+
+        auto max_file_size = QString::fromStdString(m_preview_pane_conf_table["max_size"].get_or<std::string>("10M"));
+
+        auto max_file_bytes = utils::parseFileSize(max_file_size);
+        previewPanel->SetMaxPreviewThreshold(max_file_bytes);
+
+        auto syntax_highlighting =
+           m_preview_pane_conf_table["syntax_highlight"].get_or(true);
+        previewPanel->SetSyntaxHighlighting(syntax_highlighting);
+
+    }
 }

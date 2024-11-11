@@ -1,10 +1,11 @@
 #pragma once
 
 #include <QWidget>
-#include <QListView>
+#include <QTreeView>
 #include <QStringListModel>
 #include <QVBoxLayout>
 #include <QAbstractListModel>
+#include "FilePanelWidget.hpp"
 
 class MarksListModel : public QAbstractListModel {
     Q_OBJECT
@@ -80,9 +81,8 @@ public:
     }
 
 private:
-    QListView *m_marks_list_view = new QListView();
+    QTreeView *m_marks_list_view = new QTreeView();
     QVBoxLayout *m_layout = new QVBoxLayout();
-
 
     MarksListModel *m_model = new MarksListModel();
 

@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 
 class FilePanelWidget : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     FilePanelWidget(Statusbar *sb, Inputbar *ib, const QString &initDirectory = "~",
                     QWidget *parent = nullptr);
@@ -25,9 +25,15 @@ public:
         applyConfiguration(newWidget);
         return newWidget;
     }
-    void SaveConfiguration(const sol::table &confTable) noexcept { m_file_pane_table = confTable; }
+    void SaveFilePanelConfiguration(const sol::table &confTable) noexcept {
+        m_file_pane_table = confTable;
+    }
 
-signals:
+    void SavePreviewPanelConfiguration(const sol::table &confTable) noexcept {
+        m_preview_pane_conf_table = confTable;
+    }
+
+    signals:
     void marksListChanged();
 
 private:
@@ -37,4 +43,5 @@ private:
     PreviewPanel *m_preview_panel = nullptr;
     QVBoxLayout *m_layout = nullptr;
     sol::table m_file_pane_table;
+    sol::table m_preview_pane_conf_table;
 };

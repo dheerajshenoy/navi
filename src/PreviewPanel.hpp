@@ -18,6 +18,7 @@
 #include "TextEdit.hpp"
 #include "ImageWidget.hpp"
 #include "SyntaxHighlighterTS.hpp"
+#include "sol/sol.hpp"
 
 class PreviewPanel : public QStackedWidget {
     Q_OBJECT
@@ -79,5 +80,4 @@ private:
                          const SyntaxHighlighterTS::Language &language) noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
-
 };
