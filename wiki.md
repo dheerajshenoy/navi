@@ -562,10 +562,6 @@ Copy and paste the following template config file into the configuration directo
 settings = {
     ui = {
 
-        tabs = {
-            show_on_multiple = true, -- don’t show tab bar if there is only one tab
-        },
-
         preview_pane = {
             shown = false,
             max_file_size = "10M", -- max file size to preview
@@ -589,6 +585,15 @@ settings = {
 
         path_bar = {
             shown = true,
+            background = nil,
+            foreground = nil,
+            italic = false,
+            bold = false,
+            font = nil,
+        },
+
+        tasks_pane = {
+            output_scrollback_lines = 100, -- TODO: Not yet added
         },
 
         file_pane = {
@@ -653,6 +658,11 @@ keybindings = {
     { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
     { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
     { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
+    { key = "Ctrl+t", command = "tab-new", desc = "Add new tab" },
+    { key = "Ctrl+w", command = "tab-delete", desc = "Delete current tab" },
+    { key = "Alt+1", command = "tab-select 0", desc = "Select first tab" },
+    { key = "Alt+2", command = "tab-select 1", desc = "Select second tab" },
+    { key = "Alt+3", command = "tab-select 2", desc = "Select third tab" },
 }
 ```
 
