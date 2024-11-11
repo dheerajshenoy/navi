@@ -489,8 +489,6 @@ Args:
 
 Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.
 
-![](./videos/tasks-demo.mp4)
-
 ### Shell Commands
 
 `shell`
