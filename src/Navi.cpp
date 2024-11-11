@@ -434,6 +434,14 @@ void Navi::setupCommandMap() noexcept {
     ExecuteExtendedCommand();
   };
 
+  commandMap["shell"] = [this](const QStringList &args) {
+      // TODO: Sync shell
+  };
+
+  commandMap["shell-async"] = [this](const QStringList &args) {
+      ShellCommandAsync();
+  };
+
   commandMap["syntax-highlight"] = [this](const QStringList &args) {
       m_preview_panel->ToggleSyntaxHighlight();
     };
@@ -1697,4 +1705,38 @@ void Navi::Search() noexcept {
     QString searchText = m_inputbar->getInput("Search");
     m_search_history_list.append(searchText);
     m_file_panel->Search(searchText);
+}
+
+void Navi::ShellCommandAsync() noexcept {
+    QString commandStr = m_inputbar->getInput("Command");
+
+    if (commandStr.isEmpty()) {
+        m_statusbar->Message("Empty command!", MessageType::WARNING);
+        return;
+    }
+
+    Task *task = new Task();
+    task->setTaskType(Task::TaskType::COMMAND);
+    auto split = commandStr.split(" ");
+    auto args = split.mid(1);
+    auto command = split.at(0);
+    task->setCommandString(command, args);
+    // QThread *thread = new QThread();
+    // task->moveToThread(thread);
+    // thread->start();
+
+    connect(task, &Task::finished, this, [&](const QUuid &uuid) {
+        qDebug() << uuid.toString();
+    });
+
+    // connect(thread, &QThread::finished, this, [&]() {
+    //     thread->wait();
+    //     thread->exit();
+    //     thread->deleteLater();
+    // });
+
+    // connect(thread, &QThread::started, this, [task]() {
+    //     task->run();
+    // });
+    task->run();
 }

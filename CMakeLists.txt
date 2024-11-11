@@ -63,6 +63,8 @@ qt_add_executable(${PROJECT_NAME}
   src/DriveWidget.cpp
   src/SyntaxHighlighter.cpp
   src/SyntaxHighlighterTS.cpp
+  src/TasksWidget.cpp
+  src/Task.cpp
 
   src/TextEdit.hpp
   src/FileWorker.hpp

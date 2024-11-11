@@ -23,6 +23,8 @@
 #include <QStringView>
 #include <QActionGroup>
 #include "StorageDevice.hpp"
+#include "Task.hpp"
+#include "TasksWidget.hpp"
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -96,7 +98,7 @@ public:
     void SortByName(const bool &reverse = false) noexcept;
     void SortByDate(const bool &reverse = false) noexcept;
     void SortBySize(const bool &reverse = false) noexcept;
-
+    void ShellCommandAsync() noexcept;
     void Search() noexcept;
 
     void ToggleDrivesWidget(const bool &state) noexcept;
@@ -211,8 +213,8 @@ private:
     QStringList m_valid_command_list = {
 
       // Shell command
-      "shell-command",
-      "shell-command-async",
+      "shell",
+      "shell-async",
 
       // Mark
       "mark",
@@ -356,4 +358,5 @@ private:
     QStringList m_default_location_list;
     DriveWidget *m_drives_widget = new DriveWidget();
     QStringList m_search_history_list = {};
+    TasksWidget *m_task_widget = new TasksWidget();
 };

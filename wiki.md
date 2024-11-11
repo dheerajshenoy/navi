@@ -51,25 +51,25 @@
 Navi can be built from source. The following libraries are dependencies
 for navi:
 
--   [Qt6](https://www.qt.io/product/qt6)
--   [Lua](https://www.lua.org/start.html)
--   [ImageMagick
-(Magick++)](https://imagemagick.org/script/magick++.php)
--   [Poppler (Poppler-Qt6)](https://poppler.freedesktop.org/api/qt6/)
--   [Udisks](https://www.freedesktop.org/wiki/Software/udisks/)
+- [Qt6](https://www.qt.io/product/qt6)
+- [Lua](https://www.lua.org/start.html)
+- [ImageMagick(Magick++)](https://imagemagick.org/script/magick++.php)
+- [Poppler (Poppler-Qt6)](https://poppler.freedesktop.org/api/qt6/)
+- [Udisks](https://www.freedesktop.org/wiki/Software/udisks/)
+- [TreeSitter](https://tree-sitter.github.io/tree-sitter/)
 
 If you're on ArchLinux you can copy paste the following `pacman` code to
 install these dependencies:
 
 ``` bash
-sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6 udisks2
+sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6 udisks2 tree-sitter tree-sitter-query tree-sitter-c tree-sitter-markdown tree-sitter-python tree-sitter-lua tree-sitter-bash tree-sitter-javascript
 ```
 
 If you're on Ubuntu/Debian based distribution, you can paste the
 following `apt` code to install the dependencies:
 
 ``` bash
-sudo apt install qt6-base-dev lua5.4 libmagick++-dev libpoppler-dev libpoppler-cpp-dev libpoppler-qt6-dev udisks2
+sudo apt install qt6-base-dev lua5.4 libmagick++-dev libpoppler-dev libpoppler-cpp-dev libpoppler-qt6-dev udisks2 libtree-sitter-dev
 ```
 
 **NOTE**: I have not tested Navi on an Ubuntu machine. If there are any
@@ -83,11 +83,15 @@ project repository, you can build navi by using the following command
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(nproc)
-make install
+sudo make install
+```
+
+One liner:
+```bash
+mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j $(nproc) && sudo make install
 ```
 
 # Using Navi
-
 ## Naming Conventions
 
 1.  `Item` refers to a file or a directory.
@@ -580,19 +584,48 @@ Opens a dialog with all the drives (mounted and unmounted). You can double click
 
 <img src="./screenshot/drives.png" height="400px" width="600px" />
 
-## Linux Only
+## Tutorial
+
+Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:
+
+* `h` to go to the parent directory
+* `j` to go the next item
+* `k` to go the previous item
+* `l` to select the current item
+* `gg` to go to the first item
+* `Shift+g` to go the last item
+* `Space` to toggle marking for the current item
+* `Shift+Space` to toggle inverse marking for the current directory
+* `Ctrl+a` to mark all the items in the current directory
+* `Shift+r` to rename current item if no marks are present or all the marked items if marks are present (this is what DWIM means)
+* `Shift+d` to delete DWIM
+* `yy` to copy DWIM
+* `p` to paste cut/copy marked items to the current directory
+* `Shift+u` to unmark all the local marks
+* `.` toggle hidden/dot files
+* `/` Search for item in the current directory
+* `n` Go to the next match for the search
+* `Shift+n` Go to the previous match for the search
+* `Ctrl+m` toggle menubar
+* `Ctrl+p` toggle preview panel
+* `Ctrl+l` focus the path widget
+* `Shift+v` Toggle visual line selection mode
+
+**NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file**
+
+# Linux Only
 
 Sorry, this software is built keeping in mind Linux and it's derivatives only.
 
-## Theming
+# Theming
 
 Since navi is a Qt GUI library based application, it can be styled using the `qt6ct` package available on linux. The colors mentioned in the configuration file will override the respective control colors of the theme.
 
-## <span class="todo TODO">TODO</span> Scripting with Lua [scripting-with-lua]
+# Scripting with Lua [scripting-with-lua]
 
 Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks.
 
-## Configuration with Lua
+# Configuration with Lua
 
 Navi can be configured using lua. The default configuration file is provided in this git repository. Navi looks for the configuration file in the XDG standard config directory (`~/.config`). You can place your configuration file in the `~/.config/navi/` directory. The configuration file should be named `config.lua`.
 
