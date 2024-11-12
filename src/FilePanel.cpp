@@ -1584,7 +1584,7 @@ void FilePanel::ToggleVisualLine() noexcept {
                                                         QItemSelectionModel::Select | QItemSelectionModel::Rows);
     }
 
-    // m_statusbar->SetVisualLineMode(m_visual_line_mode);
+    m_statusbar->SetVisualLineMode(m_visual_line_mode);
 }
 
 void FilePanel::ToggleVisualLine(const bool &state) noexcept {

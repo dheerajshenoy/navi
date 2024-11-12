@@ -575,7 +575,15 @@ settings = {
         },
 
         status_bar = {
-            shown = true
+            shown = true,
+            visual_line_mode = {
+                text = "V",
+                background = "#FF5000",
+                foreground = "#000000",
+                italic = true,
+                bold = true,
+                padding = "4px",
+            }
         },
 
         input_bar = {
@@ -659,6 +667,11 @@ keybindings = {
     { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
     { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
     { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
+    { key = "Ctrl+t", command = "tab-new", desc = "Add new tab" },
+    { key = "Ctrl+w", command = "tab-delete", desc = "Delete current tab" },
+    { key = "Alt+1", command = "tab-select 0", desc = "Select first tab" },
+    { key = "Alt+2", command = "tab-select 1", desc = "Select second tab" },
+    { key = "Alt+3", command = "tab-select 2", desc = "Select third tab" },
 }
 ```
 

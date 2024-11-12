@@ -128,6 +128,30 @@ void Navi::initConfiguration() noexcept {
                 auto status_bar = status_bar_table.value();
                 auto shown = status_bar["shown"].get_or(true);
                 ToggleStatusBar(shown);
+
+                sol::optional<sol::table> visual_line_mode_table =
+                    status_bar["visual_line_mode"];
+                if (visual_line_mode_table) {
+                    auto visual_line_mode = visual_line_mode_table.value();
+                    auto bg = QString::fromStdString(visual_line_mode["background"].get_or<std::string>(""));
+                    auto fg = QString::fromStdString(visual_line_mode["foreground"].get_or<std::string>(""));
+                    auto bold = visual_line_mode["bold"].get_or(false);
+                    auto italic = visual_line_mode["italic"].get_or(false);
+                    auto padding = QString::fromStdString(visual_line_mode["padding"].get_or<std::string>("2px"));
+                    auto text = QString::fromStdString(visual_line_mode["text"].get_or<std::string>(""));
+
+                    if (!fg.isEmpty())
+                        m_statusbar->SetVisualLineModeForeground(fg);
+
+                    if (!bg.isEmpty())
+                        m_statusbar->SetVisualLineModeBackground(bg);
+
+                    m_statusbar->SetVisualLineModeItalic(italic);
+                    m_statusbar->SetVisualLineModeBold(bold);
+                    m_statusbar->SetVisualLineModePadding(padding);
+
+                    m_statusbar->SetVisualLineModeText(text);
+                }
             }
 
             // File Pane
