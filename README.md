@@ -26,13 +26,13 @@ The file managers for linux aren’t that great for me. So I decided to write my
 
 # Features
 
-1. Image and text file preview
+1. Image and text file preview with optional fast syntax highlighting for programming language files
 2. PDF file preview
 2. Async File Operations
 3. Keyboard driven
 4. [Bookmarks](./wiki.md#bookmarks)
 5. [Scoped Commands](./wiki.md#types-of-command)
-6. Shell Command Executions
+6. [Async Shell Command Executions](./wiki.md#shell-commands)
 7. [Linux Only](./wiki.md#linux-only)
 8. Drag and Drop
 9. [Configuration with Lua](./wiki.md#lua-configuration)
@@ -68,10 +68,10 @@ Command bar
 
 # TODOs
 
-Please refer to [this file](./TODO.md)
+Please refer to [this file](./TODO.md) for looking at the TODOs and DONEs.
 
 <a id="orgb2dd5a8"></a>
 
 # Wiki
 
-Please refer to [this file](./wiki.md)
+Please refer to [this file](./wiki.md) for in depth look into the features and functionalities of navi.
