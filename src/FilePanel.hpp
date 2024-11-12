@@ -186,17 +186,13 @@ private:
     void initContextMenu() noexcept;
     void handleItemDoubleClicked(const QModelIndex &index) noexcept;
     void initSignalsSlots() noexcept;
-
     QVBoxLayout *m_layout = new QVBoxLayout();
     TableView *m_table_view = new TableView();
     FileSystemModel *m_model = new FileSystemModel();
-
     QString m_current_dir;
-
     bool m_hidden_files_shown = false;
     bool m_hidden_files_just_toggled = false;
     bool m_dot_dot_shown = false;
-
     QAction *m_context_action_open = nullptr;
     QAction *m_context_action_open_with = nullptr;
     QAction *m_context_action_cut = nullptr;
@@ -207,7 +203,6 @@ private:
     QAction *m_context_action_rename = nullptr;
     QAction *m_context_action_properties = nullptr;
     QAction *m_context_action_open_terminal = nullptr;
-
     // Search related things
     QModelIndexList m_search_index_list;
     int m_search_index_list_index = -1;
@@ -217,31 +212,24 @@ private:
     // iterate through the search results. If yes, we just iterate
     bool m_search_new_directory = true;
     QString m_search_text;
-
     // This is for storing the recent file operation action like COPY, PASTE.
     // Depending on which we perform the necessary action.
     FileOPType m_file_op_type = FileOPType::COPY;
-
     QString m_terminal = getenv("TERMINAL");
     QStringList m_terminal_args;
-
     Inputbar *m_inputbar;
     Statusbar *m_statusbar;
-
     // This is used to store the filenames that are marked for cutting or copying.
     QStringList m_register_files_list;
-
     QPoint m_drag_start_position;
-
     bool m_cycle_item = true;
     bool m_visual_line_mode = false;
     bool m_scroll_action = true;
-
     unsigned int m_bulk_rename_threshold = 5;
     QModelIndex m_visual_start_index;
-
     int m_file_name_column_index = -1;
     QColor m_current_background, m_current_foreground;
     int m_highlight_row;
     QString m_highlight_text;
+    QHash <QString, QString> m_default_applications_hash;
 };

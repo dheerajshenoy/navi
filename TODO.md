@@ -70,9 +70,10 @@
 - [x] Tree-sitter faster syntax highlighting support
 - [x] Shell commands
 - [x] Ask user before quiting about the executing command
+- [x] Video file static preview
+- [x] Add file operation cancel UI
 - [ ] Open with menu
 - [ ] Rich text in file panel
 - [ ] Undo Operations
-- [ ] Add file operation cancel UI
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
