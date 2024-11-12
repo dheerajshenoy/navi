@@ -101,8 +101,8 @@ void FileSystemModel::loadDirectory(const QString &path) noexcept {
     QDir dir(path);
 
     if (dir.exists()) {
-        QFileInfoList allFiles =
-            dir.entryInfoList(m_name_filters, m_dir_filters, m_dir_sort_flags);
+      QFileInfoList allFiles =
+          dir.entryInfoList(m_name_filters, m_dir_filters, m_dir_sort_flags);
         int totalEntries = allFiles.size();
         m_fileInfoList.reserve(totalEntries);
         m_path_row_hash.reserve(totalEntries);
@@ -112,8 +112,7 @@ void FileSystemModel::loadDirectory(const QString &path) noexcept {
             m_fileInfoList.append(fileInfo);
             m_path_row_hash.insert(fileInfo.absoluteFilePath(), i);
 
-            emit directoryLoadProgress(
-                                       static_cast<int>((static_cast<float>(i + 1) / totalEntries) * 100));
+            emit directoryLoadProgress(static_cast<int>((static_cast<float>(i + 1) / totalEntries) * 100));
         }
     }
 
@@ -175,6 +174,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid())
         return QVariant();
 
+    const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
     // Custom background color for marked files
     switch (role) {
 
@@ -212,7 +212,6 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     } break;
 
     case Qt::DisplayRole: {
-        const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
         switch (m_column_list.at(index.column()).type) {
         case ColumnType::FileName: // File Name
             if (fileInfo.isSymbolicLink()) {
@@ -289,6 +288,7 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
 
 bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
                               int role) {
+    const QFileInfo &fileInfo = m_fileInfoList[index.row()];
 
     if (role == static_cast<int>(Role::Marked)) {
         if (value.toBool() == true) {

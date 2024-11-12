@@ -383,7 +383,6 @@ void Navi::initBookmarks() noexcept {
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
-
     connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
             [&](const QString &mountPoint) {
                 m_file_panel->setCurrentDir(mountPoint);
@@ -1769,4 +1768,32 @@ void Navi::TogglePathWidget() noexcept {
 
 void Navi::TogglePathWidget(const bool &state) noexcept {
     m_file_path_widget->setVisible(state);
+}
+
+bool Navi::event(QEvent *event) {
+    if (event->type() == QEvent::Close) {
+        if (m_task_manager->taskCount() != 0) {
+            auto btn = new QPushButton("Open tasks");
+            QMessageBox msgBox;
+            msgBox.setText("There are tasks executing in the background, "
+                           "do you really want to quit navi ?");
+            msgBox.setWindowTitle("Tasks");
+            msgBox.setStandardButtons(QMessageBox::StandardButton::Yes |
+                                      QMessageBox::StandardButton::No);
+            QAbstractButton *showTasksBtn =
+                msgBox.addButton(tr("Open Tasks"), QMessageBox::ActionRole);
+            auto btn_click_role = msgBox.exec();
+
+            if (btn_click_role == QMessageBox::No) {
+                event->ignore();
+                return true;
+            } else if (msgBox.clickedButton() == showTasksBtn) {
+                event->ignore();
+                ToggleTasksWidget(true);
+                return true;
+            }
+        }
+    }
+
+    return QWidget::event(event);
 }

@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QStringView>
 #include <QActionGroup>
+#include <QEvent>
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -139,7 +140,11 @@ public:
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
 
+protected:
+    bool event(QEvent *e) override;
+
 private:
+    void onQuit() noexcept;
     void initConfiguration() noexcept;
     void chmodHelper() noexcept;
     void initBookmarks() noexcept;

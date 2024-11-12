@@ -25,7 +25,8 @@ enum class SortColumn {
 };
 
 enum class Role {
-  Marked = Qt::UserRole + 1,
+    Marked = Qt::UserRole + 1,
+    Symlink,
 };
 
 class FileSystemModel : public QAbstractTableModel {

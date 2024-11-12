@@ -69,10 +69,10 @@
 - [x] Show search match count
 - [x] Tree-sitter faster syntax highlighting support
 - [x] Shell commands
+- [x] Ask user before quiting about the executing command
 - [ ] Open with menu
 - [ ] Rich text in file panel
 - [ ] Undo Operations
 - [ ] Add file operation cancel UI
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
-- [ ] Ask user before quiting about the executing command
