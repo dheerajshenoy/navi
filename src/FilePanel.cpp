@@ -1456,8 +1456,10 @@ void FilePanel::NewFolder(const QStringList &folderNames) noexcept {
             return;
         }
         dir.setPath(m_current_dir + QDir::separator() + folderName);
-        if (dir.mkpath(m_current_dir + QDir::separator() + folderName))
+        if (dir.mkpath(m_current_dir + QDir::separator() + folderName)) {
             m_statusbar->Message(QString("Directory %1 created").arg(folderName));
+            m_highlight_text = folderName;
+        }
         else
             m_statusbar->Message(QString("Error creating %1").arg(folderName),
                                  MessageType::ERROR, 5);
@@ -1470,7 +1472,10 @@ void FilePanel::NewFolder(const QStringList &folderNames) noexcept {
                 m_statusbar->Message(QString("Error creating %1").arg(folderName),
                                      MessageType::ERROR, 5);
         }
+
+        m_highlight_text = folderNames.last();
     }
+
 }
 
 void FilePanel::NewFile(const QStringList &fileNames) noexcept {
@@ -1486,6 +1491,7 @@ void FilePanel::NewFile(const QStringList &fileNames) noexcept {
         if (file.open(QIODevice::WriteOnly)) {
             file.close();
             m_statusbar->Message(QString("File %1 created").arg(fileName));
+            m_highlight_text = fileName;
         } else
             m_statusbar->Message(QString("Error creating %1").arg(fileName),
                                  MessageType::ERROR, 5);
@@ -1500,6 +1506,7 @@ void FilePanel::NewFile(const QStringList &fileNames) noexcept {
                                      MessageType::ERROR, 5);
             }
         }
+        m_highlight_text = fileNames.last();
     }
 }
 

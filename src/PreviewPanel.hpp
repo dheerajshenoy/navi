@@ -51,6 +51,11 @@ public:
         }
     }
 
+    inline void SetPreviewDimension(const int &width,
+                                    const int &height) noexcept {
+        m_worker->setPreviewDimension(width, height);
+    }
+
     inline void ToggleSyntaxHighlight() noexcept {
         m_syntax_highlighting_enabled = !m_syntax_highlighting_enabled;
         m_text_preview_widget->setSyntaxHighlighting(m_syntax_highlighting_enabled);
@@ -79,5 +84,4 @@ private:
                          const SyntaxHighlighterTS::Language &language) noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
-
 };

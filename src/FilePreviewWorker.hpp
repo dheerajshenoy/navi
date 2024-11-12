@@ -26,6 +26,10 @@ void setMaxPreviewThreshold(const qint64 &maxThreshold) noexcept {
     m_max_preview_threshold = maxThreshold;
 }
 
+void setPreviewDimension(const int &width, const int &height) noexcept {
+    m_height = height; m_width = width;
+}
+
 public slots:
 void loadPreview(const QString &filePath) {
 
@@ -50,7 +54,7 @@ void loadPreview(const QString &filePath) {
         if (!image.isValid())
             return;
 
-        image.thumbnail(Magick::Geometry(200, 200));
+        image.thumbnail(Magick::Geometry(m_width, m_height));
 
         int width = image.columns();
         int height = image.rows();
@@ -111,8 +115,8 @@ void loadPreview(const QString &filePath) {
         }
 
         QImage qimage = page->renderToImage(600, 600)
-                       .scaled(400,
-                               400,
+                       .scaled(m_width,
+                               m_height,
                                Qt::KeepAspectRatio,
                                Qt::SmoothTransformation);
         emit imagePreviewReady(qimage.copy());
@@ -123,7 +127,7 @@ void loadPreview(const QString &filePath) {
         if (!image.isValid())
             return;
 
-        image.thumbnail(Magick::Geometry(200, 200));
+        image.thumbnail(Magick::Geometry(m_width, m_height));
 
         int width = image.columns();
         int height = image.rows();
@@ -150,4 +154,6 @@ signals:
 
 private:
     qint64 m_max_preview_threshold = 1e+7;
+
+    int m_width, m_height;
 };

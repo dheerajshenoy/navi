@@ -72,6 +72,16 @@ void Navi::initConfiguration() noexcept {
                 auto syntax_highlighting =
                     preview_pane["syntax_highlight"].get_or(true);
                 m_preview_panel->SetSyntaxHighlighting(syntax_highlighting);
+
+                sol::optional<sol::table> preview_dimension_opt =
+                    preview_pane["dimension"];
+                if (preview_dimension_opt) {
+                    auto dimension_table = preview_dimension_opt.value();
+                    auto height = dimension_table["height"].get_or(200);
+                    auto width = dimension_table["width"].get_or(200);
+
+                    m_preview_panel->SetPreviewDimension(width, height);
+                }
             }
 
             // Menu bar

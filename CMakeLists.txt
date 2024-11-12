@@ -61,7 +61,6 @@ qt_add_executable(${PROJECT_NAME}
   src/ShortcutsWidget.cpp
   src/NaviWindow.cpp
   src/DriveWidget.cpp
-  src/SyntaxHighlighter.cpp
   src/SyntaxHighlighterTS.cpp
   src/TasksWidget.cpp
   src/Task.cpp
