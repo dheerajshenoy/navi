@@ -1140,6 +1140,7 @@ void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
         menu.addAction(m_context_action_copy);
         menu.addAction(m_context_action_paste);
         menu.addAction(m_context_action_delete);
+        menu.addAction(m_context_action_rename);
         menu.addAction(m_context_action_trash);
         menu.addAction(m_context_action_properties);
     } else {

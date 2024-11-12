@@ -116,6 +116,26 @@ void loadPreview(const QString &filePath) {
                                Qt::KeepAspectRatio,
                                Qt::SmoothTransformation);
         emit imagePreviewReady(qimage.copy());
+    } else if (mimeName.startsWith("video/")) {
+        Magick::Image image;
+        image.read(filePath.toStdString() + "[0]");
+
+        if (!image.isValid())
+            return;
+
+        image.thumbnail(Magick::Geometry(200, 200));
+
+        int width = image.columns();
+        int height = image.rows();
+
+        // Ensure the image is in RGB format for compatibility with QImage
+        Magick::Blob blob;
+        image.write(&blob, "RGBA");  // Convert to RGBA
+
+        const uchar *data = reinterpret_cast<const uchar *>(blob.data());
+        QImage qimage(data, width, height, QImage::Format_RGBA8888);
+        emit imagePreviewReady(qimage.copy());
+
     }
     else
         emit errorOccurred("Unsupported file type for preview.");
