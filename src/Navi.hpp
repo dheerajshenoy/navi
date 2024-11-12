@@ -238,7 +238,7 @@ private:
     QStringList m_valid_command_list = {
 
       // Shell command
-      "shell-async",
+      "shell",
 
       // Mark
       "mark",

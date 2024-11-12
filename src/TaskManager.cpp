@@ -4,10 +4,10 @@ TaskManager::TaskManager(QObject *parent) :QObject(parent) {}
 
 void TaskManager::addTask(Task *task) noexcept {
     m_tasks_hash.insert(task->uuid(), task);
-    // connect(task, &Task::finished, this, [&](const QUuid &uuid) {
-    //     removeTask(uuid);
-    // });
     task->run();
+    connect(task, &Task::finished, this, [&](const QUuid &uuid) {
+        removeTask(uuid);
+    });
     emit taskAdded(task);
 }
 
