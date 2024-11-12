@@ -77,3 +77,4 @@
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
+- [ ] zoxide integration

@@ -52,6 +52,7 @@ static const QString CONFIG_FILE_PATH =
 #include "Task.hpp"
 #include "TaskManager.hpp"
 #include "TasksWidget.hpp"
+#include "RegisterWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -135,6 +136,9 @@ public:
 
     void ToggleTasksWidget() noexcept;
     void ToggleTasksWidget(const bool &state) noexcept;
+
+    void ToggleRegisterWidget() noexcept;
+    void ToggleRegisterWidget(const bool &state) noexcept;
 
     void ExecuteLuaFunction(const QStringList &args) noexcept;
 
@@ -362,6 +366,8 @@ private:
       "drives",
       "syntax-highlight",
       "lua",
+      "register",
+
     };
 
     QStringListModel *m_command_completion_model = nullptr;
@@ -386,4 +392,6 @@ private:
     QStringList m_search_history_list = {};
     TaskManager *m_task_manager = new TaskManager(this);
     TasksWidget *m_tasks_widget = nullptr;
+    RegisterWidget *m_register_widget = new RegisterWidget(this);
+    QString m_terminal;
 };

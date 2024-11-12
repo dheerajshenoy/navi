@@ -138,6 +138,22 @@ public:
     void ToggleMouseScroll() noexcept;
     void ToggleMouseScroll(const bool &state) noexcept;
 
+    inline void SetBulkRenameThreshold(const unsigned int &threshold) noexcept {
+        m_bulk_rename_threshold = threshold;
+    }
+
+    inline void SetBulkRenameEditor(const QString &editor) noexcept {
+        m_bulk_rename_editor = editor;
+    }
+
+    inline void SetTerminal(const QString &terminal) noexcept {
+        m_terminal = terminal;
+    }
+
+    inline void SetBulkRenameWithTerminal(const bool &state) noexcept {
+        m_bulk_rename_with_terminal = state;
+    }
+
     inline void setCurrentForeground(const QString &color) noexcept {
         m_current_foreground = color;
 
@@ -215,7 +231,7 @@ private:
     // This is for storing the recent file operation action like COPY, PASTE.
     // Depending on which we perform the necessary action.
     FileOPType m_file_op_type = FileOPType::COPY;
-    QString m_terminal = getenv("TERMINAL");
+    QString m_terminal;
     QStringList m_terminal_args;
     Inputbar *m_inputbar;
     Statusbar *m_statusbar;
@@ -226,10 +242,12 @@ private:
     bool m_visual_line_mode = false;
     bool m_scroll_action = true;
     unsigned int m_bulk_rename_threshold = 5;
+    QString m_bulk_rename_editor;
     QModelIndex m_visual_start_index;
     int m_file_name_column_index = -1;
     QColor m_current_background, m_current_foreground;
     int m_highlight_row;
     QString m_highlight_text;
-    QHash <QString, QString> m_default_applications_hash;
+    QHash<QString, QString> m_default_applications_hash;
+    bool m_bulk_rename_with_terminal = false;
 };

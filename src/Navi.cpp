@@ -41,7 +41,8 @@ void Navi::initNaviLuaAPI() noexcept {
 
 void Navi::initConfiguration() noexcept {
 
-    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string);
+  lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
+                     sol::lib::os, sol::lib::jit);
 
     try {
         lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
@@ -59,6 +60,11 @@ void Navi::initConfiguration() noexcept {
 
     if (settings_table_opt) {
         sol::table settings_table = settings_table_opt.value();
+
+        auto terminal =
+            settings_table["terminal"].get_or<std::string>("kitty");
+        m_terminal = QString::fromStdString(terminal);
+
         sol::optional<sol::table> ui_table_opt = settings_table["ui"];
         if (ui_table_opt) {
             sol::table ui_table = ui_table_opt.value();
@@ -376,6 +382,26 @@ void Navi::initConfiguration() noexcept {
                 m_inputbar->setFontFamily(font);
             }
         }
+
+        // bulk rename
+        sol::optional<sol::table> bulk_rename_table_opt =
+            settings_table["bulk_rename"];
+
+        if (bulk_rename_table_opt) {
+            auto bulk_rename_table = bulk_rename_table_opt.value();
+
+            auto file_threshold = bulk_rename_table["file_threshold"].get_or(5);
+            m_file_panel->SetBulkRenameThreshold(file_threshold);
+            qDebug() << file_threshold;
+
+            auto editor =
+                bulk_rename_table["editor"].get_or<std::string>("nvim");
+            m_file_panel->SetBulkRenameEditor(QString::fromStdString(editor));
+            m_file_panel->SetTerminal(m_terminal);
+
+            auto with_terminal = bulk_rename_table["terminal"].get_or(false);
+            m_file_panel->SetBulkRenameWithTerminal(with_terminal);
+        }
     }
 
     // Read the KEYBINDINGS table
@@ -493,6 +519,10 @@ void Navi::ShowHelp() noexcept {}
 void Navi::setupCommandMap() noexcept {
   commandMap["execute-extended-command"] = [this](const QStringList &args) {
     ExecuteExtendedCommand();
+  };
+
+  commandMap["register"] = [this](const QStringList &args) {
+    ToggleRegisterWidget();
   };
 
   commandMap["tasks"] = [this](const QStringList &args) {
@@ -1887,4 +1917,18 @@ void Navi::Lua__ChangeDirectory(const std::string &dir) noexcept {
 void Navi::Lua__Shell(const std::string &com) noexcept {
     QString commandString = QString::fromStdString(com);
     ShellCommandAsync(commandString);
+}
+
+void Navi::ToggleRegisterWidget() noexcept {
+    if (m_register_widget->isVisible())
+        m_register_widget->hide();
+    else
+        m_register_widget->show();
+}
+
+void Navi::ToggleRegisterWidget(const bool &state) noexcept {
+    if (state)
+        m_register_widget->show();
+    else
+        m_register_widget->hide();
 }

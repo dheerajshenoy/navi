@@ -65,6 +65,7 @@ qt_add_executable(${PROJECT_NAME}
   src/TasksWidget.cpp
   src/Task.cpp
   src/TaskManager.cpp
+  src/RegisterWidget.cpp
 
   src/TextEdit.hpp
   src/FileWorker.hpp
@@ -79,6 +80,7 @@ qt_add_executable(${PROJECT_NAME}
   src/ImageWidget.hpp
   src/FilePreviewWorker.hpp
   src/TaskCardTemplate.hpp
+  src/OrderlessFilterModel.hpp
 )
 
 

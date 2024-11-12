@@ -11,6 +11,22 @@
 #include <QLineEdit>
 #include <QPainter>
 #include <QWidget>
+#include <qnamespace.h>
+#include <qsortfilterproxymodel.h>
+#include "OrderlessFilterModel.hpp"
+
+class InputbarCompleter : public QCompleter {
+
+public:
+    InputbarCompleter(QSortFilterProxyModel *model, QWidget *parent = nullptr) : QCompleter(model, parent){}
+
+protected:
+    QStringList splitPath(const QString &path) const override {
+        QStringList paths = path.split(" ", Qt::SkipEmptyParts);
+        return paths;
+    }
+
+};
 
 class LineEdit : public QLineEdit {
     Q_OBJECT
@@ -87,10 +103,11 @@ private:
     QHBoxLayout *m_layout = new QHBoxLayout();
     QLabel *m_prompt_label = new QLabel();
     LineEdit *m_line_edit = new LineEdit();
-    QCompleter *m_line_edit_completer = new QCompleter();
+    InputbarCompleter *m_line_edit_completer = nullptr;
     QStringList m_search_history_list;
     QStringList m_command_history_list;
     QHash<CompletionModelType, QAbstractItemModel *> m_completer_hash;
     int m_history_index = -1;
     CompletionModelType m_current_completion_type;
+    OrderlessFilterModel *m_filter_model = nullptr;
 };

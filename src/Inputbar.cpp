@@ -3,8 +3,11 @@
 
 Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     this->setLayout(m_layout);
-    m_line_edit_completer = new QCompleter();
+
+    m_filter_model = new OrderlessFilterModel(this);
+    m_line_edit_completer = new InputbarCompleter(m_filter_model, this);
     m_line_edit_completer->setCaseSensitivity(Qt::CaseInsensitive);
+    m_line_edit_completer->setFilterMode(Qt::MatchFlag::MatchContains);
     m_line_edit_completer->setCompletionColumn(0);
     m_line_edit->setCompleter(m_line_edit_completer);
     m_layout->addWidget(m_prompt_label);
@@ -15,9 +18,20 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     connect(m_line_edit, &LineEdit::historyDown, this, &Inputbar::historyDown);
     connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
     connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {
-        this->hide();
-        m_history_index = -1;
+      this->hide();
+      m_history_index = -1;
     });
+
+    connect(m_line_edit, &LineEdit::textChanged, this, [&](const QString &text) {
+                QStringList words =
+                    text.split(QRegularExpression("[\\s-]+"), Qt::SkipEmptyParts);
+                QString pattern =
+                    words.join(".*"); // Build a pattern that matches words in
+                // orderless fashion
+                QRegularExpression regex(pattern, QRegularExpression::PatternOption::CaseInsensitiveOption);
+                m_filter_model->setFilterRegularExpression(regex);
+    });
+
 }
 
 void Inputbar::suggestionComplete() noexcept {
@@ -82,8 +96,10 @@ void Inputbar::addCompleterModel(QAbstractItemModel *model,
 }
 
 void Inputbar::setCurrentCompletionModel(const CompletionModelType &type) noexcept {
-    if (m_completer_hash.contains(type))
-        m_line_edit_completer->setModel(m_completer_hash[type]);
+    if (m_completer_hash.contains(type)) {
+        auto model = m_completer_hash[type];
+        m_filter_model->setSourceModel(model);
+    }
     m_current_completion_type = type;
 }
 

@@ -9,9 +9,6 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
 
     // m_model->setNameFilterDisables(false);
 
-    if (m_terminal.isEmpty() || m_terminal.isNull())
-        m_terminal = "alacritty";
-
     m_terminal_args = QStringList() << "--working-directory" << "%d";
 
     initSignalsSlots();
@@ -693,7 +690,8 @@ void FilePanel::RenameItem() noexcept {
 void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
     QTemporaryFile tempFile;
 
-    tempFile.setFileTemplate("Navi__Bulk_Rename_List__XXXXXXXXXX");
+    tempFile.setFileTemplate("/tmp/Navi__Bulk_Rename_List__XXXXXXXXXX");
+    tempFile.setAutoRemove(false);
 
     if (!tempFile.open()) {
         m_statusbar->Message("Error creating temporary file", MessageType::ERROR,
@@ -723,10 +721,13 @@ void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
     QProcess editor;
 
     editor.startDetached();
-    editor.start("emacs",
-                 QStringList()
-                 << tempFile.fileName()); // Replace "gedit" with your text
-    // editor of choice
+    if (m_bulk_rename_with_terminal) {
+        editor.start(m_terminal,
+                     QStringList()
+                     << m_bulk_rename_editor << tempFile.fileName());
+    } else {
+        editor.start(m_bulk_rename_editor, QStringList() << tempFile.fileName());
+    }
     editor.waitForFinished();
 
     // Step 4: Reopen the file to read user inputs
@@ -738,7 +739,6 @@ void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
 
     // Step 5: Parse each line and rename files
     QTextStream in(&tempFile);
-    bool success = true;
     while (!in.atEnd()) {
         QString line = in.readLine();
         if (line.startsWith("#"))
@@ -751,16 +751,17 @@ void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
                 QString newFilePath =
                     QFileInfo(originalPath).absolutePath() + "/" + newName;
                 if (!QFile::rename(originalPath, newFilePath)) {
-                    success = false;
                     m_statusbar->Message(QString("Failed to rename %1").arg(originalPath),
                                          MessageType::WARNING);
                 } else {
                     m_model->removeMarkedFile(originalPath);
+                    m_statusbar->Message("Rename successful");
                 }
             }
         }
     }
     tempFile.close();
+    tempFile.remove();
 }
 
 void FilePanel::RenameItemsGlobal() noexcept {

@@ -273,7 +273,7 @@ Change permission **DWIM** style
 
 ### Renaming Files
 
-**NOTE: Renaming more than one item leads to *bulk renaming*. This is where a text editor of your choice (set it in the configuration) opens up a temporary "rename file" and enables you to rename all the marked files once you save and close the said "rename file"**
+**NOTE: Renaming more than `bulk-rename-threshold` (configuration option) which is by default 5 will trigger a **[Bulk Rename](#bulk-rename)** process.
 
 `rename`
 
@@ -290,6 +290,10 @@ Renames items in the **Global Marks**
 `rename-dwim`
 
 Renames items in **DWIM** style
+
+#### Bulk Rename
+
+This is where a text editor of your choice (set it in the configuration) opens up a temporary "rename file" and enables you to rename all the marked files once you save and close the said "rename file". By default navi uses the `neovim` text editor.
 
 ### Cutting Files
 
@@ -550,6 +554,10 @@ function someFunction(fileName, dirName)
 end
 ```
 
+You can then call this function within Navi by calling the `lua <function_name>` command or by just calling `lua` command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:
+
+"WOW! Navi is currently on the file `<fileName>` and inside the `<dirName>` directory!"
+
 ## Navi Lua API
 
 The running navi instance is exposed to the lua configuration file. You can call api functions that interacts with Navi using these functions.
@@ -629,6 +637,14 @@ Copy and paste the following template config file into the configuration directo
 
 ``` lua
 settings = {
+    terminal = os.getenv("TERMINAL"),
+
+    bulk_rename = {
+        file_threshold = 5, -- threshold at which bulk rename should trigger
+        editor = "nvim", -- editor used for bulk renaming along with flag %f for file
+        terminal = true, -- if the editor uses terminal set this flag to true
+    },
+
     ui = {
 
         preview_pane = {
@@ -736,13 +752,13 @@ keybindings = {
     { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
     { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
     { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
-    { key = "Ctrl+t", command = "tab-new", desc = "Add new tab" },
-    { key = "Ctrl+w", command = "tab-delete", desc = "Delete current tab" },
-    { key = "Alt+1", command = "tab-select 0", desc = "Select first tab" },
-    { key = "Alt+2", command = "tab-select 1", desc = "Select second tab" },
-    { key = "Alt+3", command = "tab-select 2", desc = "Select third tab" },
 }
+
+function setWallpaper(file)
+    navi:shell("xwallpaper --stretch " .. file)
+end
 ```
+
 
 # Acknowledgement
 
