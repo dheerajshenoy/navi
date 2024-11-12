@@ -93,7 +93,7 @@ public:
 
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
-    QVBoxLayout *m_vert_layout = new QVBoxLayout();
+    QVBoxLayout *m_vert_layout = new QVBoxLayout(this);
     QLabel *m_message_label = new QLabel();
     QLabel *m_file_name_label = new QLabel();
     QLabel *m_file_size_label = new QLabel();
@@ -114,4 +114,5 @@ private:
     QLocale m_locale;
     QString m_file_path;
     QPalette m_message_palette;
+    QTimer *m_message_timer = new QTimer(this);
 };

@@ -2,7 +2,6 @@
 #include <qnamespace.h>
 
 Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
-    this->setLayout(m_vert_layout);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
     m_layout->setContentsMargins(10, 0, 10, 10);
@@ -31,7 +30,13 @@ Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
 
     m_vert_layout->addWidget(m_message_label);
     m_filter_label->setHidden(true);
+    m_message_timer->setSingleShot(true);
+    connect(m_message_timer, &QTimer::timeout, this, [&]() {
+        m_message_label->hide();
+    });
+
     m_message_palette = m_message_label->palette();
+    this->setLayout(m_vert_layout);
 }
 
 void Statusbar::Message(const QString &message, const MessageType type,
@@ -55,7 +60,10 @@ void Statusbar::Message(const QString &message, const MessageType type,
     m_message_label->setText(message);
 
     m_message_label->show();
-    QTimer::singleShot(ms * 1000, [&]() { m_message_label->hide(); });
+
+    // QTimer::singleShot(ms * 1000, [&]() { m_message_label->hide(); });
+    m_message_timer->setInterval(ms * 1000);
+    m_message_timer->start();
 
     emit logMessage(message, type);
 }

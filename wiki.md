@@ -495,14 +495,6 @@ https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a
 
 `shell`
 
-Run a shell command *synchronously* (blocking).
-
-**NOTE: This blocks the main GUI thread until the command finished executing**
-
-**NOTE: NOT YET IMPLEMENTED**
-
-`shell-async`
-
 Run a shell command *asynchronously* (non-blocking).
 
 The running commands can be seen in the `Task Widget` using the `tasks` command
@@ -547,6 +539,83 @@ Since navi is a Qt GUI library based application, it can be styled using the `qt
 # Scripting with Lua [scripting-with-lua]
 
 Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks.
+
+## Custom functions
+
+You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.
+
+```lua
+function someFunction(fileName, dirName)
+    navi:message("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
+end
+```
+
+## Navi Lua API
+
+The running navi instance is exposed to the lua configuration file. You can call api functions that interacts with Navi using these functions.
+
+The following functions should be called with the navi instance like `navi:function_name()`
+
+### `cd`
+
+Change the directory
+
+Args:
+
+directory-name : (_str_) (**required**)
+
+Example:
+
+```lua
+navi:cd("~/.config")
+```
+
+### `input`
+
+Get input from the user and return the value.
+
+Args:
+* Prompt text `str` (**required**)
+* Placeholder text `str` (*optional*)
+* Selection text `str` (*optional*)
+
+Return type: _str_
+
+Example:
+
+```lua
+navi:input("Enter a number")
+```
+
+### `message`
+
+Prints message
+
+Args:
+* Text `str` (**required**)
+* Type `MessageType` (*optinal*)
+
+`MessageType` is an enum with the members `Error`, `Warning` and `Info`
+
+Example:
+
+```lua
+navi:message("This is a good message", MessageType.Info)
+navi:message("This is a bad message", MessageType.Error)
+navi:message("This is an okay message", MessageType.Warning)
+```
+
+## What can you do with scripting ?
+
+### Setting wallpaper
+
+Since filename and current directory is passed to every custom function by Navi, we can use this to apply a wallpaper (using `xwallpaper` package).
+
+```lua
+function setWallpaper(filename)
+    navi:shell("xwallpaper --stretch" .. filename)
+end
+```
 
 # Configuration with Lua
 

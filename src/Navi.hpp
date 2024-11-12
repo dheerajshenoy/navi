@@ -100,7 +100,7 @@ public:
     void SortByName(const bool &reverse = false) noexcept;
     void SortByDate(const bool &reverse = false) noexcept;
     void SortBySize(const bool &reverse = false) noexcept;
-    void ShellCommandAsync() noexcept;
+    void ShellCommandAsync(const QString &command = "") noexcept;
     void Search() noexcept;
 
     void ToggleDrivesWidget(const bool &state) noexcept;
@@ -136,14 +136,26 @@ public:
     void ToggleTasksWidget() noexcept;
     void ToggleTasksWidget(const bool &state) noexcept;
 
+    void ExecuteLuaFunction(const QStringList &args) noexcept;
+
     void MountDrive(const QString &driveName) noexcept;
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
+
+    // Lua API Function calls
+    void Lua__Message(const std::string &message, const MessageType &type) noexcept;
+    std::string Lua__Input(const std::string &prompt,
+                           const std::string &default_value,
+                           const std::string &default_selection) noexcept;
+
+    void Lua__ChangeDirectory(const std::string &dir) noexcept;
+    void Lua__Shell(const std::string &command) noexcept;
 
 protected:
     bool event(QEvent *e) override;
 
 private:
+    void initNaviLuaAPI() noexcept;
     void onQuit() noexcept;
     void initConfiguration() noexcept;
     void chmodHelper() noexcept;
@@ -226,7 +238,6 @@ private:
     QStringList m_valid_command_list = {
 
       // Shell command
-      "shell",
       "shell-async",
 
       // Mark
@@ -350,7 +361,7 @@ private:
       "mouse-scroll",
       "drives",
       "syntax-highlight",
-
+      "lua",
     };
 
     QStringListModel *m_command_completion_model = nullptr;

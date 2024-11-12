@@ -1,5 +1,6 @@
 #include "Navi.hpp"
 #include "DriveWidget.hpp"
+#include "Statusbar.hpp"
 #include "argparse.hpp"
 #include "sol/sol.hpp"
 
@@ -21,6 +22,21 @@ void Navi::initThings() noexcept {
         m_file_panel->setCurrentDir("~", true);
     else
         m_file_panel->setCurrentDir(m_default_location_list.at(0), true);
+
+    initNaviLuaAPI();
+}
+
+void Navi::initNaviLuaAPI() noexcept {
+
+    lua.new_enum("MessageType", "Error", MessageType::ERROR, "Warning",
+                 MessageType::WARNING,
+                 "Info", MessageType::INFO);
+
+    lua.new_usertype<Navi>("navi", "cd", &Navi::Lua__ChangeDirectory, "message",
+                           &Navi::Lua__Message, "input", &Navi::Lua__Input,
+                           "shell", &Navi::Lua__Shell);
+
+    lua["navi"] = this;
 }
 
 void Navi::initConfiguration() noexcept {
@@ -480,14 +496,15 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["tasks"] = [this](const QStringList &args) {
-      ToggleTasksWidget();
+    ToggleTasksWidget();
+  };
+
+
+  commandMap["lua"] = [this](const QStringList &args) {
+      ExecuteLuaFunction(args);
   };
 
   commandMap["shell"] = [this](const QStringList &args) {
-      // TODO: Sync shell
-  };
-
-  commandMap["shell-async"] = [this](const QStringList &args) {
       ShellCommandAsync();
   };
 
@@ -1763,12 +1780,17 @@ void Navi::Search() noexcept {
     m_file_panel->Search(searchText);
 }
 
-void Navi::ShellCommandAsync() noexcept {
-    QString commandStr = m_inputbar->getInput("Command");
+void Navi::ShellCommandAsync(const QString &com) noexcept {
+    QString commandStr;
+    if (com.isEmpty()) {
+        commandStr = m_inputbar->getInput("Command");
 
-    if (commandStr.isEmpty()) {
-        m_statusbar->Message("Empty command!", MessageType::WARNING);
-        return;
+        if (commandStr.isEmpty()) {
+            m_statusbar->Message("Empty command!", MessageType::WARNING);
+            return;
+        }
+    } else {
+        commandStr = com;
     }
 
     Task *task = new Task();
@@ -1830,4 +1852,39 @@ bool Navi::event(QEvent *event) {
     }
 
     return QWidget::event(event);
+}
+
+void Navi::Lua__Message(const std::string &message, const MessageType &type) noexcept {
+    m_statusbar->Message(QString::fromStdString(message), MessageType::ERROR);
+}
+
+std::string Navi::Lua__Input(const std::string &prompt, const std::string &def_value,
+                      const std::string &selection) noexcept {
+    return m_inputbar->getInput(QString::fromStdString(prompt),
+                                QString::fromStdString(def_value),
+                                QString::fromStdString(selection)).toStdString();
+}
+
+void Navi::ExecuteLuaFunction(const QStringList &args) noexcept {
+    if (args.isEmpty()) {
+        QString funcName = m_inputbar->getInput("Enter the lua function name");
+
+        // Pass the current file name, current directory name to the lua api functions
+        lua[funcName.toStdString().c_str()](getCurrentFile().toStdString().c_str(),
+                                            m_file_panel->getCurrentDir().toStdString().c_str());
+
+    } else {
+        std::string luaFunc = args.at(0).toStdString();
+        std::vector<std::string> _args = utils::convertToStdVector(args.mid(1));
+        lua[luaFunc](_args);
+    }
+}
+
+void Navi::Lua__ChangeDirectory(const std::string &dir) noexcept {
+    m_file_panel->setCurrentDir(QString::fromStdString(dir));
+}
+
+void Navi::Lua__Shell(const std::string &com) noexcept {
+    QString commandString = QString::fromStdString(com);
+    ShellCommandAsync(commandString);
 }
