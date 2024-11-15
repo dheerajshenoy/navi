@@ -1,5 +1,6 @@
 #include "Inputbar.hpp"
 #include "FilePathWidget.hpp"
+#include <qnamespace.h>
 
 Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     this->setLayout(m_layout);
@@ -8,28 +9,28 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     m_line_edit_completer = new InputbarCompleter(m_filter_model, this);
     m_line_edit_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_line_edit_completer->setFilterMode(Qt::MatchFlag::MatchContains);
+    m_line_edit_completer->setCompletionPrefix(" ");
     m_line_edit_completer->setCompletionColumn(0);
+    m_filter_model->setSourceModel(m_completer_model);
     m_line_edit->setCompleter(m_line_edit_completer);
     m_layout->addWidget(m_prompt_label);
     m_layout->addWidget(m_line_edit);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
-    connect(m_line_edit, &LineEdit::historyUp, this, &Inputbar::historyUp);
-    connect(m_line_edit, &LineEdit::historyDown, this, &Inputbar::historyDown);
     connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
     connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {
       this->hide();
-      m_history_index = -1;
     });
 
-    connect(m_line_edit, &LineEdit::textChanged, this, [&](const QString &text) {
-                QStringList words =
-                    text.split(QRegularExpression("[\\s-]+"), Qt::SkipEmptyParts);
-                QString pattern =
-                    words.join(".*"); // Build a pattern that matches words in
-                // orderless fashion
-                QRegularExpression regex(pattern, QRegularExpression::PatternOption::CaseInsensitiveOption);
-                m_filter_model->setFilterRegularExpression(regex);
+    connect(m_line_edit, &LineEdit::textChanged, this,
+            [&](const QString &text) {
+                if (text.isEmpty())
+                    return;
+                QString first = text.split(" ", Qt::SkipEmptyParts).at(0);
+                if (text == "lua") {
+                    currentCompletionStringList(CompletionModelType::LUA_FUNCTIONS);
+                    m_line_edit_completer->complete();
+                }
     });
 
 }
@@ -59,18 +60,7 @@ QString Inputbar::getInput(const QString &prompt,
 
     // Capture input and exit the loop upon Enter press
     auto captureInput = [this, &userInput, &loop]() {
-
-
         userInput = m_line_edit->text();
-        switch (m_current_completion_type) {
-        case CompletionModelType::SEARCH:
-            m_search_history_list.append(userInput);
-            break;
-
-        case CompletionModelType::COMMAND:
-            m_command_history_list.append(userInput);
-            break;
-        }
         loop.quit();
     };
 
@@ -88,20 +78,6 @@ QString Inputbar::getInput(const QString &prompt,
 }
 
 Inputbar::~Inputbar() {}
-
-void Inputbar::addCompleterModel(QAbstractItemModel *model,
-                                 const CompletionModelType &type) noexcept {
-    m_completer_hash.insert(type, model);
-    // m_line_edit_completer->setModel(model);
-}
-
-void Inputbar::setCurrentCompletionModel(const CompletionModelType &type) noexcept {
-    if (m_completer_hash.contains(type)) {
-        auto model = m_completer_hash[type];
-        m_filter_model->setSourceModel(model);
-    }
-    m_current_completion_type = type;
-}
 
 void Inputbar::enableCommandCompletions() noexcept {
     m_line_edit->setCompleter(m_line_edit_completer);
@@ -130,65 +106,14 @@ void Inputbar::setFontFamily(const QString &family) noexcept {
     m_line_edit->setFont(font);
 }
 
-void Inputbar::historyUp() noexcept {
-    QString historyText;
-
-    switch (m_current_completion_type) {
-
-    case CompletionModelType::SEARCH: {
-        auto size = m_search_history_list.size();
-        if (m_search_history_list.isEmpty() ||
-            m_history_index >= size - 1)
-            return;
-        m_history_index++;
-        historyText = m_search_history_list.at(size - m_history_index - 1);
-        if (historyText.isEmpty() || historyText.isNull())
-            return;
-    } break;
-
-    case CompletionModelType::COMMAND: {
-        auto size = m_command_history_list.size();
-        if (m_command_history_list.isEmpty() ||
-            m_history_index >= size - 1)
-            return;
-        m_history_index++;
-        historyText = m_command_history_list.at(size - m_history_index - 1);
-        if (historyText.isEmpty() || historyText.isNull())
-            return;
-    } break;
-
-    default:
-        return;
-    }
-
-    m_line_edit->setText(historyText);
-
+void Inputbar::addCompletionStringList(const CompletionModelType &type,
+                                  const QStringList &list) noexcept {
+    m_completion_list_hash.insert(type, list);
 }
 
-void Inputbar::historyDown() noexcept {
-    QString historyText;
-    switch (m_current_completion_type) {
-
-    case CompletionModelType::SEARCH: {
-        if (m_search_history_list.isEmpty() || m_history_index <= 0)
-            return;
-        auto size = m_command_history_list.size();
-        m_history_index--;
-        historyText = m_search_history_list.at(size - m_history_index - 1);
-        if (historyText.isEmpty() || historyText.isNull())
-            return;
-    } break;
-
-    case CompletionModelType::COMMAND: {
-        if (m_command_history_list.isEmpty() || m_history_index <= 0)
-            return;
-        auto size = m_command_history_list.size();
-        m_history_index--;
-        historyText = m_command_history_list.at(size - m_history_index - 1);
-        if (historyText.isEmpty() || historyText.isNull())
-            return;
-    } break;
-    }
-
-    m_line_edit->setText(historyText);
+void Inputbar::currentCompletionStringList(const CompletionModelType &type) noexcept {
+    if (m_completion_list_hash.contains(type))
+        m_completer_model->setStringList(m_completion_list_hash[type]);
+    else
+        m_completer_model->setStringList({});
 }

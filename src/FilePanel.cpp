@@ -70,7 +70,7 @@ void FilePanel::initContextMenu() noexcept {
             [&]() { TrashDWIM(); });
 
     connect(m_context_action_properties, &QAction::triggered, this,
-            [&]() { ItemProperty(); });
+            [&]() { ShowItemPropertyWidget(); });
 }
 
 Result<bool> FilePanel::OpenTerminal(const QString &directory) noexcept {
@@ -1415,7 +1415,7 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
     drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
 
-void FilePanel::ItemProperty() noexcept {
+void FilePanel::ShowItemPropertyWidget() noexcept {
     FilePropertyWidget prop_widget(getCurrentItem());
     prop_widget.exec();
 }
@@ -1476,7 +1476,6 @@ void FilePanel::NewFolder(const QStringList &folderNames) noexcept {
 
         m_highlight_text = folderNames.last();
     }
-
 }
 
 void FilePanel::NewFile(const QStringList &fileNames) noexcept {
@@ -1610,7 +1609,17 @@ void FilePanel::AsyncShellCommand(const QString &command) noexcept {}
 
 void FilePanel::ShellCommand(const QString &command) noexcept {}
 
-void FilePanel::OpenWith() noexcept {
+void FilePanel::OpenWith() noexcept {}
 
+const FilePanel::ItemProperty FilePanel::getItemProperty() noexcept {
+    ItemProperty property;
+    QLocale locale;
+    QMimeDatabase db;
+    auto file = getCurrentItem();
+    auto fileInfo = QFileInfo(file);
+    property.name = fileInfo.fileName().toStdString();
+    property.size = locale.formattedDataSize(fileInfo.size()).toStdString();
+    property.mimeName = db.mimeTypeForFile(file).name().toStdString();
 
+    return property;
 }

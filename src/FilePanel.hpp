@@ -39,6 +39,12 @@ public:
     FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
+    struct ItemProperty {
+        std::string name;
+        std::string size;
+        std::string mimeName;
+    };
+
     QTableView* tableView() { return m_table_view; }
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
     QString getCurrentDir() noexcept;
@@ -55,6 +61,8 @@ public:
     void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
     void PrevItem() noexcept;
+    inline unsigned int ItemCount() noexcept { return m_item_count; }
+    const ItemProperty getItemProperty() noexcept;
 
     void AsyncShellCommand(const QString &command) noexcept;
     void ShellCommand(const QString &command) noexcept;
@@ -123,7 +131,7 @@ public:
 
     void DropCopyRequested(const QStringList &sourcePaths) noexcept;
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
-    void ItemProperty() noexcept;
+    void ShowItemPropertyWidget() noexcept;
     Result<bool> OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
     void ToggleHeaders(const bool &state) noexcept;

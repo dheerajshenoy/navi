@@ -2,6 +2,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QRegularExpression>
+#include <qnamespace.h>
 
 // Custom Proxy Model for Orderless Matching
 class OrderlessFilterModel : public QSortFilterProxyModel {
@@ -11,6 +12,8 @@ public:
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override {
+        QString filterText = filterRegularExpression().pattern();
+
         const QString itemText =
             sourceModel()
               ->data(sourceModel()->index(sourceRow, 0, sourceParent))

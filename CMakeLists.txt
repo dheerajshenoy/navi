@@ -46,14 +46,15 @@ qt_standard_project_setup()
 # define an executable built from a source file
 qt_add_executable(${PROJECT_NAME}
   src/main.cpp
+  src/utils.cpp
   src/Navi.cpp
+  src/API.cpp
   src/FilePanel.cpp
   src/PreviewPanel.cpp
   src/TableView.cpp
   src/FilePathWidget.cpp
   src/Statusbar.cpp
   src/Inputbar.cpp
-  src/utils.cpp
   # src/TreeSitterTextEdit.cpp
   src/FilePropertyWidget.cpp
   src/BookmarkManager.cpp
@@ -85,7 +86,8 @@ qt_add_executable(${PROJECT_NAME}
 
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-query tree-sitter-python tree-sitter-c tree-sitter-lua tree-sitter-markdown ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-query tree-sitter-python tree-sitter-c tree-sitter-lua tree-sitter-markdown ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6
+)
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${TREESITTER_INCLUDE_DIR} ${LUA_INCLUDE_DIR})

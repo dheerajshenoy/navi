@@ -9,6 +9,8 @@ Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
 
     m_message_label->hide();
     m_vert_layout->addLayout(m_layout);
+    m_layout->addWidget(m_macro_mode_label);
+    m_layout->addSpacing(10);
     m_layout->addWidget(m_visual_line_mode_label);
     m_layout->addSpacing(10);
     m_layout->addWidget(m_file_name_label);
@@ -27,6 +29,7 @@ Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
     m_layout->addWidget(m_file_perm_label);
 
     m_visual_line_mode_label->setHidden(true);
+    m_macro_mode_label->setHidden(true);
 
     m_vert_layout->addWidget(m_message_label);
     m_filter_label->setHidden(true);
@@ -114,4 +117,103 @@ void Statusbar::SetSearchMatchIndex(const int &searchIndex) noexcept {
 
 void Statusbar::SetSearchMatchCount(const int &totalCount) noexcept {
     m_search_total_count = totalCount;
+}
+
+void Statusbar::SetMacroMode(const bool &state) noexcept {
+    m_macro_mode_label->setVisible(state);
+}
+
+
+void Statusbar::SetVisualLineModeBackground(const QString &bg) noexcept {
+    m_visual_line_mode_label_bg = bg;
+    m_visual_line_mode_label->setStyleSheet(QString("background: %1; foreground: %2; padding: 2px; ")
+                .arg(m_visual_line_mode_label_bg.name())
+                .arg(m_visual_line_mode_label_fg.name())
+                .arg(m_visual_line_mode_label_padding_string));
+}
+
+void Statusbar::SetVisualLineModeForeground(const QString &fg) noexcept {
+    m_visual_line_mode_label_fg = fg;
+    m_visual_line_mode_label->setStyleSheet(QString("background: %1; foreground: %2; padding: 2px; ")
+                .arg(m_visual_line_mode_label_bg.name())
+                .arg(m_visual_line_mode_label_fg.name())
+                .arg(m_visual_line_mode_label_padding_string));
+}
+
+void Statusbar::SetVisualLineModeItalic(const bool &state) noexcept {
+    QFont font = m_visual_line_mode_label->font();
+    font.setItalic(state);
+    m_visual_line_mode_label->setFont(font);
+}
+
+void Statusbar::SetVisualLineModeBold(const bool &state) noexcept {
+    QFont font = m_visual_line_mode_label->font();
+    font.setBold(state);
+    m_visual_line_mode_label->setFont(font);
+}
+
+void Statusbar::SetVisualLineModePadding(const QString &padding) noexcept {
+    m_visual_line_mode_label_padding_string = padding;
+    m_visual_line_mode_label->setStyleSheet(QString("background: %1; foreground: %2; padding: %3; ")
+                .arg(m_visual_line_mode_label_bg.name())
+                .arg(m_visual_line_mode_label_fg.name())
+                .arg(m_visual_line_mode_label_padding_string));
+}
+
+void Statusbar::SetVisualLineModeText(const QString &text) noexcept {
+    m_visual_line_mode_label_text = text;
+    m_visual_line_mode_label->setText(text);
+}
+
+
+
+void Statusbar::SetMacroModeBackground(const QString &bg) noexcept {
+    m_macro_mode_label_bg = bg;
+    m_macro_mode_label->setStyleSheet(QString("background: %1; foreground: %2; padding: 2px; ")
+                .arg(m_macro_mode_label_bg.name())
+                .arg(m_macro_mode_label_fg.name())
+                .arg(m_macro_mode_label_padding_string));
+}
+
+void Statusbar::SetMacroModeForeground(const QString &fg) noexcept {
+    m_macro_mode_label_fg = fg;
+    m_macro_mode_label->setStyleSheet(QString("background: %1; foreground: %2; padding: 2px; ")
+                .arg(m_macro_mode_label_bg.name())
+                .arg(m_macro_mode_label_fg.name())
+                .arg(m_macro_mode_label_padding_string));
+}
+
+void Statusbar::SetMacroModeItalic(const bool &state) noexcept {
+    QFont font = m_macro_mode_label->font();
+    font.setItalic(state);
+    m_macro_mode_label->setFont(font);
+}
+
+void Statusbar::SetMacroModeBold(const bool &state) noexcept {
+    QFont font = m_macro_mode_label->font();
+    font.setBold(state);
+    m_macro_mode_label->setFont(font);
+}
+
+void Statusbar::SetMacroModePadding(const QString &padding) noexcept {
+    m_macro_mode_label_padding_string = padding;
+    m_macro_mode_label->setStyleSheet(QString("background: %1; foreground: %2; padding: %3; ")
+                .arg(m_macro_mode_label_bg.name())
+                .arg(m_macro_mode_label_fg.name())
+                .arg(m_macro_mode_label_padding_string));
+}
+
+void Statusbar::SetMacroModeText(const QString &text) noexcept {
+    m_macro_mode_label_text = text;
+    m_macro_mode_label->setText(text);
+}
+
+void Statusbar::show() noexcept {
+    emit visibilityChanged(true);
+    QWidget::show();
+}
+
+void Statusbar::hide() noexcept {
+    emit visibilityChanged(false);
+    QWidget::hide();
 }

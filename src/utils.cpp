@@ -138,8 +138,18 @@ QList<StorageDevice> utils::getDrives() noexcept {
 
 std::vector<std::string> utils::convertToStdVector(const QStringList& qStringList) noexcept {
     std::vector<std::string> stdVector;
+    stdVector.reserve(qStringList.size());
     for (const QString& qStr : qStringList) {
         stdVector.push_back(qStr.toStdString());
     }
     return stdVector;
+}
+
+QStringList utils::stringListFromVector(const std::vector<std::string> &vectorList) noexcept {
+    QStringList stringList(vectorList.size());
+
+    for (const auto &item : vectorList)
+        stringList << QString::fromStdString(item);
+
+    return stringList;
 }

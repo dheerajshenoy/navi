@@ -26,7 +26,6 @@ public:
     ~Statusbar();
 
 
-    void SetVisualLineMode(const bool &state) noexcept;
     void Message(const QString &message, MessageType type = MessageType::INFO,
                  int ms = 2) noexcept;
     void SetFile(const QString &filename) noexcept;
@@ -35,62 +34,22 @@ public:
     void SetNumItems(const int &numItems) noexcept;
     void SetSearchMatchCount(const int &totalCount) noexcept;
     void SetSearchMatchIndex(const int &matchIndex) noexcept;
-
-    inline void SetVisualLineModeBackground(const QString &bg) {
-        m_visual_line_mode_label_bg = bg;
-        m_visual_line_mode_label->setStyleSheet(
-            QString("background: %1; foreground: %2; padding: 2px; ")
-                .arg(m_visual_line_mode_label_bg.name())
-                .arg(m_visual_line_mode_label_fg.name())
-                .arg(m_visual_line_mode_label_padding_string));
-    }
-
-    inline void SetVisualLineModeForeground(const QString &fg) {
-        m_visual_line_mode_label_fg = fg;
-        m_visual_line_mode_label->setStyleSheet(
-            QString("background: %1; foreground: %2; padding: 2px; ")
-                .arg(m_visual_line_mode_label_bg.name())
-                .arg(m_visual_line_mode_label_fg.name())
-                .arg(m_visual_line_mode_label_padding_string));
-    }
-
-    inline void SetVisualLineModeItalic(const bool &state) {
-        QFont font = m_visual_line_mode_label->font();
-        font.setItalic(state);
-        m_visual_line_mode_label->setFont(font);
-    }
-
-    inline void SetVisualLineModeBold(const bool &state) {
-        QFont font = m_visual_line_mode_label->font();
-        font.setBold(state);
-        m_visual_line_mode_label->setFont(font);
-    }
-
-    inline void SetVisualLineModePadding(const QString &padding) {
-        m_visual_line_mode_label_padding_string = padding;
-        m_visual_line_mode_label->setStyleSheet(
-            QString("background: %1; foreground: %2; padding: %3; ")
-                .arg(m_visual_line_mode_label_bg.name())
-                .arg(m_visual_line_mode_label_fg.name())
-                .arg(m_visual_line_mode_label_padding_string));
-    }
-
-    inline void SetVisualLineModeText(const QString &text) {
-        m_visual_line_mode_label_text = text;
-        m_visual_line_mode_label->setText(text);
-    }
-
-    void show() noexcept {
-        emit visibilityChanged(true);
-        QWidget::show();
-    }
-
-    void hide() noexcept {
-        emit visibilityChanged(false);
-        QWidget::hide();
-    }
-
-
+    void SetVisualLineMode(const bool &state) noexcept;
+    void SetVisualLineModeBackground(const QString &bg) noexcept;
+    void SetVisualLineModeForeground(const QString &fg) noexcept;
+    void SetVisualLineModeItalic(const bool &state) noexcept;
+    void SetVisualLineModeBold(const bool &state) noexcept;
+    void SetVisualLineModePadding(const QString &padding) noexcept;
+    void SetVisualLineModeText(const QString &text) noexcept;
+    void SetMacroMode(const bool &state) noexcept;
+    void SetMacroModeBackground(const QString &bg) noexcept;
+    void SetMacroModeForeground(const QString &fg) noexcept;
+    void SetMacroModeItalic(const bool &state) noexcept;
+    void SetMacroModeBold(const bool &state) noexcept;
+    void SetMacroModePadding(const QString &padding) noexcept;
+    void SetMacroModeText(const QString &text) noexcept;
+    void show() noexcept;
+    void hide() noexcept;
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
     QVBoxLayout *m_vert_layout = new QVBoxLayout(this);
@@ -103,6 +62,7 @@ private:
     QLabel *m_num_items_label = new QLabel();
     QLabel *m_visual_line_mode_label = new QLabel("VISUAL");
     QLabel *m_search_match_label = new QLabel();
+    QLabel *m_macro_mode_label = new QLabel();
 
     int m_search_total_count = -1;
     int m_search_current_index = -1;
@@ -111,6 +71,10 @@ private:
     QColor m_visual_line_mode_label_bg;
     QString m_visual_line_mode_label_padding_string;
     QString m_visual_line_mode_label_text;
+    QString m_macro_mode_label_text;
+    QColor m_macro_mode_label_fg;
+    QColor m_macro_mode_label_bg;
+    QString m_macro_mode_label_padding_string;
     QLocale m_locale;
     QString m_file_path;
     QPalette m_message_palette;

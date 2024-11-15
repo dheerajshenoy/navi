@@ -20,5 +20,6 @@ public:
     static qint64 parseFileSize(const QString& sizeStr) noexcept;
     static QList<StorageDevice> getDrives() noexcept;
     static bool mountDrive(const QString &driveName) noexcept;
-    static std::vector<std::string> convertToStdVector(const QStringList& qStringList) noexcept;
+    static std::vector<std::string> convertToStdVector(const QStringList &qStringList) noexcept;
+    static QStringList stringListFromVector(const std::vector<std::string> &vectorList) noexcept;
 };

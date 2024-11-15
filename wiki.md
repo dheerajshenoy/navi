@@ -636,7 +636,7 @@ Configuration includes all the settings that can be changed for Navi and keybind
 Copy and paste the following template config file into the configuration directory.
 
 ``` lua
-settings = {
+SETTINGS = {
     terminal = os.getenv("TERMINAL"),
 
     bulk_rename = {
@@ -725,7 +725,7 @@ settings = {
     }
 }
 
-keybindings = {
+KEYBINDINGS = {
     { key = "h", command = "up-directory", desc = "Go to the parent directory" },
     { key = "j", command = "next-item", desc = "Go to the next item" },
     { key = "k", command = "prev-item", desc = "Go to the previous item" },
@@ -754,8 +754,9 @@ keybindings = {
     { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
 }
 
-function setWallpaper(file)
-    navi:shell("xwallpaper --stretch " .. file)
+function setWallpaper()
+    local file = navi.api.item_name()
+    navi.shell.execute("xwallpaper --stretch " .. file)
 end
 ```
 

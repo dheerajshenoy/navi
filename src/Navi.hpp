@@ -103,6 +103,10 @@ public:
     void SortBySize(const bool &reverse = false) noexcept;
     void ShellCommandAsync(const QString &command = "") noexcept;
     void Search() noexcept;
+    void ToggleRecordMacro() noexcept;
+    void DeleteMacro() noexcept;
+    void EditMacro() noexcept;
+    void ListMacro() noexcept;
 
     void ToggleDrivesWidget(const bool &state) noexcept;
     void ToggleDrivesWidget() noexcept;
@@ -151,9 +155,12 @@ public:
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
                            const std::string &default_selection) noexcept;
-
     void Lua__ChangeDirectory(const std::string &dir) noexcept;
     void Lua__Shell(const std::string &command) noexcept;
+    bool Lua__IsDirectory(const std::string &path) noexcept;
+    bool Lua__IsFile(const std::string &path) noexcept;
+    unsigned int Lua__ItemCount(const std::string &path) noexcept;
+    void Lua__CreateFolders(const std::vector<std::string> &paths) noexcept;
 
 protected:
     bool event(QEvent *e) override;
@@ -175,7 +182,7 @@ private:
     void ProcessCommand(const QString &commandtext) noexcept;
     void generateKeybinds() noexcept;
     void initTabBar() noexcept;
-
+    QStringList getLuaFunctionNames() noexcept;
 
     QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
@@ -340,6 +347,11 @@ private:
       "up-directory",
       "select-item",
 
+      "macro-record",
+      "macro-delete",
+      "macro-list",
+      "macro-edit",
+
       // Echo
       "echo-info",
       "echo-warn",
@@ -370,9 +382,6 @@ private:
 
     };
 
-    QStringListModel *m_command_completion_model = nullptr;
-    QStringListModel *m_search_completion_model = nullptr;
-
     MessagesBuffer *m_log_buffer = nullptr;
     MarksBuffer *m_marks_buffer = nullptr;
 
@@ -394,4 +403,8 @@ private:
     TasksWidget *m_tasks_widget = nullptr;
     RegisterWidget *m_register_widget = new RegisterWidget(this);
     QString m_terminal;
+    QStringList m_macro_register = {};
+    QHash<QString, QStringList> m_macro_hash;
+
+    bool m_macro_mode = false;
 };

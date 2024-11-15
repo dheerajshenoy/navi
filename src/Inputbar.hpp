@@ -13,7 +13,9 @@
 #include <QWidget>
 #include <qnamespace.h>
 #include <qsortfilterproxymodel.h>
+#include "FilePathWidget.hpp"
 #include "OrderlessFilterModel.hpp"
+#include <QStringListModel>
 
 class InputbarCompleter : public QCompleter {
 
@@ -22,8 +24,15 @@ public:
 
 protected:
     QStringList splitPath(const QString &path) const override {
-        QStringList paths = path.split(" ", Qt::SkipEmptyParts);
-        return paths;
+      QStringList paths = path.split(" ", Qt::SkipEmptyParts);
+      return paths;
+      // return QCompleter::splitPath(path);
+    }
+
+    QString pathFromIndex(const QModelIndex &index) const override {
+        auto dd = QCompleter::pathFromIndex(index);
+        qDebug() << dd;
+        return dd;
     }
 
 };
@@ -37,8 +46,6 @@ class LineEdit : public QLineEdit {
     signals:
     void hideRequested();
     void tabPressed();
-    void historyUp();
-    void historyDown();
 
 protected:
     void keyPressEvent(QKeyEvent *e) override {
@@ -56,15 +63,6 @@ protected:
                 return;
             } break;
 
-            case (Qt::Key_Up): {
-                emit historyUp();
-                return;
-            } break;
-
-            case (Qt::Key_Down): {
-                emit historyDown();
-                return;
-            } break;
             }
             QLineEdit::keyPressEvent(e);
         }
@@ -82,12 +80,9 @@ public:
                      const QString &selectionString = 0) noexcept;
 
     enum CompletionModelType {
-        SEARCH = 0,
-        COMMAND,
+      COMMAND = 0,
+      LUA_FUNCTIONS
     };
-    void addCompleterModel(QAbstractItemModel *model,
-                           const CompletionModelType &type) noexcept;
-    void setCurrentCompletionModel(const CompletionModelType &type) noexcept;
     void enableCommandCompletions() noexcept;
     void disableCommandCompletions() noexcept;
     void setFontItalic(const bool &state) noexcept;
@@ -95,19 +90,18 @@ public:
     void setForeground(const QString &foreground) noexcept;
     void setBackground(const QString &background) noexcept;
     void setFontFamily(const QString &family) noexcept;
+    void addCompletionStringList(const CompletionModelType &type,
+                            const QStringList &stringList) noexcept;
+    void currentCompletionStringList(const CompletionModelType &type) noexcept;
 
 private:
-    void historyUp() noexcept;
-    void historyDown() noexcept;
     void suggestionComplete() noexcept;
     QHBoxLayout *m_layout = new QHBoxLayout();
     QLabel *m_prompt_label = new QLabel();
     LineEdit *m_line_edit = new LineEdit();
     InputbarCompleter *m_line_edit_completer = nullptr;
-    QStringList m_search_history_list;
-    QStringList m_command_history_list;
-    QHash<CompletionModelType, QAbstractItemModel *> m_completer_hash;
-    int m_history_index = -1;
-    CompletionModelType m_current_completion_type;
+    QStringListModel *m_completer_model = new QStringListModel(this);
+    QStringList m_lua_function_stringlist = {};
     OrderlessFilterModel *m_filter_model = nullptr;
+    QHash<CompletionModelType, QStringList> m_completion_list_hash;
 };

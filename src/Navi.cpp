@@ -26,23 +26,10 @@ void Navi::initThings() noexcept {
     initNaviLuaAPI();
 }
 
-void Navi::initNaviLuaAPI() noexcept {
-
-    lua.new_enum("MessageType", "Error", MessageType::ERROR, "Warning",
-                 MessageType::WARNING,
-                 "Info", MessageType::INFO);
-
-    lua.new_usertype<Navi>("navi", "cd", &Navi::Lua__ChangeDirectory, "message",
-                           &Navi::Lua__Message, "input", &Navi::Lua__Input,
-                           "shell", &Navi::Lua__Shell);
-
-    lua["navi"] = this;
-}
-
 void Navi::initConfiguration() noexcept {
 
   lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
-                     sol::lib::os, sol::lib::jit);
+                     sol::lib::os, sol::lib::jit, sol::lib::package);
 
     try {
         lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
@@ -56,7 +43,7 @@ void Navi::initConfiguration() noexcept {
     auto model = m_file_panel->model();
 
     // Read the SETTINGS table
-    sol::optional<sol::table> settings_table_opt = lua["settings"];
+    sol::optional<sol::table> settings_table_opt = lua["SETTINGS"];
 
     if (settings_table_opt) {
         sol::table settings_table = settings_table_opt.value();
@@ -173,6 +160,30 @@ void Navi::initConfiguration() noexcept {
                     m_statusbar->SetVisualLineModePadding(padding);
 
                     m_statusbar->SetVisualLineModeText(text);
+                }
+
+                sol::optional<sol::table> macro_mode_table =
+                    status_bar["macro_mode"];
+                if (macro_mode_table) {
+                    auto macro_mode = macro_mode_table.value();
+                    auto bg = QString::fromStdString(macro_mode["background"].get_or<std::string>(""));
+                    auto fg = QString::fromStdString(macro_mode["foreground"].get_or<std::string>(""));
+                    auto bold = macro_mode["bold"].get_or(false);
+                    auto italic = macro_mode["italic"].get_or(false);
+                    auto padding = QString::fromStdString(macro_mode["padding"].get_or<std::string>("2px"));
+                    auto text = QString::fromStdString(macro_mode["text"].get_or<std::string>(""));
+
+                    if (!fg.isEmpty())
+                        m_statusbar->SetMacroModeForeground(fg);
+
+                    if (!bg.isEmpty())
+                        m_statusbar->SetMacroModeBackground(bg);
+
+                    m_statusbar->SetMacroModeItalic(italic);
+                    m_statusbar->SetMacroModeBold(bold);
+                    m_statusbar->SetMacroModePadding(padding);
+
+                    m_statusbar->SetMacroModeText(text);
                 }
             }
 
@@ -392,7 +403,6 @@ void Navi::initConfiguration() noexcept {
 
             auto file_threshold = bulk_rename_table["file_threshold"].get_or(5);
             m_file_panel->SetBulkRenameThreshold(file_threshold);
-            qDebug() << file_threshold;
 
             auto editor =
                 bulk_rename_table["editor"].get_or<std::string>("nvim");
@@ -405,7 +415,7 @@ void Navi::initConfiguration() noexcept {
     }
 
     // Read the KEYBINDINGS table
-    sol::optional<sol::table> keybindings_table_opt = lua["keybindings"];
+    sol::optional<sol::table> keybindings_table_opt = lua["KEYBINDINGS"];
 
     if (keybindings_table_opt) {
 
@@ -438,7 +448,32 @@ void Navi::initConfiguration() noexcept {
         generateKeybinds();
     }
 
+    auto funcs = getLuaFunctionNames();
+
+    if (!funcs.isEmpty()) {
+        qDebug() << funcs;
+        m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);
+    }
+
     m_statusbar->Message("Reading configuration file done!");
+}
+
+// Function to get all global Lua function names using Sol2
+QStringList Navi::getLuaFunctionNames() noexcept {
+
+    // Access the global Lua table
+    sol::table function_table = lua.globals();
+
+    if (!function_table.empty()) {
+        QStringList luaFunctions;
+        for (const auto& [key, value] : function_table) {
+            if (value.get_type() == sol::type::function) {
+                luaFunctions << QString::fromStdString(key.as<std::string>());
+            }
+        }
+        return luaFunctions;
+    } else
+        return {};
 }
 
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
@@ -520,6 +555,11 @@ void Navi::setupCommandMap() noexcept {
   commandMap["execute-extended-command"] = [this](const QStringList &args) {
     ExecuteExtendedCommand();
   };
+
+  commandMap["macro-record-toggle"] = [this](const QStringList &args) {
+    ToggleRecordMacro();
+  };
+
 
   commandMap["register"] = [this](const QStringList &args) {
     ToggleRegisterWidget();
@@ -839,7 +879,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["item-property"] = [&](const QStringList &args) {
-        m_file_panel->ItemProperty();
+        m_file_panel->ShowItemPropertyWidget();
     };
 
     commandMap["bookmarks-pane"] = [&](const QStringList &args) {
@@ -876,12 +916,7 @@ void Navi::setupCommandMap() noexcept {
         m_file_panel->SearchPrev();
     };
 
-    m_command_completion_model = new QStringListModel(m_valid_command_list);
-    m_inputbar->addCompleterModel(m_command_completion_model,
-                                  Inputbar::CompletionModelType::COMMAND);
-
-    m_search_completion_model = new QStringListModel(m_search_history_list);
-    m_inputbar->addCompleterModel(m_search_completion_model, Inputbar::CompletionModelType::SEARCH);
+    m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::COMMAND, m_valid_command_list);
 }
 
 void Navi::EditBookmark(const QStringList &args) noexcept {
@@ -1291,7 +1326,7 @@ void Navi::initKeybinds() noexcept {
 
 void Navi::ExecuteExtendedCommand() noexcept {
     // m_inputbar->enableCommandCompletions();
-    m_inputbar->setCurrentCompletionModel(Inputbar::CompletionModelType::COMMAND);
+    m_inputbar->currentCompletionStringList(Inputbar::CompletionModelType::COMMAND);
     QString command = m_inputbar->getInput("Command");
     ProcessCommand(command);
 }
@@ -1730,6 +1765,42 @@ void Navi::ToggleDrivesWidget(const bool &state) noexcept {
     m_drives_widget->setVisible(state);
 }
 
+void Navi::ToggleRecordMacro() noexcept {
+    m_macro_mode = !m_macro_mode;
+
+    if (m_macro_mode) {
+        QString macro_key = m_inputbar->getInput("Enter the macro key");
+
+        if (m_macro_hash.contains(macro_key)) {
+            auto reply = QMessageBox::question(this, "Macro exists",
+                                               QString("A macro with the key %1 already exists. Do you want to overwrite ?").arg(macro_key));
+            if (reply != QMessageBox::Ok) {
+                return;
+            }
+        }
+
+        m_statusbar->SetMacroMode(true);
+        // TODO: Make everything go through navi to register for macro
+    } else {
+
+        m_statusbar->SetMacroMode(false);
+    }
+}
+
+void Navi::DeleteMacro() noexcept {
+    QString macro_key = m_inputbar->getInput("Enter the macro key to delete");
+    if (m_macro_hash.contains(macro_key))
+        m_macro_hash.remove(macro_key);
+}
+void Navi::EditMacro() noexcept {
+}
+
+void Navi::ListMacro() noexcept {
+    for(const auto &macro : m_macro_hash.values()) {
+        qDebug() << macro;
+    }
+}
+
 void Navi::MountDrive(const QString &driveName) noexcept {
     if (driveName.isEmpty() || driveName.isNull()) {
         m_statusbar->Message("Drive name empty!", MessageType::ERROR);
@@ -1804,7 +1875,7 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
 }
 
 void Navi::Search() noexcept {
-    m_inputbar->setCurrentCompletionModel(Inputbar::CompletionModelType::SEARCH);
+    m_inputbar->disableCommandCompletions();
     QString searchText = m_inputbar->getInput("Search");
     m_search_history_list.append(searchText);
     m_file_panel->Search(searchText);
@@ -1884,8 +1955,24 @@ bool Navi::event(QEvent *event) {
     return QWidget::event(event);
 }
 
+void Navi::ToggleRegisterWidget() noexcept {
+    if (m_register_widget->isVisible())
+        m_register_widget->hide();
+    else
+        m_register_widget->show();
+}
+
+void Navi::ToggleRegisterWidget(const bool &state) noexcept {
+    if (state)
+        m_register_widget->show();
+    else
+        m_register_widget->hide();
+}
+
+// Lua API Functions
+
 void Navi::Lua__Message(const std::string &message, const MessageType &type) noexcept {
-    m_statusbar->Message(QString::fromStdString(message), MessageType::ERROR);
+    m_statusbar->Message(QString::fromStdString(message), type);
 }
 
 std::string Navi::Lua__Input(const std::string &prompt, const std::string &def_value,
@@ -1898,11 +1985,8 @@ std::string Navi::Lua__Input(const std::string &prompt, const std::string &def_v
 void Navi::ExecuteLuaFunction(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         QString funcName = m_inputbar->getInput("Enter the lua function name");
-
         // Pass the current file name, current directory name to the lua api functions
-        lua[funcName.toStdString().c_str()](getCurrentFile().toStdString().c_str(),
-                                            m_file_panel->getCurrentDir().toStdString().c_str());
-
+        lua[funcName.toStdString().c_str()]();
     } else {
         std::string luaFunc = args.at(0).toStdString();
         std::vector<std::string> _args = utils::convertToStdVector(args.mid(1));
@@ -1919,16 +2003,26 @@ void Navi::Lua__Shell(const std::string &com) noexcept {
     ShellCommandAsync(commandString);
 }
 
-void Navi::ToggleRegisterWidget() noexcept {
-    if (m_register_widget->isVisible())
-        m_register_widget->hide();
-    else
-        m_register_widget->show();
+bool Navi::Lua__IsDirectory(const std::string &path) noexcept {
+    return QFileInfo(QString::fromStdString(path)).isDir();
 }
 
-void Navi::ToggleRegisterWidget(const bool &state) noexcept {
-    if (state)
-        m_register_widget->show();
-    else
-        m_register_widget->hide();
+bool Navi::Lua__IsFile(const std::string &path) noexcept {
+    return QFileInfo(QString::fromStdString(path)).isFile();
+}
+
+unsigned int Navi::Lua__ItemCount(const std::string &path) noexcept {
+    return m_file_panel->ItemCount();
+}
+
+
+void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
+    if (paths.empty())
+        return;
+
+    QStringList folders;
+    for (const auto &path : paths)
+        folders << QString::fromStdString(path);
+
+    m_file_panel->NewFolder(folders);
 }
