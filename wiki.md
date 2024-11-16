@@ -505,6 +505,8 @@ The running commands can be seen in the `Task Widget` using the `tasks` command
 
 ### Macro
 
+Macros allow you to record actions performed inside Navi and save it, which you can then recall it to perform the action over and over again.
+
 `macro-record`
 
 This records / finishes recording (if already recording) a macro under a _macro key_. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.
