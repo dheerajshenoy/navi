@@ -556,8 +556,12 @@ void Navi::setupCommandMap() noexcept {
     ExecuteExtendedCommand();
   };
 
-  commandMap["macro-record-toggle"] = [this](const QStringList &args) {
+  commandMap["macro-record"] = [this](const QStringList &args) {
     ToggleRecordMacro();
+  };
+
+  commandMap["macro-play"] = [this](const QStringList &args) {
+      PlayMacro();
   };
 
 
@@ -579,7 +583,7 @@ void Navi::setupCommandMap() noexcept {
   };
 
   commandMap["syntax-highlight"] = [this](const QStringList &args) {
-      m_preview_panel->ToggleSyntaxHighlight();
+      ToggleSyntaxHighlight();
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
@@ -608,11 +612,11 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["mouse-scroll"] = [this](const QStringList &args) {
-        m_file_panel->ToggleMouseScroll();
+        ToggleMouseScroll();
     };
 
     commandMap["visual-select"] = [this](const QStringList &args) {
-        m_file_panel->ToggleVisualLine();
+        ToggleVisualLine();
     };
 
     commandMap["shortcuts-pane"] = [this](const QStringList &args) {
@@ -620,31 +624,31 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["up-directory"] = [this](const QStringList &args) {
-        m_file_panel->UpDirectory();
+        UpDirectory();
     };
 
     commandMap["select-item"] = [this](const QStringList &args) {
-        m_file_panel->SelectItem();
+        SelectItem();
     };
 
     commandMap["next-item"] = [this](const QStringList &args) {
-        m_file_panel->NextItem();
+        NextItem();
     };
 
     commandMap["prev-item"] = [this](const QStringList &args) {
-        m_file_panel->PrevItem();
+        PrevItem();
     };
 
     commandMap["first-item"] = [this](const QStringList &args) {
-        m_file_panel->GotoFirstItem();
+        GotoFirstItem();
     };
 
     commandMap["last-item"] = [this](const QStringList &args) {
-        m_file_panel->GotoLastItem();
+        GotoLastItem();
     };
 
     commandMap["middle-item"] = [this](const QStringList &args) {
-        m_file_panel->GotoMiddleItem();
+        GotoMiddleItem();
     };
 
     commandMap["echo-info"] = [this](const QStringList &args) {
@@ -691,141 +695,141 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["cycle"] = [this](const QStringList &args) {
-        m_file_panel->ToggleCycle();
+        ToggleCycle();
     };
 
     commandMap["header"] = [this](const QStringList &args) {
-        m_file_panel->ToggleHeaders();
+        ToggleHeaders();
     };
 
     commandMap["rename"] = [this](const QStringList &args) {
-        m_file_panel->RenameItem();
+        RenameItem();
     };
 
     commandMap["rename-global"] = [this](const QStringList &args) {
-        m_file_panel->RenameItemsGlobal();
+        RenameItemsGlobal();
     };
 
     commandMap["rename-local"] = [this](const QStringList &args) {
-        m_file_panel->RenameItemsLocal();
+        RenameItemsLocal();
     };
 
     commandMap["rename-dwim"] = [this](const QStringList &args) {
-        m_file_panel->RenameDWIM();
+        RenameDWIM();
     };
 
     commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
     commandMap["copy"] = [this](const QStringList &args) {
-        m_file_panel->CopyItem();
+        CopyItem();
     };
 
     commandMap["copy-global"] = [this](const QStringList &args) {
-        m_file_panel->CopyItemsGlobal();
+        CopyItemsGlobal();
     };
 
     commandMap["copy-local"] = [this](const QStringList &args) {
-        m_file_panel->CopyItemsLocal();
+        CopyItemsLocal();
     };
 
     commandMap["copy-dwim"] = [this](const QStringList &args) {
-        m_file_panel->CopyDWIM();
+        CopyDWIM();
     };
 
     commandMap["cut"] = [this](const QStringList &args) {
-        m_file_panel->CutItem();
+        CutItem();
     };
 
     commandMap["cut-global"] = [this](const QStringList &args) {
-        m_file_panel->CutItemsGlobal();
+        CutItemsGlobal();
     };
 
     commandMap["cut-local"] = [this](const QStringList &args) {
-        m_file_panel->CutItemsLocal();
+        CutItemsLocal();
     };
 
     commandMap["cut-dwim"] = [this](const QStringList &args) {
-        m_file_panel->CutDWIM();
+        CutDWIM();
     };
 
     commandMap["paste"] = [this](const QStringList &args) {
-        m_file_panel->PasteItems();
+        PasteItems();
     };
 
     commandMap["delete"] = [this](const QStringList &args) {
-        m_file_panel->DeleteItem();
+        DeleteItem();
     };
 
     commandMap["delete-global"] = [this](const QStringList &args) {
-        m_file_panel->DeleteItemsGlobal();
+        DeleteItemsGlobal();
     };
 
     commandMap["delete-local"] = [this](const QStringList &args) {
-        m_file_panel->DeleteItemsLocal();
+        DeleteItemsLocal();
     };
 
     commandMap["delete-dwim"] = [this](const QStringList &args) {
-        m_file_panel->DeleteDWIM();
+        DeleteDWIM();
     };
 
     commandMap["mark"] = [this](const QStringList &args) {
-        m_file_panel->MarkItem();
+        MarkItem();
     };
 
     commandMap["mark-inverse"] = [this](const QStringList &args) {
-        m_file_panel->MarkInverse();
+        MarkInverse();
     };
 
     commandMap["mark-all"] = [this](const QStringList &args) {
-        m_file_panel->MarkAllItems();
+        MarkAllItems();
     };
 
     commandMap["mark-dwim"] = [this](const QStringList &args) {
-        m_file_panel->MarkDWIM();
+        MarkDWIM();
     };
 
     commandMap["toggle-mark"] = [this](const QStringList &args) {
-        m_file_panel->ToggleMarkItem();
+        ToggleMarkItem();
     };
 
     commandMap["toggle-mark-dwim"] = [this](const QStringList &args) {
-        m_file_panel->ToggleMarkDWIM();
+        ToggleMarkDWIM();
     };
 
     commandMap["unmark"] = [this](const QStringList &args) {
-        m_file_panel->UnmarkItem();
+        UnmarkItem();
     };
 
     commandMap["unmark-local"] = [this](const QStringList &args) {
-        m_file_panel->UnmarkItemsLocal();
+        UnmarkItemsLocal();
     };
 
     commandMap["unmark-global"] = [this](const QStringList &args) {
-        m_file_panel->UnmarkItemsGlobal();
+        UnmarkItemsGlobal();
     };
 
     commandMap["new-file"] = [this](const QStringList &args) {
-        m_file_panel->NewFile(args);
+        NewFile(args);
     };
 
     commandMap["new-folder"] = [this](const QStringList &args) {
-        m_file_panel->NewFolder(args);
+        NewFolder(args);
     };
 
     commandMap["trash"] = [this](const QStringList &args) {
-        m_file_panel->TrashItem();
+        TrashItem();
     };
 
     commandMap["trash-local"] = [this](const QStringList &args) {
-        m_file_panel->TrashItemsLocal();
+        TrashItemsLocal();
     };
 
     commandMap["trash-global"] = [this](const QStringList &args) {
-        m_file_panel->TrashItemsGlobal();
+        TrashItemsGlobal();
     };
 
     commandMap["trash-dwim"] = [this](const QStringList &args) {
-        m_file_panel->TrashDWIM();
+        TrashDWIM();
     };
 
     commandMap["exit"] = [this](const QStringList &args) {
@@ -855,19 +859,23 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["refresh"] = [this](const QStringList &args) {
-        m_file_panel->ForceUpdate();
+        ForceUpdate();
     };
 
     commandMap["chmod"] = [this](const QStringList &args) {
-        m_file_panel->ChmodItem();
+        ChmodItem();
     };
 
     commandMap["chmod-local"] = [this](const QStringList &args) {
-        m_file_panel->ChmodItemsLocal();
+        ChmodItemsLocal();
     };
 
     commandMap["chmod-global"] = [this](const QStringList &args) {
-        m_file_panel->ChmodItemsGlobal();
+        ChmodItemsGlobal();
+    };
+
+    commandMap["chmod-dwim"] = [this](const QStringList &args) {
+        ChmodDWIM();
     };
 
     commandMap["marks-pane"] = [this](const QStringList &args) {
@@ -879,7 +887,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["item-property"] = [&](const QStringList &args) {
-        m_file_panel->ShowItemPropertyWidget();
+        ShowItemPropertyWidget();
     };
 
     commandMap["bookmarks-pane"] = [&](const QStringList &args) {
@@ -907,16 +915,20 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["search"] = [&](const QStringList &args) {
-        m_file_panel->Search();
+        Search();
     };
     commandMap["search-next"] = [&](const QStringList &args) {
-        m_file_panel->SearchNext();
+        SearchNext();
     };
     commandMap["search-prev"] = [&](const QStringList &args) {
-        m_file_panel->SearchPrev();
+        SearchPrev();
     };
 
     m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::COMMAND, m_valid_command_list);
+}
+
+void Navi::ToggleSyntaxHighlight() noexcept {
+    m_preview_panel->ToggleSyntaxHighlight();
 }
 
 void Navi::EditBookmark(const QStringList &args) noexcept {
@@ -1136,7 +1148,10 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
 
     auto [isNumber, num] = utils::isNumber(commandlist.at(0));
     if (isNumber) {
-        m_file_panel->GotoItem(num);
+        GotoItem(num);
+        if (m_macro_mode) {
+            addCommandToMacroRegister(QString::number(num));
+        }
         return;
     }
 
@@ -1149,7 +1164,16 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
         QStringList args = command;
 
         if (commandMap.contains(subcommand)) {
+            if (m_macro_mode && subcommand != "macro-record") {
+                if (!args.isEmpty())
+                    addCommandToMacroRegister(subcommand + " " + args.join(" "));
+                else
+                    addCommandToMacroRegister(subcommand);
+            }
+
             commandMap[subcommand](args); // Call the associated function
+
+
         } else {
             m_statusbar->Message(
                                  QString("Command %1 is not a valid interactive command")
@@ -1255,52 +1279,52 @@ void Navi::initKeybinds() noexcept {
     QShortcut *kb_visual_line = new QShortcut(QKeySequence("Shift+v"), this);
 
     connect(kb_visual_line, &QShortcut::activated, this,
-            [&]() { m_file_panel->ToggleVisualLine(); });
+            [&]() { ToggleVisualLine(); });
 
-    connect(kb_mark_item, &QShortcut::activated, m_file_panel,
-            &FilePanel::ToggleMarkDWIM);
+    connect(kb_mark_item, &QShortcut::activated, this,
+            [&]() { ToggleMarkDWIM(); });
 
-    connect(kb_mark_inverse, &QShortcut::activated, m_file_panel,
-            &FilePanel::MarkInverse);
+    connect(kb_mark_inverse, &QShortcut::activated, this,
+            [&]() { MarkInverse(); });
 
-    connect(kb_mark_all, &QShortcut::activated, m_file_panel,
-            &FilePanel::MarkAllItems);
+    connect(kb_mark_all, &QShortcut::activated, this,
+            [&]() { MarkAllItems(); });
 
-    connect(kb_next_item, &QShortcut::activated, m_file_panel,
-            &FilePanel::NextItem);
+    connect(kb_next_item, &QShortcut::activated, this,
+            [&]() { NextItem(); });
 
-    connect(kb_prev_item, &QShortcut::activated, m_file_panel,
-            &FilePanel::PrevItem);
+    connect(kb_prev_item, &QShortcut::activated, this,
+            [&]() { PrevItem(); });
 
-    connect(kb_select_item, &QShortcut::activated, m_file_panel,
-            &FilePanel::SelectItem);
+    connect(kb_select_item, &QShortcut::activated, this,
+            [&]() { SelectItem(); });
 
-    connect(kb_up_directory, &QShortcut::activated, m_file_panel,
-            &FilePanel::UpDirectory);
+    connect(kb_up_directory, &QShortcut::activated, this,
+            [&]() { UpDirectory(); });
 
-    connect(kb_goto_last_item, &QShortcut::activated, m_file_panel,
-            &FilePanel::GotoLastItem);
+    connect(kb_goto_last_item, &QShortcut::activated, this,
+            [&]() { GotoLastItem(); });
 
-    connect(kb_goto_first_item, &QShortcut::activated, m_file_panel,
-            &FilePanel::GotoFirstItem);
+    connect(kb_goto_first_item, &QShortcut::activated, this,
+            [&]() { GotoFirstItem(); });
 
     connect(kb_command, &QShortcut::activated, this,
             &Navi::ExecuteExtendedCommand);
 
     connect(kb_rename_items, &QShortcut::activated, this,
-            [&]() { m_file_panel->RenameDWIM(); });
+            [&]() { RenameDWIM(); });
 
     connect(kb_delete_items, &QShortcut::activated, this,
-            [&]() { m_file_panel->DeleteDWIM(); });
+            [&]() { DeleteDWIM(); });
 
-    connect(kb_search, &QShortcut::activated, m_file_panel,
+    connect(kb_search, &QShortcut::activated, this,
             [&]() { Search(); });
 
-    connect(kb_search_next, &QShortcut::activated, m_file_panel,
-            &FilePanel::SearchNext);
+    connect(kb_search_next, &QShortcut::activated, this,
+            [&]() { SearchNext(); });
 
-    connect(kb_search_prev, &QShortcut::activated, m_file_panel,
-            &FilePanel::SearchPrev);
+    connect(kb_search_prev, &QShortcut::activated, this,
+            [&]() { SearchPrev(); });
 
     connect(kb_toggle_menubar, &QShortcut::activated, this,
             [this]() { ToggleMenuBar(); });
@@ -1311,11 +1335,11 @@ void Navi::initKeybinds() noexcept {
     connect(kb_focus_file_path_widget, &QShortcut::activated, this,
             [this]() { m_file_path_widget->FocusLineEdit(); });
 
-    connect(kb_paste_items, &QShortcut::activated, m_file_panel,
-            &FilePanel::PasteItems);
+    connect(kb_paste_items, &QShortcut::activated, this,
+            [&]() { PasteItems(); });
 
-    connect(kb_copy_items, &QShortcut::activated, m_file_panel,
-            &FilePanel::CopyItem);
+    connect(kb_copy_items, &QShortcut::activated, this,
+            [&]() { CopyItem(); });
 
     connect(kb_unmark_items_local, &QShortcut::activated, this,
             [&]() { m_file_panel->UnmarkItemsLocal(); });
@@ -1769,21 +1793,25 @@ void Navi::ToggleRecordMacro() noexcept {
     m_macro_mode = !m_macro_mode;
 
     if (m_macro_mode) {
+        m_macro_register.clear();
         QString macro_key = m_inputbar->getInput("Enter the macro key");
 
         if (m_macro_hash.contains(macro_key)) {
             auto reply = QMessageBox::question(this, "Macro exists",
                                                QString("A macro with the key %1 already exists. Do you want to overwrite ?").arg(macro_key));
-            if (reply != QMessageBox::Ok) {
+            if (reply != QMessageBox::Yes) {
                 return;
             }
         }
 
-        m_statusbar->SetMacroMode(true);
-        // TODO: Make everything go through navi to register for macro
-    } else {
+        m_macro_register.append(macro_key);
 
+        m_statusbar->SetMacroMode(true);
+        m_statusbar->Message(QString("Recording macro for key %1").arg(macro_key));
+    } else {
+        m_macro_hash.insert(m_macro_register.takeFirst(), m_macro_register);
         m_statusbar->SetMacroMode(false);
+        m_statusbar->Message("Macro recording done");
     }
 }
 
@@ -2025,4 +2053,227 @@ void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
         folders << QString::fromStdString(path);
 
     m_file_panel->NewFolder(folders);
+}
+
+void Navi::ToggleCycle() noexcept {
+    m_file_panel->ToggleCycle();
+}
+
+void Navi::ToggleHeaders() noexcept {
+    m_file_panel->ToggleHeaders();
+}
+
+void Navi::RenameItem() noexcept {
+    m_file_panel->RenameItem();
+}
+
+void Navi::RenameItemsGlobal() noexcept {
+    m_file_panel->RenameItemsGlobal();
+}
+
+void Navi::RenameItemsLocal() noexcept {
+    m_file_panel->RenameItemsLocal();
+}
+
+void Navi::RenameDWIM() noexcept {
+    m_file_panel->RenameDWIM();
+}
+
+void Navi::CopyItem() noexcept {
+    m_file_panel->CopyItem();
+}
+
+void Navi::CopyItemsGlobal() noexcept {
+    m_file_panel->CopyItemsGlobal();
+}
+
+void Navi::CopyItemsLocal() noexcept {
+    m_file_panel->CopyItemsLocal();
+}
+
+void Navi::CopyDWIM() noexcept {
+    m_file_panel->CopyDWIM();
+}
+
+void Navi::CutItem() noexcept {
+    m_file_panel->CutItem();
+}
+
+void Navi::CutItemsGlobal() noexcept {
+    m_file_panel->CutItemsGlobal();
+}
+
+void Navi::CutItemsLocal() noexcept {
+    m_file_panel->CutItemsLocal();
+}
+
+void Navi::CutDWIM() noexcept {
+    m_file_panel->CutDWIM();
+}
+
+void Navi::DeleteItem() noexcept {
+    m_file_panel->DeleteItem();
+}
+
+void Navi::DeleteItemsGlobal() noexcept {
+    m_file_panel->DeleteItemsGlobal();
+}
+
+void Navi::DeleteItemsLocal() noexcept {
+    m_file_panel->DeleteItemsLocal();
+}
+
+void Navi::DeleteDWIM() noexcept {
+    m_file_panel->DeleteDWIM();
+}
+
+void Navi::TrashItem() noexcept {
+    m_file_panel->TrashItem();
+}
+
+void Navi::TrashItemsGlobal() noexcept {
+    m_file_panel->TrashItemsGlobal();
+}
+
+void Navi::TrashItemsLocal() noexcept {
+    m_file_panel->TrashItemsLocal();
+}
+
+void Navi::TrashDWIM() noexcept {
+    m_file_panel->TrashDWIM();
+}
+
+void Navi::MarkItem() noexcept {
+    m_file_panel->MarkItem();
+}
+
+void Navi::MarkInverse() noexcept {
+    m_file_panel->MarkInverse();
+}
+
+void Navi::MarkAllItems() noexcept {
+    m_file_panel->MarkAllItems();
+}
+
+void Navi::MarkDWIM() noexcept {
+    m_file_panel->MarkDWIM();
+}
+
+void Navi::ToggleMarkItem() noexcept {
+    m_file_panel->ToggleMarkItem();
+}
+
+void Navi::ToggleMarkDWIM() noexcept {
+    m_file_panel->ToggleMarkDWIM();
+}
+
+void Navi::UnmarkItem() noexcept {
+    m_file_panel->UnmarkItem();
+}
+
+void Navi::UnmarkItemsLocal() noexcept {
+    m_file_panel->UnmarkItemsLocal();
+}
+
+void Navi::UnmarkItemsGlobal() noexcept {
+    m_file_panel->UnmarkItemsGlobal();
+}
+
+void Navi::ForceUpdate() noexcept {
+    m_file_panel->ForceUpdate();
+}
+
+void Navi::ChmodItem() noexcept {
+    m_file_panel->ChmodItem();
+}
+
+void Navi::ChmodItemsLocal() noexcept {
+    m_file_panel->ChmodItemsLocal();
+}
+
+void Navi::ChmodItemsGlobal() noexcept {
+    m_file_panel->ChmodItemsGlobal();
+}
+
+void Navi::ChmodDWIM() noexcept {
+    // m_file_panel->ChmodDWIM();
+}
+
+void Navi::ShowItemPropertyWidget() noexcept {
+    m_file_panel->ShowItemPropertyWidget();
+}
+
+void Navi::UpDirectory() noexcept {
+    m_file_panel->UpDirectory();
+}
+
+void Navi::SelectItem() noexcept {
+    m_file_panel->SelectItem();
+}
+
+void Navi::NextItem() noexcept {
+    m_file_panel->NextItem();
+}
+
+void Navi::PrevItem() noexcept {
+    m_file_panel->PrevItem();
+}
+
+void Navi::GotoFirstItem() noexcept {
+    m_file_panel->GotoFirstItem();
+}
+
+void Navi::GotoLastItem() noexcept {
+    m_file_panel->GotoLastItem();
+}
+
+void Navi::GotoMiddleItem() noexcept {
+    m_file_panel->GotoMiddleItem();
+}
+
+void Navi::ToggleMouseScroll() noexcept {
+    m_file_panel->ToggleMouseScroll();
+}
+
+void Navi::ToggleVisualLine() noexcept { m_file_panel->ToggleVisualLine(); }
+
+void Navi::SearchPrev() noexcept { m_file_panel->SearchPrev(); }
+
+void Navi::SearchNext() noexcept { m_file_panel->SearchNext(); }
+
+void Navi::NewFolder(const QStringList &names) noexcept {
+    m_file_panel->NewFolder(names);
+}
+
+void Navi::NewFile(const QStringList &names) noexcept {
+    m_file_panel->NewFile(names);
+}
+
+void Navi::PasteItems() noexcept {
+    m_file_panel->PasteItems();
+}
+
+
+void Navi::addCommandToMacroRegister(const QStringList &commandlist) noexcept {
+    m_macro_register.append(commandlist.join(" "));
+    qDebug() << m_macro_register;
+}
+
+void Navi::addCommandToMacroRegister(const QString &command) noexcept {
+    m_macro_register.append(command);
+    qDebug() << m_macro_register;
+}
+
+void Navi::GotoItem(const int &num) noexcept { m_file_panel->GotoItem(num); }
+
+void Navi::PlayMacro() noexcept {
+    QString macro_key = m_inputbar->getInput("Enter macro key");
+
+    if (m_macro_hash.contains(macro_key)) {
+        for (const auto &com : m_macro_register) {
+            ProcessCommand(com);
+        }
+    } else {
+        m_statusbar->Message("No macro recorded under that key", MessageType::WARNING);
+    }
 }

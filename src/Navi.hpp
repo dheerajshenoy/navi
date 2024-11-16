@@ -84,6 +84,7 @@ public:
     // Interactive Functions
     void ExecuteExtendedCommand() noexcept;
     void NewFolder(const QStringList &folders = {}) noexcept;
+    void NewFile(const QStringList &files = {}) noexcept;
     void PasteItems() noexcept;
     void ShowHelp() noexcept;
     void ToggleMenuBar(const bool &state) noexcept;
@@ -104,9 +105,60 @@ public:
     void ShellCommandAsync(const QString &command = "") noexcept;
     void Search() noexcept;
     void ToggleRecordMacro() noexcept;
+    void PlayMacro() noexcept;
     void DeleteMacro() noexcept;
     void EditMacro() noexcept;
     void ListMacro() noexcept;
+    void ToggleSyntaxHighlight() noexcept;
+    void SearchNext() noexcept;
+    void SearchPrev() noexcept;
+    void ToggleCycle() noexcept;
+    void ToggleHeaders() noexcept;
+    void RenameItem() noexcept;
+    void RenameItemsGlobal() noexcept;
+    void RenameItemsLocal() noexcept;
+    void RenameDWIM() noexcept;
+    void CopyItem() noexcept;
+    void CopyItemsGlobal() noexcept;
+    void CopyItemsLocal() noexcept;
+    void CopyDWIM() noexcept;
+    void CutItem() noexcept;
+    void CutItemsGlobal() noexcept;
+    void CutItemsLocal() noexcept;
+    void CutDWIM() noexcept;
+    void DeleteItem() noexcept;
+    void DeleteItemsGlobal() noexcept;
+    void DeleteItemsLocal() noexcept;
+    void DeleteDWIM() noexcept;
+    void TrashItem() noexcept;
+    void TrashItemsGlobal() noexcept;
+    void TrashItemsLocal() noexcept;
+    void TrashDWIM() noexcept;
+    void MarkItem() noexcept;
+    void MarkInverse() noexcept;
+    void MarkAllItems() noexcept;
+    void MarkDWIM() noexcept;
+    void ToggleMarkItem() noexcept;
+    void ToggleMarkDWIM() noexcept;
+    void UnmarkItem() noexcept;
+    void UnmarkItemsLocal() noexcept;
+    void UnmarkItemsGlobal() noexcept;
+    void ForceUpdate() noexcept;
+    void ChmodItem() noexcept;
+    void ChmodItemsLocal() noexcept;
+    void ChmodItemsGlobal() noexcept;
+    void ChmodDWIM() noexcept;
+    void ShowItemPropertyWidget() noexcept;
+    void UpDirectory() noexcept;
+    void SelectItem() noexcept;
+    void NextItem() noexcept;
+    void PrevItem() noexcept;
+    void GotoFirstItem() noexcept;
+    void GotoLastItem() noexcept;
+    void GotoMiddleItem() noexcept;
+    void ToggleMouseScroll() noexcept;
+    void ToggleVisualLine() noexcept;
+
 
     void ToggleDrivesWidget(const bool &state) noexcept;
     void ToggleDrivesWidget() noexcept;
@@ -150,6 +202,8 @@ public:
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
 
+    void GotoItem(const int &num) noexcept;
+
     // Lua API Function calls
     void Lua__Message(const std::string &message, const MessageType &type) noexcept;
     std::string Lua__Input(const std::string &prompt,
@@ -183,6 +237,8 @@ private:
     void generateKeybinds() noexcept;
     void initTabBar() noexcept;
     QStringList getLuaFunctionNames() noexcept;
+    void addCommandToMacroRegister(const QStringList &commandlist) noexcept;
+    void addCommandToMacroRegister(const QString &command) noexcept;
 
     QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
@@ -347,10 +403,12 @@ private:
       "up-directory",
       "select-item",
 
+      "macro-play",
       "macro-record",
       "macro-delete",
       "macro-list",
       "macro-edit",
+      "macro-save-to-file",
 
       // Echo
       "echo-info",

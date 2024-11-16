@@ -503,6 +503,34 @@ Run a shell command *asynchronously* (non-blocking).
 
 The running commands can be seen in the `Task Widget` using the `tasks` command
 
+### Macro
+
+`macro-record`
+
+This records / finishes recording (if already recording) a macro under a _macro key_. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.
+
+`macro-play`
+
+This plays a macro under a specific macro key.
+
+`macro-edit`
+
+Opens macro commands recorded under a specific macro key (if it exists) with your editor to edit, which will then be saved and can be recalled.
+
+`macro-list`
+
+Lists all the macros that have been defined.
+
+`macro-save-to-file`
+
+Saves macro to a file which can be used to load for the next boot of Navi.
+
+`macro-delete`
+
+Delete macro under a macro key (if it exists).
+
+
+
 ## Tutorial
 
 Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:
