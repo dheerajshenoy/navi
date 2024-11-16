@@ -1,4 +1,5 @@
 #include "FileSystemModel.hpp"
+#include <qnamespace.h>
 
 FileSystemModel::FileSystemModel(QObject *parent)
 : QAbstractTableModel(parent) {
@@ -399,7 +400,7 @@ QList<QModelIndex> FileSystemModel::match(const QModelIndex &start, int role,
     QList<QModelIndex> matchedIndexes;
 
     // Convert the search value to a QRegularExpression
-    QRegularExpression regex(value.toString());
+    QRegularExpression regex(value.toString(), QRegularExpression::PatternOption::CaseInsensitiveOption);
     if (!regex.isValid()) {
         return matchedIndexes; // Return empty list if regex is invalid
     }

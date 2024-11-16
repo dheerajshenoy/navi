@@ -138,7 +138,6 @@ public:
         return m_symlink_separator;
     }
 
-
     // void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
@@ -186,5 +185,4 @@ private:
     QColor m_symlink_foreground;
     bool m_show_symlink;
     unsigned int m_file_name_column_index = -1;
-
 };

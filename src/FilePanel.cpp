@@ -1,5 +1,6 @@
 #include "FilePanel.hpp"
 #include "FileWorker.hpp"
+#include <qnamespace.h>
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
 : m_inputbar(inputBar), m_statusbar(statusBar), QWidget(parent) {
@@ -1079,9 +1080,8 @@ void FilePanel::Search(QString searchExpression) noexcept {
     if (searchExpression.isNull() || searchExpression.isEmpty())
         searchExpression =
             m_inputbar->getInput("Search", m_search_text, m_search_text);
-    m_search_index_list =
-        m_model->match(m_model->index(0, 0), Qt::DisplayRole, searchExpression,
-                       -1, Qt::MatchRegularExpression);
+    m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole, searchExpression,
+                                         -1, Qt::MatchRegularExpression);
     if (m_search_index_list.isEmpty())
         return;
     m_table_view->setCurrentIndex(m_search_index_list.at(0));

@@ -34,7 +34,6 @@ protected:
                 painter->fillRect(rect, palette().brush(backgroundRole()));
             }
 
-
             // Optional: Draw border
             painter->setPen(Qt::gray);
             painter->drawRect(rect.adjusted(0, 0, -1, -1));
@@ -53,6 +52,7 @@ protected:
             }
 
             painter->drawText(rect, Qt::AlignCenter, text.toString());
+            // painter->drawText(rect, Qt::AlignCenter, QString::number(relativeRow));
 
         }
     }

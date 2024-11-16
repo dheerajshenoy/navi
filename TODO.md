@@ -72,10 +72,10 @@
 - [x] Ask user before quiting about the executing command
 - [x] Video file static preview
 - [x] Add file operation cancel UI
+- [x] action macros
 - [ ] Open with menu
 - [ ] Rich text in file panel
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
 - [ ] zoxide integration
-- [ ] action macros
