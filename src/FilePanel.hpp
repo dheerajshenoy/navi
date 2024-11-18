@@ -22,7 +22,6 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QApplication>
-#include <qnamespace.h>
 
 #include "Result.hpp"
 #include "FileSystemModel.hpp"

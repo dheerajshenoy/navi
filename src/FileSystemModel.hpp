@@ -18,17 +18,6 @@
 
 #include "utils.hpp"
 
-enum class SortColumn {
-    Size,
-    Name,
-    Date,
-};
-
-enum class Role {
-    Marked = Qt::UserRole + 1,
-    Symlink,
-};
-
 class FileSystemModel : public QAbstractTableModel {
     Q_OBJECT
 
@@ -47,6 +36,12 @@ public:
         QString name;
         ColumnType type;
     };
+
+    enum class Role {
+        Marked = Qt::UserRole + 1,
+        Symlink,
+    };
+
 
     int fileNameColumnIndex() const noexcept { return m_file_name_column_index; }
     void setSymlinkSeparator(const QString &separator) noexcept;

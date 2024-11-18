@@ -98,8 +98,6 @@ public:
     void ResetFilter() noexcept;
     void LogMessage(const QString &message, const MessageType &type) noexcept;
     void FocusPath() noexcept;
-    Result getInputDialog(const QString &title, const QString &text,
-                   const QString &selectionString = QString()) noexcept;
     void AddBookmark(const QStringList &bookmarkName) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName) noexcept;
     void EditBookmark(const QStringList &bookmarkName) noexcept;
@@ -213,6 +211,8 @@ public:
     void readArgumentParser(argparse::ArgumentParser &parser);
 
     void GotoItem(const int &num) noexcept;
+    void ChangeDirectory(const QString &dir = QString()) noexcept;
+    void Zoxide(const QString &dir) noexcept;
 
     // Lua API Function calls
     void Lua__Message(const std::string &message, const MessageType &type) noexcept;
@@ -313,7 +313,6 @@ private:
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
     QStringList m_valid_command_list = {
-
       // Shell command
       "shell",
 
@@ -451,6 +450,8 @@ private:
       "lua",
       "register",
       "repeat-last-command",
+      "cd",
+      "zoxide",
 
     };
 

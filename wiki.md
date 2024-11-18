@@ -495,6 +495,14 @@ Opens the task widget showing all the running tasks like command execution with 
 
 https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a
 
+`cd`
+
+Change directory with the provided argument or ask for input.
+
+`zoxide`
+
+Navi can integrate with [zoxide](https://github.com/ajeetdsouza/zoxide) for faster navigation. Just call the `zoxide` command with the directory query and if the directory exists in the zoxide database, then Navi switches to that directory.
+
 ### Shell Commands
 
 `shell`

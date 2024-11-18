@@ -1,6 +1,4 @@
 #include "FilePanel.hpp"
-#include "FileWorker.hpp"
-#include <qnamespace.h>
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm, QWidget *parent)
 : QWidget(parent), m_inputbar(inputBar), m_statusbar(statusBar), m_hook_manager(hm) {
@@ -383,11 +381,11 @@ void FilePanel::UpDirectory() noexcept {
 
 void FilePanel::ToggleMarkItem() noexcept {
     QModelIndex currentIndex = m_table_view->currentIndex();
-    if (m_model->data(currentIndex, static_cast<int>(Role::Marked)).toBool()) {
-        m_model->setData(currentIndex, false, static_cast<int>(Role::Marked));
+    if (m_model->data(currentIndex, static_cast<int>(FileSystemModel::Role::Marked)).toBool()) {
+        m_model->setData(currentIndex, false, static_cast<int>(FileSystemModel::Role::Marked));
         m_model->removeMarkedFile(currentIndex);
     } else {
-        m_model->setData(currentIndex, true, static_cast<int>(Role::Marked));
+        m_model->setData(currentIndex, true, static_cast<int>(FileSystemModel::Role::Marked));
     }
 }
 
@@ -395,11 +393,11 @@ void FilePanel::ToggleMarkDWIM() noexcept {
     if (m_table_view->selectionModel()->hasSelection()) {
         auto indexes = m_table_view->selectionModel()->selectedRows();
         for (const auto &index : indexes) {
-            if (m_model->data(index, static_cast<int>(Role::Marked)).toBool()) {
-                m_model->setData(index, false, static_cast<int>(Role::Marked));
+            if (m_model->data(index, static_cast<int>(FileSystemModel::Role::Marked)).toBool()) {
+                m_model->setData(index, false, static_cast<int>(FileSystemModel::Role::Marked));
                 m_model->removeMarkedFile(index);
             } else {
-                m_model->setData(index, true, static_cast<int>(Role::Marked));
+                m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
             }
         }
     } else {
@@ -410,12 +408,12 @@ void FilePanel::ToggleMarkDWIM() noexcept {
 
 void FilePanel::MarkItem() noexcept {
     m_model->setData(m_table_view->currentIndex(), true,
-                     static_cast<int>(Role::Marked));
+                     static_cast<int>(FileSystemModel::Role::Marked));
 }
 
 void FilePanel::MarkItems(const QModelIndexList &list) noexcept {
     for (auto index : list)
-        m_model->setData(index, true, static_cast<int>(Role::Marked));
+        m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
     ToggleVisualLine(false);
 }
 
@@ -452,7 +450,7 @@ void FilePanel::UnmarkDWIM() noexcept {
 
 void FilePanel::UnmarkItems(const QModelIndexList &list) noexcept {
     for (auto index : list) {
-        m_model->setData(index, false, static_cast<int>(Role::Marked));
+        m_model->setData(index, false, static_cast<int>(FileSystemModel::Role::Marked));
         m_model->removeMarkedFile(index);
     }
     ToggleVisualLine(false);
@@ -1465,12 +1463,12 @@ void FilePanel::MarkInverse() noexcept {
     for (int i = 0; i < nitems; i++) {
         QModelIndex index = m_model->index(i, 0);
         bool isMarked =
-            m_model->data(index, static_cast<int>(Role::Marked)).toBool();
+            m_model->data(index, static_cast<int>(FileSystemModel::Role::Marked)).toBool();
         if (isMarked) {
-            m_model->setData(index, false, static_cast<int>(Role::Marked));
+            m_model->setData(index, false, static_cast<int>(FileSystemModel::Role::Marked));
             m_model->removeMarkedFile(index);
         } else
-            m_model->setData(index, true, static_cast<int>(Role::Marked));
+            m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
     }
 }
 
@@ -1478,7 +1476,7 @@ void FilePanel::MarkAllItems() noexcept {
     auto nitems = m_model->rowCount();
     for (int i = 0; i < nitems; i++) {
         QModelIndex index = m_model->index(i, 0);
-        m_model->setData(index, true, static_cast<int>(Role::Marked));
+        m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
     }
 }
 

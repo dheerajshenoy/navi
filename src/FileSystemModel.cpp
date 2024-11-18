@@ -189,6 +189,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
         }
     } break;
 
+
     case Qt::ForegroundRole: {
         bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
         if (isMarked) {
@@ -214,18 +215,17 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
 
     case Qt::DisplayRole: {
         switch (m_column_list.at(index.column()).type) {
-        case ColumnType::FileName: // File Name
+        case ColumnType::FileName: {
             if (fileInfo.isSymbolicLink()) {
                 if (m_show_symlink) {
                     return QString("%1 %2 %3")
               .arg(fileInfo.fileName())
               .arg(m_symlink_separator)
               .arg(fileInfo.symLinkTarget());
-                } else
-                    return QString("%1").arg(fileInfo.fileName());
-            } else {
-                return fileInfo.fileName();
-            }
+                }
+            } else
+                return QString("%1").arg(fileInfo.fileName());
+        } break;
 
         case ColumnType::FileSize: // File Size
             return fileInfo.isDir()

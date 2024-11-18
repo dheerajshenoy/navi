@@ -23,9 +23,14 @@ void Navi::initThings() noexcept {
         m_file_panel->setCurrentDir(m_default_location_list.at(0), true);
 
     initNaviLuaAPI();
-    if (lua["INIT_NAVI"].valid())
-        lua["INIT_NAVI"]();
 
+    try {
+        if (lua["INIT_NAVI"].valid())
+            lua["INIT_NAVI"]();
+    } catch (...) {
+        m_statusbar->Message("Error in the config file",
+                             MessageType::ERROR);
+    }
 }
 
 void Navi::initConfiguration() noexcept {
@@ -460,8 +465,8 @@ void Navi::initConfiguration() noexcept {
     auto funcs = getLuaFunctionNames();
 
     if (!funcs.isEmpty()) {
-        m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS,
-                                            funcs);
+        m_inputbar->addCompletionStringList(
+                                            Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);
     }
 
     m_statusbar->Message("Reading configuration file done!");
@@ -502,9 +507,8 @@ void Navi::initBookmarks() noexcept {
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
-    connect(m_file_panel, &FilePanel::currentItemChanged, this, [&]() {
-        m_hook_manager->triggerHook("item_changed");
-    });
+    connect(m_file_panel, &FilePanel::currentItemChanged, this,
+            [&]() { m_hook_manager->triggerHook("item_changed"); });
 
     connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
             [&](const QString &mountPoint) {
@@ -571,6 +575,10 @@ void Navi::setupCommandMap() noexcept {
         ExecuteExtendedCommand();
     };
 
+    commandMap["cd"] = [this](const QStringList &args) {
+        ChangeDirectory();
+    };
+
     commandMap["macro-record"] = [this](const QStringList &args) {
         ToggleRecordMacro();
     };
@@ -598,7 +606,14 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
-        ToggleDrivesWidget();
+      ToggleDrivesWidget();
+    };
+
+    commandMap["zoxide"] = [this](const QStringList &args) {
+        if (!args.isEmpty())
+            Zoxide(args.at(0));
+        else
+            Zoxide(QString());
     };
 
     commandMap["get-input"] = [this](const QStringList &args) {
@@ -1138,7 +1153,8 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
             commandMap[subcommand](args); // Call the associated function
 
         } else {
-            m_statusbar->Message(QString("Command %1 is not a valid interactive command")
+            m_statusbar->Message(
+                                 QString("Command %1 is not a valid interactive command")
               .arg(subcommand),
                                  MessageType::ERROR);
         }
@@ -2170,12 +2186,31 @@ void Navi::PlayMacro() noexcept {
     }
 }
 
-void Navi::MarkRegex() noexcept {
-    m_file_panel->MarkRegex();
-}
+void Navi::MarkRegex() noexcept { m_file_panel->MarkRegex(); }
 
 void Navi::UnmarkRegex() noexcept { m_file_panel->UnmarkRegex(); }
 
-Result Navi::getInputDialog(const QString &title, const QString &msg,
-                                  const QString &selectionString) noexcept {
+void Navi::ChangeDirectory(const QString &path) noexcept {
+    if (path.isEmpty()) {
+        QString path = m_inputbar->getInput("Enter path to cd");
+        if (!path.isEmpty())
+            m_file_panel->setCurrentDir(path);
+    } else {
+        m_file_panel->setCurrentDir(path);
+    }
+}
+
+void Navi::Zoxide(const QString &_path) noexcept {
+    QString path;
+    QProcess process;
+    if (_path.isEmpty()) {
+        path = m_inputbar->getInput("Enter path to cd");
+    } else {
+        process.start("zoxide", QStringList() << "query" << _path);
+        process.waitForFinished();
+    }
+
+    path = process.readAllStandardOutput().trimmed();
+    if (!path.isEmpty())
+        m_file_panel->setCurrentDir(path);
 }

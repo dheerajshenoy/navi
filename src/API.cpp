@@ -236,11 +236,6 @@ void Navi::initNaviLuaAPI() noexcept {
       this->Lua__Input(prompt, def_text, selection_text);
     };
 
-    lua["navi"]["io"]["input_dialog"] = [this](const std::string &prompt,
-                                        const std::string &def_text) {
-        return this->getInputDialog(QString::fromStdString(prompt), QString::fromStdString(def_text));
-    };
-
     // SHELL API
 
     lua["navi"]["shell"] = lua.create_table();
