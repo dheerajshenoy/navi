@@ -3,11 +3,17 @@
 void Navi::initNaviLuaAPI() noexcept {
 
     // ItemProperty type
-    lua.new_usertype<FilePanel::ItemProperty>("ItemProperty", "name", &FilePanel::ItemProperty::name, "size",
-                                              &FilePanel::ItemProperty::size, "mimeName",
+    lua.new_usertype<FilePanel::ItemProperty>(
+        "ItemProperty", "name", &FilePanel::ItemProperty::name, "size",
+        &FilePanel::ItemProperty::size, "mimeName",
                                               &FilePanel::ItemProperty::mimeName);
 
     lua["navi"] = lua.create_table();
+
+    lua["navi"]["add_hook"] = [this](const std::string &hook_name,
+                                     const sol::function &func) {
+        m_hook_manager->addHook(hook_name, func);
+    };
 
     // DIR API
     lua["navi"]["api"] = lua.create_table();
@@ -228,6 +234,11 @@ void Navi::initNaviLuaAPI() noexcept {
                                         const std::string &def_text,
                                         const std::string &selection_text) {
       this->Lua__Input(prompt, def_text, selection_text);
+    };
+
+    lua["navi"]["io"]["input_dialog"] = [this](const std::string &prompt,
+                                        const std::string &def_text) {
+        return this->getInputDialog(QString::fromStdString(prompt), QString::fromStdString(def_text));
     };
 
     // SHELL API

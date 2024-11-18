@@ -22,17 +22,6 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
       this->hide();
     });
 
-    connect(m_line_edit, &LineEdit::textChanged, this,
-            [&](const QString &text) {
-                if (text.isEmpty())
-                    return;
-                QString first = text.split(" ", Qt::SkipEmptyParts).at(0);
-                if (text == "lua") {
-                    currentCompletionStringList(CompletionModelType::LUA_FUNCTIONS);
-                    m_line_edit_completer->complete();
-                }
-    });
-
 }
 
 void Inputbar::suggestionComplete() noexcept {

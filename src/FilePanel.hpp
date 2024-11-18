@@ -31,12 +31,12 @@
 #include "Inputbar.hpp"
 #include "FilePropertyWidget.hpp"
 #include "Statusbar.hpp"
-
+#include "HookManager.hpp"
 
 class FilePanel : public QWidget {
     Q_OBJECT
 public:
-    FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, QWidget *parent = nullptr);
+    FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, HookManager *hm = nullptr, QWidget *parent = nullptr);
     ~FilePanel();
 
     struct ItemProperty {
@@ -74,12 +74,14 @@ public:
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
     void MarkDWIM() noexcept;
+    void MarkRegex() noexcept;
 
     void UnmarkItem() noexcept;
     void UnmarkItems(const QModelIndexList &list) noexcept;
     void UnmarkItemsLocal() noexcept;
     void UnmarkItemsGlobal() noexcept;
     void UnmarkDWIM() noexcept;
+    void UnmarkRegex() noexcept;
 
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
@@ -108,7 +110,7 @@ public:
 
     void ToggleDotDot() noexcept;
     void ToggleHiddenFiles() noexcept;
-    void Search(QString searchText = "") noexcept;
+    void Search(QString searchText = "", const bool &regex = false) noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
     void Filters(const QString &filterString) noexcept;
@@ -132,7 +134,7 @@ public:
     void DropCopyRequested(const QStringList &sourcePaths) noexcept;
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ShowItemPropertyWidget() noexcept;
-    Result<bool> OpenTerminal(const QString &directory = "") noexcept;
+    Result OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
     void ToggleHeaders(const bool &state) noexcept;
     void ToggleHeaders() noexcept;
@@ -243,6 +245,7 @@ private:
     QStringList m_terminal_args;
     Inputbar *m_inputbar;
     Statusbar *m_statusbar;
+    HookManager *m_hook_manager = nullptr;
     // This is used to store the filenames that are marked for cutting or copying.
     QStringList m_register_files_list;
     QPoint m_drag_start_position;

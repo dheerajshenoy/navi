@@ -1,15 +1,13 @@
 #pragma once
 
+#include <string>
 #include <QString>
 
-template <typename T = bool>
 class Result {
 
 public:
-    Result(const T &result, const QString &reason = "") : m_result(result), m_reason(reason) {}
-    T result() noexcept { return m_result; }
-    QString reason() noexcept { return m_reason; }
-
-private : T m_result;
-    QString m_reason;
+    Result(const bool &ok, const QString &value) : ok(ok), value(value) {}
+    std::string toStdStringValue() noexcept { return value.toStdString(); }
+    bool ok;
+    QString value;
 };

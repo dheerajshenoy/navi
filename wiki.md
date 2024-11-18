@@ -572,7 +572,17 @@ Since navi is a Qt GUI library based application, it can be styled using the `qt
 
 # Scripting with Lua [scripting-with-lua]
 
-Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks.
+Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those  hooks.
+
+## Special Function
+
+The function `INIT_NAVI` will be called during the startup time of Navi. This function can be used to add hooks and whatnot to your configuration.
+
+```lua
+function INIT_NAVI()
+    navi.io.msg("Navi just booted")
+end
+```
 
 ## Custom functions
 
@@ -587,6 +597,36 @@ end
 You can then call this function within Navi by calling the `lua <function_name>` command or by just calling `lua` command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:
 
 "WOW! Navi is currently on the file `<fileName>` and inside the `<dirName>` directory!"
+
+## Hooks
+
+Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.
+
+You can add hook using the `add_hook` function in the navi table. It takes two arguments, both of which are required. The first one is a `hook_name` which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.
+
+Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
+
+### Hook Names
+
+* Select Item `item_select`
+* Item Changed `item_changed`
+* Up Directory `directory_up`
+* Directory Loaded `directory_loaded`
+* Directory Changed `directory_changed`
+* Drive Mounted `drive_mounted`
+* Drive Unmounted `drive_unmounted`
+
+Example:
+
+```lua
+function INIT_NAVI()
+    navi.add_hook("item\_select", function ()
+        navi.io.msg("You selected an item...YAY!")
+    end)
+end
+```
+
+Now, whenever you select (open or enter a directory) an item, you'll get the message, "You selected an item...YAY!".
 
 ## Navi Lua API
 

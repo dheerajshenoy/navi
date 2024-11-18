@@ -7,7 +7,6 @@
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
 void Navi::initThings() noexcept {
-    m_tasks_widget = new TasksWidget(m_task_manager, this);
     initLayout();       // init layout
     initMenubar();      // init menubar
     initSignalsSlots(); // init signals and slots
@@ -24,12 +23,15 @@ void Navi::initThings() noexcept {
         m_file_panel->setCurrentDir(m_default_location_list.at(0), true);
 
     initNaviLuaAPI();
+    if (lua["INIT_NAVI"].valid())
+        lua["INIT_NAVI"]();
+
 }
 
 void Navi::initConfiguration() noexcept {
 
-  lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
-                     sol::lib::os, sol::lib::jit, sol::lib::package);
+    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
+                       sol::lib::os, sol::lib::jit, sol::lib::package);
 
     try {
         lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
@@ -48,8 +50,7 @@ void Navi::initConfiguration() noexcept {
     if (settings_table_opt) {
         sol::table settings_table = settings_table_opt.value();
 
-        auto terminal =
-            settings_table["terminal"].get_or<std::string>("kitty");
+        auto terminal = settings_table["terminal"].get_or<std::string>("kitty");
         m_terminal = QString::fromStdString(terminal);
 
         sol::optional<sol::table> ui_table_opt = settings_table["ui"];
@@ -73,7 +74,8 @@ void Navi::initConfiguration() noexcept {
                             static_cast<int>(totalSize * fraction)};
                 m_splitter->setSizes(sizes);
 
-                auto max_file_size = QString::fromStdString(preview_pane["max_size"].get_or<std::string>("10M"));
+                auto max_file_size = QString::fromStdString(
+                                                            preview_pane["max_size"].get_or<std::string>("10M"));
 
                 auto max_file_bytes = utils::parseFileSize(max_file_size);
                 m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
@@ -108,10 +110,12 @@ void Navi::initConfiguration() noexcept {
             if (path_bar_table) {
                 auto path_bar = path_bar_table.value();
                 auto shown = path_bar["shown"].get_or(true);
-                auto foreground = QString::fromStdString(path_bar["foreground"].get_or<std::string>(""));
+                auto foreground = QString::fromStdString(
+                                                         path_bar["foreground"].get_or<std::string>(""));
                 auto background = QString::fromStdString(
                                                          path_bar["background"].get_or<std::string>(""));
-                auto font = QString::fromStdString(path_bar["font"].get_or<std::string>(""));
+                auto font =
+                    QString::fromStdString(path_bar["font"].get_or<std::string>(""));
                 auto italic = path_bar["italic"].get_or(false);
                 auto bold = path_bar["bold"].get_or(false);
                 TogglePathWidget(shown);
@@ -127,7 +131,6 @@ void Navi::initConfiguration() noexcept {
 
                 if (!font.isEmpty())
                     m_file_path_widget->setFont(font);
-
             }
 
             // Status bar
@@ -142,12 +145,16 @@ void Navi::initConfiguration() noexcept {
                     status_bar["visual_line_mode"];
                 if (visual_line_mode_table) {
                     auto visual_line_mode = visual_line_mode_table.value();
-                    auto bg = QString::fromStdString(visual_line_mode["background"].get_or<std::string>(""));
-                    auto fg = QString::fromStdString(visual_line_mode["foreground"].get_or<std::string>(""));
+                    auto bg = QString::fromStdString(
+                                                     visual_line_mode["background"].get_or<std::string>(""));
+                    auto fg = QString::fromStdString(
+                                                     visual_line_mode["foreground"].get_or<std::string>(""));
                     auto bold = visual_line_mode["bold"].get_or(false);
                     auto italic = visual_line_mode["italic"].get_or(false);
-                    auto padding = QString::fromStdString(visual_line_mode["padding"].get_or<std::string>("2px"));
-                    auto text = QString::fromStdString(visual_line_mode["text"].get_or<std::string>(""));
+                    auto padding = QString::fromStdString(
+                                                          visual_line_mode["padding"].get_or<std::string>("2px"));
+                    auto text = QString::fromStdString(
+                                                       visual_line_mode["text"].get_or<std::string>(""));
 
                     if (!fg.isEmpty())
                         m_statusbar->SetVisualLineModeForeground(fg);
@@ -162,16 +169,19 @@ void Navi::initConfiguration() noexcept {
                     m_statusbar->SetVisualLineModeText(text);
                 }
 
-                sol::optional<sol::table> macro_mode_table =
-                    status_bar["macro_mode"];
+                sol::optional<sol::table> macro_mode_table = status_bar["macro_mode"];
                 if (macro_mode_table) {
                     auto macro_mode = macro_mode_table.value();
-                    auto bg = QString::fromStdString(macro_mode["background"].get_or<std::string>(""));
-                    auto fg = QString::fromStdString(macro_mode["foreground"].get_or<std::string>(""));
+                    auto bg = QString::fromStdString(
+                                                     macro_mode["background"].get_or<std::string>(""));
+                    auto fg = QString::fromStdString(
+                                                     macro_mode["foreground"].get_or<std::string>(""));
                     auto bold = macro_mode["bold"].get_or(false);
                     auto italic = macro_mode["italic"].get_or(false);
-                    auto padding = QString::fromStdString(macro_mode["padding"].get_or<std::string>("2px"));
-                    auto text = QString::fromStdString(macro_mode["text"].get_or<std::string>(""));
+                    auto padding = QString::fromStdString(
+                                                          macro_mode["padding"].get_or<std::string>("2px"));
+                    auto text = QString::fromStdString(
+                                                       macro_mode["text"].get_or<std::string>(""));
 
                     if (!fg.isEmpty())
                         m_statusbar->SetMacroModeForeground(fg);
@@ -312,7 +322,7 @@ void Navi::initConfiguration() noexcept {
                         model->setMarkBackgroundColor(m_file_panel->tableView()
                                               ->palette()
                                               .brush(QWidget::backgroundRole())
-                                                                                .color()
+                                              .color()
                                               .name());
 
                     if (!(markForeground.isNull() || markForeground.isEmpty()))
@@ -321,7 +331,7 @@ void Navi::initConfiguration() noexcept {
                         model->setMarkForegroundColor(m_file_panel->tableView()
                                               ->palette()
                                               .brush(QWidget::backgroundRole())
-                                                                                .color()
+                                              .color()
                                               .name());
 
                     // header
@@ -404,8 +414,7 @@ void Navi::initConfiguration() noexcept {
             auto file_threshold = bulk_rename_table["file_threshold"].get_or(5);
             m_file_panel->SetBulkRenameThreshold(file_threshold);
 
-            auto editor =
-                bulk_rename_table["editor"].get_or<std::string>("nvim");
+            auto editor = bulk_rename_table["editor"].get_or<std::string>("nvim");
             m_file_panel->SetBulkRenameEditor(QString::fromStdString(editor));
             m_file_panel->SetTerminal(m_terminal);
 
@@ -451,8 +460,8 @@ void Navi::initConfiguration() noexcept {
     auto funcs = getLuaFunctionNames();
 
     if (!funcs.isEmpty()) {
-        qDebug() << funcs;
-        m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);
+        m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS,
+                                            funcs);
     }
 
     m_statusbar->Message("Reading configuration file done!");
@@ -466,7 +475,7 @@ QStringList Navi::getLuaFunctionNames() noexcept {
 
     if (!function_table.empty()) {
         QStringList luaFunctions;
-        for (const auto& [key, value] : function_table) {
+        for (const auto &[key, value] : function_table) {
             if (value.get_type() == sol::type::function) {
                 luaFunctions << QString::fromStdString(key.as<std::string>());
             }
@@ -478,7 +487,6 @@ QStringList Navi::getLuaFunctionNames() noexcept {
 
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
 void Navi::generateKeybinds() noexcept {
-
     for (const auto &keybind : m_keybind_list) {
         QShortcut *shortcut = new QShortcut(QKeySequence(keybind.key), this);
         connect(shortcut, &QShortcut::activated, this,
@@ -494,10 +502,15 @@ void Navi::initBookmarks() noexcept {
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
+    connect(m_file_panel, &FilePanel::currentItemChanged, this, [&]() {
+        m_hook_manager->triggerHook("item_changed");
+    });
+
     connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
             [&](const QString &mountPoint) {
                 m_file_panel->setCurrentDir(mountPoint);
             });
+
     connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
             [&](const QString &driveName) {
                 QString confirm = m_inputbar->getInput(
@@ -509,8 +522,8 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_drives_widget, &DriveWidget::driveUnmountRequested, this,
             [&](const QString &driveName) {
-                QString confirm =
-                    m_inputbar->getInput(QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
+                QString confirm = m_inputbar->getInput(
+                                                       QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
                 if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
                     return;
                 UnmountDrive(driveName);
@@ -522,8 +535,11 @@ void Navi::initSignalsSlots() noexcept {
     connect(m_file_panel, &FilePanel::currentItemChanged, m_statusbar,
             &Statusbar::SetFile);
 
-    connect(m_file_panel, &FilePanel::afterDirChange, m_file_path_widget,
-            &FilePathWidget::setCurrentDir);
+    connect(m_file_panel, &FilePanel::afterDirChange, this,
+            [&](const QString &path) {
+                m_file_path_widget->setCurrentDir(path);
+                m_hook_manager->triggerHook("directory_changed");
+            });
 
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             m_file_panel, [&](const QString &dirName) {
@@ -544,7 +560,6 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_file_panel->model(), &FileSystemModel::marksListChanged,
             m_marks_buffer, &MarksBuffer::refreshMarksList);
-
 }
 
 // Help for HELP interactive function
@@ -552,38 +567,34 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
-  commandMap["execute-extended-command"] = [this](const QStringList &args) {
-    ExecuteExtendedCommand();
-  };
+    commandMap["execute-extended-command"] = [this](const QStringList &args) {
+        ExecuteExtendedCommand();
+    };
 
-  commandMap["macro-record"] = [this](const QStringList &args) {
-    ToggleRecordMacro();
-  };
+    commandMap["macro-record"] = [this](const QStringList &args) {
+        ToggleRecordMacro();
+    };
 
-  commandMap["macro-play"] = [this](const QStringList &args) {
-      PlayMacro();
-  };
+    commandMap["macro-play"] = [this](const QStringList &args) { PlayMacro(); };
 
+    commandMap["register"] = [this](const QStringList &args) {
+        ToggleRegisterWidget();
+    };
 
-  commandMap["register"] = [this](const QStringList &args) {
-    ToggleRegisterWidget();
-  };
+    commandMap["tasks"] = [this](const QStringList &args) {
+        ToggleTasksWidget();
+    };
 
-  commandMap["tasks"] = [this](const QStringList &args) {
-    ToggleTasksWidget();
-  };
+    commandMap["lua"] = [this](const QStringList &args) {
+        ExecuteLuaFunction(args);
+    };
 
+    commandMap["shell"] = [this](const QStringList &args) {
+        ShellCommandAsync();
+    };
 
-  commandMap["lua"] = [this](const QStringList &args) {
-      ExecuteLuaFunction(args);
-  };
-
-  commandMap["shell"] = [this](const QStringList &args) {
-      ShellCommandAsync();
-  };
-
-  commandMap["syntax-highlight"] = [this](const QStringList &args) {
-      ToggleSyntaxHighlight();
+    commandMap["syntax-highlight"] = [this](const QStringList &args) {
+        ToggleSyntaxHighlight();
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
@@ -627,25 +638,17 @@ void Navi::setupCommandMap() noexcept {
         UpDirectory();
     };
 
-    commandMap["select-item"] = [this](const QStringList &args) {
-        SelectItem();
-    };
+    commandMap["select-item"] = [this](const QStringList &args) { SelectItem(); };
 
-    commandMap["next-item"] = [this](const QStringList &args) {
-        NextItem();
-    };
+    commandMap["next-item"] = [this](const QStringList &args) { NextItem(); };
 
-    commandMap["prev-item"] = [this](const QStringList &args) {
-        PrevItem();
-    };
+    commandMap["prev-item"] = [this](const QStringList &args) { PrevItem(); };
 
     commandMap["first-item"] = [this](const QStringList &args) {
         GotoFirstItem();
     };
 
-    commandMap["last-item"] = [this](const QStringList &args) {
-        GotoLastItem();
-    };
+    commandMap["last-item"] = [this](const QStringList &args) { GotoLastItem(); };
 
     commandMap["middle-item"] = [this](const QStringList &args) {
         GotoMiddleItem();
@@ -694,17 +697,11 @@ void Navi::setupCommandMap() noexcept {
         SortBySize(true);
     };
 
-    commandMap["cycle"] = [this](const QStringList &args) {
-        ToggleCycle();
-    };
+    commandMap["cycle"] = [this](const QStringList &args) { ToggleCycle(); };
 
-    commandMap["header"] = [this](const QStringList &args) {
-        ToggleHeaders();
-    };
+    commandMap["header"] = [this](const QStringList &args) { ToggleHeaders(); };
 
-    commandMap["rename"] = [this](const QStringList &args) {
-        RenameItem();
-    };
+    commandMap["rename"] = [this](const QStringList &args) { RenameItem(); };
 
     commandMap["rename-global"] = [this](const QStringList &args) {
         RenameItemsGlobal();
@@ -714,15 +711,11 @@ void Navi::setupCommandMap() noexcept {
         RenameItemsLocal();
     };
 
-    commandMap["rename-dwim"] = [this](const QStringList &args) {
-        RenameDWIM();
-    };
+    commandMap["rename-dwim"] = [this](const QStringList &args) { RenameDWIM(); };
 
     commandMap["help"] = [this](const QStringList &args) { ShowHelp(); };
 
-    commandMap["copy"] = [this](const QStringList &args) {
-        CopyItem();
-    };
+    commandMap["copy"] = [this](const QStringList &args) { CopyItem(); };
 
     commandMap["copy-global"] = [this](const QStringList &args) {
         CopyItemsGlobal();
@@ -732,13 +725,9 @@ void Navi::setupCommandMap() noexcept {
         CopyItemsLocal();
     };
 
-    commandMap["copy-dwim"] = [this](const QStringList &args) {
-        CopyDWIM();
-    };
+    commandMap["copy-dwim"] = [this](const QStringList &args) { CopyDWIM(); };
 
-    commandMap["cut"] = [this](const QStringList &args) {
-        CutItem();
-    };
+    commandMap["cut"] = [this](const QStringList &args) { CutItem(); };
 
     commandMap["cut-global"] = [this](const QStringList &args) {
         CutItemsGlobal();
@@ -748,17 +737,11 @@ void Navi::setupCommandMap() noexcept {
         CutItemsLocal();
     };
 
-    commandMap["cut-dwim"] = [this](const QStringList &args) {
-        CutDWIM();
-    };
+    commandMap["cut-dwim"] = [this](const QStringList &args) { CutDWIM(); };
 
-    commandMap["paste"] = [this](const QStringList &args) {
-        PasteItems();
-    };
+    commandMap["paste"] = [this](const QStringList &args) { PasteItems(); };
 
-    commandMap["delete"] = [this](const QStringList &args) {
-        DeleteItem();
-    };
+    commandMap["delete"] = [this](const QStringList &args) { DeleteItem(); };
 
     commandMap["delete-global"] = [this](const QStringList &args) {
         DeleteItemsGlobal();
@@ -768,25 +751,19 @@ void Navi::setupCommandMap() noexcept {
         DeleteItemsLocal();
     };
 
-    commandMap["delete-dwim"] = [this](const QStringList &args) {
-        DeleteDWIM();
-    };
+    commandMap["delete-dwim"] = [this](const QStringList &args) { DeleteDWIM(); };
 
-    commandMap["mark"] = [this](const QStringList &args) {
-        MarkItem();
-    };
+    commandMap["mark"] = [this](const QStringList &args) { MarkItem(); };
+
+    commandMap["mark-regex"] = [this](const QStringList &args) { MarkRegex(); };
 
     commandMap["mark-inverse"] = [this](const QStringList &args) {
         MarkInverse();
     };
 
-    commandMap["mark-all"] = [this](const QStringList &args) {
-        MarkAllItems();
-    };
+    commandMap["mark-all"] = [this](const QStringList &args) { MarkAllItems(); };
 
-    commandMap["mark-dwim"] = [this](const QStringList &args) {
-        MarkDWIM();
-    };
+    commandMap["mark-dwim"] = [this](const QStringList &args) { MarkDWIM(); };
 
     commandMap["toggle-mark"] = [this](const QStringList &args) {
         ToggleMarkItem();
@@ -796,9 +773,7 @@ void Navi::setupCommandMap() noexcept {
         ToggleMarkDWIM();
     };
 
-    commandMap["unmark"] = [this](const QStringList &args) {
-        UnmarkItem();
-    };
+    commandMap["unmark"] = [this](const QStringList &args) { UnmarkItem(); };
 
     commandMap["unmark-local"] = [this](const QStringList &args) {
         UnmarkItemsLocal();
@@ -808,17 +783,17 @@ void Navi::setupCommandMap() noexcept {
         UnmarkItemsGlobal();
     };
 
-    commandMap["new-file"] = [this](const QStringList &args) {
-        NewFile(args);
+    commandMap["unmark-regex"] = [this](const QStringList &args) {
+        UnmarkRegex();
     };
+
+    commandMap["new-file"] = [this](const QStringList &args) { NewFile(args); };
 
     commandMap["new-folder"] = [this](const QStringList &args) {
         NewFolder(args);
     };
 
-    commandMap["trash"] = [this](const QStringList &args) {
-        TrashItem();
-    };
+    commandMap["trash"] = [this](const QStringList &args) { TrashItem(); };
 
     commandMap["trash-local"] = [this](const QStringList &args) {
         TrashItemsLocal();
@@ -828,9 +803,7 @@ void Navi::setupCommandMap() noexcept {
         TrashItemsGlobal();
     };
 
-    commandMap["trash-dwim"] = [this](const QStringList &args) {
-        TrashDWIM();
-    };
+    commandMap["trash-dwim"] = [this](const QStringList &args) { TrashDWIM(); };
 
     commandMap["exit"] = [this](const QStringList &args) {
         QApplication::quit();
@@ -858,13 +831,9 @@ void Navi::setupCommandMap() noexcept {
         ResetFilter();
     };
 
-    commandMap["refresh"] = [this](const QStringList &args) {
-        ForceUpdate();
-    };
+    commandMap["refresh"] = [this](const QStringList &args) { ForceUpdate(); };
 
-    commandMap["chmod"] = [this](const QStringList &args) {
-        ChmodItem();
-    };
+    commandMap["chmod"] = [this](const QStringList &args) { ChmodItem(); };
 
     commandMap["chmod-local"] = [this](const QStringList &args) {
         ChmodItemsLocal();
@@ -874,9 +843,7 @@ void Navi::setupCommandMap() noexcept {
         ChmodItemsGlobal();
     };
 
-    commandMap["chmod-dwim"] = [this](const QStringList &args) {
-        ChmodDWIM();
-    };
+    commandMap["chmod-dwim"] = [this](const QStringList &args) { ChmodDWIM(); };
 
     commandMap["marks-pane"] = [this](const QStringList &args) {
         ToggleMarksBuffer();
@@ -914,17 +881,15 @@ void Navi::setupCommandMap() noexcept {
         SaveBookmarkFile();
     };
 
-    commandMap["search"] = [&](const QStringList &args) {
-        Search();
-    };
-    commandMap["search-next"] = [&](const QStringList &args) {
-        SearchNext();
-    };
-    commandMap["search-prev"] = [&](const QStringList &args) {
-        SearchPrev();
-    };
+    commandMap["search"] = [&](const QStringList &args) { Search(); };
 
-    m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::COMMAND, m_valid_command_list);
+    commandMap["search-regex"] = [&](const QStringList &args) { SearchRegex(); };
+
+    commandMap["search-next"] = [&](const QStringList &args) { SearchNext(); };
+    commandMap["search-prev"] = [&](const QStringList &args) { SearchPrev(); };
+
+    m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::COMMAND,
+                                        m_valid_command_list);
 }
 
 void Navi::ToggleSyntaxHighlight() noexcept {
@@ -1148,10 +1113,9 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
 
     auto [isNumber, num] = utils::isNumber(commandlist.at(0));
     if (isNumber) {
-        GotoItem(num);
-        if (m_macro_mode) {
+        if (m_macro_mode)
             addCommandToMacroRegister(QString::number(num));
-        }
+        GotoItem(num);
         return;
     }
 
@@ -1173,12 +1137,10 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
 
             commandMap[subcommand](args); // Call the associated function
 
-
         } else {
-            m_statusbar->Message(
-                                 QString("Command %1 is not a valid interactive command")
+            m_statusbar->Message(QString("Command %1 is not a valid interactive command")
               .arg(subcommand),
-                                 MessageType::ERROR, 5);
+                                 MessageType::ERROR);
         }
     }
 }
@@ -1215,9 +1177,11 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
+    m_tasks_widget = new TasksWidget(m_task_manager, this);
+    m_hook_manager = new HookManager();
     m_inputbar = new Inputbar(this);
     m_statusbar = new Statusbar(this);
-    m_file_panel = new FilePanel(m_inputbar, m_statusbar, this);
+    m_file_panel = new FilePanel(m_inputbar, m_statusbar, m_hook_manager, this);
 
     m_preview_panel = new PreviewPanel();
     m_file_path_widget = new FilePathWidget();
@@ -1287,17 +1251,13 @@ void Navi::initKeybinds() noexcept {
     connect(kb_mark_inverse, &QShortcut::activated, this,
             [&]() { MarkInverse(); });
 
-    connect(kb_mark_all, &QShortcut::activated, this,
-            [&]() { MarkAllItems(); });
+    connect(kb_mark_all, &QShortcut::activated, this, [&]() { MarkAllItems(); });
 
-    connect(kb_next_item, &QShortcut::activated, this,
-            [&]() { NextItem(); });
+    connect(kb_next_item, &QShortcut::activated, this, [&]() { NextItem(); });
 
-    connect(kb_prev_item, &QShortcut::activated, this,
-            [&]() { PrevItem(); });
+    connect(kb_prev_item, &QShortcut::activated, this, [&]() { PrevItem(); });
 
-    connect(kb_select_item, &QShortcut::activated, this,
-            [&]() { SelectItem(); });
+    connect(kb_select_item, &QShortcut::activated, this, [&]() { SelectItem(); });
 
     connect(kb_up_directory, &QShortcut::activated, this,
             [&]() { UpDirectory(); });
@@ -1317,14 +1277,11 @@ void Navi::initKeybinds() noexcept {
     connect(kb_delete_items, &QShortcut::activated, this,
             [&]() { DeleteDWIM(); });
 
-    connect(kb_search, &QShortcut::activated, this,
-            [&]() { Search(); });
+    connect(kb_search, &QShortcut::activated, this, [&]() { Search(); });
 
-    connect(kb_search_next, &QShortcut::activated, this,
-            [&]() { SearchNext(); });
+    connect(kb_search_next, &QShortcut::activated, this, [&]() { SearchNext(); });
 
-    connect(kb_search_prev, &QShortcut::activated, this,
-            [&]() { SearchPrev(); });
+    connect(kb_search_prev, &QShortcut::activated, this, [&]() { SearchPrev(); });
 
     connect(kb_toggle_menubar, &QShortcut::activated, this,
             [this]() { ToggleMenuBar(); });
@@ -1335,11 +1292,9 @@ void Navi::initKeybinds() noexcept {
     connect(kb_focus_file_path_widget, &QShortcut::activated, this,
             [this]() { m_file_path_widget->FocusLineEdit(); });
 
-    connect(kb_paste_items, &QShortcut::activated, this,
-            [&]() { PasteItems(); });
+    connect(kb_paste_items, &QShortcut::activated, this, [&]() { PasteItems(); });
 
-    connect(kb_copy_items, &QShortcut::activated, this,
-            [&]() { CopyItem(); });
+    connect(kb_copy_items, &QShortcut::activated, this, [&]() { CopyItem(); });
 
     connect(kb_unmark_items_local, &QShortcut::activated, this,
             [&]() { m_file_panel->UnmarkItemsLocal(); });
@@ -1349,8 +1304,9 @@ void Navi::initKeybinds() noexcept {
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-    // m_inputbar->enableCommandCompletions();
-    m_inputbar->currentCompletionStringList(Inputbar::CompletionModelType::COMMAND);
+    m_inputbar->enableCommandCompletions();
+    m_inputbar->currentCompletionStringList(
+                                            Inputbar::CompletionModelType::COMMAND);
     QString command = m_inputbar->getInput("Command");
     ProcessCommand(command);
 }
@@ -1566,12 +1522,12 @@ void Navi::initMenubar() noexcept {
 
     // Handle visibility state change to reflect in the checkbox of the menu item
 
-    connect(m_tasks_widget, &TasksWidget::visibilityChanged, this,
-            [&](const bool &state) {
-              m_viewmenu__tasks_widget->setChecked(state);
-            });
+    connect(
+            m_tasks_widget, &TasksWidget::visibilityChanged, this,
+            [&](const bool &state) { m_viewmenu__tasks_widget->setChecked(state); });
 
-    connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
+    connect(
+            m_drives_widget, &DriveWidget::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
 
     connect(m_menubar, &Menubar::visibilityChanged, this,
@@ -1756,7 +1712,8 @@ void Navi::ToggleDotDot() noexcept {
 void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
 
     if (parser.is_used("--config")) {
-        m_config_location = QString::fromStdString(parser.get<std::string>("--config"));
+        m_config_location =
+            QString::fromStdString(parser.get<std::string>("--config"));
     }
 
     if (parser.is_used("--quick")) {
@@ -1775,7 +1732,6 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
             m_default_location_list.append(QString::fromStdString(path));
         }
     }
-
 }
 
 void Navi::ToggleDrivesWidget() noexcept {
@@ -1797,8 +1753,11 @@ void Navi::ToggleRecordMacro() noexcept {
         QString macro_key = m_inputbar->getInput("Enter the macro key");
 
         if (m_macro_hash.contains(macro_key)) {
-            auto reply = QMessageBox::question(this, "Macro exists",
-                                               QString("A macro with the key %1 already exists. Do you want to overwrite ?").arg(macro_key));
+            auto reply =
+                QMessageBox::question(this, "Macro exists",
+                                      QString("A macro with the key %1 already "
+                                              "exists. Do you want to overwrite ?")
+                                    .arg(macro_key));
             if (reply != QMessageBox::Yes) {
                 return;
             }
@@ -1820,11 +1779,10 @@ void Navi::DeleteMacro() noexcept {
     if (m_macro_hash.contains(macro_key))
         m_macro_hash.remove(macro_key);
 }
-void Navi::EditMacro() noexcept {
-}
+void Navi::EditMacro() noexcept {}
 
 void Navi::ListMacro() noexcept {
-    for(const auto &macro : m_macro_hash.values()) {
+    for (const auto &macro : m_macro_hash.values()) {
         qDebug() << macro;
     }
 }
@@ -1847,7 +1805,9 @@ void Navi::MountDrive(const QString &driveName) noexcept {
 
     // Wait for the process to finish
     if (!process.waitForFinished()) {
-        m_statusbar->Message(QString("Failed to mount device: %1").arg(process.errorString()), MessageType::ERROR);
+        m_statusbar->Message(
+                             QString("Failed to mount device: %1").arg(process.errorString()),
+                             MessageType::ERROR);
         return;
     }
 
@@ -1862,8 +1822,11 @@ void Navi::MountDrive(const QString &driveName) noexcept {
     }
 
     if (!error.isEmpty()) {
-        m_statusbar->Message(QString("Mount error (%1)").arg(error.trimmed()), MessageType::ERROR);
+        m_statusbar->Message(QString("Mount error (%1)").arg(error.trimmed()),
+                             MessageType::ERROR);
     }
+
+    m_hook_manager->triggerHook("drive_mounted");
 }
 
 void Navi::UnmountDrive(const QString &driveName) noexcept {
@@ -1884,7 +1847,9 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
 
     // Wait for the process to finish
     if (!process.waitForFinished()) {
-        m_statusbar->Message(QString("Failed to unmount device: %1").arg(process.errorString()), MessageType::ERROR);
+        m_statusbar->Message(
+                             QString("Failed to unmount device: %1").arg(process.errorString()),
+                             MessageType::ERROR);
         return;
     }
 
@@ -1893,20 +1858,31 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
     QString error = process.readAllStandardError();
 
     if (!output.isEmpty()) {
-        m_statusbar->Message(QString("Unmount Successful (%1)").arg(output.trimmed()));
+        m_statusbar->Message(
+                             QString("Unmount Successful (%1)").arg(output.trimmed()));
         return;
     }
 
     if (!error.isEmpty()) {
-        m_statusbar->Message(QString("Unmount error (%1)").arg(error.trimmed()), MessageType::ERROR);
+        m_statusbar->Message(QString("Unmount error (%1)").arg(error.trimmed()),
+                             MessageType::ERROR);
     }
+
+    m_hook_manager->triggerHook("drive_unmounted");
 }
 
 void Navi::Search() noexcept {
     m_inputbar->disableCommandCompletions();
     QString searchText = m_inputbar->getInput("Search");
-    m_search_history_list.append(searchText);
     m_file_panel->Search(searchText);
+    m_search_history_list.append(searchText);
+}
+
+void Navi::SearchRegex() noexcept {
+    m_inputbar->disableCommandCompletions();
+    QString searchText = m_inputbar->getInput("Search");
+    m_file_panel->Search(searchText, true);
+    m_search_history_list.append(searchText);
 }
 
 void Navi::ShellCommandAsync(const QString &com) noexcept {
@@ -1932,11 +1908,11 @@ void Navi::ShellCommandAsync(const QString &com) noexcept {
 }
 
 void Navi::ToggleTasksWidget() noexcept {
-  if (m_tasks_widget->isVisible()) {
-      m_tasks_widget->hide();
-  } else {
-      m_tasks_widget->show();
-  }
+    if (m_tasks_widget->isVisible()) {
+        m_tasks_widget->hide();
+    } else {
+        m_tasks_widget->show();
+    }
 }
 
 void Navi::ToggleTasksWidget(const bool &state) noexcept {
@@ -1944,11 +1920,11 @@ void Navi::ToggleTasksWidget(const bool &state) noexcept {
 }
 
 void Navi::TogglePathWidget() noexcept {
-  if (m_file_path_widget->isVisible()) {
-      m_file_path_widget->hide();
-  } else {
-      m_file_path_widget->show();
-  }
+    if (m_file_path_widget->isVisible()) {
+        m_file_path_widget->hide();
+    } else {
+        m_file_path_widget->show();
+    }
 }
 
 void Navi::TogglePathWidget(const bool &state) noexcept {
@@ -1999,21 +1975,26 @@ void Navi::ToggleRegisterWidget(const bool &state) noexcept {
 
 // Lua API Functions
 
-void Navi::Lua__Message(const std::string &message, const MessageType &type) noexcept {
+void Navi::Lua__Message(const std::string &message,
+                        const MessageType &type) noexcept {
     m_statusbar->Message(QString::fromStdString(message), type);
 }
 
-std::string Navi::Lua__Input(const std::string &prompt, const std::string &def_value,
-                      const std::string &selection) noexcept {
-    return m_inputbar->getInput(QString::fromStdString(prompt),
-                                QString::fromStdString(def_value),
-                                QString::fromStdString(selection)).toStdString();
+std::string Navi::Lua__Input(const std::string &prompt,
+                             const std::string &def_value,
+                             const std::string &selection) noexcept {
+    return m_inputbar
+      ->getInput(QString::fromStdString(prompt),
+                 QString::fromStdString(def_value),
+                 QString::fromStdString(selection))
+      .toStdString();
 }
 
 void Navi::ExecuteLuaFunction(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         QString funcName = m_inputbar->getInput("Enter the lua function name");
-        // Pass the current file name, current directory name to the lua api functions
+        // Pass the current file name, current directory name to the lua api
+        // functions
         lua[funcName.toStdString().c_str()]();
     } else {
         std::string luaFunc = args.at(0).toStdString();
@@ -2043,7 +2024,6 @@ unsigned int Navi::Lua__ItemCount(const std::string &path) noexcept {
     return m_file_panel->ItemCount();
 }
 
-
 void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
     if (paths.empty())
         return;
@@ -2055,145 +2035,75 @@ void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
     m_file_panel->NewFolder(folders);
 }
 
-void Navi::ToggleCycle() noexcept {
-    m_file_panel->ToggleCycle();
-}
+void Navi::ToggleCycle() noexcept { m_file_panel->ToggleCycle(); }
 
-void Navi::ToggleHeaders() noexcept {
-    m_file_panel->ToggleHeaders();
-}
+void Navi::ToggleHeaders() noexcept { m_file_panel->ToggleHeaders(); }
 
-void Navi::RenameItem() noexcept {
-    m_file_panel->RenameItem();
-}
+void Navi::RenameItem() noexcept { m_file_panel->RenameItem(); }
 
-void Navi::RenameItemsGlobal() noexcept {
-    m_file_panel->RenameItemsGlobal();
-}
+void Navi::RenameItemsGlobal() noexcept { m_file_panel->RenameItemsGlobal(); }
 
-void Navi::RenameItemsLocal() noexcept {
-    m_file_panel->RenameItemsLocal();
-}
+void Navi::RenameItemsLocal() noexcept { m_file_panel->RenameItemsLocal(); }
 
-void Navi::RenameDWIM() noexcept {
-    m_file_panel->RenameDWIM();
-}
+void Navi::RenameDWIM() noexcept { m_file_panel->RenameDWIM(); }
 
-void Navi::CopyItem() noexcept {
-    m_file_panel->CopyItem();
-}
+void Navi::CopyItem() noexcept { m_file_panel->CopyItem(); }
 
-void Navi::CopyItemsGlobal() noexcept {
-    m_file_panel->CopyItemsGlobal();
-}
+void Navi::CopyItemsGlobal() noexcept { m_file_panel->CopyItemsGlobal(); }
 
-void Navi::CopyItemsLocal() noexcept {
-    m_file_panel->CopyItemsLocal();
-}
+void Navi::CopyItemsLocal() noexcept { m_file_panel->CopyItemsLocal(); }
 
-void Navi::CopyDWIM() noexcept {
-    m_file_panel->CopyDWIM();
-}
+void Navi::CopyDWIM() noexcept { m_file_panel->CopyDWIM(); }
 
-void Navi::CutItem() noexcept {
-    m_file_panel->CutItem();
-}
+void Navi::CutItem() noexcept { m_file_panel->CutItem(); }
 
-void Navi::CutItemsGlobal() noexcept {
-    m_file_panel->CutItemsGlobal();
-}
+void Navi::CutItemsGlobal() noexcept { m_file_panel->CutItemsGlobal(); }
 
-void Navi::CutItemsLocal() noexcept {
-    m_file_panel->CutItemsLocal();
-}
+void Navi::CutItemsLocal() noexcept { m_file_panel->CutItemsLocal(); }
 
-void Navi::CutDWIM() noexcept {
-    m_file_panel->CutDWIM();
-}
+void Navi::CutDWIM() noexcept { m_file_panel->CutDWIM(); }
 
-void Navi::DeleteItem() noexcept {
-    m_file_panel->DeleteItem();
-}
+void Navi::DeleteItem() noexcept { m_file_panel->DeleteItem(); }
 
-void Navi::DeleteItemsGlobal() noexcept {
-    m_file_panel->DeleteItemsGlobal();
-}
+void Navi::DeleteItemsGlobal() noexcept { m_file_panel->DeleteItemsGlobal(); }
 
-void Navi::DeleteItemsLocal() noexcept {
-    m_file_panel->DeleteItemsLocal();
-}
+void Navi::DeleteItemsLocal() noexcept { m_file_panel->DeleteItemsLocal(); }
 
-void Navi::DeleteDWIM() noexcept {
-    m_file_panel->DeleteDWIM();
-}
+void Navi::DeleteDWIM() noexcept { m_file_panel->DeleteDWIM(); }
 
-void Navi::TrashItem() noexcept {
-    m_file_panel->TrashItem();
-}
+void Navi::TrashItem() noexcept { m_file_panel->TrashItem(); }
 
-void Navi::TrashItemsGlobal() noexcept {
-    m_file_panel->TrashItemsGlobal();
-}
+void Navi::TrashItemsGlobal() noexcept { m_file_panel->TrashItemsGlobal(); }
 
-void Navi::TrashItemsLocal() noexcept {
-    m_file_panel->TrashItemsLocal();
-}
+void Navi::TrashItemsLocal() noexcept { m_file_panel->TrashItemsLocal(); }
 
-void Navi::TrashDWIM() noexcept {
-    m_file_panel->TrashDWIM();
-}
+void Navi::TrashDWIM() noexcept { m_file_panel->TrashDWIM(); }
 
-void Navi::MarkItem() noexcept {
-    m_file_panel->MarkItem();
-}
+void Navi::MarkItem() noexcept { m_file_panel->MarkItem(); }
 
-void Navi::MarkInverse() noexcept {
-    m_file_panel->MarkInverse();
-}
+void Navi::MarkInverse() noexcept { m_file_panel->MarkInverse(); }
 
-void Navi::MarkAllItems() noexcept {
-    m_file_panel->MarkAllItems();
-}
+void Navi::MarkAllItems() noexcept { m_file_panel->MarkAllItems(); }
 
-void Navi::MarkDWIM() noexcept {
-    m_file_panel->MarkDWIM();
-}
+void Navi::MarkDWIM() noexcept { m_file_panel->MarkDWIM(); }
 
-void Navi::ToggleMarkItem() noexcept {
-    m_file_panel->ToggleMarkItem();
-}
+void Navi::ToggleMarkItem() noexcept { m_file_panel->ToggleMarkItem(); }
 
-void Navi::ToggleMarkDWIM() noexcept {
-    m_file_panel->ToggleMarkDWIM();
-}
+void Navi::ToggleMarkDWIM() noexcept { m_file_panel->ToggleMarkDWIM(); }
 
-void Navi::UnmarkItem() noexcept {
-    m_file_panel->UnmarkItem();
-}
+void Navi::UnmarkItem() noexcept { m_file_panel->UnmarkItem(); }
 
-void Navi::UnmarkItemsLocal() noexcept {
-    m_file_panel->UnmarkItemsLocal();
-}
+void Navi::UnmarkItemsLocal() noexcept { m_file_panel->UnmarkItemsLocal(); }
 
-void Navi::UnmarkItemsGlobal() noexcept {
-    m_file_panel->UnmarkItemsGlobal();
-}
+void Navi::UnmarkItemsGlobal() noexcept { m_file_panel->UnmarkItemsGlobal(); }
 
-void Navi::ForceUpdate() noexcept {
-    m_file_panel->ForceUpdate();
-}
+void Navi::ForceUpdate() noexcept { m_file_panel->ForceUpdate(); }
 
-void Navi::ChmodItem() noexcept {
-    m_file_panel->ChmodItem();
-}
+void Navi::ChmodItem() noexcept { m_file_panel->ChmodItem(); }
 
-void Navi::ChmodItemsLocal() noexcept {
-    m_file_panel->ChmodItemsLocal();
-}
+void Navi::ChmodItemsLocal() noexcept { m_file_panel->ChmodItemsLocal(); }
 
-void Navi::ChmodItemsGlobal() noexcept {
-    m_file_panel->ChmodItemsGlobal();
-}
+void Navi::ChmodItemsGlobal() noexcept { m_file_panel->ChmodItemsGlobal(); }
 
 void Navi::ChmodDWIM() noexcept {
     // m_file_panel->ChmodDWIM();
@@ -2203,37 +2113,21 @@ void Navi::ShowItemPropertyWidget() noexcept {
     m_file_panel->ShowItemPropertyWidget();
 }
 
-void Navi::UpDirectory() noexcept {
-    m_file_panel->UpDirectory();
-}
+void Navi::UpDirectory() noexcept { m_file_panel->UpDirectory(); }
 
-void Navi::SelectItem() noexcept {
-    m_file_panel->SelectItem();
-}
+void Navi::SelectItem() noexcept { m_file_panel->SelectItem(); }
 
-void Navi::NextItem() noexcept {
-    m_file_panel->NextItem();
-}
+void Navi::NextItem() noexcept { m_file_panel->NextItem(); }
 
-void Navi::PrevItem() noexcept {
-    m_file_panel->PrevItem();
-}
+void Navi::PrevItem() noexcept { m_file_panel->PrevItem(); }
 
-void Navi::GotoFirstItem() noexcept {
-    m_file_panel->GotoFirstItem();
-}
+void Navi::GotoFirstItem() noexcept { m_file_panel->GotoFirstItem(); }
 
-void Navi::GotoLastItem() noexcept {
-    m_file_panel->GotoLastItem();
-}
+void Navi::GotoLastItem() noexcept { m_file_panel->GotoLastItem(); }
 
-void Navi::GotoMiddleItem() noexcept {
-    m_file_panel->GotoMiddleItem();
-}
+void Navi::GotoMiddleItem() noexcept { m_file_panel->GotoMiddleItem(); }
 
-void Navi::ToggleMouseScroll() noexcept {
-    m_file_panel->ToggleMouseScroll();
-}
+void Navi::ToggleMouseScroll() noexcept { m_file_panel->ToggleMouseScroll(); }
 
 void Navi::ToggleVisualLine() noexcept { m_file_panel->ToggleVisualLine(); }
 
@@ -2249,10 +2143,7 @@ void Navi::NewFile(const QStringList &names) noexcept {
     m_file_panel->NewFile(names);
 }
 
-void Navi::PasteItems() noexcept {
-    m_file_panel->PasteItems();
-}
-
+void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
 
 void Navi::addCommandToMacroRegister(const QStringList &commandlist) noexcept {
     m_macro_register.append(commandlist.join(" "));
@@ -2274,6 +2165,17 @@ void Navi::PlayMacro() noexcept {
             ProcessCommand(com);
         }
     } else {
-        m_statusbar->Message("No macro recorded under that key", MessageType::WARNING);
+        m_statusbar->Message("No macro recorded under that key",
+                             MessageType::WARNING);
     }
+}
+
+void Navi::MarkRegex() noexcept {
+    m_file_panel->MarkRegex();
+}
+
+void Navi::UnmarkRegex() noexcept { m_file_panel->UnmarkRegex(); }
+
+Result Navi::getInputDialog(const QString &title, const QString &msg,
+                                  const QString &selectionString) noexcept {
 }

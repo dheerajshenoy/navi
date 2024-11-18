@@ -67,6 +67,7 @@ qt_add_executable(${PROJECT_NAME}
   src/Task.cpp
   src/TaskManager.cpp
   src/RegisterWidget.cpp
+  src/HookManager.cpp
 
   src/TextEdit.hpp
   src/FileWorker.hpp

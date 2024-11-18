@@ -3,7 +3,6 @@
 #include <QString>
 #include <QStringList>
 #include <QHash>
-#include "Result.hpp"
 #include <QFile>
 #include <QTextStream>
 #include <QRegularExpression>

@@ -2,8 +2,8 @@
 #include "FileWorker.hpp"
 #include <qnamespace.h>
 
-FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, QWidget *parent)
-: m_inputbar(inputBar), m_statusbar(statusBar), QWidget(parent) {
+FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm, QWidget *parent)
+: QWidget(parent), m_inputbar(inputBar), m_statusbar(statusBar), m_hook_manager(hm) {
     this->setLayout(m_layout);
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
@@ -74,21 +74,21 @@ void FilePanel::initContextMenu() noexcept {
             [&]() { ShowItemPropertyWidget(); });
 }
 
-Result<bool> FilePanel::OpenTerminal(const QString &directory) noexcept {
+Result FilePanel::OpenTerminal(const QString &directory) noexcept {
 
     if (directory.isEmpty()) {
         QStringList args = m_terminal_args;
         bool res = QProcess::startDetached(
                                            m_terminal, args.replaceInStrings("%d", m_current_dir));
-        return Result(res);
+        return Result(res, QString());
     } else {
         if (QDir(directory).exists()) {
             m_terminal_args[0].replace("%d", directory);
             // m_terminal_arg.replace("%d", directory);
             bool res = QProcess::startDetached(m_terminal, m_terminal_args);
-            return Result(res);
+            return Result(res, QString());
         }
-        return Result(false, "Directory doesn't exist");
+        return Result(false, QString("Directory doesn't exist"));
     }
 }
 
@@ -121,8 +121,7 @@ void FilePanel::initSignalsSlots() noexcept {
             this, [&](const QModelIndex &current, const QModelIndex &previous) {
         QModelIndex fileNameIndex =
             current.siblingAtColumn(m_file_name_column_index);
-        emit currentItemChanged(
-                                m_current_dir + QDir::separator() +
+        emit currentItemChanged(m_current_dir + QDir::separator() +
                                 m_model->data(fileNameIndex, Qt::DisplayRole).toString());
     });
 
@@ -171,6 +170,7 @@ void FilePanel::initSignalsSlots() noexcept {
                     else
                         m_table_view->clearSelection();
                 }
+                m_hook_manager->triggerHook("directory_loaded");
             });
 
     connect(m_model->getFileSystemWatcher(),
@@ -268,6 +268,7 @@ void FilePanel::setCurrentDir(QString path,
         if (SelectFirstItem)
             m_table_view->selectRow(0);
         m_search_new_directory = true;
+
         emit afterDirChange(m_current_dir);
     }
 }
@@ -305,8 +306,6 @@ void FilePanel::NextItem() noexcept {
                                                             nextIndex, QItemSelectionModel::NoUpdate);
         }
     }
-
-    // TODO: Add hook
 }
 
 void FilePanel::PrevItem() noexcept {
@@ -341,10 +340,12 @@ void FilePanel::selectHelper(const QModelIndex &index,
     QString filepath = m_model->filePath(index);
     if (m_model->isDir(index)) {
         setCurrentDir(filepath, selectFirst);
+
     } else {
         QDesktopServices::openUrl(QUrl::fromLocalFile(filepath));
     }
-    // TODO: Add hook
+
+    m_hook_manager->triggerHook("item_select");
 }
 
 void FilePanel::SelectItem() noexcept {
@@ -376,7 +377,8 @@ void FilePanel::UpDirectory() noexcept {
         m_table_view->scrollTo(oldDirIndex);
         emit afterDirChange(m_current_dir);
     }
-    // TODO: Add hook
+
+    m_hook_manager->triggerHook("directory_up");
 }
 
 void FilePanel::ToggleMarkItem() noexcept {
@@ -423,6 +425,19 @@ void FilePanel::MarkDWIM() noexcept {
     } else {
         MarkItem();
     }
+    ToggleVisualLine(false);
+}
+
+void FilePanel::MarkRegex() noexcept {
+    QString searchExpression = m_inputbar->getInput("Mark items with regex");
+    m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                                         searchExpression, -1,
+                                         Qt::MatchRegularExpression);
+    if (m_search_index_list.isEmpty())
+        return;
+
+    MarkItems(m_search_index_list);
+
     ToggleVisualLine(false);
 }
 
@@ -478,6 +493,19 @@ void FilePanel::UnmarkItemsLocal() noexcept {
         //   m_statusbar->Message("Unmark cancelled", MessageType::WARNING);
     } else
         m_statusbar->Message("No local marks found", MessageType::WARNING);
+}
+
+void FilePanel::UnmarkRegex() noexcept {
+    QString searchExpression = m_inputbar->getInput("Unmark items with regex");
+    m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                                         searchExpression, -1,
+                                         Qt::MatchRegularExpression);
+    if (m_search_index_list.isEmpty())
+        return;
+
+    UnmarkItems(m_search_index_list);
+
+    ToggleVisualLine(false);
 }
 
 void FilePanel::GotoFirstItem() noexcept {
@@ -1075,13 +1103,19 @@ void FilePanel::ToggleDotDot() noexcept {
     m_model->loadDirectory(m_current_dir);
 }
 
-void FilePanel::Search(QString searchExpression) noexcept {
-    m_inputbar->disableCommandCompletions();
+void FilePanel::Search(QString searchExpression, const bool &regex) noexcept {
     if (searchExpression.isNull() || searchExpression.isEmpty())
-        searchExpression =
-            m_inputbar->getInput("Search", m_search_text, m_search_text);
-    m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole, searchExpression,
-                                         -1, Qt::MatchRegularExpression);
+      searchExpression =
+          m_inputbar->getInput("Search", m_search_text, m_search_text);
+
+    if (regex)
+      m_search_index_list =
+          m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                         searchExpression, -1, Qt::MatchRegularExpression);
+    else
+        m_search_index_list =
+            m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                           searchExpression, -1, Qt::MatchContains);
     if (m_search_index_list.isEmpty())
         return;
     m_table_view->setCurrentIndex(m_search_index_list.at(0));
@@ -1288,8 +1322,10 @@ void FilePanel::PasteItems() noexcept {
         // connect(worker, &FileCopyWorker::progress, this,
         // &FileCopyWidget::updateProgress);
 
-        connect(worker, &FileWorker::finished, thread, &QThread::quit);
-        connect(worker, &FileWorker::finished, worker, &FileWorker::deleteLater);
+        connect(worker, &FileWorker::finished, this, [&]() {
+            thread->quit();
+            worker->deleteLater();
+        });
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
 
         thread->start();

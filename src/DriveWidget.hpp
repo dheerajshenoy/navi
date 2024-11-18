@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QLabel>
+#include "HookManager.hpp"
 
 #include "utils.hpp"
 

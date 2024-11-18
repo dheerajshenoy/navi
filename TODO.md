@@ -74,7 +74,7 @@
 - [x] Add file operation cancel UI
 - [x] action macros
 - [ ] Open with menu
-- [ ] Rich text in file panel
+- [ ] Highlight symlink differently
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~

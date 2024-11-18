@@ -16,6 +16,7 @@
 #include "FilePathWidget.hpp"
 #include "OrderlessFilterModel.hpp"
 #include <QStringListModel>
+#include <qtmetamacros.h>
 
 class InputbarCompleter : public QCompleter {
 
@@ -58,10 +59,10 @@ protected:
 
         else if (e->type() == QKeyEvent::KeyPress) {
             switch (e->key()) {
-            case(Qt::Key_Tab):{
+            case Qt::Key_Tab:
                 emit tabPressed();
                 return;
-            } break;
+                break;
 
             }
             QLineEdit::keyPressEvent(e);
@@ -72,6 +73,7 @@ protected:
 };
 
 class Inputbar : public QWidget {
+    Q_OBJECT
 public:
     Inputbar(QWidget *parent = nullptr);
     ~Inputbar();
@@ -93,6 +95,11 @@ public:
     void addCompletionStringList(const CompletionModelType &type,
                             const QStringList &stringList) noexcept;
     void currentCompletionStringList(const CompletionModelType &type) noexcept;
+
+    LineEdit *lineEdit() noexcept { return m_line_edit; }
+
+signals:
+    void lineEditTextChanged(const QString &text);
 
 private:
     void suggestionComplete() noexcept;

@@ -398,13 +398,6 @@ QList<QModelIndex> FileSystemModel::match(const QModelIndex &start, int role,
                                           Qt::MatchFlags flags) const {
 
     QList<QModelIndex> matchedIndexes;
-
-    // Convert the search value to a QRegularExpression
-    QRegularExpression regex(value.toString(), QRegularExpression::PatternOption::CaseInsensitiveOption);
-    if (!regex.isValid()) {
-        return matchedIndexes; // Return empty list if regex is invalid
-    }
-
     // Define search parameters based on provided start index
     int startRow = start.isValid() ? start.row() : 0;
     int startColumn = start.isValid() ? start.column() : 0;
@@ -412,20 +405,49 @@ QList<QModelIndex> FileSystemModel::match(const QModelIndex &start, int role,
     int rows = rowCount();
     int columns = columnCount();
 
-    // Loop through rows and columns to find matching items
-    for (int row = startRow; row < rows; ++row) {
-        for (int col = startColumn; col < columns; ++col) {
-            QModelIndex _index = index(row, col);
-            if (_index.isValid()) {
-                QVariant _data = data(_index, role);
 
-                // Check if data matches the regex
-                if (_data.toString().contains(regex)) {
-                    matchedIndexes.append(_index);
+    if (flags & Qt::MatchRegularExpression) {
+        // Convert the search value to a QRegularExpression
+        QRegularExpression regex(value.toString(), QRegularExpression::PatternOption::CaseInsensitiveOption);
+        if (!regex.isValid()) {
+            return matchedIndexes; // Return empty list if regex is invalid
+        }
 
-                    // Stop if we've reached the desired number of hits
-                    if (hits > 0 && matchedIndexes.size() >= hits) {
-                        return matchedIndexes;
+        // Loop through rows and columns to find matching items
+        for (int row = startRow; row < rows; ++row) {
+            for (int col = startColumn; col < columns; ++col) {
+                QModelIndex _index = index(row, col);
+                if (_index.isValid()) {
+                    QVariant _data = data(_index, role);
+
+                    // Check if data matches the regex
+                    if (_data.toString().contains(regex)) {
+                        matchedIndexes.append(_index);
+
+                        // Stop if we've reached the desired number of hits
+                        if (hits > 0 && matchedIndexes.size() >= hits) {
+                            return matchedIndexes;
+                        }
+                    }
+                }
+            }
+        }
+    } else if (flags & (~Qt::MatchRegularExpression)) {
+        // Loop through rows and columns to find matching items
+        for (int row = startRow; row < rows; ++row) {
+            for (int col = startColumn; col < columns; ++col) {
+                QModelIndex _index = index(row, col);
+                if (_index.isValid()) {
+                    QVariant _data = data(_index, role);
+
+                    // Check if data matches the regex
+                    if (_data.toString().contains(value.toString(), Qt::CaseInsensitive)) {
+                        matchedIndexes.append(_index);
+
+                        // Stop if we've reached the desired number of hits
+                        if (hits > 0 && matchedIndexes.size() >= hits) {
+                            return matchedIndexes;
+                        }
                     }
                 }
             }

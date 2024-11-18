@@ -23,6 +23,10 @@
 #include <QStringView>
 #include <QActionGroup>
 #include <QEvent>
+#include <QMessageBox>
+#include <QInputDialog>
+#include "InputDialog.hpp"
+
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -53,6 +57,7 @@ static const QString CONFIG_FILE_PATH =
 #include "TaskManager.hpp"
 #include "TasksWidget.hpp"
 #include "RegisterWidget.hpp"
+#include "HookManager.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -93,6 +98,8 @@ public:
     void ResetFilter() noexcept;
     void LogMessage(const QString &message, const MessageType &type) noexcept;
     void FocusPath() noexcept;
+    Result getInputDialog(const QString &title, const QString &text,
+                   const QString &selectionString = QString()) noexcept;
     void AddBookmark(const QStringList &bookmarkName) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName) noexcept;
     void EditBookmark(const QStringList &bookmarkName) noexcept;
@@ -104,6 +111,7 @@ public:
     void SortBySize(const bool &reverse = false) noexcept;
     void ShellCommandAsync(const QString &command = "") noexcept;
     void Search() noexcept;
+    void SearchRegex() noexcept;
     void ToggleRecordMacro() noexcept;
     void PlayMacro() noexcept;
     void DeleteMacro() noexcept;
@@ -134,6 +142,7 @@ public:
     void TrashItemsGlobal() noexcept;
     void TrashItemsLocal() noexcept;
     void TrashDWIM() noexcept;
+    void MarkRegex() noexcept;
     void MarkItem() noexcept;
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
@@ -143,6 +152,7 @@ public:
     void UnmarkItem() noexcept;
     void UnmarkItemsLocal() noexcept;
     void UnmarkItemsGlobal() noexcept;
+    void UnmarkRegex() noexcept;
     void ForceUpdate() noexcept;
     void ChmodItem() noexcept;
     void ChmodItemsLocal() noexcept;
@@ -314,12 +324,14 @@ private:
       "mark-inverse",
       "mark-all",
       "mark-dwim",
+      "mark-regex",
 
       // Unmark
       "unmark",
       "unmark-global",
       "unmark-local",
       "unmark-dwim",
+      "unmark-regex",
 
       // Chmod
       "chmod",
@@ -383,6 +395,7 @@ private:
 
       // Search
       "search",
+      "search-regex",
       "search-next",
       "search-prev",
 
@@ -437,6 +450,7 @@ private:
       "syntax-highlight",
       "lua",
       "register",
+      "repeat-last-command",
 
     };
 
@@ -465,4 +479,5 @@ private:
     QHash<QString, QStringList> m_macro_hash;
 
     bool m_macro_mode = false;
+    HookManager *m_hook_manager = nullptr;
 };
