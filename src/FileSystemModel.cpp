@@ -359,6 +359,20 @@ FileSystemModel::getIndexFromString(const QString &path) const noexcept {
     return QModelIndex(); // Return an invalid index if not found
 }
 
+QModelIndexList FileSystemModel::getIndexesFromStrings(const QStringList &paths) const noexcept {
+
+    QModelIndexList indexList(paths.size());
+    for (int i = 0; i < m_fileInfoList.size(); ++i) {
+        for (int j = 0; j < paths.size(); j++) {
+            QString fileName = m_fileInfoList.at(i).fileName();
+            if (paths.at(j) == fileName)
+                indexList.push_back(index(j, 0));
+        }
+    }
+
+    return indexList;
+}
+
 QModelIndex FileSystemModel::getIndexFromBaseName(const QString &path) const noexcept {
     // Iterate through m_fileInfoList to find the file info matching the given
     // path
@@ -492,6 +506,23 @@ QStringList FileSystemModel::getMarkedFiles() noexcept {
         return QStringList();
 
     return QStringList(m_markedFiles.cbegin(), m_markedFiles.cend());
+}
+
+QModelIndexList FileSystemModel::getMarkedFilesIndexes() noexcept {
+
+    // Return {} if no marks are found in the global level
+    if (m_markedFiles.isEmpty())
+        return QModelIndexList();
+
+    QModelIndexList list;
+    list.reserve(m_markedFiles.size());
+
+    for (const auto &file : m_markedFiles) {
+        QModelIndex index = getIndexFromString(file);
+        list.append(index);
+    }
+
+    return list;
 }
 
 // void FileSystemModel::sort(int column, Qt::SortOrder order) {

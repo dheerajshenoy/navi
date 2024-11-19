@@ -27,25 +27,27 @@ void Navi::initThings() noexcept {
     try {
         if (lua["INIT_NAVI"].valid())
             lua["INIT_NAVI"]();
-    } catch (...) {
-        m_statusbar->Message("Error in the config file",
+    } catch (const sol::error &e) {
+        m_statusbar->Message(QString("Error in the config file: %1")
+                           .arg(e.what()),
                              MessageType::ERROR);
+
     }
 }
 
 void Navi::initConfiguration() noexcept {
 
-    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
-                       sol::lib::os, sol::lib::jit, sol::lib::package);
+  lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
+                     sol::lib::os, sol::lib::jit, sol::lib::package);
 
-    try {
-        lua.safe_script_file(m_config_location.toStdString(), sol::load_mode::any);
-    } catch (const sol::error &e) {
-        m_statusbar->Message(QString::fromStdString(e.what()));
-        initKeybinds();
+  try {
+      lua.script_file(m_config_location.toStdString(), sol::load_mode::any);
+  } catch (const sol::error &e) {
+      m_statusbar->Message(QString::fromStdString(e.what()));
+      initKeybinds();
 
-        return;
-    }
+      return;
+  }
 
     auto model = m_file_panel->model();
 
@@ -1989,13 +1991,6 @@ void Navi::ToggleRegisterWidget(const bool &state) noexcept {
         m_register_widget->hide();
 }
 
-// Lua API Functions
-
-void Navi::Lua__Message(const std::string &message,
-                        const MessageType &type) noexcept {
-    m_statusbar->Message(QString::fromStdString(message), type);
-}
-
 std::string Navi::Lua__Input(const std::string &prompt,
                              const std::string &def_value,
                              const std::string &selection) noexcept {
@@ -2006,38 +2001,30 @@ std::string Navi::Lua__Input(const std::string &prompt,
       .toStdString();
 }
 
-void Navi::ExecuteLuaFunction(const QStringList &args) noexcept {
+void Navi::ExecuteLuaFunction(const QStringList &args) {
     if (args.isEmpty()) {
         QString funcName = m_inputbar->getInput("Enter the lua function name");
-        // Pass the current file name, current directory name to the lua api
-        // functions
-        lua[funcName.toStdString().c_str()]();
+        try {
+            lua[funcName.toStdString().c_str()]();
+        } catch (const sol::error &e) {
+            m_statusbar->Message(QString("Lua: %1").arg(e.what()),
+                                 MessageType::ERROR);
+        }
     } else {
         std::string luaFunc = args.at(0).toStdString();
         std::vector<std::string> _args = utils::convertToStdVector(args.mid(1));
-        lua[luaFunc](_args);
+        try {
+            lua[luaFunc](_args);
+        } catch (const sol::error &e) {
+            m_statusbar->Message(QString("Lua: %1").arg(e.what()),
+                                 MessageType::ERROR);
+        }
     }
-}
-
-void Navi::Lua__ChangeDirectory(const std::string &dir) noexcept {
-    m_file_panel->setCurrentDir(QString::fromStdString(dir));
 }
 
 void Navi::Lua__Shell(const std::string &com) noexcept {
     QString commandString = QString::fromStdString(com);
     ShellCommandAsync(commandString);
-}
-
-bool Navi::Lua__IsDirectory(const std::string &path) noexcept {
-    return QFileInfo(QString::fromStdString(path)).isDir();
-}
-
-bool Navi::Lua__IsFile(const std::string &path) noexcept {
-    return QFileInfo(QString::fromStdString(path)).isFile();
-}
-
-unsigned int Navi::Lua__ItemCount(const std::string &path) noexcept {
-    return m_file_panel->ItemCount();
 }
 
 void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
@@ -2213,4 +2200,7 @@ void Navi::Zoxide(const QString &_path) noexcept {
     path = process.readAllStandardOutput().trimmed();
     if (!path.isEmpty())
         m_file_panel->setCurrentDir(path);
+}
+
+void Navi::SpawnProcess(const QString &command, const QStringList &args) noexcept {
 }

@@ -166,64 +166,43 @@ public:
     void GotoMiddleItem() noexcept;
     void ToggleMouseScroll() noexcept;
     void ToggleVisualLine() noexcept;
-
-
+    void SpawnProcess(const QString &command,
+                      const QStringList &args) noexcept;
     void ToggleDrivesWidget(const bool &state) noexcept;
     void ToggleDrivesWidget() noexcept;
-
     void TogglePathWidget(const bool &state) noexcept;
     void TogglePathWidget() noexcept;
-
     void ToggleStatusBar(const bool &state) noexcept;
     void ToggleStatusBar() noexcept;
-
     void TogglePreviewPanel(const bool &state) noexcept;
     void TogglePreviewPanel() noexcept;
-
     void ToggleMessagesBuffer(const bool &state) noexcept;
     void ToggleMessagesBuffer() noexcept;
-
     void ToggleMarksBuffer(const bool &state) noexcept;
     void ToggleMarksBuffer() noexcept;
-
     void ToggleBookmarksBuffer(const bool &state) noexcept;
     void ToggleBookmarksBuffer() noexcept;
-
     void ToggleShortcutsBuffer(const bool &state) noexcept;
     void ToggleShortcutsBuffer() noexcept;
-
     void ToggleHiddenFiles(const bool &state) noexcept;
     void ToggleHiddenFiles() noexcept;
-
     void ToggleDotDot(const bool &state) noexcept;
     void ToggleDotDot() noexcept;
-
     void ToggleTasksWidget() noexcept;
     void ToggleTasksWidget(const bool &state) noexcept;
-
     void ToggleRegisterWidget() noexcept;
     void ToggleRegisterWidget(const bool &state) noexcept;
-
-    void ExecuteLuaFunction(const QStringList &args) noexcept;
-
+    void ExecuteLuaFunction(const QStringList &args);
     void MountDrive(const QString &driveName) noexcept;
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
-
     void GotoItem(const int &num) noexcept;
     void ChangeDirectory(const QString &dir = QString()) noexcept;
     void Zoxide(const QString &dir) noexcept;
-
-    // Lua API Function calls
-    void Lua__Message(const std::string &message, const MessageType &type) noexcept;
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
                            const std::string &default_selection) noexcept;
-    void Lua__ChangeDirectory(const std::string &dir) noexcept;
     void Lua__Shell(const std::string &command) noexcept;
-    bool Lua__IsDirectory(const std::string &path) noexcept;
-    bool Lua__IsFile(const std::string &path) noexcept;
-    unsigned int Lua__ItemCount(const std::string &path) noexcept;
     void Lua__CreateFolders(const std::vector<std::string> &paths) noexcept;
 
 protected:
@@ -452,6 +431,8 @@ private:
       "repeat-last-command",
       "cd",
       "zoxide",
+      "terminal-here",
+      "terminal",
 
     };
 

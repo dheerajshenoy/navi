@@ -69,6 +69,7 @@ public:
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
     QModelIndex getIndexFromString(const QString &path) const noexcept;
+    QModelIndexList getIndexesFromStrings(const QStringList &paths) const noexcept;
     QModelIndex getIndexFromBaseName(const QString &path) const noexcept;
     int getRowFromBaseName(const QString &path) const noexcept;
     uint getMarkedFilesCount() noexcept;
@@ -93,6 +94,7 @@ public:
     inline bool hasMarks() noexcept { return m_markedFiles.size() > 0; }
     bool hasMarksLocal() noexcept;
     QStringList getMarkedFiles() noexcept;
+    QModelIndexList getMarkedFilesIndexes() noexcept;
     QStringList getMarkedFilesLocal() noexcept;
     void setFilter(const QDir::Filters &filters) noexcept;
     bool setData(const QModelIndex &index, const QVariant &value,

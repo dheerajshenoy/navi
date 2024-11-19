@@ -18,12 +18,12 @@ void Navi::initNaviLuaAPI() noexcept {
     // DIR API
     lua["navi"]["api"] = lua.create_table();
 
-    lua["navi"]["api"]["cd"] = [this](const std::string &path) {
-      this->Lua__ChangeDirectory(path);
+    lua["navi"]["api"]["cd"] = [this](const std::string &dir) {
+        m_file_panel->setCurrentDir(QString::fromStdString(dir));
     };
 
     lua["navi"]["api"]["count"] = [this](const std::string &path) {
-      this->Lua__ItemCount(path);
+        return m_file_panel->ItemCount();
     };
 
     lua["navi"]["api"]["create_dir"] =
@@ -32,11 +32,11 @@ void Navi::initNaviLuaAPI() noexcept {
         };
 
     lua["navi"]["api"]["is_file"] = [this](const std::string &path) {
-        return this->Lua__IsFile(path);
+        return QFileInfo(QString::fromStdString(path)).isFile();
     };
 
     lua["navi"]["api"]["is_dir"] = [this](const std::string &path) {
-      return this->Lua__IsDirectory(path);
+        return QFileInfo(QString::fromStdString(path)).isDir();
     };
 
     lua["navi"]["api"]["next_item"] = [this]() { m_file_panel->NextItem(); };
@@ -72,7 +72,7 @@ void Navi::initNaviLuaAPI() noexcept {
         return m_file_panel->getItemProperty();
     };
 
-    lua["navi"]["api"]["dir_name"] = [this]() {
+    lua["navi"]["api"]["pwd"] = [this]() {
       return m_file_panel->getCurrentDir().toStdString();
     };
     lua["navi"]["api"]["filter"] = [this](const QString &filter) {
@@ -107,6 +107,16 @@ void Navi::initNaviLuaAPI() noexcept {
     };
 
     lua["navi"]["api"]["chmod"] = [this]() { m_file_panel->ChmodItem(); };
+
+    lua["navi"]["api"]["spawn"] = [this](const std::string &command,
+                                         const std::vector<std::string> args) {
+        QStringList arglist;
+
+        for (const auto &str : args)
+            arglist.push_back(QString::fromStdString(str));
+
+        SpawnProcess(QString::fromStdString(command), arglist);
+    };
 
     lua["navi"]["api"]["local_marks"] = [this]() {
       return utils::convertToStdVector(
@@ -201,7 +211,7 @@ void Navi::initNaviLuaAPI() noexcept {
     lua["navi"]["ui"]["messages"] = [this]() { ToggleMessagesBuffer(); };
 
     lua["navi"]["ui"]["messages"] = [this](const bool &state) {
-      ToggleMessagesBuffer(state);
+        ToggleMessagesBuffer(state);
     };
 
     lua["navi"]["ui"]["shortcuts"] = [this](const bool &state) {
@@ -223,7 +233,7 @@ void Navi::initNaviLuaAPI() noexcept {
 
     lua["navi"]["io"]["msg"] = [this](const std::string &message,
                                           const MessageType &type) {
-      this->Lua__Message(message, type);
+        m_statusbar->Message(QString::fromStdString(message), type);
     };
 
     lua["navi"]["io"]["msgtype"] = lua.create_table_with(

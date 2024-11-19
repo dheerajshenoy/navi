@@ -2,6 +2,7 @@
 
 # Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
 
 - [Table of Contents](#table-of-contents)
 - [Installation](#installation)
@@ -22,6 +23,7 @@
         - [Selecting Item](#selecting-item)
         - [Change Permission](#change-permission)
         - [Renaming Files](#renaming-files)
+            - [Bulk Rename](#bulk-rename)
         - [Cutting Files](#cutting-files)
         - [Copying Files](#copying-files)
         - [Pasting (Moving) Files](#pasting-moving-files)
@@ -30,15 +32,24 @@
         - [Filtering Items](#filtering-items)
         - [Panes](#panes)
         - [Misc](#misc)
+        - [Zoxide Command](#zoxide-command)
         - [Shell Commands](#shell-commands)
-        - [Bookmarks](#bookmarks-1)
-        - [Searching Items](#searching-items)
-        - [Sorting Items](#sorting-items)
-        - [Storage Device](#storage-device)
-    - [Linux Only](#linux-only)
-    - [Theming](#theming)
-    - [<span class="todo TODO">TODO</span> Scripting with Lua [scripting-with-lua]](#span-classtodo-todotodospan-scripting-with-lua-scripting-with-lua)
-    - [Configuration with Lua](#configuration-with-lua)
+        - [Macro](#macro)
+    - [Tutorial](#tutorial)
+- [Linux Only](#linux-only)
+- [Theming](#theming)
+- [Scripting with Lua [scripting-with-lua]](#scripting-with-lua-scripting-with-lua)
+    - [Special Function](#special-function)
+    - [Custom functions](#custom-functions)
+    - [Hooks](#hooks)
+        - [Hook Names](#hook-names)
+    - [Navi Lua API](#navi-lua-api)
+        - [`cd`](#cd)
+        - [`input`](#input)
+        - [`message`](#message)
+    - [What can you do with scripting ?](#what-can-you-do-with-scripting-)
+        - [Setting wallpaper](#setting-wallpaper)
+- [Configuration with Lua](#configuration-with-lua)
 - [Acknowledgement](#acknowledgement)
 
 <!-- markdown-toc end -->
@@ -499,6 +510,8 @@ https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a
 
 Change directory with the provided argument or ask for input.
 
+### Zoxide Command
+
 `zoxide`
 
 Navi can integrate with [zoxide](https://github.com/ajeetdsouza/zoxide) for faster navigation. Just call the `zoxide` command with the directory query and if the directory exists in the zoxide database, then Navi switches to that directory.
@@ -598,7 +611,7 @@ You can write custom functions in lua with arguments. Navi passes the current fi
 
 ```lua
 function someFunction(fileName, dirName)
-    navi:message("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
+    navi.io.msg("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
 end
 ```
 
@@ -638,58 +651,58 @@ Now, whenever you select (open or enter a directory) an item, you'll get the mes
 
 ## Navi Lua API
 
-The running navi instance is exposed to the lua configuration file. You can call api functions that interacts with Navi using these functions.
+API or Application Programming Interface allows user to customize the behaviour or add extra functionalities to Navi.
 
-The following functions should be called with the navi instance like `navi:function_name()`
+There is a main `navi` table. In this table are *four* more tables: `ui`, `api`, `io` and `shell`.
 
-### `cd`
+### UI
 
-Change the directory
+You can toggle all the UI elements by `navi.ui.<UI-TYPE>`.
 
-Args:
+UI-TYPE can be one of:
 
-directory-name : (_str_) (**required**)
++ marks
++ shortcuts
++ messages
++ preview_panel
++ pathbar
++ statusbar
++ menubar
 
-Example:
+### API
 
-```lua
-navi:cd("~/.config")
-```
++ sort\_name
++ search
++ search\_next
++ search\_prev
++ new\_files
++ new\_folder
++ trash
++ copy
++ copy\_dwim
++ cut\_dwim
++ cut
++ has\_marks\_local
++ has\_marks\_global
++ global\_marks
++ local\_marks\_count
++ global\_marks\_count
++ local_marks
 
-### `input`
+### IO
 
-Get input from the user and return the value.
++ `msg`
++ `msgtype`. This is an enum with the following members:
+    + `error`
+    + `warning`
+    + `info`
++ `input`
 
-Args:
-* Prompt text `str` (**required**)
-* Placeholder text `str` (*optional*)
-* Selection text `str` (*optional*)
+### Shell
 
-Return type: _str_
++ `execute`
 
-Example:
-
-```lua
-navi:input("Enter a number")
-```
-
-### `message`
-
-Prints message
-
-Args:
-* Text `str` (**required**)
-* Type `MessageType` (*optinal*)
-
-`MessageType` is an enum with the members `Error`, `Warning` and `Info`
-
-Example:
-
-```lua
-navi:message("This is a good message", MessageType.Info)
-navi:message("This is a bad message", MessageType.Error)
-navi:message("This is an okay message", MessageType.Warning)
-```
+You can execute any shell commands from within navi.
 
 ## What can you do with scripting ?
 
@@ -699,7 +712,7 @@ Since filename and current directory is passed to every custom function by Navi,
 
 ```lua
 function setWallpaper(filename)
-    navi:shell("xwallpaper --stretch" .. filename)
+    navi.shell("xwallpaper --stretch" .. filename)
 end
 ```
 

@@ -37,6 +37,7 @@ The file managers for linux aren’t that great for me. So I decided to write my
 8. Drag and Drop
 9. [Configuration with Lua](./wiki.md#lua-configuration)
 10. [Scripting with Lua](./wiki.md#scripting-with-lua)
+11. [Zoxide Integration](./wiki.md#zoxide-command)
 
 <a id="org2eefded"></a>
 
