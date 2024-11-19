@@ -2,7 +2,6 @@
 
 # Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-**Table of Contents**
 
 - [Table of Contents](#table-of-contents)
 - [Installation](#installation)
@@ -44,9 +43,10 @@
     - [Hooks](#hooks)
         - [Hook Names](#hook-names)
     - [Navi Lua API](#navi-lua-api)
-        - [`cd`](#cd)
-        - [`input`](#input)
-        - [`message`](#message)
+        - [UI](#ui)
+        - [API](#api)
+        - [IO](#io)
+        - [Shell](#shell)
     - [What can you do with scripting ?](#what-can-you-do-with-scripting-)
         - [Setting wallpaper](#setting-wallpaper)
 - [Configuration with Lua](#configuration-with-lua)
@@ -759,6 +759,14 @@ SETTINGS = {
                 italic = true,
                 bold = true,
                 padding = "4px",
+            },
+            macro_mode = {
+                text = "M",
+                background = "#FF3124",
+                foreground = "#000000",
+                italic = true,
+                bold = true,
+                padding = "4px",
             }
         },
 
@@ -843,19 +851,30 @@ KEYBINDINGS = {
     { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
     { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
     { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
+    { key = "q", command = "macro-record", desc = "Record or Finish recording macro" },
 }
+
+local terminal = os.getenv("TERMINAL")
+
+-- Function with special meaning to Navi.
+-- This will be called on every Navi startup
+function INIT_NAVI()
+end
 
 function setWallpaper()
     local file = navi.api.item_name()
     navi.shell.execute("xwallpaper --stretch " .. file)
 end
-```
 
+function terminalHere()
+    local dir = navi.api.dir_name()
+    navi.api.spawn(terminal, { dir })
+end
+```
 
 # Acknowledgement
 
 Navi uses the following header-only C++ libraries. Thanks to the authors of the following libraries:
 
-- [ArgParse](https://github.com/p-ranav/argparse) (for parsing command
-line arguments)
+- [ArgParse](https://github.com/p-ranav/argparse) (for parsing command line arguments)
 - [Sol2](https://github.com/ThePhD/sol2) (for lua integration)
