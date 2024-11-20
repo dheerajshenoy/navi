@@ -31,8 +31,9 @@ void Navi::initThings() noexcept {
         m_statusbar->Message(QString("Error in the config file: %1")
                            .arg(e.what()),
                              MessageType::ERROR);
-
     }
+
+    this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
 void Navi::initConfiguration() noexcept {
@@ -2020,11 +2021,6 @@ void Navi::ExecuteLuaFunction(const QStringList &args) {
                                  MessageType::ERROR);
         }
     }
-}
-
-void Navi::Lua__Shell(const std::string &com) noexcept {
-    QString commandString = QString::fromStdString(com);
-    ShellCommandAsync(commandString);
 }
 
 void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {

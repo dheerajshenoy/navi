@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include "InputDialog.hpp"
+#include <QKeyEvent>
 
 
 // Config related things

@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QCompleter>
 #include <QFileSystemModel>
+#include <QAbstractItemView>
 
 class CustomCompleter : public QCompleter {
 public:
@@ -28,7 +29,7 @@ protected:
 };
 
 class FilePathLineEdit : public QLineEdit {
-
+    Q_OBJECT
 public:
     explicit FilePathLineEdit(QWidget *parent = nullptr)
     : QLineEdit(parent) {
@@ -41,7 +42,10 @@ public:
         this->selectAll();
         this->setFocus();
         m_original_path = this->text();
-    }
+}
+
+signals:
+    void tabPressed();
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *e) override { Focus(); }
@@ -52,7 +56,14 @@ protected:
             if (!(m_original_path.isEmpty() && m_original_path.isNull()))
                 this->setText(m_original_path);
             this->clearFocus();
-        } else
+        }
+
+        else if (e->key() == Qt::Key_Tab) {
+            emit tabPressed();
+            e->accept();
+        }
+
+        else
             QLineEdit::keyPressEvent(e);
     }
 
@@ -64,11 +75,8 @@ class FilePathWidget : public QWidget {
     Q_OBJECT
 public:
     FilePathWidget(QWidget *parent = nullptr);
-
     void setCurrentDir(const QString& path) noexcept;
-
     void FocusLineEdit() noexcept { m_path_line->Focus(); }
-
     void setForegroundColor(const QString &color) noexcept;
     void setBackgroundColor(const QString &color) noexcept;
     void setItalic(const bool &state) noexcept;

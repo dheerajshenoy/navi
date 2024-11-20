@@ -15,9 +15,18 @@ FilePathWidget::FilePathWidget(QWidget *parent)
     m_path_line->setCompleter(m_completer);
 
     connect(m_path_line, &QLineEdit::returnPressed, this, [&]() {
-        m_path_line->setReadOnly(true);
-        emit directoryChangeRequested(m_path_line->text());
+      m_path_line->setReadOnly(true);
+      emit directoryChangeRequested(m_path_line->text());
+    });
 
+    this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
+    connect(m_path_line, &FilePathLineEdit::tabPressed, this, [&]() {
+        QModelIndex index = m_completer->currentIndex();
+        m_completer->popup()->setCurrentIndex(index);
+        int row = m_completer->currentRow();
+        if (!m_completer->setCurrentRow(row + 1))
+            m_completer->setCurrentRow(0);
     });
 }
 

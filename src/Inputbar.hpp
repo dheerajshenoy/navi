@@ -42,7 +42,10 @@ class LineEdit : public QLineEdit {
     Q_OBJECT
 
     public:
-      explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) {}
+      explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) {
+
+        this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+      }
 
     signals:
     void hideRequested();
@@ -60,7 +63,8 @@ protected:
         else if (e->type() == QKeyEvent::KeyPress) {
             switch (e->key()) {
             case Qt::Key_Tab:
-                emit tabPressed();
+              emit tabPressed();
+            e->accept();
                 return;
                 break;
 

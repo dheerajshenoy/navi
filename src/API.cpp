@@ -250,6 +250,6 @@ void Navi::initNaviLuaAPI() noexcept {
 
     lua["navi"]["shell"] = lua.create_table();
     lua["navi"]["shell"]["execute"] = [this](const std::string &command) {
-        this->Lua__Shell(command);
+        ShellCommandAsync(QString::fromStdString(command));
     };
 }

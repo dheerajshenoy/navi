@@ -22,6 +22,7 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
       this->hide();
     });
 
+    this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
 void Inputbar::suggestionComplete() noexcept {

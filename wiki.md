@@ -716,6 +716,16 @@ function setWallpaper(filename)
 end
 ```
 
+### Open a terminal at the current directory
+
+```lua
+function terminalAtPoint()
+    local terminal = os.getenv("TERMINAL")
+    local dir = navi.api.pwd()
+    navi.spawn(terminal, { dir })
+end
+```
+
 # Configuration with Lua
 
 Navi can be configured using lua. The default configuration file is provided in this git repository. Navi looks for the configuration file in the XDG standard config directory (`~/.config`). You can place your configuration file in the `~/.config/navi/` directory. The configuration file should be named `config.lua`.
