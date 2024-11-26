@@ -174,6 +174,10 @@ void Navi::initNaviLuaAPI() noexcept {
 
     lua["navi"]["api"]["sort_name"] = [this]() {};
 
+    lua["navi"]["api"]["highlight"] = [this](const std::string &item_path) {
+        m_file_panel->HighlightItem(QString::fromStdString(item_path));
+    };
+
     // UI API
 
     lua["navi"]["ui"] = lua.create_table();
@@ -243,7 +247,7 @@ void Navi::initNaviLuaAPI() noexcept {
     lua["navi"]["io"]["input"] = [this](const std::string &prompt,
                                         const std::string &def_text,
                                         const std::string &selection_text) {
-      this->Lua__Input(prompt, def_text, selection_text);
+      return this->Lua__Input(prompt, def_text, selection_text);
     };
 
     // SHELL API

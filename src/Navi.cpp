@@ -19,8 +19,12 @@ void Navi::initThings() noexcept {
 
     if (m_default_location_list.isEmpty())
         m_file_panel->setCurrentDir("~", true);
-    else
-        m_file_panel->setCurrentDir(m_default_location_list.at(0), true);
+    else {
+        QString location = m_default_location_list.at(0);
+        if (location == ".")
+            location = QDir::currentPath();
+            m_file_panel->setCurrentDir(location, true);
+    }
 
     initNaviLuaAPI();
 
@@ -1996,11 +2000,9 @@ void Navi::ToggleRegisterWidget(const bool &state) noexcept {
 std::string Navi::Lua__Input(const std::string &prompt,
                              const std::string &def_value,
                              const std::string &selection) noexcept {
-    return m_inputbar
-      ->getInput(QString::fromStdString(prompt),
-                 QString::fromStdString(def_value),
-                 QString::fromStdString(selection))
-      .toStdString();
+    return m_inputbar->getInput(QString::fromStdString(prompt),
+                                QString::fromStdString(def_value),
+                                QString::fromStdString(selection)).toStdString();
 }
 
 void Navi::ExecuteLuaFunction(const QStringList &args) {

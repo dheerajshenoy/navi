@@ -81,3 +81,4 @@
 - [X] zoxide integration
 - [ ] overwrite copy, paste etc.
 - [ ] custom copy, delete, rename etc.
+- [ ] first startup wierd load behavior

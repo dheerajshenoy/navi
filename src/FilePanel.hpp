@@ -51,6 +51,7 @@ public:
     FileSystemModel* model() noexcept { return m_model; }
 
     void highlightIndex(const QModelIndex &index) noexcept;
+    void HighlightItem(const QString &itemName) noexcept;
     void NewFolder(const QStringList &folderName = {}) noexcept;
     void NewFile(const QStringList &fileName = {}) noexcept;
     QString getCurrentItem() noexcept;

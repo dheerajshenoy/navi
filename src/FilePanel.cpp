@@ -250,8 +250,8 @@ void FilePanel::handleItemDoubleClicked(const QModelIndex &index) noexcept {
     selectHelper(index, true);
 }
 
-void FilePanel::setCurrentDir(QString path,
-                              const bool &SelectFirstItem) noexcept {
+void FilePanel::setCurrentDir(QString path, const bool &SelectFirstItem) noexcept {
+
     if (path.isEmpty())
         return;
 
@@ -259,7 +259,11 @@ void FilePanel::setCurrentDir(QString path,
         path = path.replace("~", QDir::homePath());
     }
 
-    if (utils::isValidPath(path)) {
+    QFileInfo fileinfo(path);
+    if (fileinfo.exists()) {
+        if (fileinfo.isFile()) {
+            path = fileinfo.absolutePath();
+        }
         m_model->setRootPath(path);
         m_current_dir = path;
 
@@ -360,6 +364,12 @@ void FilePanel::SelectItemHavingString(const QString &itemName) noexcept {
 
 void FilePanel::highlightIndex(const QModelIndex &index) noexcept {
     m_table_view->setCurrentIndex(index);
+}
+
+void FilePanel::HighlightItem(const QString &itemName) noexcept {
+    QModelIndex index = m_model->getIndexFromString(itemName);
+    if (index.isValid())
+        m_table_view->setCurrentIndex(index);
 }
 
 void FilePanel::UpDirectory() noexcept {

@@ -28,7 +28,6 @@
 #include "InputDialog.hpp"
 #include <QKeyEvent>
 
-
 // Config related things
 static const QString APP_NAME = "navi";
 static const QString CONFIG_DIR_PATH =
@@ -200,6 +199,7 @@ public:
     void GotoItem(const int &num) noexcept;
     void ChangeDirectory(const QString &dir = QString()) noexcept;
     void Zoxide(const QString &dir) noexcept;
+
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
                            const std::string &default_selection) noexcept;
@@ -394,6 +394,8 @@ private:
       "middle-item",
       "up-directory",
       "select-item",
+      "fd",
+      "rg",
 
       "macro-play",
       "macro-record",

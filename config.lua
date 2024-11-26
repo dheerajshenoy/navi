@@ -1,4 +1,4 @@
-settings = {
+SETTINGS = {
     terminal = os.getenv("TERMINAL"),
 
     bulk_rename = {
@@ -26,6 +26,14 @@ settings = {
             visual_line_mode = {
                 text = "V",
                 background = "#FF5000",
+                foreground = "#000000",
+                italic = true,
+                bold = true,
+                padding = "4px",
+            },
+            macro_mode = {
+                text = "M",
+                background = "#FF3124",
                 foreground = "#000000",
                 italic = true,
                 bold = true,
@@ -87,7 +95,7 @@ settings = {
     }
 }
 
-keybindings = {
+KEYBINDINGS = {
     { key = "h", command = "up-directory", desc = "Go to the parent directory" },
     { key = "j", command = "next-item", desc = "Go to the next item" },
     { key = "k", command = "prev-item", desc = "Go to the previous item" },
@@ -114,9 +122,61 @@ keybindings = {
     { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
     { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
     { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
+    { key = "q", command = "macro-record", desc = "Record or Finish recording macro" },
 }
 
-function setWallpaper(file)
-    navi:shell("xwallpaper --stretch " .. file)
-    -- print(filepath)
+local terminal = os.getenv("TERMINAL")
+
+-- Function with special meaning to Navi.
+-- This will be called on every Navi startup
+function INIT_NAVI()
+end
+-- Sets the wallpaper using the file at point
+function setWallpaper()
+    local file = navi.api.item_name()
+    navi.shell.execute("xwallpaper --stretch " .. file)
+end
+
+-- Opens a terminal at the given directory
+function terminalHere()
+    local dir = navi.api.dir_name()
+    navi.api.spawn(terminal, { dir })
+end
+
+-- Use `fd` to go to the best file match having the name given as the input
+function fd()
+    local input = navi.io.input("Search (FD)")
+    if input ~= "" then
+        local pwd = navi.api.pwd()
+        local command = string.format("fd %s %s --type=directory | head -n 1", input, pwd)
+        local handle = io.popen(command)
+        local result = handle:read("*a")
+        handle:close()
+        result = result:gsub('[\n\r]', '')
+        if result ~= "" then
+            navi.api.cd(result)
+        else
+            navi.io.msg("No results", navi.io.messagetype.warn)
+        end
+    end
+end
+
+-- Use `ripgrep` to go to the file content with the name given as the input
+function rg()
+    local input = navi.io.input("Search (RG)")
+    if input ~= "" then
+        local pwd = navi.api.pwd()
+        local command = string.format("rg %s %s -l --sort-files | head -n 1", input, pwd)
+        local handle = io.popen(command)
+        local result = handle:read("*a")
+        handle:close()
+        result = result:gsub('[\n\r]', '')
+        if result ~= "" then
+            navi.api.cd(result)
+            navi.api.highlight(result)
+        else
+            navi.io.msg("No results", navi.io.messagetype.warn)
+        end
+    end
+
 end
