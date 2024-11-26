@@ -153,3 +153,19 @@ QStringList utils::stringListFromVector(const std::vector<std::string> &vectorLi
 
     return stringList;
 }
+
+QStringList utils::getAssociatedApplications(const QString &mimeType) noexcept {
+    QStringList apps;
+    QProcess process;
+    process.start("sh", QStringList() << "-c" << QString("grep '%1' /usr/share/applications/*.desktop ~/.local/share/applications/*.desktop").arg(mimeType));
+    process.waitForFinished();
+
+    QString output = process.readAllStandardOutput();
+    for (const QString &line : output.split('\n')) {
+        if (!line.isEmpty()) {
+            QString app = line.section("=", 1, 1); // Extract app name
+            apps.append(app);
+        }
+    }
+    return apps;
+}

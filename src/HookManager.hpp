@@ -8,6 +8,7 @@ class HookManager {
 
 public:
     void addHook(const std::string &hook_name, const sol::function &func) noexcept;
+    void clearHookFunctions(const std::string &hook_name) noexcept;
     void triggerHook(const std::string &hook_name) noexcept;
 
 private:

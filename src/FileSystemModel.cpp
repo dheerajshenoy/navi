@@ -355,7 +355,6 @@ QModelIndex
 FileSystemModel::getIndexFromString(const QString &path) const noexcept {
   // Iterate through m_fileInfoList to find the file info matching the given
   // path
-  qDebug() << path;
     for (int i = 0; i < m_fileInfoList.size(); ++i) {
         if (m_fileInfoList.at(i).absoluteFilePath() == path) {
             return index(i, 0); // Return the index for the matching item

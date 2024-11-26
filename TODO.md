@@ -33,7 +33,7 @@
 - [-] Preview
   - [X] Image
   - [X] Documents
-  - [ ] SyntaX highlighting for the text document preview
+  - [X] Syntax highlighting for the text document preview
 - [X] Lua Integration for configuration
 - [-] Bookmarks
   - [X] Add
@@ -82,3 +82,4 @@
 - [ ] overwrite copy, paste etc.
 - [ ] custom copy, delete, rename etc.
 - [ ] first startup wierd load behavior
+- [ ] lua API for custom context menu

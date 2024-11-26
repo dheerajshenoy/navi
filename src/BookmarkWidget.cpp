@@ -22,7 +22,7 @@ BookmarkWidget::BookmarkWidget(BookmarkManager *manager, QWidget *parent)
     uint row = 0;
     for (auto i = bookmarks.cbegin(), end = bookmarks.cend(); i != end; i++) {
         auto key = new QTableWidgetItem(i.key());
-        auto value = new QTableWidgetItem(i.value());
+        auto value = new QTableWidgetItem(i.value().file_path);
         m_table_widget->setItem(row, 0, key);
         m_table_widget->setItem(row, 1, value);
         row++;

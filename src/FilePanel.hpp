@@ -46,12 +46,14 @@ public:
 
     QTableView* tableView() { return m_table_view; }
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
+
     QString getCurrentDir() noexcept;
     QSet<QString> *getMarksSetPTR() noexcept { return &m_model->m_markedFiles; }
     FileSystemModel* model() noexcept { return m_model; }
 
     void highlightIndex(const QModelIndex &index) noexcept;
     void HighlightItem(const QString &itemName) noexcept;
+    void HighlightItemWithBaseName(const QString &baseName) noexcept;
     void NewFolder(const QStringList &folderName = {}) noexcept;
     void NewFile(const QStringList &fileName = {}) noexcept;
     QString getCurrentItem() noexcept;
@@ -134,7 +136,6 @@ public:
     void DropCopyRequested(const QStringList &sourcePaths) noexcept;
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ShowItemPropertyWidget() noexcept;
-    Result OpenTerminal(const QString &directory = "") noexcept;
     void BulkRename(const QStringList &files) noexcept;
     void ToggleHeaders(const bool &state) noexcept;
     void ToggleHeaders() noexcept;

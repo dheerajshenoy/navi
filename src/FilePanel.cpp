@@ -6,10 +6,6 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm, 
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
 
-    // m_model->setNameFilterDisables(false);
-
-    m_terminal_args = QStringList() << "--working-directory" << "%d";
-
     initSignalsSlots();
     initContextMenu();
 
@@ -32,7 +28,6 @@ void FilePanel::initContextMenu() noexcept {
 
     m_context_action_open = new QAction("Open");
     m_context_action_open_with = new QAction("Open With");
-    m_context_action_open_terminal = new QAction("Open Terminal Here");
     m_context_action_cut = new QAction("Cut");
     m_context_action_copy = new QAction("Copy");
     m_context_action_paste = new QAction("Paste");
@@ -46,9 +41,6 @@ void FilePanel::initContextMenu() noexcept {
 
     connect(m_context_action_cut, &QAction::triggered, this,
             [&]() { CutDWIM(); });
-
-    connect(m_context_action_open_terminal, &QAction::triggered, this,
-            [&]() { OpenTerminal(); });
 
     connect(m_context_action_open, &QAction::triggered, this,
             [&]() { SelectItem(); });
@@ -70,24 +62,6 @@ void FilePanel::initContextMenu() noexcept {
 
     connect(m_context_action_properties, &QAction::triggered, this,
             [&]() { ShowItemPropertyWidget(); });
-}
-
-Result FilePanel::OpenTerminal(const QString &directory) noexcept {
-
-    if (directory.isEmpty()) {
-        QStringList args = m_terminal_args;
-        bool res = QProcess::startDetached(
-                                           m_terminal, args.replaceInStrings("%d", m_current_dir));
-        return Result(res, QString());
-    } else {
-        if (QDir(directory).exists()) {
-            m_terminal_args[0].replace("%d", directory);
-            // m_terminal_arg.replace("%d", directory);
-            bool res = QProcess::startDetached(m_terminal, m_terminal_args);
-            return Result(res, QString());
-        }
-        return Result(false, QString("Directory doesn't exist"));
-    }
 }
 
 void FilePanel::initSignalsSlots() noexcept {
@@ -269,11 +243,13 @@ void FilePanel::setCurrentDir(QString path, const bool &SelectFirstItem) noexcep
 
         if (SelectFirstItem)
             m_table_view->selectRow(0);
+
         m_search_new_directory = true;
 
         emit afterDirChange(m_current_dir);
     }
 }
+
 
 QString FilePanel::getCurrentDir() noexcept { return m_current_dir; }
 
@@ -371,6 +347,13 @@ void FilePanel::HighlightItem(const QString &itemName) noexcept {
     if (index.isValid())
         m_table_view->setCurrentIndex(index);
 }
+
+void FilePanel::HighlightItemWithBaseName(const QString &baseName) noexcept {
+    QModelIndex index = m_model->getIndexFromBaseName(baseName);
+    if (index.isValid())
+        m_table_view->setCurrentIndex(index);
+}
+
 
 void FilePanel::UpDirectory() noexcept {
     QString old_dir = m_current_dir;
@@ -1177,7 +1160,6 @@ void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
     if (m_model->hasMarks() || m_table_view->selectionModel()->hasSelection()) {
         menu.addAction(m_context_action_open);
-        menu.addAction(m_context_action_open_terminal);
         menu.addAction(m_context_action_open_with);
         menu.addAction(m_context_action_cut);
         menu.addAction(m_context_action_copy);
@@ -1187,7 +1169,6 @@ void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
         menu.addAction(m_context_action_trash);
         menu.addAction(m_context_action_properties);
     } else {
-        menu.addAction(m_context_action_open_terminal);
         menu.addAction(m_context_action_paste);
         menu.addAction(m_context_action_properties);
     }

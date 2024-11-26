@@ -36,6 +36,8 @@ static const QString CONFIG_DIR_PATH =
 static const QString CONFIG_FILE_NAME = "config.lua";
 static const QString CONFIG_FILE_PATH =
     CONFIG_DIR_PATH + QDir::separator() + CONFIG_FILE_NAME;
+static const QString BOOKMARK_FILE_NAME = "bookmark.lua";
+static const QString BOOKMARK_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + BOOKMARK_FILE_NAME;
 
 // Local includes
 #include "FilePathWidget.hpp"
@@ -100,9 +102,10 @@ public:
     void FocusPath() noexcept;
     void AddBookmark(const QStringList &bookmarkName) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName) noexcept;
-    void EditBookmark(const QStringList &bookmarkName) noexcept;
+    void EditBookmarkName(const QStringList &bookmarkName) noexcept;
+    void EditBookmarkFile(const QStringList &bookmarkName) noexcept;
     void LoadBookmarkFile(const QStringList &bookmarkFilePath) noexcept;
-    void GoBookmark(const QStringList &bookmarkName) noexcept;
+    void GoBookmark(const QString &bookmarkName) noexcept;
     void SaveBookmarkFile() noexcept;
     void SortByName(const bool &reverse = false) noexcept;
     void SortByDate(const bool &reverse = false) noexcept;
@@ -356,7 +359,8 @@ private:
       // Bookmarks
       "bookmark-add",
       "bookmark-remove",
-      "bookmark-edit",
+      "bookmark-edit-name",
+      "bookmark-edit-path",
       "bookmark-go",
       "bookmarks-save",
 
@@ -393,8 +397,6 @@ private:
       "middle-item",
       "up-directory",
       "select-item",
-      "fd",
-      "rg",
 
       "macro-play",
       "macro-record",
@@ -432,7 +434,6 @@ private:
       "register",
       "repeat-last-command",
       "cd",
-      "zoxide",
       "terminal-here",
       "terminal",
 
@@ -447,7 +448,7 @@ private:
     QDir::SortFlags m_sort_flags = QDir::SortFlag::DirsFirst;
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
-    sol::state lua;
+    sol::state lua, m_bookmarks_state;
     ShortcutsWidget *m_shortcuts_widget = nullptr;
     QList<Keybind> m_keybind_list;
     QString m_config_location = CONFIG_FILE_PATH;

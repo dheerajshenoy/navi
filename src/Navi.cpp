@@ -23,7 +23,7 @@ void Navi::initThings() noexcept {
         QString location = m_default_location_list.at(0);
         if (location == ".")
             location = QDir::currentPath();
-            m_file_panel->setCurrentDir(location, true);
+        m_file_panel->setCurrentDir(location, true);
     }
 
     initNaviLuaAPI();
@@ -42,20 +42,19 @@ void Navi::initThings() noexcept {
 
 void Navi::initConfiguration() noexcept {
 
-  lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
-                     sol::lib::os, sol::lib::jit, sol::lib::package);
+    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
+                       sol::lib::os, sol::lib::jit, sol::lib::package);
 
-  try {
-      lua.script_file(m_config_location.toStdString(), sol::load_mode::any);
-  } catch (const sol::error &e) {
-      m_statusbar->Message(QString::fromStdString(e.what()));
-      initKeybinds();
+    try {
+        lua.script_file(m_config_location.toStdString(), sol::load_mode::any);
+    } catch (const sol::error &e) {
+        m_statusbar->Message(QString::fromStdString(e.what()));
+        initKeybinds();
 
-      return;
-  }
+        return;
+    }
 
     auto model = m_file_panel->model();
-
     // Read the SETTINGS table
     sol::optional<sol::table> settings_table_opt = lua["SETTINGS"];
 
@@ -507,8 +506,33 @@ void Navi::generateKeybinds() noexcept {
 }
 
 void Navi::initBookmarks() noexcept {
-    // TODO: load bookmarks from config directory
+
     m_bookmark_manager = new BookmarkManager();
+    try {
+        m_bookmarks_state.script_file(BOOKMARK_FILE_PATH.toStdString(), sol::load_mode::any);
+    } catch (const sol::error &e) {
+        m_statusbar->Message(QString::fromStdString(e.what()));
+        return;
+    }
+
+    // Read the BOOKMARKS table
+    sol::optional<sol::table> bookmarks_table_opt = m_bookmarks_state["BOOKMARKS"];
+
+    if (bookmarks_table_opt) {
+        sol::table bookmarks_table = bookmarks_table_opt.value();
+        QHash <QString, BookmarkManager::Bookmark> bookmarks_hash;
+        for (const auto &pair : bookmarks_table) {
+            auto name = QString::fromStdString(pair.first.as<std::string>());
+            auto bookmark = pair.second.as<sol::table>();
+            BookmarkManager::Bookmark item {
+                .file_path =
+                  QString::fromStdString(bookmark["path"].get<std::string>()),
+                .highlight_only = bookmark["highlight_only"].get_or(false),
+            };
+            bookmarks_hash.insert(name, item);
+        }
+        m_bookmark_manager->setBookmarks(bookmarks_hash);
+    }
 }
 
 // Handle signals and slots
@@ -614,14 +638,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
-      ToggleDrivesWidget();
-    };
-
-    commandMap["zoxide"] = [this](const QStringList &args) {
-        if (!args.isEmpty())
-            Zoxide(args.at(0));
-        else
-            Zoxide(QString());
+        ToggleDrivesWidget();
     };
 
     commandMap["get-input"] = [this](const QStringList &args) {
@@ -885,7 +902,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["bookmark-go"] = [&](const QStringList &args) {
-        GoBookmark(args);
+        GoBookmark(args.at(0));
     };
 
     commandMap["bookmark-add"] = [&](const QStringList &args) {
@@ -896,8 +913,12 @@ void Navi::setupCommandMap() noexcept {
         RemoveBookmark(args);
     };
 
-    commandMap["bookmark-edit"] = [&](const QStringList &args) {
-        EditBookmark(args);
+    commandMap["bookmark-edit-name"] = [&](const QStringList &args) {
+      EditBookmarkName(args);
+    };
+
+    commandMap["bookmark-edit-path"] = [&](const QStringList &args) {
+        EditBookmarkFile(args);
     };
 
     commandMap["bookmarks-save"] = [&](const QStringList &args) {
@@ -919,68 +940,72 @@ void Navi::ToggleSyntaxHighlight() noexcept {
     m_preview_panel->ToggleSyntaxHighlight();
 }
 
-void Navi::EditBookmark(const QStringList &args) noexcept {
+void Navi::EditBookmarkName(const QStringList &args) noexcept {
 
     // TODO: interactive
-    if (args.isEmpty() || args.size() < 2)
+    if (args.isEmpty())
         return;
 
-    // Change can be title or path for bookmark title or
-    // file path that the bookmark points to
-    QString changeType = args.at(0).toLower();
+    QString bookmarkName = args.at(0);
 
-    QString bookmarkName = args.at(1);
+    QString newBookmarkName =
+        m_inputbar->getInput("New bookmark title", bookmarkName);
 
-    if (changeType == "title") {
-        QString newBookmarkName =
-            m_inputbar->getInput("New bookmark title", bookmarkName);
+    // If the bookmark title name is null, do nothing and return
+    if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
+        m_statusbar->Message("Error: No bookmark title provided!",
+                             MessageType::ERROR, 5);
+        return;
+    }
 
-        // If the bookmark title name is null, do nothing and return
-        if (newBookmarkName.isEmpty() || newBookmarkName.isNull()) {
-            m_statusbar->Message("Error: No bookmark title provided!",
-                                 MessageType::ERROR, 5);
-            return;
-        }
-
-        // If bookmark title is provided
-        if (m_bookmark_manager->setBookmarkName(bookmarkName, newBookmarkName)) {
-            m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
+    // If bookmark title is provided
+    if (m_bookmark_manager->setBookmarkName(bookmarkName, newBookmarkName)) {
+        m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
                                .arg(bookmarkName)
                                .arg(newBookmarkName));
-            return;
-        } else {
-            m_statusbar->Message("Error changing bookmark title name!",
-                                 MessageType::ERROR, 5);
-            return;
-        }
-    } else if (changeType == "path") {
-        QString newBookmarkPath =
-            m_inputbar->getInput(QString("New bookmark path (Default: %1)")
-                                 .arg(m_file_panel->getCurrentDir()),
-                                 bookmarkName);
-
-        // If the bookmark title name is null, do nothing and return
-        if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
-            m_statusbar->Message("Error: No bookmark path provided!",
-                                 MessageType::ERROR, 5);
-            return;
-        }
-
-        // If bookmark title is provided
-        QString oldBookmarkPath =
-            m_bookmark_manager->getBookmarkFilePath(bookmarkName);
-        if (m_bookmark_manager->setBookmarkFile(bookmarkName, newBookmarkPath)) {
-            m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
-                               .arg(oldBookmarkPath)
-                               .arg(newBookmarkPath));
-            return;
-        } else {
-            m_statusbar->Message("Error changing bookmark title name!",
-                                 MessageType::ERROR, 5);
-            return;
-        }
+        return;
+    } else {
+      m_statusbar->Message("Error changing bookmark title name!",
+                           MessageType::ERROR);
+        return;
     }
 }
+
+void Navi::EditBookmarkFile(const QStringList &args) noexcept {
+
+    // TODO: interactive
+    if (args.isEmpty())
+        return;
+
+    QString bookmarkName = args.at(0);
+
+    QString newBookmarkPath =
+        m_inputbar->getInput(QString("New bookmark path (Default: %1)")
+                                 .arg(m_file_panel->getCurrentDir()),
+                             bookmarkName);
+
+    // If the bookmark title name is null, do nothing and return
+    if (newBookmarkPath.isEmpty() || newBookmarkPath.isNull()) {
+        m_statusbar->Message("Error: No bookmark path provided!",
+                             MessageType::ERROR, 5);
+        return;
+    }
+
+    // If bookmark title is provided
+    QString oldBookmarkPath =
+        m_bookmark_manager->getBookmarkFilePath(bookmarkName);
+    if (m_bookmark_manager->setBookmarkFile(bookmarkName, newBookmarkPath, false)) {
+        m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
+                               .arg(oldBookmarkPath)
+                               .arg(newBookmarkPath));
+        return;
+    } else {
+        m_statusbar->Message("Error changing bookmark title name!",
+                             MessageType::ERROR, 5);
+        return;
+    }
+}
+
 
 void Navi::AddBookmark(const QStringList &args) noexcept {
 
@@ -1006,40 +1031,34 @@ void Navi::RemoveBookmark(const QStringList &args) noexcept {
     if (m_bookmark_manager->removeBookmark(bookmarkName))
         m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
     else
-        m_statusbar->Message(
-                             QString("Error removing bookmark %1").arg(bookmarkName),
+        m_statusbar->Message(QString("Error removing bookmark %1").arg(bookmarkName),
                              MessageType::ERROR, 5);
 }
 
-void Navi::LoadBookmarkFile(const QStringList &args) noexcept {
-
-    // TODO: Interactive
-    if (args.isEmpty())
-        return;
-
-    QString bookmarkFileName = args.at(0);
-    if (m_bookmark_manager->loadBookmarks(bookmarkFileName))
-        m_statusbar->Message(
-                             QString("Bookmark loaded from %1!").arg(bookmarkFileName));
-    else
-        m_statusbar->Message(
-                             QString("Error loading bookmark file %1").arg(bookmarkFileName),
-                             MessageType::ERROR, 5);
-}
-
-void Navi::GoBookmark(const QStringList &bookmarkName) noexcept {
-
-    // TODO: interactive
+void Navi::GoBookmark(const QString &bookmarkName) noexcept {
     if (bookmarkName.isEmpty())
         return;
 
-    QString bookmarkPath = m_bookmark_manager->getBookmark(bookmarkName.at(0));
-    if (bookmarkPath.isNull() || bookmarkPath.isEmpty())
-        m_statusbar->Message(
-                             QString("Bookmark %1 not found!").arg(bookmarkName.at(0)),
+    BookmarkManager::Bookmark bookmark =
+        m_bookmark_manager->getBookmark(bookmarkName);
+
+    auto bookmarkPath = bookmark.file_path;
+
+    if (bookmarkPath.isNull() || bookmarkPath.isEmpty()) {
+        m_statusbar->Message(QString("Bookmark %1 not found!").arg(bookmarkName),
                              MessageType::ERROR, 5);
-    else
-        m_file_panel->setCurrentDir(bookmarkPath, true);
+    } else {
+        if (bookmark.highlight_only) {
+            // Get the parent directory path
+            int lastSlashIndex = bookmarkPath.lastIndexOf('/'); // Find the last slash
+            QString parentDirPath = (lastSlashIndex != -1) ? bookmarkPath.left(lastSlashIndex) : QString();
+
+            QFileInfo f(bookmarkPath);
+            m_file_panel->setCurrentDir(parentDirPath);
+            m_file_panel->HighlightItemWithBaseName(f.baseName());
+        } else
+            m_file_panel->setCurrentDir(bookmarkPath, true);
+    }
 }
 
 void Navi::ToggleBookmarksBuffer() noexcept {
@@ -1546,12 +1565,10 @@ void Navi::initMenubar() noexcept {
 
     // Handle visibility state change to reflect in the checkbox of the menu item
 
-    connect(
-            m_tasks_widget, &TasksWidget::visibilityChanged, this,
+    connect(m_tasks_widget, &TasksWidget::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__tasks_widget->setChecked(state); });
 
-    connect(
-            m_drives_widget, &DriveWidget::visibilityChanged, this,
+    connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
 
     connect(m_menubar, &Menubar::visibilityChanged, this,
@@ -1560,15 +1577,13 @@ void Navi::initMenubar() noexcept {
     connect(m_statusbar, &Statusbar::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__statusbar->setChecked(state); });
 
-    connect(
-            m_preview_panel, &PreviewPanel::visibilityChanged, this,
+    connect(m_preview_panel, &PreviewPanel::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__preview_panel->setChecked(state); });
 
     connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
 
-    connect(
-            m_marks_buffer, &MarksBuffer::visibilityChanged, this,
+    connect(m_marks_buffer, &MarksBuffer::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
@@ -1668,11 +1683,37 @@ void Navi::chmodHelper() noexcept {
 }
 
 void Navi::SaveBookmarkFile() noexcept {
-    if (m_bookmark_manager->saveBookmarksFile()) {
-        m_statusbar->Message("Bookmark save successful!");
-    } else {
-        m_statusbar->Message("Error saving bookmarks!", MessageType::ERROR);
+    auto bookmarks_hash = m_bookmark_manager->getBookmarks();
+
+    QFile bookmark_file(BOOKMARK_FILE_PATH);
+
+    if (!bookmark_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        m_statusbar->Message("Unable to save bookmarks!", MessageType::ERROR);
+        return;
     }
+
+    QTextStream out(&bookmark_file);
+
+    QString bookmarks_str = "BOOKMARKS = {\n";
+
+    for (const auto &key : bookmarks_hash.keys()) {
+        BookmarkManager::Bookmark bookmark = bookmarks_hash[key];
+        if (bookmark.highlight_only) {
+            bookmarks_str += QString("\t%1 = { path = \"%2\",\n\thighlight_only = true,\n\t},\n")
+                               .arg(key)
+                               .arg(bookmark.file_path);
+        } else {
+            bookmarks_str += QString("\t%1 = { path = \"%2\" },\n")
+                               .arg(key)
+                               .arg(bookmark.file_path);
+        }
+    }
+
+    bookmarks_str += "}";
+
+    out << bookmarks_str;
+
+    bookmark_file.close();
 }
 
 void Navi::SortByName(const bool &reverse) noexcept {
@@ -1742,11 +1783,6 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
 
     if (parser.is_used("--quick")) {
         m_load_config = false;
-    }
-
-    if (parser.is_used("--bookmark-file")) {
-        m_bookmark_manager->loadBookmarks(
-                                          QString::fromStdString(parser.get<std::string>("--bookmark-file")));
     }
 
     if (parser.is_used("files")) {
@@ -2185,7 +2221,6 @@ void Navi::ChangeDirectory(const QString &path) noexcept {
         m_file_panel->setCurrentDir(path);
     }
 }
-
 
 void Navi::SpawnProcess(const QString &command, const QStringList &args) noexcept {
 }

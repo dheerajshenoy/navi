@@ -124,16 +124,48 @@ the file to rename them accordingly.
 ## Bookmarks
 
 Bookmarks allows you to instantly go to your favourite or frequently
-visited directories. You can add, edit, remove and even load bookmarks
-directly from a text file. Bookmarks are read and stored in plain text
-files that has the following structure:
+visited directories. You can add, edit, remove and load bookmarks from a special bookmarks file `bookmark.lua` which should be stored in config directory where the `config.lua` file exists. Bookmark file has the following structure:
 
-```python
-​# This is a comment – Any lines that begin with # are ignored and empty lines are ignored as well.
+```lua
+BOOKMARKS = {
+    bookmarkName1 = {
+        path = "bookmarkPath1",
+    },
 
-bookmarktitle1 bookmarkdirectorypath1
-bookmarktitle2 bookmarkdirectorypath2
+    bookmarkName2 = {
+        path = "bookmarkPath2",
+        highlight_only = true,
+    }
+}
 ```
+
+The `highlight_only` key tells Navi not to go into the directory bookmarkPath2, instead just go the directory containing that file and just put the cursor (or highlight) the item pointed by the location.
+
+**NOTE: When navi startsup, it checks for the `bookmark.lua` file and loads it if it exists.**
+
+### Go to bookmark
+
+Once bookmarks are loaded, you can use the command `bookmark-go` and provide a bookmark name as argument to it (or it asks for the bookmark name if you do not give the argument) and if the name exists, it takes you to the path associated with that bookmark name.
+
+### Edit bookmark
+
+#### Name
+
+You can use the command `bookmark-edit-name` to edit the name of the bookmark which exists.
+
+#### Filepath
+
+You can use the command `bookmark-edit-path` to edit the path pointed to an item associated with a bookmark name.
+
+### Add bookmark
+
+You can add new bookmarks directly to the `bookmark.lua` file BOOKMARKS table. Or, you can add bookmarks interactively from within Navi. You can visit any directory you want to bookmark, and then once you are there, just call `bookmark-add` followed by the name of the bookmark as argument (or it asks for the bookmark name if no argument is provided).
+
+**NOTE: The bookmark names have to be unique, and therefore navi errors out if you provide the same bookmark name that already exists in the bookmarks file**
+
+### Save bookmark
+
+Once you add bookmarks from within navi, you can save the changes by calling `bookmarks-save` to write the bookmarks to the `bookmark.lua` file.
 
 ## Interactive Commands
 
@@ -616,7 +648,7 @@ You can then call this function within Navi by calling the `lua <function_name>`
 
 Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.
 
-You can add hook using the `add_hook` function in the navi table. It takes two arguments, both of which are required. The first one is a `hook_name` which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.
+You can add hook using the `navi.hook.add` api. It takes two arguments, both of which are required. The first one is a `hook_name` which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.
 
 Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
 
@@ -634,7 +666,7 @@ Example:
 
 ```lua
 function INIT_NAVI()
-    navi.add_hook("item\_select", function ()
+    navi.hook.add("item\_select", function ()
         navi.io.msg("You selected an item...YAY!")
     end)
 end

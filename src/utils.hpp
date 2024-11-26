@@ -22,4 +22,5 @@ public:
     static std::vector<std::string> convertToStdVector(const QStringList &qStringList) noexcept;
     static QStringList stringListFromVector(const std::vector<std::string> &vectorList) noexcept;
     static bool copyFile(const QString &sourceFile, const QString &destFile) noexcept;
+    static QStringList getAssociatedApplications(const QString &mimeType) noexcept;
 };
