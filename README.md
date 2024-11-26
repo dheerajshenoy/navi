@@ -67,6 +67,8 @@ Command bar
 
 ![2024-11-08_00-01](https://github.com/user-attachments/assets/e5fcc3a3-b725-45fe-8b52-ee545f62340a)
 
+Mount and Unmount Drives
+
 # TODOs
 
 Please refer to [this file](./TODO.md) for looking at the TODOs and DONEs.
