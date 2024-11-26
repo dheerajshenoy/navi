@@ -665,7 +665,10 @@ UI-TYPE can be one of:
 ### API
 
 + sort\_name
-+ search
++ `search` (void)
+
+Search for the text string given as argument.
+
 + search\_next
 + search\_prev
 + new\_files
@@ -675,12 +678,42 @@ UI-TYPE can be one of:
 + copy\_dwim
 + cut\_dwim
 + cut
-+ has\_marks\_local
-+ has\_marks\_global
-+ global\_marks
-+ local\_marks\_count
-+ global\_marks\_count
-+ local_marks
+
++ `has\_marks\_local` (bool)
+
+Returns `true` if there are local marks, else `false`
+
++ `has\_marks\_global` (bool)
+
+Returns `true` if there are global marks, else `false`
+
++ `global\_marks` (table)
+
+Returns the list of global marks
+
++ `local\_marks\_count` (int)
+
+Returns the count of local marks
+
++ `global\_marks\_count` (int)
+
+Returns the count of global marks
+
++ `local_marks` (table)
+
+Returns the list of local marks in the current working directory
+
++ `highlight` (void)
+
+Highlights the item with the name passed as argument if it exists.
+
++ `cd` (void)
+
+Change the current working directory to the string provided as argument.
+
++ `pwd` (str)
+
+Returns the string of the current working directory.
 
 ### IO
 
@@ -786,6 +819,31 @@ end
 ```
 
 *NOTE: You could also use the `navi.shell.execute` api to execute the commands. But because this functionality exists in Lua, we use it.*
+
+### Go to a random directory inside your home directory
+
+```lua
+function randomDirectory()
+    local commandString = "fd . ~ -t d | shuf -n 1"
+    local result = command(commandString)
+    if result ~= "" then
+        navi.api.cd(result)
+    end
+end
+```
+
+### Highlight a random file inside your home directory
+
+```lua
+function randomFile()
+    local commandString = "fd . ~ | shuf -n 1"
+    local result = command(commandString)
+    if result ~= "" then
+        navi.api.cd(result)
+        navi.api.highlight(result)
+    end
+end
+```
 
 # Configuration with Lua
 
