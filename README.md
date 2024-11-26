@@ -69,6 +69,9 @@ Command bar
 
 Mount and Unmount Drives
 
+<img src="https://github.com/user-attachments/assets/a05bc654-5ab5-4d6c-95a0-c05bd05569e1" height="300px" width="400px">
+
+
 # TODOs
 
 Please refer to [this file](./TODO.md) for looking at the TODOs and DONEs.
