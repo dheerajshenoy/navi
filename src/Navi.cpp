@@ -2186,20 +2186,6 @@ void Navi::ChangeDirectory(const QString &path) noexcept {
     }
 }
 
-void Navi::Zoxide(const QString &_path) noexcept {
-    QString path;
-    QProcess process;
-    if (_path.isEmpty()) {
-        path = m_inputbar->getInput("Enter path to cd");
-    } else {
-        process.start("zoxide", QStringList() << "query" << _path);
-        process.waitForFinished();
-    }
-
-    path = process.readAllStandardOutput().trimmed();
-    if (!path.isEmpty())
-        m_file_panel->setCurrentDir(path);
-}
 
 void Navi::SpawnProcess(const QString &command, const QStringList &args) noexcept {
 }

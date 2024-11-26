@@ -198,7 +198,6 @@ public:
     void readArgumentParser(argparse::ArgumentParser &parser);
     void GotoItem(const int &num) noexcept;
     void ChangeDirectory(const QString &dir = QString()) noexcept;
-    void Zoxide(const QString &dir) noexcept;
 
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,

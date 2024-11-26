@@ -31,7 +31,6 @@
         - [Filtering Items](#filtering-items)
         - [Panes](#panes)
         - [Misc](#misc)
-        - [Zoxide Command](#zoxide-command)
         - [Shell Commands](#shell-commands)
         - [Macro](#macro)
     - [Tutorial](#tutorial)
@@ -510,12 +509,6 @@ https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a
 
 Change directory with the provided argument or ask for input.
 
-### Zoxide Command
-
-`zoxide`
-
-Navi can integrate with [zoxide](https://github.com/ajeetdsouza/zoxide) for faster navigation. Just call the `zoxide` command with the directory query and if the directory exists in the zoxide database, then Navi switches to that directory.
-
 ### Shell Commands
 
 `shell`
@@ -708,10 +701,8 @@ You can execute any shell commands from within navi.
 
 ### Setting wallpaper
 
-Since filename and current directory is passed to every custom function by Navi, we can use this to apply a wallpaper (using `xwallpaper` package).
-
 ```lua
-function setWallpaper(filename)
+function setWallpaper()
     navi.shell("xwallpaper --stretch" .. filename)
 end
 ```
@@ -725,6 +716,76 @@ function terminalAtPoint()
     navi.spawn(terminal, { dir })
 end
 ```
+
+### Using `fd` to navigate to directory with matching name
+
+*NOTE: Use the following helper function if you want the `fd` and `rg` code to run correctly*
+```lua
+-- Helper function that returns the STDOUT of a command `commandString`
+function command(commandString)
+    local command = commandString
+    local handle = io.popen(command)
+    local result = handle:read("*a")
+    handle:close()
+    return result:gsub('[\n\r]', '')
+end
+```
+
+```lua
+-- Use `fd` to go to the best file match having the name given as the input
+function fd()
+    local input = navi.io.input("Search (FD)")
+    if input ~= "" then
+        local pwd = navi.api.pwd()
+        local commandString = string.format("fd %s %s --type=directory | head -n 1", input, pwd)
+        local result = command(commandString)
+        if result ~= "" then
+            navi.api.cd(result)
+        else
+            navi.io.msg("No results", navi.io.messagetype.warn)
+        end
+    end
+end
+```
+
+### Use `rg` (ripgrep) command to navigate to a directory with the matching content
+
+```lua
+-- Use `ripgrep` to go to the file content with the name given as the input
+function rg()
+    local input = navi.io.input("Search (RG)")
+    if input ~= "" then
+        local pwd = navi.api.pwd()
+        local commandString = string.format("rg %s %s -l --sort-files | head -n 1", input, pwd)
+        local result = command(commandString)
+        if result ~= "" then
+            navi.api.cd(result)
+            navi.api.highlight(result)
+        else
+            navi.io.msg("No results", navi.io.messagetype.warn)
+        end
+    end
+end
+```
+
+### Use `zoxide` for faster navigation
+
+```lua
+function zoxide()
+    local input = navi.io.input("Zoxide CD")
+    if input ~= "" then
+        local commandString = string.format("zoxide %s", input)
+        local result = command(commandString)
+        if result ~= "" then
+            navi.api.cd(result)
+        else
+            navi.io.msg("No results", navi.io.messagetype.warn)
+        end
+    end
+end
+```
+
+*NOTE: You could also use the `navi.shell.execute` api to execute the commands. But because this functionality exists in Lua, we use it.*
 
 # Configuration with Lua
 
