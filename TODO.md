@@ -1,81 +1,83 @@
 
 # Table of Contents
 
-- [x] List contents of directory
-- [x] Vim bindings for navigation
-- [x] Menubar
-  - [x] File Menu
-  - [x] Edit Menu
-  - [x] View Menu
-  - [x] Tools Menu
-- [x] Minibuffer (statusbar)
-- [x] Commands
-- [x] Async File Preview
-- [x] Focus first file after loading a directory
-- [x] Regex Search
-- [x] Operations
-  - [x] Rename
-  - [x] Copy
-  - [x] Cut
-  - [x] Paste
-  - [x] Delete
-  - [x] Trash
-- [x] Bulk Operations
-- [x] File Permission Display
-- [x] Chmod
-- [x] Messages Buffer (Pane)
-- [x] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
-- [x] Drag event
-- [x] Drop event
-- [x] Fix CHMOD errors
-- [x] Terminal at point
-- [x] Use ImageMagick for image previews
+- [X] List contents of directory
+- [X] Vim bindings for navigation
+- [X] Menubar
+  - [X] File Menu
+  - [X] Edit Menu
+  - [X] View Menu
+  - [X] Tools Menu
+- [X] Minibuffer (statusbar)
+- [X] Commands
+- [X] Async File Preview
+- [X] Focus first file after loading a directory
+- [X] Regex Search
+- [X] Operations
+  - [X] Rename
+  - [X] Copy
+  - [X] Cut
+  - [X] Paste
+  - [X] Delete
+  - [X] Trash
+- [X] Bulk Operations
+- [X] File Permission Display
+- [X] Chmod
+- [X] Messages Buffer (Pane)
+- [X] Colored Messages in Statusbar and Messages Buffer (INFO, WARNING or ERROR)
+- [X] Drag event
+- [X] Drop event
+- [X] Fix CHMOD errors
+- [X] Terminal at point
+- [X] Use ImageMagick for image previews
 - [-] Preview
-  - [x] Image
-  - [x] Documents
-  - [ ] Syntax highlighting for the text document preview
-- [x] Lua Integration for configuration
+  - [X] Image
+  - [X] Documents
+  - [ ] SyntaX highlighting for the text document preview
+- [X] Lua Integration for configuration
 - [-] Bookmarks
-  - [x] Add
-  - [x] Remove
-  - [x] Edit Title
-  - [x] Edit pointing file
+  - [X] Add
+  - [X] Remove
+  - [X] Edit Title
+  - [X] Edit pointing file
   - [ ] List
-  - [x] go to bookmark
+  - [X] go to bookmark
   - [ ] Load bookmarks from file
   - [ ] Save bookmarks to file
-- [x] Icons
-- [x] Total number of items
-- [x] FileWatcher
-- [x] Rename consider only marks here and not the global marks by default
-- [x] Mouse scroll for folder
-- [x] Search bug
-- [x] Bulk rename editor multiple spawn bug
-- [x] Sort
-  - [x] Size
-  - [x] Name
-  - [x] Modified Date
-- [x] Close button for properties dialog
-- [x] Do what I mean (dwim) for all functions
-- [x] Background for vertical headers
-- [x] Keybinds from Lua
-- [x] Bookmark file ignore comments and empty lines
-- [x] Shortcuts Widget
-- [x] Mount drives
-- [x] List drives
-- [x] Dotfiles focus file
-- [x] Select renamed file after renaming
-- [x] History for inputbar
-- [x] Show search match count
-- [x] Tree-sitter faster syntax highlighting support
-- [x] Shell commands
-- [x] Ask user before quiting about the executing command
-- [x] Video file static preview
-- [x] Add file operation cancel UI
-- [x] action macros
+- [X] Icons
+- [X] Total number of items
+- [X] FileWatcher
+- [X] Rename consider only marks here and not the global marks by default
+- [X] Mouse scroll for folder
+- [X] Search bug
+- [X] Bulk rename editor multiple spawn bug
+- [X] Sort
+  - [X] Size
+  - [X] Name
+  - [X] Modified Date
+- [X] Close button for properties dialog
+- [X] Do what I mean (dwim) for all functions
+- [X] Background for vertical headers
+- [X] Keybinds from Lua
+- [X] Bookmark file ignore comments and empty lines
+- [X] Shortcuts Widget
+- [X] Mount drives
+- [X] List drives
+- [X] Dotfiles focus file
+- [X] Select renamed file after renaming
+- [X] History for inputbar
+- [X] Show search match count
+- [X] Tree-sitter faster syntax highlighting support
+- [X] Shell commands
+- [X] Ask user before quiting about the executing command
+- [X] Video file static preview
+- [X] Add file operation cancel UI
+- [X] action macrosap
 - [ ] Open with menu
 - [ ] Highlight symlink differently
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
-- [ ] zoxide integration
+- [X] zoxide integration
+- [ ] overwrite copy, paste etc.
+- [ ] custom copy, delete, rename etc.

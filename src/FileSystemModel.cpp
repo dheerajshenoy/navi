@@ -331,9 +331,13 @@ bool FileSystemModel::removeMarkedFile(const QString &path) noexcept {
 
 void FileSystemModel::removeMarkedFiles(const QStringList &paths) noexcept {
     for (const auto &mark : paths) {
+        if (mark.isEmpty() || mark.isNull() || mark.isEmpty())
+            continue;
         QModelIndex index = getIndexFromString(mark);
-        setData(index, false, static_cast<int>(Role::Marked));
-        m_markedFiles.remove(mark);
+        if (index.isValid()) {
+            setData(index, false, static_cast<int>(Role::Marked));
+            m_markedFiles.remove(mark);
+        }
     }
     emit marksListChanged();
 }
@@ -349,8 +353,9 @@ void FileSystemModel::removeMarkedFiles() noexcept {
 
 QModelIndex
 FileSystemModel::getIndexFromString(const QString &path) const noexcept {
-    // Iterate through m_fileInfoList to find the file info matching the given
-    // path
+  // Iterate through m_fileInfoList to find the file info matching the given
+  // path
+  qDebug() << path;
     for (int i = 0; i < m_fileInfoList.size(); ++i) {
         if (m_fileInfoList.at(i).absoluteFilePath() == path) {
             return index(i, 0); // Return the index for the matching item

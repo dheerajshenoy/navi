@@ -546,6 +546,7 @@ void Navi::initSignalsSlots() noexcept {
             [&](const QString &path) {
                 m_file_path_widget->setCurrentDir(path);
                 m_hook_manager->triggerHook("directory_changed");
+                m_preview_panel->ClearImageCache();
             });
 
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,

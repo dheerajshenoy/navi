@@ -1076,8 +1076,8 @@ void FilePanel::DeleteItemsLocal() noexcept {
 }
 
 void FilePanel::ToggleHiddenFiles() noexcept {
-  m_hidden_files_shown = !m_hidden_files_shown;
-  m_hidden_files_just_toggled = m_hidden_files_shown;
+    m_hidden_files_shown = !m_hidden_files_shown;
+    m_hidden_files_just_toggled = m_hidden_files_shown;
     if (m_hidden_files_shown) {
         m_highlight_row = m_table_view->currentIndex().row();
         m_model->addDirFilter(QDir::Hidden);
@@ -1103,13 +1103,13 @@ void FilePanel::ToggleDotDot() noexcept {
 
 void FilePanel::Search(QString searchExpression, const bool &regex) noexcept {
     if (searchExpression.isNull() || searchExpression.isEmpty())
-      searchExpression =
-          m_inputbar->getInput("Search", m_search_text, m_search_text);
+        searchExpression =
+            m_inputbar->getInput("Search", m_search_text, m_search_text);
 
     if (regex)
-      m_search_index_list =
-          m_model->match(m_model->index(0, 0), Qt::DisplayRole,
-                         searchExpression, -1, Qt::MatchRegularExpression);
+        m_search_index_list =
+            m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                           searchExpression, -1, Qt::MatchRegularExpression);
     else
         m_search_index_list =
             m_model->match(m_model->index(0, 0), Qt::DisplayRole,
@@ -1613,8 +1613,7 @@ void FilePanel::ToggleVisualLine() noexcept {
     } else {
         m_table_view->clearSelection();
         m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
-        m_table_view->selectionModel()->setCurrentIndex(
-                                                        m_table_view->selectionModel()->currentIndex(),
+        m_table_view->selectionModel()->setCurrentIndex(m_table_view->selectionModel()->currentIndex(),
                                                         QItemSelectionModel::Select | QItemSelectionModel::Rows);
     }
 
@@ -1631,8 +1630,7 @@ void FilePanel::ToggleVisualLine(const bool &state) noexcept {
     } else {
         m_table_view->clearSelection();
         m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
-        m_table_view->selectionModel()->setCurrentIndex(
-                                                        m_table_view->selectionModel()->currentIndex(),
+        m_table_view->selectionModel()->setCurrentIndex(m_table_view->selectionModel()->currentIndex(),
                                                         QItemSelectionModel::Select | QItemSelectionModel::Rows);
     }
 

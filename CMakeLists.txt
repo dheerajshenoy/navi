@@ -68,9 +68,9 @@ qt_add_executable(${PROJECT_NAME}
   src/TaskManager.cpp
   src/RegisterWidget.cpp
   src/HookManager.cpp
+  src/FileWorker.cpp
 
   src/TextEdit.hpp
-  src/FileWorker.hpp
   src/FileSystemModel.cpp
   src/MessagesBuffer.hpp
   src/MarksBuffer.hpp
@@ -83,7 +83,6 @@ qt_add_executable(${PROJECT_NAME}
   src/FilePreviewWorker.hpp
   src/TaskCardTemplate.hpp
   src/OrderlessFilterModel.hpp
-  src/FileNameDelegate.hpp
 )
 
 

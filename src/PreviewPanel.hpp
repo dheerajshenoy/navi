@@ -18,6 +18,7 @@
 #include "TextEdit.hpp"
 #include "ImageWidget.hpp"
 #include "SyntaxHighlighterTS.hpp"
+#include <QHash>
 
 class PreviewPanel : public QStackedWidget {
     Q_OBJECT
@@ -62,6 +63,7 @@ public:
     }
 
     void onFileSelected(const QString &filePath) noexcept;
+    inline void ClearImageCache() noexcept { m_image_cache_hash.clear(); }
 
 private:
     void loadImageAfterDelay() noexcept;
@@ -84,4 +86,5 @@ private:
                          const SyntaxHighlighterTS::Language &language) noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
+    QHash <QString, QImage> m_image_cache_hash;
 };
