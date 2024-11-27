@@ -1047,7 +1047,6 @@ void Navi::GoBookmark(const QString &bookmarkName) noexcept {
     if (bookmarkName.isEmpty())
         return;
 
-
     BookmarkManager::Bookmark bookmark =
         m_bookmark_manager->getBookmark(bookmarkName);
 
@@ -1060,11 +1059,13 @@ void Navi::GoBookmark(const QString &bookmarkName) noexcept {
         if (bookmark.highlight_only) {
             // Get the parent directory path
             int lastSlashIndex = bookmarkPath.lastIndexOf('/'); // Find the last slash
-            QString parentDirPath = (lastSlashIndex != -1) ? bookmarkPath.left(lastSlashIndex) : QString();
+            QString parentDirPath = (lastSlashIndex != -1)
+                                        ? bookmarkPath.left(lastSlashIndex)
+                                    : QString();
 
             QFileInfo f(bookmarkPath);
             m_file_panel->setCurrentDir(parentDirPath);
-            m_file_panel->HighlightItemWithBaseName(f.baseName());
+            m_file_panel->HighlightItemWithBaseName(f.fileName());
         } else
             m_file_panel->setCurrentDir(bookmarkPath, true);
     }

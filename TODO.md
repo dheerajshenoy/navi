@@ -40,10 +40,10 @@
   - [X] Remove
   - [X] Edit Title
   - [X] Edit pointing file
-  - [ ] List
+  - [X] List
   - [X] go to bookmark
-  - [ ] Load bookmarks from file
-  - [ ] Save bookmarks to file
+  - [X] Load bookmarks from file
+  - [X] Save bookmarks to file
 - [X] Icons
 - [X] Total number of items
 - [X] FileWatcher
@@ -78,7 +78,6 @@
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
-- [X] zoxide integration
 - [ ] overwrite copy, paste etc.
 - [ ] custom copy, delete, rename etc.
 - [ ] first startup wierd load behavior

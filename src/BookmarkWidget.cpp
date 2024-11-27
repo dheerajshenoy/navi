@@ -11,6 +11,8 @@ BookmarkWidget::BookmarkWidget(BookmarkManager *manager, QWidget *parent)
 
     m_layout->addWidget(m_table_widget);
     m_table_widget->setEditTriggers(QTableWidget::EditTrigger::NoEditTriggers);
+    m_table_widget->setHorizontalHeaderLabels({"Bookmark Name", "Bookmark File Path", "Highlight Only?"});
+
     this->setLayout(m_layout);
 
     if (!m_manager)

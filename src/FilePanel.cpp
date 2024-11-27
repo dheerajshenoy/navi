@@ -118,16 +118,18 @@ void FilePanel::initSignalsSlots() noexcept {
                         if (index.isValid()) {
                             m_table_view->setCurrentIndex(index);
                             m_table_view->scrollTo(index);
-                            return;
                         }
-                        m_table_view->clearSelection();
-                        return;
                     }
                     m_hidden_files_just_toggled = false;
                 } else {
 
                     if (!(m_highlight_text.isEmpty())) {
-                        m_table_view->selectRow(m_model->getRowFromBaseName(m_highlight_text));
+                        auto row = m_model->getRowFromBaseName(m_highlight_text);
+                        if (row == -1) {
+                            if (m_model->rowCount() > 0)
+                                row = 0;
+                        }
+                        m_table_view->selectRow(row);
                         m_highlight_text.clear();
                         return;
                     }
@@ -145,6 +147,7 @@ void FilePanel::initSignalsSlots() noexcept {
                 m_hook_manager->triggerHook("directory_loaded");
             });
 
+    // TODO: Partial reload of directory
     connect(m_model->getFileSystemWatcher(),
             &QFileSystemWatcher::directoryChanged, m_model,
             [&](const QString &path) {
@@ -364,8 +367,10 @@ void FilePanel::UpDirectory() noexcept {
             m_visual_line_mode = false;
         setCurrentDir(currentDir.absolutePath());
         QModelIndex oldDirIndex = m_model->index(old_dir);
-        m_table_view->setCurrentIndex(oldDirIndex);
-        m_table_view->scrollTo(oldDirIndex);
+        if (oldDirIndex.isValid()) {
+            m_table_view->setCurrentIndex(oldDirIndex);
+            m_table_view->scrollTo(oldDirIndex);
+        }
         emit afterDirChange(m_current_dir);
     }
 
