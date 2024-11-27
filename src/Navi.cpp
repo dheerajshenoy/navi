@@ -9,9 +9,9 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 void Navi::initThings() noexcept {
     initLayout();       // init layout
     initMenubar();      // init menubar
-    initSignalsSlots(); // init signals and slots
-    setupCommandMap();
     initBookmarks();
+    setupCommandMap();
+    initSignalsSlots(); // init signals and slots
     if (m_load_config)
         initConfiguration();
     else
@@ -508,6 +508,7 @@ void Navi::generateKeybinds() noexcept {
 void Navi::initBookmarks() noexcept {
 
     m_bookmark_manager = new BookmarkManager();
+
     try {
         m_bookmarks_state.script_file(BOOKMARK_FILE_PATH.toStdString(), sol::load_mode::any);
     } catch (const sol::error &e) {
@@ -533,13 +534,20 @@ void Navi::initBookmarks() noexcept {
         }
         m_bookmark_manager->setBookmarks(bookmarks_hash);
     }
+
+    m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager, this);
 }
 
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
-    connect(m_file_panel, &FilePanel::currentItemChanged, this,
-            [&]() { m_hook_manager->triggerHook("item_changed"); });
+  connect(m_file_panel, &FilePanel::currentItemChanged, this,
+          [&]() { m_hook_manager->triggerHook("item_changed"); });
+
+  connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, this,
+          [&](const QString &name) {
+              GoBookmark(name);
+          });
 
     connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
             [&](const QString &mountPoint) {
@@ -898,7 +906,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["bookmarks-pane"] = [&](const QStringList &args) {
-        // ToggleBookmarksBuffer();
+        ToggleBookmarksBuffer();
     };
 
     commandMap["bookmark-go"] = [&](const QStringList &args) {
@@ -1039,6 +1047,7 @@ void Navi::GoBookmark(const QString &bookmarkName) noexcept {
     if (bookmarkName.isEmpty())
         return;
 
+
     BookmarkManager::Bookmark bookmark =
         m_bookmark_manager->getBookmark(bookmarkName);
 
@@ -1064,32 +1073,16 @@ void Navi::GoBookmark(const QString &bookmarkName) noexcept {
 void Navi::ToggleBookmarksBuffer() noexcept {
     if (m_bookmarks_buffer->isVisible()) {
         m_bookmarks_buffer->hide();
-        delete m_bookmarks_buffer;
-        m_bookmarks_buffer = nullptr;
-        disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
     } else {
-        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager, this);
         m_bookmarks_buffer->show();
-        connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
-                [&](const bool &state) {
-                    m_viewmenu__bookmarks_buffer->setChecked(state);
-                });
     }
 }
 
 void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
     if (state) {
-        m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager, this);
         m_bookmarks_buffer->show();
-        connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
-                [&](const bool &state) {
-                    m_viewmenu__bookmarks_buffer->setChecked(state);
-                });
     } else {
         m_bookmarks_buffer->hide();
-        delete m_bookmarks_buffer;
-        m_bookmarks_buffer = nullptr;
-        disconnect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, 0, 0);
     }
 }
 
@@ -1502,6 +1495,11 @@ void Navi::initMenubar() noexcept {
     connect(m_viewmenu__headers, &QAction::triggered, this,
             [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
+    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
+            [&](const bool &state) {
+                m_viewmenu__bookmarks_buffer->setChecked(state);
+            });
+
     connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
             [&](const bool &state) {
                 if (state) {
@@ -1533,8 +1531,7 @@ void Navi::initMenubar() noexcept {
             [&](const bool &state) { ToggleMarksBuffer(state); });
 
     connect(m_viewmenu__bookmarks_buffer, &QAction::triggered, this,
-            [&](const bool &state) { // ToggleBookmarksBuffer(state); });
-            });
+            [&](const bool &state) { ToggleBookmarksBuffer(state); });
 
     connect(m_viewmenu__files_menu__dotdot, &QAction::triggered, this,
             [&](const bool &state) { ToggleDotDot(state); });

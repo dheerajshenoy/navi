@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QWidget>
+#include <QDialog>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QTableWidgetItem>
@@ -8,7 +8,7 @@
 
 #include "BookmarkManager.hpp"
 
-class BookmarkWidget : public QWidget {
+class BookmarkWidget : public QDialog {
     Q_OBJECT
 public:
     explicit BookmarkWidget(BookmarkManager *manager = nullptr, QWidget *parent = nullptr);
@@ -17,20 +17,20 @@ public:
         m_manager = manager;
     }
 
-
     void show() noexcept {
         emit visibilityChanged(true);
-        QWidget::show();
+        QDialog::show();
     }
 
     void hide() noexcept {
         emit visibilityChanged(false);
-        QWidget::hide();
+        QDialog::hide();
     }
 
-
-    signals:
+signals:
     void visibilityChanged(const bool &state);
+    void bookmarkGoRequested(const QString &name);
+
 private:
     QVBoxLayout *m_layout = nullptr;
     QTableWidget *m_table_widget = nullptr;
