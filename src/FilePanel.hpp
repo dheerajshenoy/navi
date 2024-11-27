@@ -7,6 +7,9 @@
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QMenu>
+#include <QMimeType>
+#include <QMimeData>
+#include <QMimeDatabase>
 #include <QMessageBox>
 #include <QModelIndexList>
 #include <QObject>
@@ -22,13 +25,14 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QUrl>
+#include <QCryptographicHash>
 
-#include "Result.hpp"
+#include "FilePropertyWidget.hpp"
 #include "FileSystemModel.hpp"
 #include "FileWorker.hpp"
 #include "TableView.hpp"
 #include "Inputbar.hpp"
-#include "FilePropertyWidget.hpp"
 #include "Statusbar.hpp"
 #include "HookManager.hpp"
 

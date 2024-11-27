@@ -27,6 +27,10 @@
 #include <QInputDialog>
 #include "InputDialog.hpp"
 #include <QKeyEvent>
+#include <QtConcurrent/QtConcurrent>
+#include <QPromise>
+#include <QFuture>
+#include <QThread>
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -231,6 +235,7 @@ private:
     QStringList getLuaFunctionNames() noexcept;
     void addCommandToMacroRegister(const QStringList &commandlist) noexcept;
     void addCommandToMacroRegister(const QString &command) noexcept;
+    void cacheThumbnails() noexcept;
 
     QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();

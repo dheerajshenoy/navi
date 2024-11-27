@@ -598,7 +598,8 @@ void Navi::initSignalsSlots() noexcept {
             [&](const QString &path) {
                 m_file_path_widget->setCurrentDir(path);
                 m_hook_manager->triggerHook("directory_changed");
-                m_preview_panel->ClearImageCache();
+                m_preview_panel->clearImageCache();
+                cacheThumbnails();
             });
 
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
@@ -2251,5 +2252,13 @@ void Navi::ChangeDirectory(const QString &path) noexcept {
     }
 }
 
-void Navi::SpawnProcess(const QString &command, const QStringList &args) noexcept {
+void Navi::SpawnProcess(const QString &command,
+                        const QStringList &args) noexcept {}
+
+
+void Navi::cacheThumbnails() noexcept {
+    QStringList files = m_file_panel->model()->files();
+    QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnails,
+                                             m_preview_panel->thumbnailer(),
+                                             files);
 }

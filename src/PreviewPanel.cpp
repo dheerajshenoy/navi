@@ -47,7 +47,6 @@ PreviewPanel::~PreviewPanel() {
 
 void PreviewPanel::showImagePreview(const QImage &image) noexcept {
     this->setCurrentIndex(1);
-    m_image_cache_hash.insert(m_image_filepath, image);
     m_img_widget->setImage(image);
 }
 
@@ -67,10 +66,19 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
 
 void PreviewPanel::loadImageAfterDelay() noexcept {
     if (m_image_cache_hash.contains(m_image_filepath)) {
-        showImagePreview(m_image_cache_hash[m_image_filepath]);
+        QImage img = m_image_cache_hash[m_image_filepath];
+        showImagePreview(img);
+        return;
+    } else {
+        QImage img = m_thumbnailer->get_image_from_cache(m_image_filepath);
+        if (!img.isNull()) {
+            m_image_cache_hash.insert(m_image_filepath, img);
+            showImagePreview(img);
+        } else {
+            QMetaObject::invokeMethod(m_worker, "loadPreview",
+                                      Q_ARG(QString, m_image_filepath));
+        }
     }
-    else QMetaObject::invokeMethod(m_worker, "loadPreview",
-                                   Q_ARG(QString, m_image_filepath));
 }
 
 void PreviewPanel::clearPreview() noexcept { m_img_widget->clear(); }

@@ -138,6 +138,15 @@ public:
     // void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
+    QStringList files() const noexcept {
+        QStringList _files;
+        _files.reserve(m_fileInfoList.size());
+        for (const auto &fileInfo : m_fileInfoList) {
+            _files.append(fileInfo.filePath());
+        }
+        return _files;
+    }
+
 
     signals:
     void directoryLoaded(const int &rowCount);

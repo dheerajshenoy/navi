@@ -69,6 +69,7 @@ qt_add_executable(${PROJECT_NAME}
   src/RegisterWidget.cpp
   src/HookManager.cpp
   src/FileWorker.cpp
+  src/Thumbnailer.cpp
 
   src/TextEdit.hpp
   src/FileSystemModel.cpp

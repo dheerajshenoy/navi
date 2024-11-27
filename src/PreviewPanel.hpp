@@ -12,13 +12,14 @@
 #include <QFutureWatcher>
 #include <QStackedWidget>
 #include <QTimer>
+#include <QHash>
 
 #include "FilePreviewWorker.hpp"
 // #include "TreeSitterTextEdit.hpp"
 #include "TextEdit.hpp"
 #include "ImageWidget.hpp"
 #include "SyntaxHighlighterTS.hpp"
-#include <QHash>
+#include "Thumbnailer.hpp"
 
 class PreviewPanel : public QStackedWidget {
     Q_OBJECT
@@ -63,7 +64,9 @@ public:
     }
 
     void onFileSelected(const QString &filePath) noexcept;
-    inline void ClearImageCache() noexcept { m_image_cache_hash.clear(); }
+    inline void clearImageCache() noexcept { m_image_cache_hash.clear(); }
+
+    Thumbnailer* thumbnailer() noexcept { return m_thumbnailer; }
 
 private:
     void loadImageAfterDelay() noexcept;
@@ -86,5 +89,6 @@ private:
                          const SyntaxHighlighterTS::Language &language) noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
-    QHash <QString, QImage> m_image_cache_hash;
+    QHash<QString, QImage> m_image_cache_hash;
+    Thumbnailer *m_thumbnailer = new Thumbnailer();
 };
