@@ -7,8 +7,8 @@
 #include <QTextStream>
 #include <QRegularExpression>
 
-class BookmarkManager {
-
+class BookmarkManager : public QObject {
+Q_OBJECT
 public:
     struct Bookmark {
         QString file_path;
@@ -23,7 +23,6 @@ public:
     QString getBookmarkFilePath(const QString &bookmarkName) noexcept;
     bool setBookmarkFile(const QString &bookmarkName, const QString &newPath,
                          const bool &highlightOnly) noexcept;
-
     bool setBookmarkName(const QString &bookmarkName,
                          const QString &newBookmarkName) noexcept;
     bool setBookmarkHighlight(const QString &bookmarkName,
@@ -31,9 +30,15 @@ public:
     QHash<QString, Bookmark> getBookmarks() noexcept;
     void clearBookmarks() noexcept;
     void setBookmarks(const QHash<QString, Bookmark> &bookmarksHash) noexcept;
+    inline bool hasUnsavedBookmarks() noexcept { return m_unsaved_changes; }
+    inline void savedChanges(const bool &saved) noexcept { m_unsaved_changes = saved; }
+
+signals:
+    void bookmarksChanged();
 
 private:
     // bookmarkName, filePath
     QHash<QString, Bookmark> m_bookmarks_hash;
+    bool m_unsaved_changes = false;
     QString m_bookmarks_file_path;
 };

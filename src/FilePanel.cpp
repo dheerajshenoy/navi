@@ -11,10 +11,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm, 
 
     m_file_name_column_index = m_model->fileNameColumnIndex();
 
-    m_table_view->horizontalHeader()->setSectionResizeMode(0,
-                                                           QHeaderView::Stretch);
-    // m_table_view->horizontalHeader()->resizeSections(i,
-    // QHeaderView::Interactive);
+    m_table_view->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     setAcceptDrops(true);
     this->show();
 }

@@ -517,20 +517,6 @@ Toggle mouse scroll support for file panel
 
 Re-reads the configuration file if it exists and loads the configurations.
 
-`get-input`
-
-Get input from the user and store the result.
-
-Args:
-
-* Prompt string `required`
-* Default placeholder text `optional`
-* Selection text (piece of text that has to be selected by default) `optional`
-
-**NOTE**: This command does not return any input as of now.
-
-**TL; DR**: This feature does not work
-
 `tasks`
 
 Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.

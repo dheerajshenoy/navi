@@ -55,15 +55,28 @@ void Navi::initConfiguration() noexcept {
     }
 
     auto model = m_file_panel->model();
+
     // Read the SETTINGS table
     sol::optional<sol::table> settings_table_opt = lua["SETTINGS"];
 
     if (settings_table_opt) {
         sol::table settings_table = settings_table_opt.value();
 
+        // TERMINAL SETTINGS
         auto terminal = settings_table["terminal"].get_or<std::string>("kitty");
         m_terminal = QString::fromStdString(terminal);
 
+        // BOOKMARKS SETTINGS
+        sol::optional<sol::table> bookmarks_table_opt =
+            settings_table["bookmarks"];
+
+        if (bookmarks_table_opt.has_value()) {
+            auto bookmarks_table = bookmarks_table_opt.value();
+            auto auto_save = bookmarks_table["auto_save"].get_or(false);
+            m_auto_save_bookmarks = auto_save;
+        }
+
+        // UI TABLE
         sol::optional<sol::table> ui_table_opt = settings_table["ui"];
         if (ui_table_opt) {
             sol::table ui_table = ui_table_opt.value();
@@ -544,6 +557,9 @@ void Navi::initSignalsSlots() noexcept {
   connect(m_file_panel, &FilePanel::currentItemChanged, this,
           [&]() { m_hook_manager->triggerHook("item_changed"); });
 
+  connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, this,
+          [&]() { m_bookmarks_buffer->loadBookmarks(); });
+
   connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, this,
           [&](const QString &name) {
               GoBookmark(name);
@@ -647,27 +663,6 @@ void Navi::setupCommandMap() noexcept {
 
     commandMap["drives"] = [this](const QStringList &args) {
         ToggleDrivesWidget();
-    };
-
-    commandMap["get-input"] = [this](const QStringList &args) {
-        if (args.isEmpty())
-            return;
-        auto size = args.size();
-        switch (size) {
-        case 1:
-            m_inputbar->getInput(args.at(0));
-            break;
-
-        case 2:
-            m_inputbar->getInput(args.at(0), args.at(1));
-            break;
-
-        case 3:
-            m_inputbar->getInput(args.at(0), args.at(1), args.at(2));
-            break;
-        }
-
-        // TODO: redirect the output somehow
     };
 
     commandMap["mouse-scroll"] = [this](const QStringList &args) {
@@ -950,11 +945,16 @@ void Navi::ToggleSyntaxHighlight() noexcept {
 
 void Navi::EditBookmarkName(const QStringList &args) noexcept {
 
-    // TODO: interactive
-    if (args.isEmpty())
-        return;
+    QString bookmarkName;
+    if (args.isEmpty()) {
+        bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
+    } else
+        bookmarkName = args.at(0);
 
-    QString bookmarkName = args.at(0);
+    if (bookmarkName.isEmpty()) {
+        m_statusbar->Message("Bookmark name cannot be empty");
+        return;
+    }
 
     QString newBookmarkName =
         m_inputbar->getInput("New bookmark title", bookmarkName);
@@ -981,11 +981,16 @@ void Navi::EditBookmarkName(const QStringList &args) noexcept {
 
 void Navi::EditBookmarkFile(const QStringList &args) noexcept {
 
-    // TODO: interactive
-    if (args.isEmpty())
-        return;
+    QString bookmarkName;
+    if (args.isEmpty()) {
+        bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
+    } else
+        bookmarkName = args.at(0);
 
-    QString bookmarkName = args.at(0);
+    if (bookmarkName.isEmpty()) {
+        m_statusbar->Message("Bookmark name cannot be empty");
+        return;
+    }
 
     QString newBookmarkPath =
         m_inputbar->getInput(QString("New bookmark path (Default: %1)")
@@ -1016,28 +1021,47 @@ void Navi::EditBookmarkFile(const QStringList &args) noexcept {
 
 
 void Navi::AddBookmark(const QStringList &args) noexcept {
-
-    // If no arg is supplied
+    QString bookmarkName;
     if (args.isEmpty()) {
-    } else {
-        QString bookmarkName = args.at(0);
-        if (m_bookmark_manager->addBookmark(bookmarkName,
-                                            m_file_panel->getCurrentDir())) {
-            m_statusbar->Message("Added bookmark");
-        } else
-            m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
+        bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
+    } else
+        bookmarkName = args.at(0);
+
+    if (bookmarkName.isEmpty()) {
+        m_statusbar->Message("Bookmark name cannot be empty");
+        return;
     }
+
+    bool highlight = false;
+    QString highlight_string =
+        m_inputbar->getInput("(Add bookmark) Highlight ? (y/n)").toLower();
+
+    if (highlight_string == "y" || highlight_string == "yes") {
+        highlight = true;
+    }
+
+    if (m_bookmark_manager->addBookmark(bookmarkName,
+                                        m_file_panel->getCurrentDir(), highlight)) {
+        m_statusbar->Message("Added bookmark");
+    } else
+        m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
 }
 
 void Navi::RemoveBookmark(const QStringList &args) noexcept {
+    QString bookmarkName;
+    if (args.isEmpty()) {
+        bookmarkName = m_inputbar->getInput("(Remove bookmark) Bookmark name");
+    } else
+        bookmarkName = args.at(0);
 
-    // TODO: Interactive removal
-    if (args.isEmpty())
+    if (bookmarkName.isEmpty()) {
+        m_statusbar->Message("Bookmark name cannot be empty");
         return;
+    }
 
-    QString bookmarkName = args.at(0);
-    if (m_bookmark_manager->removeBookmark(bookmarkName))
+    if (m_bookmark_manager->removeBookmark(bookmarkName)) {
         m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
+    }
     else
         m_statusbar->Message(QString("Error removing bookmark %1").arg(bookmarkName),
                              MessageType::ERROR, 5);
@@ -1657,6 +1681,9 @@ void Navi::LogMessage(const QString &message,
 }
 
 Navi::~Navi() {
+    if (m_auto_save_bookmarks) {
+        SaveBookmarkFile();
+    }
 
     delete m_bookmark_manager;
     delete m_inputbar;
@@ -1681,6 +1708,8 @@ void Navi::chmodHelper() noexcept {
 }
 
 void Navi::SaveBookmarkFile() noexcept {
+    if (!m_bookmark_manager->hasUnsavedBookmarks())
+        return;
     auto bookmarks_hash = m_bookmark_manager->getBookmarks();
 
     QFile bookmark_file(BOOKMARK_FILE_PATH);
@@ -1712,6 +1741,8 @@ void Navi::SaveBookmarkFile() noexcept {
     out << bookmarks_str;
 
     bookmark_file.close();
+
+    m_bookmark_manager->savedChanges(true);
 }
 
 void Navi::SortByName(const bool &reverse) noexcept {

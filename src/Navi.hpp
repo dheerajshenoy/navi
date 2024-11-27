@@ -410,9 +410,6 @@ private:
       "echo-warn",
       "echo-error",
 
-      // Input,
-      "get-input",
-
       // misc
       "filter",
       "reset-filter",
@@ -462,7 +459,7 @@ private:
     QString m_terminal;
     QStringList m_macro_register = {};
     QHash<QString, QStringList> m_macro_hash;
-
+    bool m_auto_save_bookmarks = false;
     bool m_macro_mode = false;
     HookManager *m_hook_manager = nullptr;
 };

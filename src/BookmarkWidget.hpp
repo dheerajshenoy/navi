@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QTableWidgetItem>
 #include <QPushButton>
+#include <QHeaderView>
 
 #include "BookmarkManager.hpp"
 
@@ -27,11 +28,14 @@ public:
         QDialog::hide();
     }
 
+    void loadBookmarks() noexcept;
+
 signals:
     void visibilityChanged(const bool &state);
     void bookmarkGoRequested(const QString &name);
 
 private:
+
     QVBoxLayout *m_layout = nullptr;
     QTableWidget *m_table_widget = nullptr;
     BookmarkManager *m_manager = nullptr;
