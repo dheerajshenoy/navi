@@ -8,8 +8,8 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
 void Navi::initThings() noexcept {
     initLayout();       // init layout
-    initMenubar();      // init menubar
     initBookmarks();
+    initMenubar();      // init menubar
     setupCommandMap();
     initSignalsSlots(); // init signals and slots
     if (m_load_config)
@@ -1414,6 +1414,8 @@ void Navi::initMenubar() noexcept {
     m_viewmenu = new QMenu("View");
 
     m_viewmenu__refresh = new QAction("Refresh Folder");
+    m_viewmenu__filter = new QAction("Filter");
+    m_viewmenu__filter->setCheckable(true);
 
     m_viewmenu__menubar = new QAction("Menubar");
     m_viewmenu__menubar->setCheckable(true);
@@ -1498,6 +1500,7 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__dotdot);
 
     m_viewmenu->addAction(m_viewmenu__refresh);
+    m_viewmenu->addAction(m_viewmenu__filter);
     m_viewmenu->addSeparator();
     m_viewmenu->addAction(m_viewmenu__headers);
     m_viewmenu->addAction(m_viewmenu__preview_panel);
@@ -1507,6 +1510,34 @@ void Navi::initMenubar() noexcept {
     m_viewmenu->addAction(m_viewmenu__marks_buffer);
     m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
     m_viewmenu->addAction(m_viewmenu__tasks_widget);
+
+    m_bookmarks_menu = new QMenu("Bookmarks");
+
+    m_bookmarks_menu__add = new QAction("Add bookmark");
+    m_bookmarks_menu__remove = new QAction("Remove bookmark");
+
+    m_bookmarks_menu__bookmarks_list_menu = new QMenu("Bookmarks");
+    m_bookmarks_menu->addMenu(m_bookmarks_menu__bookmarks_list_menu);
+    m_bookmarks_menu->addAction(m_bookmarks_menu__add);
+    m_bookmarks_menu->addAction(m_bookmarks_menu__remove);
+
+    auto bookmarks = m_bookmark_manager->getBookmarkNames();
+    if (!bookmarks.empty()) {
+        for (const auto &bookmark : bookmarks) {
+            QAction *action = new QAction(bookmark);
+            m_bookmarks_menu__bookmarks_list_menu->addAction(action);
+        }
+
+        connect(m_bookmarks_menu__bookmarks_list_menu, &QMenu::triggered, this,
+                [&](QAction *action) { GoBookmark(action->text()); });
+    }
+
+    connect(m_bookmarks_menu__add, &QAction::triggered, this,
+            [&]() { AddBookmark(); });
+
+    connect(m_bookmarks_menu__remove, &QAction::triggered, this, [&]() {
+        RemoveBookmark();
+    });
 
     m_tools_menu = new QMenu("Tools");
 
@@ -1560,10 +1591,19 @@ void Navi::initMenubar() noexcept {
     m_menubar->addMenu(m_filemenu);
     m_menubar->addMenu(m_edit_menu);
     m_menubar->addMenu(m_viewmenu);
+    m_menubar->addMenu(m_bookmarks_menu);
     m_menubar->addMenu(m_tools_menu);
 
     connect(m_viewmenu__refresh, &QAction::triggered, this,
             [&](const bool &state) { ForceUpdate(); });
+
+    connect(m_viewmenu__filter, &QAction::triggered, this,
+            [&](const bool &state) {
+                if (state)
+                    Filter();
+                else
+                    ResetFilter();
+            });
 
     connect(m_viewmenu__tasks_widget, &QAction::triggered, this,
             [&](const bool &state) { ToggleTasksWidget(state); });
@@ -1709,15 +1749,17 @@ void Navi::Filter() noexcept {
     QString filterString = m_inputbar->getInput("Filter String");
     if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
         ResetFilter();
-        return;
+    } else {
+        m_file_panel->Filters(filterString);
+        m_statusbar->SetFilterMode(true);
+        m_viewmenu__filter->setChecked(true);
     }
-    m_file_panel->Filters(filterString);
-    m_statusbar->SetFilterMode(true);
 }
 
 void Navi::ResetFilter() noexcept {
     m_file_panel->ResetFilter();
     m_statusbar->SetFilterMode(false);
+    m_viewmenu__filter->setChecked(false);
 }
 
 void Navi::LogMessage(const QString &message,

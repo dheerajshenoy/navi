@@ -28,6 +28,7 @@ public:
     bool setBookmarkHighlight(const QString &bookmarkName,
                               const bool &highlight) noexcept;
     QHash<QString, Bookmark> getBookmarks() noexcept;
+    QStringList getBookmarkNames() noexcept;
     void clearBookmarks() noexcept;
     void setBookmarks(const QHash<QString, Bookmark> &bookmarksHash) noexcept;
     inline bool hasUnsavedBookmarks() noexcept { return m_unsaved_changes; }

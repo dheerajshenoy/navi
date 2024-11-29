@@ -108,8 +108,9 @@ public:
     void ResetFilter() noexcept;
     void LogMessage(const QString &message, const MessageType &type) noexcept;
     void FocusPath() noexcept;
-    void AddBookmark(const QStringList &bookmarkName) noexcept;
-    void RemoveBookmark(const QStringList &bookmarkName) noexcept;
+    void AddBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
+    void RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
+
     void EditBookmarkName(const QStringList &bookmarkName) noexcept;
     void EditBookmarkFile(const QStringList &bookmarkName) noexcept;
     void LoadBookmarkFile(const QStringList &bookmarkFilePath) noexcept;
@@ -255,6 +256,9 @@ private:
     QMenu *m_viewmenu = nullptr;
     QMenu *m_tools_menu = nullptr;
     QMenu *m_edit_menu = nullptr;
+    QMenu *m_bookmarks_menu = nullptr;
+
+    QMenu *m_bookmarks_menu__bookmarks_list_menu = nullptr;
 
     QMenu *m_filemenu__create_new_menu = nullptr;
     QAction *m_filemenu__new_window = nullptr;
@@ -263,8 +267,9 @@ private:
     QAction *m_filemenu__close_window = nullptr;
     QAction *m_filemenu__folder_properties = nullptr;
 
-    QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__refresh = nullptr;
+    QAction *m_viewmenu__filter = nullptr;
+    QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
     QAction *m_viewmenu__statusbar = nullptr;
     QAction *m_viewmenu__headers = nullptr;
@@ -289,6 +294,9 @@ private:
     QMenu *m_viewmenu__files_menu = nullptr;
     QAction *m_viewmenu__files_menu__dotdot = nullptr;
     QAction *m_viewmenu__files_menu__hidden = nullptr;
+
+    QAction *m_bookmarks_menu__add = nullptr;
+    QAction *m_bookmarks_menu__remove = nullptr;
 
     QAction *m_tools_menu__search = nullptr;
     QAction *m_tools_menu__command_in_folder = nullptr;

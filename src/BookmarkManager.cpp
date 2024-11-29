@@ -92,3 +92,10 @@ QString BookmarkManager::getBookmarkFilePath(const QString &bookmarkName) noexce
         return QString();
     return m_bookmarks_hash.value(bookmarkName).file_path;
 }
+
+QStringList BookmarkManager::getBookmarkNames() noexcept {
+    if (m_bookmarks_hash.empty())
+        return QStringList();
+    auto keys = m_bookmarks_hash.keys();
+    return QStringList(keys.cbegin(), keys.cend());
+}
