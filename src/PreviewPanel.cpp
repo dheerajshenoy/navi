@@ -21,29 +21,12 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
     connect(m_image_preview_timer, &QTimer::timeout, this, &PreviewPanel::loadImageAfterDelay);
 
-    m_worker = new FilePreviewWorker();
-    m_workerThread = new QThread(this);
-    m_worker->moveToThread(m_workerThread);
-
-    connect(m_worker, &FilePreviewWorker::clearPreview, this, &PreviewPanel::clearPreview);
-    connect(m_worker, &FilePreviewWorker::imagePreviewReady, this, &PreviewPanel::showImagePreview);
-    connect(m_worker, &FilePreviewWorker::textPreviewReady, this, &PreviewPanel::showTextPreview);
-    connect(m_worker, &FilePreviewWorker::errorOccurred, this, [&]() {
-        this->setCurrentIndex(2);
-    });
-
     this->addWidget(m_text_preview_widget);
     this->addWidget(m_img_widget);
     this->addWidget(m_empty_widget);
-
-    m_workerThread->start();
 }
 
-PreviewPanel::~PreviewPanel() {
-    m_workerThread->quit();
-    m_workerThread->wait();  // Ensure the worker thread stops before cleanup
-    delete m_worker;
-}
+PreviewPanel::~PreviewPanel() {}
 
 void PreviewPanel::showImagePreview(const QImage &image) noexcept {
     this->setCurrentIndex(1);
@@ -75,8 +58,7 @@ void PreviewPanel::loadImageAfterDelay() noexcept {
             m_image_cache_hash.insert(m_image_filepath, img);
             showImagePreview(img);
         } else {
-            QMetaObject::invokeMethod(m_worker, "loadPreview",
-                                      Q_ARG(QString, m_image_filepath));
+            m_thumbnailer->generate_thumbnail(m_image_filepath);
         }
     }
 }

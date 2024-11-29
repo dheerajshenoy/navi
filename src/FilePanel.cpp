@@ -1,7 +1,9 @@
 #include "FilePanel.hpp"
 
-FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm, QWidget *parent)
-: QWidget(parent), m_inputbar(inputBar), m_statusbar(statusBar), m_hook_manager(hm) {
+FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
+                     TaskManager *tm, QWidget *parent)
+    : QWidget(parent), m_inputbar(inputBar), m_statusbar(statusBar),
+    m_task_manager(tm), m_hook_manager(hm) {
     this->setLayout(m_layout);
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
@@ -71,14 +73,14 @@ void FilePanel::initSignalsSlots() noexcept {
 
     connect(this, &FilePanel::dropCopyRequested, this,
             [&](const QStringList &sourceFilePaths) {
-                m_file_op_type = FileOPType::COPY;
+                m_file_op_type = FileWorker::FileOPType::COPY;
                 m_register_files_list = sourceFilePaths;
                 PasteItems();
             });
 
     connect(this, &FilePanel::dropCutRequested, this,
             [&](const QStringList &sourceFilePaths) {
-                m_file_op_type = FileOPType::CUT;
+                m_file_op_type = FileWorker::FileOPType::CUT;
                 m_register_files_list = sourceFilePaths;
                 PasteItems();
             });
@@ -157,7 +159,7 @@ void FilePanel::DropCopyRequested(const QStringList &sourcePaths) noexcept {
     QString destDir = m_current_dir;
 
     QThread *thread = new QThread();
-    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileOPType::COPY);
+    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileWorker::FileOPType::COPY, m_task_manager, m_statusbar, m_inputbar);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker, &FileWorker::performOperation);
@@ -187,7 +189,7 @@ void FilePanel::DropCutRequested(const QStringList &sourcePaths) noexcept {
     QString destDir = m_current_dir;
 
     QThread *thread = new QThread();
-    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileOPType::CUT);
+    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileWorker::FileOPType::CUT, m_task_manager, m_statusbar, m_inputbar);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker, &FileWorker::performOperation);
@@ -1291,32 +1293,29 @@ void FilePanel::PasteItems() noexcept {
     if (!m_register_files_list.isEmpty()) {
         QString destDir = m_current_dir;
 
-        const QStringList &filesList =
+        const QStringList filesList =
             QStringList(m_register_files_list.cbegin(), m_register_files_list.cend());
 
-        QThread *thread = new QThread();
-        FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type);
+        QThread *thread = new QThread(this);
+        FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type, m_task_manager, m_statusbar, m_inputbar);
+        worker->moveToThread(thread);
 
         connect(thread, &QThread::started, worker, &FileWorker::performOperation);
 
         connect(worker, &FileWorker::finished, this, [&]() {
-            emit fileOperationDone(true);
+          if (!filesList.isEmpty())
             m_model->removeMarkedFiles(filesList);
+          emit fileOperationDone(true);
         });
 
         connect(worker, &FileWorker::error, this, [&](const QString &reason) {
-            emit fileOperationDone(false, reason);
+          emit fileOperationDone(false, reason);
         });
 
-        worker->moveToThread(thread);
-        // TODO: Add Progress
         // connect(worker, &FileCopyWorker::progress, this,
         // &FileCopyWidget::updateProgress);
 
-        connect(worker, &FileWorker::finished, this, [&]() {
-            thread->quit();
-            worker->deleteLater();
-        });
+        connect(worker, &FileWorker::finished, worker, &QObject::deleteLater);
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
 
         thread->start();
@@ -1331,22 +1330,22 @@ void FilePanel::CopyDWIM() noexcept {
         CopyItem();
         return;
     }
-    m_file_op_type = FileOPType::COPY;
+    m_file_op_type = FileWorker::FileOPType::COPY;
     m_register_files_list = localMarks;
 }
 
 void FilePanel::CopyItem() noexcept {
-    m_file_op_type = FileOPType::COPY;
+    m_file_op_type = FileWorker::FileOPType::COPY;
     m_register_files_list = {getCurrentItem()};
 }
 
 void FilePanel::CopyItemsLocal() noexcept {
-    m_file_op_type = FileOPType::COPY;
+    m_file_op_type = FileWorker::FileOPType::COPY;
     m_register_files_list = m_model->getMarkedFilesLocal();
 }
 
 void FilePanel::CopyItemsGlobal() noexcept {
-    m_file_op_type = FileOPType::COPY;
+    m_file_op_type = FileWorker::FileOPType::COPY;
     m_register_files_list = m_model->getMarkedFiles();
 }
 
@@ -1359,22 +1358,22 @@ void FilePanel::CutDWIM() noexcept {
         return;
     }
 
-    m_file_op_type = FileOPType::CUT;
+    m_file_op_type = FileWorker::FileOPType::CUT;
     m_register_files_list = localMarks;
 }
 
 void FilePanel::CutItem() noexcept {
-    m_file_op_type = FileOPType::CUT;
+    m_file_op_type = FileWorker::FileOPType::CUT;
     m_register_files_list = {getCurrentItem()};
 }
 
 void FilePanel::CutItemsLocal() noexcept {
-    m_file_op_type = FileOPType::CUT;
+    m_file_op_type = FileWorker::FileOPType::CUT;
     m_register_files_list = m_model->getMarkedFilesLocal();
 }
 
 void FilePanel::CutItemsGlobal() noexcept {
-    m_file_op_type = FileOPType::CUT;
+    m_file_op_type = FileWorker::FileOPType::CUT;
     m_register_files_list = m_model->getMarkedFiles();
 }
 
@@ -1573,11 +1572,11 @@ void FilePanel::dragRequested() noexcept {
     Qt::DropAction dropAction;
     switch (m_file_op_type) {
 
-    case FileOPType::COPY:
+    case FileWorker::FileOPType::COPY:
         dropAction = drag->exec(Qt::CopyAction);
         break;
 
-    case FileOPType::CUT:
+    case FileWorker::FileOPType::CUT:
         dropAction = drag->exec(Qt::MoveAction);
         break;
     }

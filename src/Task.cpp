@@ -36,20 +36,6 @@ void Task::stop() noexcept {
 
 void Task::runCommand() noexcept {
 
-    // QTemporaryFile tmpFile;
-    // if (!tmpFile.open()) {
-    //     emit errorOccured("Could not create a temporary file to read the command output");
-    //     return;
-    // }
-
-    // auto fileName = tmpFile.fileName();
-    // m_process->setStandardOutputFile(fileName, QIODevice::Append);
-    // QFileSystemWatcher *watcher = new QFileSystemWatcher();
-    // watcher->addPath(fileName);
-    // connect(watcher, &QFileSystemWatcher::fileChanged, this,
-    //         [&](const QString &fileName) {
-    // });
-
     connect(process, &QProcess::readyReadStandardOutput, this,
             [&]() { emit stdout(process->readAllStandardOutput()); });
 

@@ -612,8 +612,7 @@ void Navi::initSignalsSlots() noexcept {
                 if (state)
                     m_statusbar->Message("Operation Successful");
                 else
-                    m_statusbar->Message(
-                                         QString("Error during file operation! (%1)").arg(reason),
+                    m_statusbar->Message(QString("Error during file operation! (%1)").arg(reason),
                                          MessageType::ERROR, 5);
             });
 
@@ -1243,7 +1242,7 @@ void Navi::initLayout() noexcept {
     m_hook_manager = new HookManager();
     m_inputbar = new Inputbar(this);
     m_statusbar = new Statusbar(this);
-    m_file_panel = new FilePanel(m_inputbar, m_statusbar, m_hook_manager, this);
+    m_file_panel = new FilePanel(m_inputbar, m_statusbar, m_hook_manager, m_task_manager, this);
 
     m_preview_panel = new PreviewPanel();
     m_file_path_widget = new FilePathWidget();
@@ -1257,15 +1256,12 @@ void Navi::initLayout() noexcept {
 
     m_file_path_widget->setContentsMargins(0, 0, 0, 0);
     this->setContentsMargins(0, 0, 0, 0);
-
     m_layout->addWidget(m_file_path_widget);
     m_layout->addWidget(m_splitter);
     m_layout->addWidget(m_inputbar);
     m_layout->addWidget(m_statusbar);
-
     m_splitter->addWidget(m_file_panel);
     m_splitter->addWidget(m_preview_panel);
-
     m_widget->setLayout(m_layout);
     this->setCentralWidget(m_widget);
     this->show();

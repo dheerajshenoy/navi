@@ -23,6 +23,23 @@ void Thumbnailer::generate_thumbnails(const QStringList &files) noexcept {
     }
 }
 
+void Thumbnailer::generate_thumbnail(const QString &file) noexcept {
+    QMimeDatabase mimeDB;
+    auto mimeType = mimeDB.mimeTypeForFile(file);
+    QString mimeName = mimeType.name();
+    QString URI = file_uri_from_path(file);
+    if (mimeName.startsWith("image/")) {
+      QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_image,
+                            this, file, URI);
+    } else if (mimeName == "application/pdf") {
+        QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_pdf,
+                                                 this, file, URI);
+    } else if (mimeName.startsWith("video/")) {
+        QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_video,
+                                                 this, file, URI);
+    }
+}
+
 QString Thumbnailer::file_uri_from_path(const QString &path) noexcept {
     // Convert file path to URI
     QUrl fileUri = QUrl::fromLocalFile(path);
@@ -47,20 +64,24 @@ QImage Thumbnailer::get_image_from_cache(const QString &file_name) noexcept {
 void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const QString &path_uri) noexcept {
     if (!QFile::exists(path_uri)) {
         //Do not preview if file size is greater than ‘max_preview_threshold’
-        QFileInfo file(file_name);
+        // QFileInfo file(file_name);
         // TODO
         // if (file.size() > m_max_preview_threshold) {
         //     emit clearPreview();
         //     return;
         // }
 
-        Magick::Image image(file_name.toStdString());
+        try {
+            Magick::Image image(file_name.toStdString());
 
-        if (!image.isValid())
-            return;
+            if (!image.isValid())
+                return;
 
-        image.resize(Magick::Geometry(256, 256));
-        image.write(path_uri.toStdString());
+            image.resize(Magick::Geometry(256, 256));
+            image.write(path_uri.toStdString());
+        } catch (const Magick::Error &e) {
+            qDebug() << e.what();
+        }
     }
 }
 

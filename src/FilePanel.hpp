@@ -39,7 +39,8 @@
 class FilePanel : public QWidget {
     Q_OBJECT
 public:
-    FilePanel(Inputbar *inputWidget = nullptr, Statusbar *statusBar = nullptr, HookManager *hm = nullptr, QWidget *parent = nullptr);
+  FilePanel(Inputbar *inputWidget, Statusbar *statusBar,
+            HookManager *hm, TaskManager *tm, QWidget *parent = nullptr);
     ~FilePanel();
 
     struct ItemProperty {
@@ -153,6 +154,10 @@ public:
     void ToggleMouseScroll() noexcept;
     void ToggleMouseScroll(const bool &state) noexcept;
 
+    inline bool has_selection() noexcept {
+        return m_table_view->selectionModel()->hasSelection();
+    }
+
     inline void SetBulkRenameThreshold(const unsigned int &threshold) noexcept {
         m_bulk_rename_threshold = threshold;
     }
@@ -245,11 +250,12 @@ private:
     QString m_search_text;
     // This is for storing the recent file operation action like COPY, PASTE.
     // Depending on which we perform the necessary action.
-    FileOPType m_file_op_type = FileOPType::COPY;
+    FileWorker::FileOPType m_file_op_type = FileWorker::FileOPType::COPY;
     QString m_terminal;
     QStringList m_terminal_args;
     Inputbar *m_inputbar;
     Statusbar *m_statusbar;
+    TaskManager *m_task_manager = nullptr;
     HookManager *m_hook_manager = nullptr;
     // This is used to store the filenames that are marked for cutting or copying.
     QStringList m_register_files_list;

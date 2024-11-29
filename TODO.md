@@ -78,7 +78,8 @@
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - ~~[ ] Tabs~~
-- [ ] overwrite copy, paste etc.
-- [ ] custom copy, delete, rename etc.
+- [X] overwrite copy, paste etc.
+- [X] custom copy, delete, rename etc.
 - [ ] first startup wierd load behavior
 - [ ] lua API for custom context menu
+- [ ] Deletion make task if large size

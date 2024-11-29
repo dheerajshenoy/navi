@@ -43,7 +43,6 @@ public:
     }
 
     inline void SetMaxPreviewThreshold(const qint64 &thresh) noexcept {
-        m_worker->setMaxPreviewThreshold(thresh);
     }
 
     inline void SetSyntaxHighlighting(const bool &state) noexcept {
@@ -55,7 +54,6 @@ public:
 
     inline void SetPreviewDimension(const int &width,
                                     const int &height) noexcept {
-        m_worker->setPreviewDimension(width, height);
     }
 
     inline void ToggleSyntaxHighlight() noexcept {
@@ -79,8 +77,6 @@ private:
     TextEdit *m_text_preview_widget = new TextEdit();
     QWidget *m_empty_widget = new QWidget();
 
-    FilePreviewWorker *m_worker = nullptr;
-    QThread *m_workerThread = nullptr;
     QTimer *m_image_preview_timer = nullptr;
     QString m_image_filepath;
 

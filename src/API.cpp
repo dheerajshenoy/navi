@@ -10,6 +10,8 @@ void Navi::initNaviLuaAPI() noexcept {
 
     lua["navi"] = lua.create_table();
 
+    // HOOK API
+
     lua["navi"]["hook"] = lua.create_table();
 
     lua["navi"]["hook"]["add"] = [this](const std::string &hook_name,
@@ -21,10 +23,34 @@ void Navi::initNaviLuaAPI() noexcept {
         m_hook_manager->triggerHook(hook_name);
     };
 
-    lua["navi"]["hook"]["clear_functions"] = [this](const std::string &hook_name,
-                                     const sol::function &func) {
-        m_hook_manager->clearHookFunctions(hook_name);
+    lua["navi"]["hook"]["clear_functions"] =
+        [this](const std::string &hook_name, const sol::function &func) {
+          m_hook_manager->clearHookFunctions(hook_name);
+        };
+
+    // BOOKMARK API
+    lua["navi"]["bookmark"] = lua.create_table();
+
+    lua["navi"]["bookmark"]["add"] = [this](const std::string &bookmark_name,
+                                            const std::string &file_path,
+                                            const bool &highlight) {
+      m_bookmark_manager->addBookmark(QString::fromStdString(bookmark_name),
+                                      QString::fromStdString(file_path),
+                                      highlight);
     };
+
+    lua["navi"]["bookmark"]["remove"] = [this](
+                                            const std::string &bookmark_name) {
+      m_bookmark_manager->removeBookmark(QString::fromStdString(bookmark_name));
+    };
+
+    lua["navi"]["bookmark"]["edit_name"] =
+        [this](const std::string &bookmark_name,
+               const std::string &new_bookmark_name) {
+          m_bookmark_manager->setBookmarkName(
+              QString::fromStdString(bookmark_name),
+              QString::fromStdString(new_bookmark_name));
+        };
 
     // DIR API
     lua["navi"]["api"] = lua.create_table();
@@ -121,17 +147,20 @@ void Navi::initNaviLuaAPI() noexcept {
 
     lua["navi"]["api"]["spawn"] = [this](const std::string &command,
                                          const std::vector<std::string> args) {
-        QStringList arglist;
+      QStringList arglist;
 
-        for (const auto &str : args)
-            arglist.push_back(QString::fromStdString(str));
+      for (const auto &str : args)
+        arglist.push_back(QString::fromStdString(str));
 
-        SpawnProcess(QString::fromStdString(command), arglist);
+      SpawnProcess(QString::fromStdString(command), arglist);
+    };
+
+    lua["navi"]["api"]["has_selection"] = [this]() {
+        return m_file_panel->has_selection();
     };
 
     lua["navi"]["api"]["local_marks"] = [this]() {
-        return utils::convertToStdVector(
-                                         m_file_panel->model()->getMarkedFilesLocal());
+      return utils::convertToStdVector(m_file_panel->model()->getMarkedFilesLocal());
     };
 
     lua["navi"]["api"]["local_marks_count"] = [this]() {
@@ -239,8 +268,15 @@ void Navi::initNaviLuaAPI() noexcept {
         ToggleMarksBuffer(state);
     };
 
-    lua["navi"]["ui"]["marks"] = [this]() {
-        ToggleMarksBuffer();
+    lua["navi"]["ui"]["marks"] = [this]() { ToggleMarksBuffer(); };
+
+    lua["navi"]["ui"]["context_menu"] = lua.create_table();
+    lua["navi"]["ui"]["context_menu"]["create"] = [this]() {
+
+    };
+
+    lua["navi"]["ui"]["context_menu"]["add"] = [this]() {
+
     };
 
     // IO API

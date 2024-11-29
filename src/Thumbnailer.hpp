@@ -29,6 +29,7 @@ public:
     Thumbnailer();
 
     void generate_thumbnails(const QStringList &files) noexcept;
+    void generate_thumbnail(const QString &file) noexcept;
     QImage get_image_from_cache(const QString &file_name) noexcept;
 
 private:
