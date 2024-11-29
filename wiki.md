@@ -527,6 +527,26 @@ https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a
 
 Change directory with the provided argument or ask for input.
 
+`folder-property`
+
+Get the property of the currently open folder
+
+`copy-path`
+
+Copy the path(s) of the currently "highlighted" (not to be confused with marked) files.
+
+You can pass an optional argument which will be the separator that separates the paths of all the selected files.
+
+**NOTE: You can configure the default separator in the config using the `copy_path_separator` variable**
+
+`exit`
+
+Exits Navi
+
+`new-window`
+
+Creates a new instance of navi
+
 ### Shell Commands
 
 `shell`

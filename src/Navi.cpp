@@ -66,6 +66,9 @@ void Navi::initConfiguration() noexcept {
         auto terminal = settings_table["terminal"].get_or<std::string>("kitty");
         m_terminal = QString::fromStdString(terminal);
 
+        auto copy_path_str = settings_table["copy_path_separator"].get_or<std::string>("\n");
+        m_copy_path_join_str = QString::fromStdString(copy_path_str);
+
         // BOOKMARKS SETTINGS
         sol::optional<sol::table> bookmarks_table_opt =
             settings_table["bookmarks"];
@@ -627,9 +630,16 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
-    commandMap["execute-extended-command"] = [this](const QStringList &args) {
-        ExecuteExtendedCommand();
-    };
+  commandMap["execute-extended-command"] = [this](const QStringList &args) {
+    ExecuteExtendedCommand();
+  };
+
+  commandMap["copy-path"] = [this](const QStringList &args) {
+      if (args.isEmpty())
+          CopyPath();
+      else
+          CopyPath(args.at(0));
+  };
 
     commandMap["exit"] = [this](const QStringList &args) {
         Exit();
@@ -1504,19 +1514,32 @@ void Navi::initMenubar() noexcept {
 
     m_edit_menu = new QMenu("Edit");
 
+    m_edit_menu__open = new QAction("Open");
     m_edit_menu__copy = new QAction("Copy");
     m_edit_menu__paste = new QAction("Paste");
     m_edit_menu__rename = new QAction("Rename");
     m_edit_menu__delete = new QAction("Delete");
     m_edit_menu__trash = new QAction("Trash");
+    m_edit_menu__copy_path = new QAction("Copy Path(s)");
     m_edit_menu__cut = new QAction("Cut");
 
+    m_edit_menu->addAction(m_edit_menu__open);
+    m_edit_menu->addAction(m_edit_menu__copy_path);
     m_edit_menu->addAction(m_edit_menu__cut);
     m_edit_menu->addAction(m_edit_menu__copy);
     m_edit_menu->addAction(m_edit_menu__paste);
     m_edit_menu->addAction(m_edit_menu__rename);
     m_edit_menu->addAction(m_edit_menu__trash);
     m_edit_menu->addAction(m_edit_menu__delete);
+
+    connect(m_edit_menu__open, &QAction::triggered, this, &Navi::SelectItem);
+    connect(m_edit_menu__copy_path, &QAction::triggered, this, &Navi::CopyPath);
+    connect(m_edit_menu__copy, &QAction::triggered, this, &Navi::CopyDWIM);
+    connect(m_edit_menu__cut, &QAction::triggered, this, &Navi::CutDWIM);
+    connect(m_edit_menu__paste, &QAction::triggered, this, &Navi::PasteItems);
+    connect(m_edit_menu__rename, &QAction::triggered, this, &Navi::RenameDWIM);
+    connect(m_edit_menu__trash, &QAction::triggered, this, &Navi::TrashDWIM);
+    connect(m_edit_menu__delete, &QAction::triggered, this, &Navi::DeleteDWIM);
 
     m_menubar->addMenu(m_filemenu);
     m_menubar->addMenu(m_edit_menu);
@@ -2289,6 +2312,19 @@ void Navi::ShowFolderProperty() noexcept {
     FolderPropertyWidget *f = new FolderPropertyWidget(m_file_panel->getCurrentDir(), this);
 }
 
-void Navi::Exit() noexcept {
-    QApplication::quit();
+void Navi::Exit() noexcept { QApplication::quit(); }
+
+void Navi::CopyPath(const QString &separator) noexcept {
+    auto selectionModel = m_file_panel->tableView()->selectionModel();
+    if (selectionModel->hasSelection()) {
+        auto current_dir = m_file_panel->getCurrentDir();
+        auto indexes = selectionModel->selectedIndexes();
+        QStringList itemPathList =
+            m_file_panel->model()->getFilePathsFromIndexList(indexes);
+
+        if (separator.isEmpty())
+            m_clipboard->setText(itemPathList.join(m_copy_path_join_str));
+        else
+            m_clipboard->setText(itemPathList.join(separator));
+    }
 }

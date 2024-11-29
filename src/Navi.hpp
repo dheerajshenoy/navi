@@ -31,6 +31,7 @@
 #include <QPromise>
 #include <QFuture>
 #include <QThread>
+#include <QClipboard>
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -209,6 +210,7 @@ public:
     void LaunchNewInstance() noexcept;
     void ShowFolderProperty() noexcept;
     void Exit() noexcept;
+    void CopyPath(const QString &separator = QString()) noexcept;
 
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
@@ -288,12 +290,14 @@ private:
     QAction *m_tools_menu__search = nullptr;
     QAction *m_tools_menu__command_in_folder = nullptr;
 
+    QAction *m_edit_menu__open = nullptr;
     QAction *m_edit_menu__copy = nullptr;
     QAction *m_edit_menu__paste = nullptr;
     QAction *m_edit_menu__cut = nullptr;
     QAction *m_edit_menu__rename = nullptr;
     QAction *m_edit_menu__delete = nullptr;
     QAction *m_edit_menu__trash = nullptr;
+    QAction *m_edit_menu__copy_path = nullptr;
 
     Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;
@@ -445,7 +449,7 @@ private:
       "cd",
       "terminal",
       "folder-property",
-
+      "copy-path",
     };
 
     MessagesBuffer *m_log_buffer = nullptr;
@@ -474,4 +478,6 @@ private:
     bool m_auto_save_bookmarks = false;
     bool m_macro_mode = false;
     HookManager *m_hook_manager = nullptr;
+    QClipboard *m_clipboard = QGuiApplication::clipboard();
+    QString m_copy_path_join_str = "\n";
 };
