@@ -1586,12 +1586,27 @@ void Navi::initMenubar() noexcept {
     connect(m_edit_menu__item_property, &QAction::triggered, this,
             &Navi::ShowItemPropertyWidget);
     connect(m_edit_menu__select_all, &QAction::triggered, this, &Navi::SelectAllItems);
-    connect(m_edit_menu__select_inverse, &QAction::triggered, this, &Navi::SelectInverse);
+    connect(m_edit_menu__select_inverse, &QAction::triggered, this,
+            &Navi::SelectInverse);
+
+    m_go_menu = new QMenu("Go");
+
+    m_go_menu__home_folder = new QAction("Home Folder");
+    m_go_menu__parent_folder = new QAction("Parent Folder");
+    m_go_menu__previous_folder = new QAction("Previous Folder");
+    m_go_menu__connect_to_server = new QAction("Connect to Server");
+
+    m_go_menu->addActions({
+        m_go_menu__previous_folder,
+        m_go_menu__parent_folder,
+        m_go_menu__home_folder,
+        m_go_menu__connect_to_server});
 
     m_menubar->addMenu(m_filemenu);
     m_menubar->addMenu(m_edit_menu);
     m_menubar->addMenu(m_viewmenu);
     m_menubar->addMenu(m_bookmarks_menu);
+    m_menubar->addMenu(m_go_menu);
     m_menubar->addMenu(m_tools_menu);
 
     connect(m_viewmenu__refresh, &QAction::triggered, this,

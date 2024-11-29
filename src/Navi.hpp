@@ -257,6 +257,7 @@ private:
     QMenu *m_tools_menu = nullptr;
     QMenu *m_edit_menu = nullptr;
     QMenu *m_bookmarks_menu = nullptr;
+    QMenu *m_go_menu = nullptr;
 
     QMenu *m_bookmarks_menu__bookmarks_list_menu = nullptr;
 
@@ -266,6 +267,7 @@ private:
     QAction *m_filemenu__create_new_file = nullptr;
     QAction *m_filemenu__close_window = nullptr;
     QAction *m_filemenu__folder_properties = nullptr;
+
 
     QAction *m_viewmenu__refresh = nullptr;
     QAction *m_viewmenu__filter = nullptr;
@@ -298,9 +300,6 @@ private:
     QAction *m_bookmarks_menu__add = nullptr;
     QAction *m_bookmarks_menu__remove = nullptr;
 
-    QAction *m_tools_menu__search = nullptr;
-    QAction *m_tools_menu__command_in_folder = nullptr;
-
     QAction *m_edit_menu__open = nullptr;
     QAction *m_edit_menu__copy = nullptr;
     QAction *m_edit_menu__paste = nullptr;
@@ -312,6 +311,14 @@ private:
     QAction *m_edit_menu__item_property = nullptr;
     QAction *m_edit_menu__select_all = nullptr;
     QAction *m_edit_menu__select_inverse = nullptr;
+
+    QAction *m_tools_menu__search = nullptr;
+    QAction *m_tools_menu__command_in_folder = nullptr;
+
+    QAction *m_go_menu__previous_folder = nullptr;
+    QAction *m_go_menu__parent_folder = nullptr;
+    QAction *m_go_menu__home_folder = nullptr;
+    QAction *m_go_menu__connect_to_server = nullptr;
 
     Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;
