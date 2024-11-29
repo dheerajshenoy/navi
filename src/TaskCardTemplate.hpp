@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QFormLayout>
+#include <QProgressBar>
 
 #include "Task.hpp"
 
@@ -17,19 +19,12 @@ public:
   explicit TaskCardTemplate(Task *task, QWidget *parent = nullptr)
       : QWidget(parent), task(task) {
 
-          QVBoxLayout *layout = new QVBoxLayout(this);
+    setLayout(layout);
 
-    // QLabel *idLabel = new QLabel("ID: " + task->uuid().toString(),
-    // this); layout->addWidget(idLabel);
-    QLineEdit *commandEdit = new QLineEdit(this);
     commandEdit->setPlaceholderText(task->commandString());
     commandEdit->setReadOnly(true);
     layout->addWidget(commandEdit);
 
-    // Display Task Type
-    QString taskType = "COMMAND";
-
-    QLabel *typeLabel = new QLabel("Type: " + taskType, this);
     layout->addWidget(typeLabel);
 
     QPushButton *expandBtn = new QPushButton("Expand", this);
@@ -43,9 +38,17 @@ public:
     connect(expandBtn, &QPushButton::clicked, this,
             [&](const bool &state) { outputEdit->setVisible(state); });
 
+
     // If it's a CommandTask, add a QTextEdit for real-time output
-    if (task->type() == Task::TaskType::COMMAND) {
-        outputEdit = new QTextEdit(this);
+    switch (task->type()) {
+    case Task::TaskType::COMMAND: {
+
+        // Display Task Type
+        QString taskType = "COMMAND";
+
+        typeLabel->setText("Type: " + taskType);
+
+        outputEdit = new QTextEdit();
         outputEdit->setReadOnly(true);
         layout->addWidget(outputEdit);
 
@@ -53,24 +56,55 @@ public:
         connect(task, &Task::stdout, this, &TaskCardTemplate::appendOutput);
 
         connect(cancelBtn, &QPushButton::clicked, task, [this, task]() {
-          auto reply = QMessageBox::question(
-                                             this, "Cancel task", "Do you want to cancel this task ?");
-          if (reply == QMessageBox::StandardButton::Yes) {
-              emit taskCancelRequested(task);
-          }
+            auto reply = QMessageBox::question(
+                                               this, "Cancel task", "Do you want to cancel this task ?");
+            if (reply == QMessageBox::StandardButton::Yes) {
+                emit taskCancelRequested(task);
+            }
         });
     }
-    setLayout(layout);
+        break;
+
+    case Task::TaskType::COPY: {
+      connect(cancelBtn, &QPushButton::clicked, task, [this, task]() {
+        auto reply = QMessageBox::question(this, "Cancel task",
+                                           "Do you want to cancel this task ?");
+        if (reply == QMessageBox::StandardButton::Yes) {
+          emit taskCancelRequested(task);
+        }
+      });
+
+      // Display Task Type
+      QString taskType = "COPY";
+
+      typeLabel->setText("Type: " + taskType);
+
+      connect(this, &TaskCardTemplate::progressChanged, this,
+              [&](const float &value) {
+                  progressBar->setValue(value);
+                });
+
+      formLayout->addRow("Progress: ", progressBar);
+      layout->addLayout(formLayout);
+    } break;
+
+    case Task::TaskType::MOVE:
+    case Task::TaskType::DELETE:
+    case Task::TaskType::TRASH:
+      break;
+    }
+
 }
 
 signals:
     void taskCancelRequested(Task *task);
+    void progressChanged(const float &progress_value);
 
 public slots:
-    void appendOutput(const QString &output) {
-        if (outputEdit) {
-            if (outputEdit->document()->lineCount() > m_command_output_threshold)
-                outputEdit->clear();
+void appendOutput(const QString &output) {
+    if (outputEdit) {
+        if (outputEdit->document()->lineCount() > m_command_output_threshold)
+            outputEdit->clear();
         outputEdit->append(output);
     }
 }
@@ -80,4 +114,10 @@ private:
     QTextEdit *outputEdit = nullptr;
     QPushButton *cancelBtn = new QPushButton("Cancel");
     unsigned int m_command_output_threshold = 4;
+    QFormLayout *formLayout = new QFormLayout();
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    QLineEdit *commandEdit = new QLineEdit();
+    QLabel *typeLabel = new QLabel();
+    QProgressBar *progressBar = new QProgressBar();
+
 };

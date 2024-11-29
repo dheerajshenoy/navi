@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QTextEdit>
+#include <QWidget>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 class MessagesBuffer : public QWidget {
     Q_OBJECT
@@ -34,7 +37,6 @@ public:
     void hide() noexcept {
         emit visibilityChanged(false);
         QWidget::hide();
-
     }
 
 private:

@@ -28,11 +28,12 @@ class Task : public QObject {
         emit progress(_progress);
     }
     void setFinished(const bool &state) noexcept {
-        emit finished(m_uuid);
+        if (state)
+            emit finished(m_uuid);
     }
 
     signals:
-    void progress(const int &);
+    void progress(const float &);
     void finished(const QUuid &uuid);
     void errorOccured(const QString &reason);
     void stdout(const QString &output);

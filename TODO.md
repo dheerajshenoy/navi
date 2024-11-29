@@ -83,3 +83,5 @@
 - [ ] first startup wierd load behavior
 - [ ] lua API for custom context menu
 - [ ] Deletion make task if large size
+- [ ] VisibilityChange signal bug
+- [X] Progressbar for `taskswidget`

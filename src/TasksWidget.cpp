@@ -33,10 +33,12 @@ void TasksWidget::updateNoTasksLabel() noexcept {
 
 void TasksWidget::addTaskCard(Task *task) noexcept {
     auto *taskCard = new TaskCardTemplate(task, this);
+    connect(task, &Task::progress, taskCard, &TaskCardTemplate::progressChanged);
     m_task_cards[task->uuid()] = taskCard;
     taskLayout->insertWidget(0, taskCard);
     connect(taskCard, &TaskCardTemplate::taskCancelRequested, this,
             [&](Task *task) { m_task_manager->removeTask(task->uuid()); });
+
     updateNoTasksLabel();
 }
 

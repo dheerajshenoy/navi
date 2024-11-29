@@ -94,6 +94,8 @@ public:
     ~Navi();
 
     void initThings() noexcept;
+    void SelectAllItems() noexcept;
+    void SelectInverse() noexcept;
     // Interactive Functions
     void ExecuteExtendedCommand() noexcept;
     void NewFolder(const QStringList &folders = {}) noexcept;
@@ -262,6 +264,7 @@ private:
     QAction *m_filemenu__folder_properties = nullptr;
 
     QAction *m_viewmenu__preview_panel = nullptr;
+    QAction *m_viewmenu__refresh = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
     QAction *m_viewmenu__statusbar = nullptr;
     QAction *m_viewmenu__headers = nullptr;
@@ -298,6 +301,9 @@ private:
     QAction *m_edit_menu__delete = nullptr;
     QAction *m_edit_menu__trash = nullptr;
     QAction *m_edit_menu__copy_path = nullptr;
+    QAction *m_edit_menu__item_property = nullptr;
+    QAction *m_edit_menu__select_all = nullptr;
+    QAction *m_edit_menu__select_inverse = nullptr;
 
     Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;

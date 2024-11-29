@@ -1413,6 +1413,8 @@ void Navi::initMenubar() noexcept {
 
     m_viewmenu = new QMenu("View");
 
+    m_viewmenu__refresh = new QAction("Refresh Folder");
+
     m_viewmenu__menubar = new QAction("Menubar");
     m_viewmenu__menubar->setCheckable(true);
 
@@ -1495,6 +1497,8 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__hidden);
     m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__dotdot);
 
+    m_viewmenu->addAction(m_viewmenu__refresh);
+    m_viewmenu->addSeparator();
     m_viewmenu->addAction(m_viewmenu__headers);
     m_viewmenu->addAction(m_viewmenu__preview_panel);
     m_viewmenu->addAction(m_viewmenu__menubar);
@@ -1521,41 +1525,51 @@ void Navi::initMenubar() noexcept {
     m_edit_menu__delete = new QAction("Delete");
     m_edit_menu__trash = new QAction("Trash");
     m_edit_menu__copy_path = new QAction("Copy Path(s)");
+    m_edit_menu__item_property = new QAction("Properties");
     m_edit_menu__cut = new QAction("Cut");
+    m_edit_menu__select_all = new QAction("Select All");
+    m_edit_menu__select_inverse = new QAction("Select Inverse");
 
     m_edit_menu->addAction(m_edit_menu__open);
     m_edit_menu->addAction(m_edit_menu__copy_path);
+    m_edit_menu->addAction(m_edit_menu__item_property);
     m_edit_menu->addAction(m_edit_menu__cut);
     m_edit_menu->addAction(m_edit_menu__copy);
     m_edit_menu->addAction(m_edit_menu__paste);
     m_edit_menu->addAction(m_edit_menu__rename);
     m_edit_menu->addAction(m_edit_menu__trash);
     m_edit_menu->addAction(m_edit_menu__delete);
+    m_edit_menu->addAction(m_edit_menu__select_all);
+    m_edit_menu->addAction(m_edit_menu__select_inverse);
 
     connect(m_edit_menu__open, &QAction::triggered, this, &Navi::SelectItem);
-    connect(m_edit_menu__copy_path, &QAction::triggered, this, &Navi::CopyPath);
+    connect(m_edit_menu__copy_path, &QAction::triggered, this, [&]() {
+        CopyPath();
+    });
     connect(m_edit_menu__copy, &QAction::triggered, this, &Navi::CopyDWIM);
     connect(m_edit_menu__cut, &QAction::triggered, this, &Navi::CutDWIM);
     connect(m_edit_menu__paste, &QAction::triggered, this, &Navi::PasteItems);
     connect(m_edit_menu__rename, &QAction::triggered, this, &Navi::RenameDWIM);
     connect(m_edit_menu__trash, &QAction::triggered, this, &Navi::TrashDWIM);
     connect(m_edit_menu__delete, &QAction::triggered, this, &Navi::DeleteDWIM);
+    connect(m_edit_menu__item_property, &QAction::triggered, this,
+            &Navi::ShowItemPropertyWidget);
+    connect(m_edit_menu__select_all, &QAction::triggered, this, &Navi::SelectAllItems);
+    connect(m_edit_menu__select_inverse, &QAction::triggered, this, &Navi::SelectInverse);
 
     m_menubar->addMenu(m_filemenu);
     m_menubar->addMenu(m_edit_menu);
     m_menubar->addMenu(m_viewmenu);
     m_menubar->addMenu(m_tools_menu);
 
+    connect(m_viewmenu__refresh, &QAction::triggered, this,
+            [&](const bool &state) { ForceUpdate(); });
+
     connect(m_viewmenu__tasks_widget, &QAction::triggered, this,
             [&](const bool &state) { ToggleTasksWidget(state); });
 
     connect(m_viewmenu__headers, &QAction::triggered, this,
             [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
-
-    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
-            [&](const bool &state) {
-                m_viewmenu__bookmarks_buffer->setChecked(state);
-            });
 
     connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
             [&](const bool &state) {
@@ -1623,10 +1637,18 @@ void Navi::initMenubar() noexcept {
     connect(m_viewmenu__menubar, &QAction::triggered, this,
             [&](const bool &state) { Navi::ToggleStatusBar(state); });
 
-    // Handle visibility state change to reflect in the checkbox of the menu item
+    // Handle visibility state change to reflect in the checkbox of the menu
+    // item
+
+    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
+            [&](const bool &state) {
+                m_viewmenu__bookmarks_buffer->setChecked(state);
+            });
 
     connect(m_tasks_widget, &TasksWidget::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__tasks_widget->setChecked(state); });
+            [&](const bool &state) {
+                m_viewmenu__tasks_widget->setChecked(state);
+            });
 
     connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
             [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
@@ -2061,7 +2083,6 @@ void Navi::TogglePathWidget(const bool &state) noexcept {
 bool Navi::event(QEvent *event) {
     if (event->type() == QEvent::Close) {
         if (m_task_manager->taskCount() != 0) {
-            auto btn = new QPushButton("Open tasks");
             QMessageBox msgBox;
             msgBox.setText("There are tasks executing in the background, "
                            "do you really want to quit navi ?");
@@ -2326,5 +2347,26 @@ void Navi::CopyPath(const QString &separator) noexcept {
             m_clipboard->setText(itemPathList.join(m_copy_path_join_str));
         else
             m_clipboard->setText(itemPathList.join(separator));
+    }
+}
+
+void Navi::SelectAllItems() noexcept {
+    m_file_panel->tableView()->selectAll();
+}
+
+void Navi::SelectInverse() noexcept {
+    auto table = m_file_panel->tableView();
+    auto rows = table->model()->rowCount();
+    auto selectionModel = table->selectionModel();
+    auto model = m_file_panel->model();
+
+    for (int row = 0; row < rows; row++) {
+        QModelIndex index = model->index(row, 0);
+        if (selectionModel->isRowSelected(row))
+            selectionModel->select(index, QItemSelectionModel::Rows |
+                                          QItemSelectionModel::Deselect);
+        else
+          selectionModel->select(index, QItemSelectionModel::Rows |
+                                        QItemSelectionModel::Select);
     }
 }
