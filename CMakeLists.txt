@@ -22,7 +22,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # -O2
 # Set flags for compilers
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -Og")  # Add more flags as necessary
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og")  # Add more flags as necessary
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
 set(CMAKE_AUTOMOC ON)
@@ -71,6 +71,7 @@ qt_add_executable(${PROJECT_NAME}
   src/FileWorker.cpp
   src/Thumbnailer.cpp
   src/ContextMenu.cpp
+  src/FolderPropertyWidget.cpp
 
   src/TextEdit.hpp
   src/FileSystemModel.cpp

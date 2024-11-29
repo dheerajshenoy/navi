@@ -631,6 +631,18 @@ void Navi::setupCommandMap() noexcept {
         ExecuteExtendedCommand();
     };
 
+    commandMap["exit"] = [this](const QStringList &args) {
+        Exit();
+    };
+
+    commandMap["new-window"] = [this](const QStringList &args) {
+        LaunchNewInstance();
+    };
+
+    commandMap["folder-property"] = [this](const QStringList &args) {
+        ShowFolderProperty();
+    };
+
     commandMap["cd"] = [this](const QStringList &args) {
         ChangeDirectory();
     };
@@ -847,10 +859,6 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["trash-dwim"] = [this](const QStringList &args) { TrashDWIM(); };
-
-    commandMap["exit"] = [this](const QStringList &args) {
-        QApplication::quit();
-    };
 
     commandMap["messages-pane"] = [this](const QStringList &args) {
         ToggleMessagesBuffer();
@@ -1376,18 +1384,22 @@ void Navi::initMenubar() noexcept {
     m_filemenu = new QMenu("File");
 
     m_filemenu__new_window = new QAction("New Window");
-    m_filemenu__new_tab = new QAction("New Tab");
     m_filemenu__create_new_menu = new QMenu("Create New");
 
     m_filemenu__create_new_folder = new QAction("New Folder");
     m_filemenu__create_new_file = new QAction("New File");
 
+    m_filemenu__close_window = new QAction("Close Window");
+    m_filemenu__folder_properties = new QAction("Folder Properties");
+
     m_filemenu->addAction(m_filemenu__new_window);
-    m_filemenu->addAction(m_filemenu__new_tab);
     m_filemenu->addMenu(m_filemenu__create_new_menu);
 
     m_filemenu__create_new_menu->addAction(m_filemenu__create_new_folder);
     m_filemenu__create_new_menu->addAction(m_filemenu__create_new_file);
+
+    m_filemenu->addAction(m_filemenu__folder_properties);
+    m_filemenu->addAction(m_filemenu__close_window);
 
     m_viewmenu = new QMenu("View");
 
@@ -1564,11 +1576,17 @@ void Navi::initMenubar() noexcept {
     connect(m_viewmenu__messages, &QAction::triggered, this,
             [&](const bool &state) { ToggleMessagesBuffer(state); });
 
+    connect(m_filemenu__new_window, &QAction::triggered, this, &Navi::LaunchNewInstance);
+
     connect(m_filemenu__create_new_file, &QAction::triggered, this,
             [&]() { m_file_panel->NewFile(); });
 
     connect(m_filemenu__create_new_folder, &QAction::triggered, this,
             [&]() { m_file_panel->NewFolder(); });
+
+    connect(m_filemenu__close_window, &QAction::triggered, this, &Navi::Exit);
+
+    connect(m_filemenu__folder_properties, &QAction::triggered, this, &Navi::ShowFolderProperty);
 
     connect(m_tools_menu__search, &QAction::triggered, this,
             [&]() { m_file_panel->Search(); });
@@ -2257,4 +2275,20 @@ void Navi::cacheThumbnails() noexcept {
     QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnails,
                                              m_preview_panel->thumbnailer(),
                                              files);
+}
+
+void Navi::LaunchNewInstance() noexcept {
+    // Get the path to the current application executable
+    QString appPath = QCoreApplication::applicationFilePath();
+
+    // Launch a new instance
+    QProcess::startDetached(appPath);
+}
+
+void Navi::ShowFolderProperty() noexcept {
+    FolderPropertyWidget *f = new FolderPropertyWidget(m_file_panel->getCurrentDir(), this);
+}
+
+void Navi::Exit() noexcept {
+    QApplication::quit();
 }

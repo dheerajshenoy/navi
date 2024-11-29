@@ -58,6 +58,8 @@ protected:
             this->clearFocus();
             this->clear();
             emit hideRequested();
+
+            disconnect(this, &LineEdit::returnPressed, 0, 0);
         }
 
         else if (e->type() == QKeyEvent::KeyPress) {

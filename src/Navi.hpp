@@ -64,6 +64,7 @@ static const QString BOOKMARK_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + 
 #include "TasksWidget.hpp"
 #include "RegisterWidget.hpp"
 #include "HookManager.hpp"
+#include "FolderPropertyWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -205,6 +206,9 @@ public:
     void readArgumentParser(argparse::ArgumentParser &parser);
     void GotoItem(const int &num) noexcept;
     void ChangeDirectory(const QString &dir = QString()) noexcept;
+    void LaunchNewInstance() noexcept;
+    void ShowFolderProperty() noexcept;
+    void Exit() noexcept;
 
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
@@ -250,9 +254,10 @@ private:
 
     QMenu *m_filemenu__create_new_menu = nullptr;
     QAction *m_filemenu__new_window = nullptr;
-    QAction *m_filemenu__new_tab = nullptr;
     QAction *m_filemenu__create_new_folder = nullptr;
     QAction *m_filemenu__create_new_file = nullptr;
+    QAction *m_filemenu__close_window = nullptr;
+    QAction *m_filemenu__folder_properties = nullptr;
 
     QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
@@ -416,6 +421,8 @@ private:
       "echo-error",
 
       // misc
+      "new-window",
+      "exit",
       "filter",
       "reset-filter",
       "refresh",
@@ -436,8 +443,8 @@ private:
       "register",
       "repeat-last-command",
       "cd",
-      "terminal-here",
       "terminal",
+      "folder-property",
 
     };
 
