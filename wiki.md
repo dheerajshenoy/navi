@@ -688,17 +688,80 @@ There is a main `navi` table. In this table are *four* more tables: `ui`, `api`,
 
 ### UI
 
-You can toggle all the UI elements by `navi.ui.<UI-TYPE>`.
+#### marks
+#### shortcuts
+#### messages
+#### preview_panel
+#### pathbar
+#### statusbar
+#### `menubar` (table)
 
-UI-TYPE can be one of:
+##### `toggle` (void)
 
-+ marks
-+ shortcuts
-+ messages
-+ preview_panel
-+ pathbar
-+ statusbar
-+ menubar
+Toggles the menubar
+
+##### `toggle` _arg: bool_ (void)
+
+Toggles the menubar with the _arg_ state
+
+##### `add_menu` _arg: MenuItem_ (void)
+
+Adds the menu provided as argument to the menubar.
+
+The argument should have the structure of `MenuItem` type.
+
+```cpp
+MenuItem {
+    label = "menu label",
+    submenu = {
+        label = "submenu",
+        action = function ()
+    }
+}
+```
+
+Check the following example for reference:
+
+```lua
+function INIT_NAVI()
+    -- This is a function with special meaning to Navi.
+    -- This will be called on startup
+
+    custom_menu = {
+        label = "Custom Menu",
+        submenu = {
+            {
+                label = "Open",
+                action = function()
+                    navi.io.msg("HELLO WORLD");
+                end,
+            },
+
+            {
+                label = "sub",
+                submenu = {
+                    {
+                        label = "item 1",
+                        action = function ()
+                            navi.io.msg("SUB HELLO");
+                        end
+                    }
+                },
+            },
+
+            {
+                label = "Save",
+                action = function() print("Save clicked") end,
+            }
+        }
+    }
+
+    navi.ui.menubar.add_menu(custom_menu)
+
+end
+```
+
+
 
 ### API
 

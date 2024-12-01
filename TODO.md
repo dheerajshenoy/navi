@@ -81,7 +81,7 @@
 - [X] custom copy, delete, rename etc.
 - [ ] first startup wierd load behavior
 - [ ] lua API for custom context menu
-- [ ] lua API for menubar
+- [X] lua API for custom menubar
 - [ ] lua API for statusbar
 - [ ] Deletion make task if large size
 - [ ] VisibilityChange signal bug
