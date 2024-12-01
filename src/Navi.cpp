@@ -1391,7 +1391,7 @@ void Navi::initMenubar() noexcept {
     m_menubar = new Menubar();
     this->setMenuBar(m_menubar);
 
-    m_filemenu = new QMenu("File");
+    m_filemenu = new QMenu("&File");
 
     m_filemenu__new_window = new QAction("New Window");
     m_filemenu__create_new_menu = new QMenu("Create New");
@@ -1411,7 +1411,7 @@ void Navi::initMenubar() noexcept {
     m_filemenu->addAction(m_filemenu__folder_properties);
     m_filemenu->addAction(m_filemenu__close_window);
 
-    m_viewmenu = new QMenu("View");
+    m_viewmenu = new QMenu("&View");
 
     m_viewmenu__refresh = new QAction("Refresh Folder");
     m_viewmenu__filter = new QAction("Filter");
@@ -1487,7 +1487,7 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__sort_ascending->setCheckable(true);
     m_viewmenu__sort_ascending->setChecked(true);
 
-    m_viewmenu__files_menu = new QMenu("Files");
+    m_viewmenu__files_menu = new QMenu("&Files");
 
     m_viewmenu__files_menu__hidden = new QAction("Hidden");
     m_viewmenu__files_menu__hidden->setCheckable(true);
@@ -1511,7 +1511,7 @@ void Navi::initMenubar() noexcept {
     m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
     m_viewmenu->addAction(m_viewmenu__tasks_widget);
 
-    m_bookmarks_menu = new QMenu("Bookmarks");
+    m_bookmarks_menu = new QMenu("&Bookmarks");
 
     m_bookmarks_menu__add = new QAction("Add bookmark");
     m_bookmarks_menu__remove = new QAction("Remove bookmark");
@@ -1539,15 +1539,15 @@ void Navi::initMenubar() noexcept {
         RemoveBookmark();
     });
 
-    m_tools_menu = new QMenu("Tools");
+    m_tools_menu = new QMenu("&Tools");
 
     m_tools_menu__search = new QAction("Search");
-    m_tools_menu__command_in_folder = new QAction("Command in Folder");
+    m_tools_menu__find_files = new QAction("Find Files");
 
+    m_tools_menu->addAction(m_tools_menu__find_files);
     m_tools_menu->addAction(m_tools_menu__search);
-    m_tools_menu->addAction(m_tools_menu__command_in_folder);
 
-    m_edit_menu = new QMenu("Edit");
+    m_edit_menu = new QMenu("&Edit");
 
     m_edit_menu__open = new QAction("Open");
     m_edit_menu__copy = new QAction("Copy");
@@ -1589,7 +1589,7 @@ void Navi::initMenubar() noexcept {
     connect(m_edit_menu__select_inverse, &QAction::triggered, this,
             &Navi::SelectInverse);
 
-    m_go_menu = new QMenu("Go");
+    m_go_menu = new QMenu("&Go");
 
     m_go_menu__home_folder = new QAction("Home Folder");
     m_go_menu__parent_folder = new QAction("Parent Folder");
@@ -1601,6 +1601,10 @@ void Navi::initMenubar() noexcept {
         m_go_menu__parent_folder,
         m_go_menu__home_folder,
         m_go_menu__connect_to_server});
+
+    connect(m_go_menu__previous_folder, &QAction::triggered, m_file_panel, &FilePanel::PreviousDirectory);
+    connect(m_go_menu__home_folder, &QAction::triggered, m_file_panel, &FilePanel::HomeDirectory);
+    connect(m_go_menu__parent_folder, &QAction::triggered, m_file_panel, &FilePanel::UpDirectory);
 
     m_menubar->addMenu(m_filemenu);
     m_menubar->addMenu(m_edit_menu);
@@ -2426,4 +2430,61 @@ void Navi::SelectInverse() noexcept {
           selectionModel->select(index, QItemSelectionModel::Rows |
                                         QItemSelectionModel::Select);
     }
+}
+
+Navi::MenuItem Navi::Lua__parseMenuItem(const sol::table &table) noexcept {
+    MenuItem item;
+
+    // Extract the label
+    item.label = table["label"];
+
+    // Extract the action
+    if (table["action"].valid()) {
+        sol::function luaAction = table["action"];
+        item.action = [luaAction]() { luaAction(); };
+    }
+
+    // Extract submenus recursively
+    if (table["submenu"].valid()) {
+        sol::table submenuTable = table["submenu"];
+        for (const auto& kvp : submenuTable) {
+            if (kvp.second.is<sol::table>()) {
+                item.submenu.push_back(Lua__parseMenuItem(kvp.second.as<sol::table>()));
+            }
+        }
+    }
+
+    return item;
+}
+
+void Navi::Lua__AddMenu(const sol::table& menuTable) noexcept {
+    Navi::MenuItem menu = Lua__parseMenuItem(menuTable);
+    QMenu *qmenu = new QMenu(QString::fromStdString(menu.label));
+
+    if (!menu.submenu.empty()) {
+        for (const auto &subitem : menu.submenu) {
+            // If no submenu, add as an action
+            if (subitem.submenu.empty()) {
+                QAction *action =
+                    new QAction(QString::fromStdString(subitem.label));
+                qmenu->addAction(action);
+                connect(action, &QAction::triggered, this, [subitem]() {
+                    subitem.action();
+                });
+            } else { // else, add it as a menu
+                QMenu *submenu = new QMenu(QString::fromStdString(subitem.label));
+                qmenu->addMenu(submenu);
+                for (const auto &subitem : subitem.submenu) {
+                  QAction *action =
+                      new QAction(QString::fromStdString(subitem.label));
+                  submenu->addAction(action);
+                  connect(action, &QAction::triggered, this, [subitem]() {
+                      subitem.action();
+                  });
+                }
+            }
+        }
+    }
+
+    m_menubar->addMenu(qmenu);
 }

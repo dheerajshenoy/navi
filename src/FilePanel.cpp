@@ -241,6 +241,7 @@ void FilePanel::setCurrentDir(QString path, const bool &SelectFirstItem) noexcep
             path = fileinfo.absolutePath();
         }
         m_model->setRootPath(path);
+        m_previous_dir_path = m_current_dir;
         m_current_dir = path;
 
         if (SelectFirstItem)
@@ -1587,8 +1588,7 @@ void FilePanel::ToggleHeaders(const bool &state) noexcept {
 }
 
 void FilePanel::ToggleHeaders() noexcept {
-    m_table_view->horizontalHeader()->setVisible(
-                                                 !m_table_view->horizontalHeader()->isVisible());
+    m_table_view->horizontalHeader()->setVisible(!m_table_view->horizontalHeader()->isVisible());
 }
 
 void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
@@ -1646,4 +1646,12 @@ const FilePanel::ItemProperty FilePanel::getItemProperty() noexcept {
     property.mimeName = db.mimeTypeForFile(file).name().toStdString();
 
     return property;
+}
+
+void FilePanel::HomeDirectory() noexcept {
+    setCurrentDir("~");
+}
+
+void FilePanel::PreviousDirectory() noexcept {
+    setCurrentDir(m_previous_dir_path);
 }

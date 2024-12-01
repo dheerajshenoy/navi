@@ -77,12 +77,15 @@
 - [ ] Highlight symlink differently
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
-- ~~[ ] Tabs~~
 - [X] overwrite copy, paste etc.
 - [X] custom copy, delete, rename etc.
 - [ ] first startup wierd load behavior
 - [ ] lua API for custom context menu
+- [ ] lua API for menubar
+- [ ] lua API for statusbar
 - [ ] Deletion make task if large size
 - [ ] VisibilityChange signal bug
 - [X] Progressbar for `taskswidget`
 - [ ] Zoom UI
+- [ ] Connect to internet server
+- ~~[ ] Tabs~~

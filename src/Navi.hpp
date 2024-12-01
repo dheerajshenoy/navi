@@ -1,5 +1,7 @@
 #pragma once
 
+// #define SOL_ALL_SAFETIES_ON 1
+
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -109,7 +111,20 @@ public:
     void LogMessage(const QString &message, const MessageType &type) noexcept;
     void FocusPath() noexcept;
     void AddBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
-    void RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
+    void
+    RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
+
+    struct MenuItem {
+        std::string label;
+        std::function<void()> action;
+        std::vector<MenuItem> submenu;
+
+        inline void execute() noexcept {
+            if (action) {
+                action();
+            }
+        }
+    };
 
     void EditBookmarkName(const QStringList &bookmarkName) noexcept;
     void EditBookmarkFile(const QStringList &bookmarkName) noexcept;
@@ -220,6 +235,8 @@ public:
                            const std::string &default_selection) noexcept;
     void Lua__Shell(const std::string &command) noexcept;
     void Lua__CreateFolders(const std::vector<std::string> &paths) noexcept;
+    void Lua__AddMenu(const sol::table &menu) noexcept;
+    Navi::MenuItem Lua__parseMenuItem(const sol::table &table) noexcept;
 
 protected:
     bool event(QEvent *e) override;
@@ -313,7 +330,7 @@ private:
     QAction *m_edit_menu__select_inverse = nullptr;
 
     QAction *m_tools_menu__search = nullptr;
-    QAction *m_tools_menu__command_in_folder = nullptr;
+    QAction *m_tools_menu__find_files = nullptr;
 
     QAction *m_go_menu__previous_folder = nullptr;
     QAction *m_go_menu__parent_folder = nullptr;

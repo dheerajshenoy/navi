@@ -64,6 +64,8 @@ public:
     QString getCurrentItem() noexcept;
     QString getCurrentItemFileName() noexcept;
     void UpDirectory() noexcept;
+    void HomeDirectory() noexcept;
+    void PreviousDirectory() noexcept;
     void SelectItem() noexcept;
     void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
@@ -225,7 +227,7 @@ private:
     QVBoxLayout *m_layout = new QVBoxLayout();
     TableView *m_table_view = new TableView();
     FileSystemModel *m_model = new FileSystemModel();
-    QString m_current_dir;
+    QString m_current_dir = "~";
     bool m_hidden_files_shown = false;
     bool m_hidden_files_just_toggled = false;
     bool m_dot_dot_shown = false;
@@ -272,4 +274,5 @@ private:
     QString m_highlight_text;
     QHash<QString, QString> m_default_applications_hash;
     bool m_bulk_rename_with_terminal = false;
+    QString m_previous_dir_path;
 };
