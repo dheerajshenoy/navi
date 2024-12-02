@@ -39,6 +39,11 @@ public:
         QWidget::hide();
     }
 
+    void close() noexcept {
+        emit visibilityChanged(false);
+        QWidget::close();
+    }
+
 private:
     QTextEdit *m_text_edit = new QTextEdit();
     QVBoxLayout *m_layout = new QVBoxLayout();

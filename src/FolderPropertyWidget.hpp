@@ -14,7 +14,6 @@
 #include <QPromise>
 #include <QFutureWatcher>
 #include <QDirIterator>
-
 #include "utils.hpp"
 
 class FolderPropertyWidget : public QDialog {
@@ -22,13 +21,14 @@ class FolderPropertyWidget : public QDialog {
 public:
 
     explicit FolderPropertyWidget(const QString& folderPath, QWidget *parent = nullptr);
+    ~FolderPropertyWidget();
 
 private:
-    struct FolderInfo {
-        quint64 size;
-        uint32_t count;
-    };
 
-    FolderInfo getFolderInfo(const QString &folderPath) noexcept;
+    utils::FolderInfo getFolderInfo(const QString &folderPath) noexcept;
     QFormLayout *m_layout = nullptr;
+
+    QLocale locale;
+    QFutureWatcher<utils::FolderInfo> *future_watcher = new QFutureWatcher<utils::FolderInfo>(this);
+    QFuture<utils::FolderInfo> future;
 };

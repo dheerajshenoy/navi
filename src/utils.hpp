@@ -6,12 +6,19 @@
 #include <QRegularExpression>
 #include <QList>
 #include <QProcess>
+#include <QDir>
 #include "StorageDevice.hpp"
 
 class utils {
 
 public:
     utils() = delete;
+
+    struct FolderInfo {
+        quint64 size;
+        uint32_t count;
+    };
+
     static QString getPermString(const QFileInfo &fileInfo) noexcept;
     static std::tuple<bool, uint> isNumber(const QString &numString) noexcept;
     static bool isValidPath(const QString &path) noexcept;
@@ -24,4 +31,5 @@ public:
     static bool copyFile(const QString &sourceFile, const QString &destFile) noexcept;
     static QStringList getAssociatedApplications(const QString &mimeType) noexcept;
 
+    static FolderInfo getFolderInfo(const QString &path) noexcept;
 };

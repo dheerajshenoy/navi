@@ -70,7 +70,6 @@ qt_add_executable(${PROJECT_NAME}
   src/HookManager.cpp
   src/FileWorker.cpp
   src/Thumbnailer.cpp
-  src/ContextMenu.cpp
   src/FolderPropertyWidget.cpp
 
   src/TextEdit.hpp

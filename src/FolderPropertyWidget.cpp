@@ -18,7 +18,6 @@ FolderPropertyWidget::FolderPropertyWidget(const QString &folderPath, QWidget *p
 
     QLabel *size_label = new QLabel("Calculating...");
     QLabel *item_count_label = new QLabel("Calculating...");
-// new QLabel(m_locale.formattedDataSize(getFolderSize(folderPath))));
 
     m_layout->addRow("Name", new QLabel(fileInfo.fileName()));
     m_layout->addRow("Location", new QLabel(filePath));
@@ -32,55 +31,26 @@ FolderPropertyWidget::FolderPropertyWidget(const QString &folderPath, QWidget *p
     QPushButton *closeButton = new QPushButton("Close");
     m_layout->addRow(closeButton);
 
-    QLocale locale;
-    QFutureWatcher<FolderInfo> *future_watcher = new QFutureWatcher<FolderInfo>(this);
-    QFuture<FolderInfo> future = QtConcurrent::run(&FolderPropertyWidget::getFolderInfo, this, folderPath);
-    connect(future_watcher, &QFutureWatcher<FolderInfo>::finished, this,
-            [future_watcher, item_count_label, size_label, locale]() {
-        FolderInfo finfo = future_watcher->result();
-        item_count_label->setText(QString::number(finfo.count));
-        size_label->setText(locale.formattedDataSize(finfo.size));
-    });
+    future = QtConcurrent::run(&utils::getFolderInfo, folderPath);
+    connect(future_watcher, &QFutureWatcher<utils::FolderInfo>::finished, this,
+            [this, item_count_label, size_label]() {
+                utils::FolderInfo finfo = future_watcher->result();
+                item_count_label->setText(QString::number(finfo.count));
+                size_label->setText(locale.formattedDataSize(finfo.size));
+            });
     future_watcher->setFuture(future);
     this->show();
 
-    connect(closeButton, &QPushButton::clicked, this, [this, future_watcher]() {
-        if (future_watcher->isRunning()) {
-            future_watcher->cancel();             // Request cancellation
-            future_watcher->waitForFinished();   // Ensure task completion
-        }
-        future_watcher->deleteLater();           // Clean up
-        this->close();  // Close the current window
+    connect(closeButton, &QPushButton::clicked, this, [this] () {
+        this->close();
     });
 
 }
 
-FolderPropertyWidget::FolderInfo FolderPropertyWidget::getFolderInfo(const QString &folderPath) noexcept {
-    uint32_t count = 0;
-
-    quint64 size = 0;
-    QDir dir(folderPath);
-    //calculate total size of current directories' files
-    QDir::Filters fileFilters = QDir::Files|QDir::System|QDir::Hidden;
-    for(QString filePath : dir.entryList(fileFilters)) {
-        QFileInfo fi(dir, filePath);
-        size += fi.size();
-        count++;
+FolderPropertyWidget::~FolderPropertyWidget() {
+    if (future_watcher->isRunning()) {
+        future_watcher->cancel();             // Request cancellation
+        future_watcher->waitForFinished();   // Ensure task completion
     }
-
-    //add size of child directories recursively
-    QDir::Filters dirFilters =
-        QDir::Dirs | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden;
-
-    for(QString childDirPath : dir.entryList(dirFilters)) {
-        auto finfo = getFolderInfo(folderPath + QDir::separator() + childDirPath);
-        size += finfo.size;
-        count += finfo.count;
-    }
-
-    FolderInfo finfo;
-    finfo.count = count;
-    finfo.size = size;
-
-    return finfo;
+    future_watcher->deleteLater();           // Clean up
 }

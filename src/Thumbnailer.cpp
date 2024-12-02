@@ -67,7 +67,6 @@ void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const Q
         // QFileInfo file(file_name);
         // TODO
         // if (file.size() > m_max_preview_threshold) {
-        //     emit clearPreview();
         //     return;
         // }
 

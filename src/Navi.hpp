@@ -1,5 +1,7 @@
 #pragma once
 
+#define UNUSED(x) (void) x
+
 // #define SOL_ALL_SAFETIES_ON 1
 
 #include <QApplication>
@@ -236,7 +238,10 @@ public:
     void Lua__Shell(const std::string &command) noexcept;
     void Lua__CreateFolders(const std::vector<std::string> &paths) noexcept;
     void Lua__AddMenu(const sol::table &menu) noexcept;
+    void Lua__AddContextMenu(const sol::table &cmenu) noexcept;
     Navi::MenuItem Lua__parseMenuItem(const sol::table &table) noexcept;
+    void FullScreen() noexcept;
+    void FullScreen(const bool &state) noexcept;
 
 protected:
     bool event(QEvent *e) override;
@@ -290,6 +295,7 @@ private:
     QAction *m_viewmenu__filter = nullptr;
     QAction *m_viewmenu__preview_panel = nullptr;
     QAction *m_viewmenu__menubar = nullptr;
+    QAction *m_viewmenu__fullscreen = nullptr;
     QAction *m_viewmenu__statusbar = nullptr;
     QAction *m_viewmenu__headers = nullptr;
     QAction *m_viewmenu__messages = nullptr;
@@ -488,6 +494,7 @@ private:
       "terminal",
       "folder-property",
       "copy-path",
+      "fullscreen",
     };
 
     MessagesBuffer *m_log_buffer = nullptr;

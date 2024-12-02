@@ -88,4 +88,5 @@
 - [X] Progressbar for `taskswidget`
 - [ ] Zoom UI
 - [ ] Connect to internet server
+- [ ] Selection wierd behaviour
 - ~~[ ] Tabs~~

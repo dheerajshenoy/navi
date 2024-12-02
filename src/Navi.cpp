@@ -230,17 +230,18 @@ void Navi::initConfiguration() noexcept {
             if (file_pane_table.valid()) {
                 sol::optional<sol::table> columns_table = file_pane_table["columns"];
                 if (columns_table.has_value()) {
-                    QList<FileSystemModel::Column>
-                    columnList; // List to store column configuration
+                    QList<FileSystemModel::Column> columnList; // List to store column configuration
                     FileSystemModel::Column column;
                     bool file_name_type_check = false;
                     sol::table columns = columns_table.value();
-                    for (std::size_t i = 1; i < columns.size(); i++) {
+                    for (std::size_t i = 1; i <= columns.size(); i++) {
                         auto col = columns[i];
                         auto name =
                             QString::fromStdString(col["name"].get_or<std::string>(""));
                         auto type =
                             QString::fromStdString(col["type"].get_or<std::string>(""));
+
+                        qDebug() << type;
 
                         if (type == "file_name") {
                             column.type = FileSystemModel::ColumnType::FileName;
@@ -259,6 +260,8 @@ void Navi::initConfiguration() noexcept {
 
                         column.name = name;
                         columnList.append(column);
+
+                        qDebug() << name;
                     }
 
                     // If file_name type is not found in the configuration, inform the
@@ -632,6 +635,11 @@ void Navi::ShowHelp() noexcept {}
 void Navi::setupCommandMap() noexcept {
   commandMap["execute-extended-command"] = [this](const QStringList &args) {
     ExecuteExtendedCommand();
+  };
+
+  commandMap["fullscreen"] = [this](const QStringList &args) {
+      UNUSED(args);
+      FullScreen();
   };
 
   commandMap["copy-path"] = [this](const QStringList &args) {
@@ -1417,6 +1425,9 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__filter = new QAction("Filter");
     m_viewmenu__filter->setCheckable(true);
 
+    m_viewmenu__fullscreen = new QAction("Fullscreen");
+    m_viewmenu__fullscreen->setCheckable(true);
+
     m_viewmenu__menubar = new QAction("Menubar");
     m_viewmenu__menubar->setCheckable(true);
 
@@ -1501,6 +1512,7 @@ void Navi::initMenubar() noexcept {
 
     m_viewmenu->addAction(m_viewmenu__refresh);
     m_viewmenu->addAction(m_viewmenu__filter);
+    m_viewmenu->addAction(m_viewmenu__fullscreen);
     m_viewmenu->addSeparator();
     m_viewmenu->addAction(m_viewmenu__headers);
     m_viewmenu->addAction(m_viewmenu__preview_panel);
@@ -1615,6 +1627,9 @@ void Navi::initMenubar() noexcept {
 
     connect(m_viewmenu__refresh, &QAction::triggered, this,
             [&](const bool &state) { ForceUpdate(); });
+
+    connect(m_viewmenu__fullscreen, &QAction::triggered, this,
+            [&](const bool &state) { FullScreen(state); });
 
     connect(m_viewmenu__filter, &QAction::triggered, this,
             [&](const bool &state) {
@@ -2487,4 +2502,22 @@ void Navi::Lua__AddMenu(const sol::table& menuTable) noexcept {
     }
 
     m_menubar->addMenu(qmenu);
+}
+
+void Navi::FullScreen(const bool &state) noexcept {
+    if (state)
+        showFullScreen();
+    else
+        showNormal();
+}
+
+void Navi::FullScreen() noexcept {
+    if (isFullScreen())
+        showNormal();
+    else
+        showFullScreen();
+}
+
+void Navi::Lua__AddContextMenu(const sol::table &table) noexcept {
+    // m_file_panel->setContextMenu(cmenu);
 }

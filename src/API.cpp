@@ -8,12 +8,12 @@ void Navi::initNaviLuaAPI() noexcept {
       &FilePanel::ItemProperty::size, "mimeName",
                                             &FilePanel::ItemProperty::mimeName);
 
-  lua.new_usertype<MenuItem>("MenuItem",
-                             "label", &MenuItem::label, "action",
-                             sol::property([](MenuItem &m, sol::function func) {
-                                 m.action = [func]() { func(); };
-                             }),
-                             "submenu", &MenuItem::submenu);
+  // lua.new_usertype<MenuItem>("MenuItem",
+  //                            "label", &MenuItem::label, "action",
+  //                            sol::property([](MenuItem &m, sol::function func) {
+  //                                m.action = [func]() { func(); };
+  //                            }),
+  //                            "submenu", &MenuItem::submenu);
 
   lua["navi"] = lua.create_table();
 
@@ -267,6 +267,12 @@ void Navi::initNaviLuaAPI() noexcept {
   };
 
   lua["navi"]["ui"]["marks"] = [this]() { ToggleMarksBuffer(); };
+
+  lua["navi"]["ui"]["context_menu"] = lua.create_table();
+
+  lua["navi"]["ui"]["context_menu"]["create"] = [this](const sol::table &table) {
+      Lua__AddContextMenu(table);
+  };
 
   // IO API
   lua["navi"]["io"] = lua.create_table();

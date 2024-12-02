@@ -57,8 +57,6 @@ void PreviewPanel::loadImageAfterDelay() noexcept {
         if (!img.isNull()) {
             m_image_cache_hash.insert(m_image_filepath, img);
             showImagePreview(img);
-        } else {
-            m_thumbnailer->generate_thumbnail(m_image_filepath);
         }
     }
 }

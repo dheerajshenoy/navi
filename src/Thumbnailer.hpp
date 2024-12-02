@@ -33,7 +33,7 @@ public:
     QImage get_image_from_cache(const QString &file_name) noexcept;
 
 private:
-
+    void create_thumbnails_dir() noexcept;
     QString file_uri_from_path(const QString &filePath) noexcept;
     void generate_thumbnail_for_image(const QString &filePath, const QString &path_uri) noexcept;
     void generate_thumbnail_for_pdf(const QString &filePath, const QString &path_uri) noexcept;

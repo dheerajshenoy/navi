@@ -169,3 +169,34 @@ QStringList utils::getAssociatedApplications(const QString &mimeType) noexcept {
     }
     return apps;
 }
+
+
+utils::FolderInfo utils::getFolderInfo(const QString &folderPath) noexcept {
+    uint32_t count = 0;
+
+    quint64 size = 0;
+    QDir dir(folderPath);
+    //calculate total size of current directories' files
+    QDir::Filters fileFilters = QDir::Files|QDir::System|QDir::Hidden;
+    for(QString filePath : dir.entryList(fileFilters)) {
+        QFileInfo fi(dir, filePath);
+        size += fi.size();
+        count++;
+    }
+
+    //add size of child directories recursively
+    QDir::Filters dirFilters =
+        QDir::Dirs | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden;
+
+    for(QString childDirPath : dir.entryList(dirFilters)) {
+        auto finfo = getFolderInfo(folderPath + QDir::separator() + childDirPath);
+        size += finfo.size;
+        count += finfo.count;
+    }
+
+    FolderInfo finfo;
+    finfo.count = count;
+    finfo.size = size;
+
+    return finfo;
+}

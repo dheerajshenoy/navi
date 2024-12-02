@@ -475,6 +475,10 @@ This displays the list of all the shortcuts.
 
 ### Misc
 
+`fullscreen`
+
+Toggle fullscreen mode for Navi.
+
 `execute-extended-command`
 
 This is the function that pops up the inputbar to enter the interactive commands.
