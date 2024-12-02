@@ -1,0 +1,1655 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2024-11-17 Sun 19:06 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org4ad3118">1. Prompt string `required`</a></li>
+<li><a href="#org6333717">2. Default placeholder text `optional`</a></li>
+<li><a href="#orgaf1b5ee">3. Selection text (piece of text that has to be selected by default) `optional`</a></li>
+<li><a href="#org9d1a4d0">4. `h` to go to the parent directory</a></li>
+<li><a href="#orga20df93">5. `j` to go the next item</a></li>
+<li><a href="#org3a4c130">6. `k` to go the previous item</a></li>
+<li><a href="#orgec5099f">7. `l` to select the current item</a></li>
+<li><a href="#org4cc098b">8. `gg` to go to the first item</a></li>
+<li><a href="#orgcec9c0a">9. `Shift+g` to go the last item</a></li>
+<li><a href="#org38f4f5e">10. `Space` to toggle marking for the current item</a></li>
+<li><a href="#orgfb6df7c">11. `Shift+Space` to toggle inverse marking for the current directory</a></li>
+<li><a href="#org0c6870e">12. `Ctrl+a` to mark all the items in the current directory</a></li>
+<li><a href="#orgf0a9320">13. `Shift+r` to rename current item if no marks are present or all the marked items if marks are present (this is what DWIM means)</a></li>
+<li><a href="#org47c3919">14. `Shift+d` to delete DWIM</a></li>
+<li><a href="#orgc7c8c75">15. `yy` to copy DWIM</a></li>
+<li><a href="#org895fba6">16. `p` to paste cut/copy marked items to the current directory</a></li>
+<li><a href="#org84072ed">17. `Shift+u` to unmark all the local marks</a></li>
+<li><a href="#orgd3dcd95">18. `.` toggle hidden/dot files</a></li>
+<li><a href="#orgb2400d2">19. `/` Search for item in the current directory</a></li>
+<li><a href="#orgc11cfe4">20. `n` Go to the next match for the search</a></li>
+<li><a href="#orga19a131">21. `Shift+n` Go to the previous match for the search</a></li>
+<li><a href="#orga82a8a7">22. `Ctrl+m` toggle menubar</a></li>
+<li><a href="#org0e17483">23. `Ctrl+p` toggle preview panel</a></li>
+<li><a href="#orgf8d1156">24. `Ctrl+l` focus the path widget</a></li>
+<li><a href="#orgb72a7bd">25. `Shift+v` Toggle visual line selection mode</a></li>
+<li><a href="#orgedad166">26. Prompt text `str` (<b><b>required</b></b>)</a></li>
+<li><a href="#orgb0f5f6d">27. Placeholder text `str` (<b>optional</b>)</a></li>
+<li><a href="#org501eab5">28. Selection text `str` (<b>optional</b>)</a></li>
+<li><a href="#org2657bfb">29. Text `str` (<b><b>required</b></b>)</a></li>
+<li><a href="#org61fd1fe">30. Type `MessageType` (<b>optinal</b>)</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b><b>NOTE: This page is still a work in progress.</b></b>
+</p>
+
+<p>
+&lt;!&#x2013; markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc &#x2013;&gt;
+</p>
+
+<ul class="org-ul">
+<li>[Table of Contents](#table-of-contents)</li>
+<li>[Installation](#installation)</li>
+<li>[Using Navi](#using-navi)
+<ul class="org-ul">
+<li>[Naming Conventions](#naming-conventions)</li>
+<li>[Bookmarks](#bookmarks)</li>
+<li>[Interactive Commands](#interactive-commands)
+<ul class="org-ul">
+<li>[Types of Command](#types-of-command)
+<ul class="org-ul">
+<li>[Current Scope](#current-scope)</li>
+<li>[Local Scope](#local-scope)</li>
+<li>[Global Scope](#global-scope)</li>
+<li>[DWIM](#dwim)</li>
+</ul></li>
+</ul></li>
+<li>[Commands List](#commands-list)
+<ul class="org-ul">
+<li>[Navigation](#navigation)</li>
+<li>[Echo (Printing) Commands](#echo-printing-commands)</li>
+<li>[Marking Item](#marking-item)</li>
+<li>[Unmarking Item](#unmarking-item)</li>
+<li>[Selecting Item](#selecting-item)</li>
+<li>[Change Permission](#change-permission)</li>
+<li>[Renaming Files](#renaming-files)</li>
+<li>[Cutting Files](#cutting-files)</li>
+<li>[Copying Files](#copying-files)</li>
+<li>[Pasting (Moving) Files](#pasting-moving-files)</li>
+<li>[Deleting Files](#deleting-files)</li>
+<li>[Trashing Files](#trashing-files)</li>
+<li>[Filtering Items](#filtering-items)</li>
+<li>[Panes](#panes)</li>
+<li>[Misc](#misc)</li>
+<li>[Shell Commands](#shell-commands)</li>
+<li>[Bookmarks](#bookmarks-1)</li>
+<li>[Searching Items](#searching-items)</li>
+<li>[Sorting Items](#sorting-items)</li>
+<li>[Storage Device](#storage-device)</li>
+</ul></li>
+<li>[Linux Only](#linux-only)</li>
+<li>[Theming](#theming)</li>
+<li>[&lt;span class="todo TODO"&gt;TODO&lt;/span&gt; Scripting with Lua [scripting-with-lua]](#span-classtodo-todotodospan-scripting-with-lua-scripting-with-lua)</li>
+<li>[Configuration with Lua](#configuration-with-lua)</li>
+</ul></li>
+<li>[Acknowledgement](#acknowledgement)</li>
+</ul>
+
+<p>
+&lt;!&#x2013; markdown-toc end &#x2013;&gt;
+</p>
+
+
+
+
+<p>
+Navi can be built from source. The following libraries are dependencies
+for navi:
+</p>
+
+<ul class="org-ul">
+<li>[Qt6](<a href="https://www.qt.io/product/qt6">https://www.qt.io/product/qt6</a>)</li>
+<li>[Lua](<a href="https://www.lua.org/start.html">https://www.lua.org/start.html</a>)</li>
+<li>[ImageMagick(Magick++)](<a href="https://imagemagick.org/script/magick++.php">https://imagemagick.org/script/magick++.php</a>)</li>
+<li>[Poppler (Poppler-Qt6)](<a href="https://poppler.freedesktop.org/api/qt6/">https://poppler.freedesktop.org/api/qt6/</a>)</li>
+<li>[Udisks](<a href="https://www.freedesktop.org/wiki/Software/udisks/">https://www.freedesktop.org/wiki/Software/udisks/</a>)</li>
+<li>[TreeSitter](<a href="https://tree-sitter.github.io/tree-sitter/">https://tree-sitter.github.io/tree-sitter/</a>)</li>
+</ul>
+
+<p>
+If you're on ArchLinux you can copy paste the following `pacman` code to
+install these dependencies:
+</p>
+
+<p>
+``` bash
+sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6 udisks2 tree-sitter tree-sitter-query tree-sitter-c tree-sitter-markdown tree-sitter-python tree-sitter-lua tree-sitter-bash tree-sitter-javascript
+```
+</p>
+
+<p>
+If you're on Ubuntu/Debian based distribution, you can paste the
+following `apt` code to install the dependencies:
+</p>
+
+<p>
+``` bash
+sudo apt install qt6-base-dev lua5.4 libmagick++-dev libpoppler-dev libpoppler-cpp-dev libpoppler-qt6-dev udisks2 libtree-sitter-dev
+```
+</p>
+
+<p>
+<b><b>NOTE</b></b>: I have not tested Navi on an Ubuntu machine. If there are any
+problems, please open an issue.
+</p>
+
+<p>
+After installing these dependencies on your system and cloning this
+project repository, you can build navi by using the following command
+(inside the project’s directory):
+</p>
+
+<p>
+``` bash
+mkdir build &amp;&amp; cd build
+cmake -DCMAKE<sub>BUILD</sub><sub>TYPE</sub>=Release ..
+make -j$(nproc)
+sudo make install
+```
+</p>
+
+<p>
+One liner:
+```bash
+mkdir build &amp;&amp; cd build &amp;&amp; cmake -DCMAKE<sub>BUILD</sub><sub>TYPE</sub>=Release .. &amp;&amp; make -j $(nproc) &amp;&amp; sudo make install
+```
+</p>
+
+<p>
+## Naming Conventions
+</p>
+
+<ol class="org-ol">
+<li>`Item` refers to a file or a directory.</li>
+
+<li>`Highlighting` refers to the action of clicking a directory item</li>
+</ol>
+<p>
+(one or more than one) once. This means that you can use your mouse
+to select and highlight multiple items in the directory.
+</p>
+
+<ol class="org-ol">
+<li>`Marking` refers to the action of the `mark` or `toggle-mark`</li>
+</ol>
+<p>
+command to "select" one or more currently highlighted directory
+items. You can see the list of all the files that you have marked in
+the `Marks List` using `View -&gt; Marks List` or by using the
+`show-marks` command. When you call any of the commands, the
+commands will be aware of these markings and do the action
+accordingly. For example, if we use the `rename` command and if
+there are marked files, your choice of text editor is opened with
+the list of all the file names. You can change these and write to
+the file to rename them accordingly.
+</p>
+
+<p>
+## Bookmarks
+</p>
+
+<p>
+Bookmarks allows you to instantly go to your favourite or frequently
+visited directories. You can add, edit, remove and even load bookmarks
+directly from a text file. Bookmarks are read and stored in plain text
+files that has the following structure:
+</p>
+
+<p>
+```python
+​# This is a comment – Any lines that begin with # are ignored and empty lines are ignored as well.
+</p>
+
+<p>
+bookmarktitle1 bookmarkdirectorypath1
+bookmarktitle2 bookmarkdirectorypath2
+```
+</p>
+
+<p>
+## Interactive Commands
+</p>
+
+<p>
+These are commands that can be executed using the `inputbar` UI component. By default, pressing `: (colon)` key pops up the inputbar. You can type a name of the command in this bar or a line number to go to in the current directory of the focused pane. Example: `mark` or `42`, where `mark` would mark the current item under focus or highlighted items (more than one items).
+</p>
+
+<p>
+### Types of Command
+</p>
+
+<p>
+There are four variants for most of the commands: `Current`, `Local`, `Global` and `DWIM` (Do What I Mean).
+</p>
+
+<p>
+#### Current Scope
+</p>
+
+<p>
+This applies to the currently selected item. Any command that is `Current` scoped will run only on the currently highlighted item.
+</p>
+
+<p>
+<b><b>This includes mouse selection (also called as Highlighting)</b></b>.
+</p>
+
+<p>
+#### Local Scope
+</p>
+
+<p>
+This applies to the marks that are in the current directory which is conveniently called as a <b><b>Local Mark</b></b>. Any command that is `Local` scoped will run on the local marks.
+</p>
+
+<p>
+<b><b>This does not include mouse highlighting.</b></b>
+</p>
+
+<p>
+#### Global Scope
+</p>
+
+<p>
+This applies to the marks that are present in any directory. Unlike the `Local` scope the command that is `Global` scoped will run on the marks that are present in any directory.
+</p>
+
+<p>
+<b><b>This does not include mouse highlighting</b></b>.
+</p>
+
+<p>
+#### DWIM
+</p>
+
+<p>
+[DWIM wikipedia page](<a href="https://en.wikipedia.org/wiki/DWIM">https://en.wikipedia.org/wiki/DWIM</a>)
+</p>
+
+<p>
+Do What I Mean version of commands. If no local marks are present, run the command on the current item, otherwise run the commands on the marks.
+</p>
+
+<p>
+## Commands List
+</p>
+
+<p>
+Below is an exhaustive list of commands that are currently available in Navi.
+</p>
+
+<p>
+### Navigation
+</p>
+
+<p>
+`next-item`
+</p>
+
+<p>
+Go to the next item
+</p>
+
+<p>
+`prev-item`
+</p>
+
+<p>
+Go to the previous item
+</p>
+
+<p>
+`select-item`
+</p>
+
+<p>
+Select the current item
+</p>
+
+<p>
+`middle-item`
+</p>
+
+<p>
+Go to the middle item
+</p>
+
+<p>
+`up-directory`
+</p>
+
+<p>
+Go to the parent directory
+</p>
+
+<p>
+`first-item`
+</p>
+
+<p>
+Go to the first item
+</p>
+
+<p>
+`last-item`
+</p>
+
+<p>
+Go to the last item
+</p>
+
+<p>
+### Echo (Printing) Commands
+</p>
+
+<p>
+`echo-info`
+</p>
+
+<p>
+Echos or prints the information given as argument with the <b>info-face</b> font
+</p>
+
+<p>
+`echo-warn`
+</p>
+
+<p>
+Echos or prints the information given as argument with the <b>warning-face</b> font
+</p>
+
+<p>
+`echo-error`
+</p>
+
+<p>
+Echos or prints the information given as argument with the <b>error-face</b> font
+</p>
+
+<p>
+### Marking Item
+</p>
+
+<p>
+`mark`
+</p>
+
+<p>
+Marks the current item.
+</p>
+
+<p>
+`toggle-mark`
+</p>
+
+<p>
+Toggle the mark of the current item.
+</p>
+
+<p>
+`toggle-mark-dwim`
+</p>
+
+<p>
+DWIM version of `toggle-mark` command
+</p>
+
+<p>
+`mark-all`
+</p>
+
+<p>
+Marks all the items in the current directory.
+</p>
+
+<p>
+`mark-inverse`
+</p>
+
+<p>
+Inverses the marks in the current directory.
+</p>
+
+<p>
+`mark-dwim`
+</p>
+
+<p>
+DWIM version of `toggle-mark`
+</p>
+
+<p>
+### Unmarking Item
+</p>
+
+<p>
+`unmark`
+</p>
+
+<p>
+Unmarks the current item.
+</p>
+
+<p>
+`unmark-local`
+</p>
+
+<p>
+Unmarks <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`unmark-global`
+</p>
+
+<p>
+Unmarks <b><b>Global Marks</b></b>
+</p>
+
+<p>
+### Selecting Item
+</p>
+
+<p>
+`visual-select`
+</p>
+
+<p>
+Enters into <b>visual selection</b> mode. Navigation is followed by selection until the mode is toggled off.
+</p>
+
+<p>
+### Change Permission
+</p>
+
+<p>
+`chmod`
+</p>
+
+<p>
+Change the permission of the current item using three digit numbers
+</p>
+
+<p>
+Example: 777, 666, 000 etc.
+</p>
+
+<p>
+`chmod-local`
+</p>
+
+<p>
+Change permission for <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`chmod-global`
+</p>
+
+<p>
+Change permission for <b><b>Global Marks</b></b>
+</p>
+
+<p>
+`chmod-dwim`
+</p>
+
+<p>
+Change permission <b><b>DWIM</b></b> style
+</p>
+
+<p>
+### Renaming Files
+</p>
+
+<p>
+<b>*NOTE: Renaming more than `bulk-rename-threshold` (configuration option) which is by default 5 will trigger a *</b>[Bulk Rename](#bulk-rename)** process.
+</p>
+
+<p>
+`rename`
+</p>
+
+<p>
+Rename the highlighted item.
+</p>
+
+<p>
+`rename-local`
+</p>
+
+<p>
+Renames items in the <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`rename-global`
+</p>
+
+<p>
+Renames items in the <b><b>Global Marks</b></b>
+</p>
+
+<p>
+`rename-dwim`
+</p>
+
+<p>
+Renames items in <b><b>DWIM</b></b> style
+</p>
+
+<p>
+#### Bulk Rename
+</p>
+
+<p>
+This is where a text editor of your choice (set it in the configuration) opens up a temporary "rename file" and enables you to rename all the marked files once you save and close the said "rename file". By default navi uses the `neovim` text editor.
+</p>
+
+<p>
+### Cutting Files
+</p>
+
+<p>
+`cut`
+</p>
+
+<p>
+Cut (prepare for moving) the current item.
+</p>
+
+<p>
+`cut-local`
+</p>
+
+<p>
+Register cut for <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`cut-global`
+</p>
+
+<p>
+Register cut for <b><b>Global Marks</b></b>
+</p>
+
+<p>
+`cut-dwim`
+</p>
+
+<p>
+Register cut in <b><b>DWIM</b></b> style
+</p>
+
+<p>
+### Copying Files
+</p>
+
+<p>
+`copy`
+</p>
+
+<p>
+Copy the current item.
+</p>
+
+<p>
+`copy-local`
+</p>
+
+<p>
+Register copy for <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`copy-global`
+</p>
+
+<p>
+Register copy for <b><b>Global Marks</b></b>
+</p>
+
+<p>
+`copy-dwim`
+</p>
+
+<p>
+Register copy in <b><b>DWIM</b></b> style
+</p>
+
+<p>
+### Pasting (Moving) Files
+</p>
+
+<p>
+`paste`
+</p>
+
+<p>
+Paste (Move) the current item.
+</p>
+
+<p>
+### Deleting Files
+</p>
+
+<p>
+<b>*WARNING: Please be careful when using delete commands, this does not trash the items, it directly deletes them. If you want to trash use the *trash</b> command**
+</p>
+
+<p>
+`delete`
+</p>
+
+<p>
+Delete the highlighted items(s).
+</p>
+
+
+<p>
+`delete-local`
+</p>
+
+<p>
+Deletes items in the <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`delete-global`
+</p>
+
+<p>
+Deletes items in the <b><b>Global Marks</b></b>
+</p>
+
+<p>
+`delete-dwim`
+</p>
+
+<p>
+Deletes items in <b><b>DWIM</b></b> style
+</p>
+
+<p>
+### Trashing Files
+</p>
+
+<p>
+`trash`
+</p>
+
+<p>
+Trash the current item.
+</p>
+
+<p>
+`trash-local`
+</p>
+
+<p>
+Trashes items in <b><b>Local Marks</b></b>
+</p>
+
+<p>
+`trash-global`
+</p>
+
+<p>
+Trashes items in <b><b>Global Marks</b></b>
+</p>
+
+<p>
+`trash-dwim`
+</p>
+
+<p>
+Trashes items in <b><b>DWIM</b></b> style
+</p>
+
+<p>
+### Filtering Items
+</p>
+
+<p>
+`filter`
+</p>
+
+<p>
+Set a filter to directory.
+</p>
+
+<p>
+Example: `*` displays everything, `*.csv` displays only the csv files, `*.png` displays only the png files
+</p>
+
+<p>
+`reset-filter`
+</p>
+
+<p>
+Reset the appplied filter.
+</p>
+
+<p>
+`hidden-files`
+</p>
+
+<p>
+Toggles the hidden files.
+</p>
+
+<p>
+<b><b>NOTE</b></b>: Hidden files are those items whose name start with a period like `.config`, `.gitignore` etc.
+</p>
+
+<p>
+`dot-dot`
+</p>
+
+<p>
+Toggles the .. file item.
+</p>
+
+<p>
+### Panes
+</p>
+
+<p>
+`bookmark-pane`
+</p>
+
+<p>
+Opens the bookmarks list.
+</p>
+
+<p>
+TODO: work in progress
+</p>
+
+<p>
+`marks-pane`
+</p>
+
+<p>
+Opens the marks list.
+</p>
+
+<p>
+&lt;img src="./screenshot/marks-pane-demo.gif" height="400px" width="600px" /&gt;
+</p>
+
+<p>
+`messages-pane`
+</p>
+
+<p>
+Opens the messages list.
+</p>
+
+<p>
+&lt;img src="./screenshot/messages<sub>pane.png</sub>" height="400px" width="500px" /&gt;
+</p>
+
+<p>
+`preview-pane`
+</p>
+
+<p>
+Toggles the preview pane.
+</p>
+
+<p>
+The preview pane handles previewing images (good number of formats) and PDF documents (first page) `asynchronously`. This means that the previewing experience will be seamless and without any lag. Navi uses `ImageMagick` library under the hood for previewing images and therefore any image formats supported my ImageMagick is supported by Navi.
+</p>
+
+<p>
+`shortcuts-pane`
+</p>
+
+<p>
+This displays the list of all the shortcuts.
+</p>
+
+<p>
+&lt;img src="./screenshot/shortcuts<sub>pane.png</sub>" height="400px" width="600px" /&gt;
+</p>
+
+
+<p>
+### Misc
+</p>
+
+<p>
+`execute-extended-command`
+</p>
+
+<p>
+This is the function that pops up the inputbar to enter the interactive commands.
+</p>
+
+<p>
+`menu-bar`
+</p>
+
+<p>
+Toggles the menu bar.
+</p>
+
+<p>
+`focus-path`
+</p>
+
+<p>
+Focuses the path widget and sets it in edit mode.
+</p>
+
+<p>
+`item-property`
+</p>
+
+<p>
+Display the property of the currently focused item.
+</p>
+
+<p>
+`header`
+</p>
+
+<p>
+Toggle the display of header information.
+</p>
+
+<p>
+`cycle`
+</p>
+
+<p>
+Toggle the cycle (last item to first item and vice-versa) during navigation.
+</p>
+
+<p>
+`refresh`
+</p>
+
+<p>
+Force refresh the current directory.
+</p>
+
+<p>
+`syntax-highlight`
+</p>
+
+<p>
+Toggle the syntax highlight for text preview
+</p>
+
+<p>
+<b><b>NOTE: By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.</b></b>
+</p>
+
+<p>
+`mouse-scroll`
+</p>
+
+<p>
+Toggle mouse scroll support for file panel
+</p>
+
+<p>
+`reload-config`
+</p>
+
+<p>
+Re-reads the configuration file if it exists and loads the configurations.
+</p>
+
+<p>
+`get-input`
+</p>
+
+<p>
+Get input from the user and store the result.
+</p>
+
+<p>
+Args:
+</p>
+<div id="outline-container-org4ad3118" class="outline-2">
+<h2 id="org4ad3118"><span class="section-number-2">1.</span> Prompt string `required`</h2>
+</div>
+<div id="outline-container-org6333717" class="outline-2">
+<h2 id="org6333717"><span class="section-number-2">2.</span> Default placeholder text `optional`</h2>
+</div>
+<div id="outline-container-orgaf1b5ee" class="outline-2">
+<h2 id="orgaf1b5ee"><span class="section-number-2">3.</span> Selection text (piece of text that has to be selected by default) `optional`</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<b><b>NOTE</b></b>: This command does not return any input as of now.
+</p>
+
+<p>
+<b><b>TL; DR</b></b>: This feature does not work
+</p>
+
+<p>
+`tasks`
+</p>
+
+<p>
+Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.
+</p>
+
+<p>
+<a href="https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a">https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a</a>
+</p>
+
+<p>
+### Shell Commands
+</p>
+
+<p>
+`shell`
+</p>
+
+<p>
+Run a shell command <b>asynchronously</b> (non-blocking).
+</p>
+
+<p>
+The running commands can be seen in the `Task Widget` using the `tasks` command
+</p>
+
+<p>
+### Macro
+</p>
+
+<p>
+Macros allow you to record actions performed inside Navi and save it, which you can then recall it to perform the action over and over again.
+</p>
+
+<p>
+`macro-record`
+</p>
+
+<p>
+This records / finishes recording (if already recording) a macro under a <span class="underline">macro key</span>. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.
+</p>
+
+<p>
+`macro-play`
+</p>
+
+<p>
+This plays a macro under a specific macro key.
+</p>
+
+<p>
+`macro-edit`
+</p>
+
+<p>
+Opens macro commands recorded under a specific macro key (if it exists) with your editor to edit, which will then be saved and can be recalled.
+</p>
+
+<p>
+`macro-list`
+</p>
+
+<p>
+Lists all the macros that have been defined.
+</p>
+
+<p>
+`macro-save-to-file`
+</p>
+
+<p>
+Saves macro to a file which can be used to load for the next boot of Navi.
+</p>
+
+<p>
+`macro-delete`
+</p>
+
+<p>
+Delete macro under a macro key (if it exists).
+</p>
+
+
+
+<p>
+## Tutorial
+</p>
+
+<p>
+Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:
+</p>
+</div>
+</div>
+<div id="outline-container-org9d1a4d0" class="outline-2">
+<h2 id="org9d1a4d0"><span class="section-number-2">4.</span> `h` to go to the parent directory</h2>
+</div>
+<div id="outline-container-orga20df93" class="outline-2">
+<h2 id="orga20df93"><span class="section-number-2">5.</span> `j` to go the next item</h2>
+</div>
+<div id="outline-container-org3a4c130" class="outline-2">
+<h2 id="org3a4c130"><span class="section-number-2">6.</span> `k` to go the previous item</h2>
+</div>
+<div id="outline-container-orgec5099f" class="outline-2">
+<h2 id="orgec5099f"><span class="section-number-2">7.</span> `l` to select the current item</h2>
+</div>
+<div id="outline-container-org4cc098b" class="outline-2">
+<h2 id="org4cc098b"><span class="section-number-2">8.</span> `gg` to go to the first item</h2>
+</div>
+<div id="outline-container-orgcec9c0a" class="outline-2">
+<h2 id="orgcec9c0a"><span class="section-number-2">9.</span> `Shift+g` to go the last item</h2>
+</div>
+<div id="outline-container-org38f4f5e" class="outline-2">
+<h2 id="org38f4f5e"><span class="section-number-2">10.</span> `Space` to toggle marking for the current item</h2>
+</div>
+<div id="outline-container-orgfb6df7c" class="outline-2">
+<h2 id="orgfb6df7c"><span class="section-number-2">11.</span> `Shift+Space` to toggle inverse marking for the current directory</h2>
+</div>
+<div id="outline-container-org0c6870e" class="outline-2">
+<h2 id="org0c6870e"><span class="section-number-2">12.</span> `Ctrl+a` to mark all the items in the current directory</h2>
+</div>
+<div id="outline-container-orgf0a9320" class="outline-2">
+<h2 id="orgf0a9320"><span class="section-number-2">13.</span> `Shift+r` to rename current item if no marks are present or all the marked items if marks are present (this is what DWIM means)</h2>
+</div>
+<div id="outline-container-org47c3919" class="outline-2">
+<h2 id="org47c3919"><span class="section-number-2">14.</span> `Shift+d` to delete DWIM</h2>
+</div>
+<div id="outline-container-orgc7c8c75" class="outline-2">
+<h2 id="orgc7c8c75"><span class="section-number-2">15.</span> `yy` to copy DWIM</h2>
+</div>
+<div id="outline-container-org895fba6" class="outline-2">
+<h2 id="org895fba6"><span class="section-number-2">16.</span> `p` to paste cut/copy marked items to the current directory</h2>
+</div>
+<div id="outline-container-org84072ed" class="outline-2">
+<h2 id="org84072ed"><span class="section-number-2">17.</span> `Shift+u` to unmark all the local marks</h2>
+</div>
+<div id="outline-container-orgd3dcd95" class="outline-2">
+<h2 id="orgd3dcd95"><span class="section-number-2">18.</span> `.` toggle hidden/dot files</h2>
+</div>
+<div id="outline-container-orgb2400d2" class="outline-2">
+<h2 id="orgb2400d2"><span class="section-number-2">19.</span> `/` Search for item in the current directory</h2>
+</div>
+<div id="outline-container-orgc11cfe4" class="outline-2">
+<h2 id="orgc11cfe4"><span class="section-number-2">20.</span> `n` Go to the next match for the search</h2>
+</div>
+<div id="outline-container-orga19a131" class="outline-2">
+<h2 id="orga19a131"><span class="section-number-2">21.</span> `Shift+n` Go to the previous match for the search</h2>
+</div>
+<div id="outline-container-orga82a8a7" class="outline-2">
+<h2 id="orga82a8a7"><span class="section-number-2">22.</span> `Ctrl+m` toggle menubar</h2>
+</div>
+<div id="outline-container-org0e17483" class="outline-2">
+<h2 id="org0e17483"><span class="section-number-2">23.</span> `Ctrl+p` toggle preview panel</h2>
+</div>
+<div id="outline-container-orgf8d1156" class="outline-2">
+<h2 id="orgf8d1156"><span class="section-number-2">24.</span> `Ctrl+l` focus the path widget</h2>
+</div>
+<div id="outline-container-orgb72a7bd" class="outline-2">
+<h2 id="orgb72a7bd"><span class="section-number-2">25.</span> `Shift+v` Toggle visual line selection mode</h2>
+<div class="outline-text-2" id="text-25">
+<p>
+<b><b>NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file</b></b>
+</p>
+
+<p>
+Sorry, this software is built keeping in mind Linux and it's derivatives only.
+</p>
+
+<p>
+Since navi is a Qt GUI library based application, it can be styled using the `qt6ct` package available on linux. The colors mentioned in the configuration file will override the respective control colors of the theme.
+</p>
+
+<p>
+Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks.
+</p>
+
+<p>
+## Custom functions
+</p>
+
+<p>
+You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.
+</p>
+
+<p>
+```lua
+function someFunction(fileName, dirName)
+    navi:message("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
+end
+```
+</p>
+
+<p>
+You can then call this function within Navi by calling the `lua &lt;function<sub>name</sub>&gt;` command or by just calling `lua` command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:
+</p>
+
+<p>
+"WOW! Navi is currently on the file `&lt;fileName&gt;` and inside the `&lt;dirName&gt;` directory!"
+</p>
+
+<p>
+## Navi Lua API
+</p>
+
+<p>
+The running navi instance is exposed to the lua configuration file. You can call api functions that interacts with Navi using these functions.
+</p>
+
+<p>
+The following functions should be called with the navi instance like `navi:function<sub>name</sub>()`
+</p>
+
+<p>
+### `cd`
+</p>
+
+<p>
+Change the directory
+</p>
+
+<p>
+Args:
+</p>
+
+<p>
+directory-name : (<span class="underline">str</span>) (<b><b>required</b></b>)
+</p>
+
+<p>
+Example:
+</p>
+
+<p>
+```lua
+navi:cd("~/.config")
+```
+</p>
+
+<p>
+### `input`
+</p>
+
+<p>
+Get input from the user and return the value.
+</p>
+
+<p>
+Args:
+</p>
+</div>
+</div>
+<div id="outline-container-orgedad166" class="outline-2">
+<h2 id="orgedad166"><span class="section-number-2">26.</span> Prompt text `str` (<b><b>required</b></b>)</h2>
+</div>
+<div id="outline-container-orgb0f5f6d" class="outline-2">
+<h2 id="orgb0f5f6d"><span class="section-number-2">27.</span> Placeholder text `str` (<b>optional</b>)</h2>
+</div>
+<div id="outline-container-org501eab5" class="outline-2">
+<h2 id="org501eab5"><span class="section-number-2">28.</span> Selection text `str` (<b>optional</b>)</h2>
+<div class="outline-text-2" id="text-28">
+<p>
+Return type: <span class="underline">str</span>
+</p>
+
+<p>
+Example:
+</p>
+
+<p>
+```lua
+navi:input("Enter a number")
+```
+</p>
+
+<p>
+### `message`
+</p>
+
+<p>
+Prints message
+</p>
+
+<p>
+Args:
+</p>
+</div>
+</div>
+<div id="outline-container-org2657bfb" class="outline-2">
+<h2 id="org2657bfb"><span class="section-number-2">29.</span> Text `str` (<b><b>required</b></b>)</h2>
+</div>
+<div id="outline-container-org61fd1fe" class="outline-2">
+<h2 id="org61fd1fe"><span class="section-number-2">30.</span> Type `MessageType` (<b>optinal</b>)</h2>
+<div class="outline-text-2" id="text-30">
+<p>
+`MessageType` is an enum with the members `Error`, `Warning` and `Info`
+</p>
+
+<p>
+Example:
+</p>
+
+<p>
+```lua
+navi:message("This is a good message", MessageType.Info)
+navi:message("This is a bad message", MessageType.Error)
+navi:message("This is an okay message", MessageType.Warning)
+```
+</p>
+
+<p>
+## What can you do with scripting ?
+</p>
+
+<p>
+### Setting wallpaper
+</p>
+
+<p>
+Since filename and current directory is passed to every custom function by Navi, we can use this to apply a wallpaper (using `xwallpaper` package).
+</p>
+
+<p>
+```lua
+function setWallpaper(filename)
+    navi:shell("xwallpaper &#x2013;stretch" .. filename)
+end
+```
+</p>
+
+<p>
+Navi can be configured using lua. The default configuration file is provided in this git repository. Navi looks for the configuration file in the XDG standard config directory (`~/.config`). You can place your configuration file in the `~/.config/navi/` directory. The configuration file should be named `config.lua`.
+</p>
+
+<p>
+Configuration includes all the settings that can be changed for Navi and keybindings can also be changed.
+</p>
+
+<p>
+<b><b>TL;DR: Navi configuration file (config.lua) should be placed at this location ( `~/.config/navi/config.lua`)</b></b>
+</p>
+
+<p>
+Copy and paste the following template config file into the configuration directory.
+</p>
+
+<p>
+``` lua
+SETTINGS = {
+    terminal = os.getenv("TERMINAL"),
+</p>
+
+<p>
+bulk<sub>rename</sub> = {
+    file<sub>threshold</sub> = 5, &#x2013; threshold at which bulk rename should trigger
+    editor = "nvim", &#x2013; editor used for bulk renaming along with flag %f for file
+    terminal = true, &#x2013; if the editor uses terminal set this flag to true
+},
+</p>
+
+<p>
+ui = {
+</p>
+
+<p>
+preview<sub>pane</sub> = {
+    shown = false,
+    max<sub>file</sub><sub>size</sub> = "10M", &#x2013; max file size to preview
+    fraction = 0.2,
+    syntax<sub>highlight</sub> = true,
+    dimension = { width = 400, height = 400 },
+},
+</p>
+
+<p>
+menu<sub>bar</sub> = {
+    shown = false
+},
+</p>
+
+<p>
+status<sub>bar</sub> = {
+    shown = true,
+    visual<sub>line</sub><sub>mode</sub> = {
+        text = "V",
+        background = "#FF5000",
+        foreground = "#000000",
+        italic = true,
+        bold = true,
+        padding = "4px",
+    }
+},
+</p>
+
+<p>
+input<sub>bar</sub> = {
+    background = "#FF5000",
+    foreground = "#FFFFFF",
+    font = "JetBrainsMono Nerd Font Mono",
+},
+</p>
+
+<p>
+path<sub>bar</sub> = {
+    shown = true,
+    background = nil,
+    foreground = nil,
+    italic = false,
+    bold = false,
+    font = nil,
+},
+</p>
+
+<p>
+tasks<sub>pane</sub> = {
+    output<sub>scrollback</sub><sub>lines</sub> = 100, &#x2013; TODO: Not yet added
+},
+</p>
+
+<p>
+        file<sub>pane</sub> = {
+            symlink = {
+                shown = true,
+                foreground = "#FF5000",
+                separator = "-&gt;",
+            },
+            highlight = {
+                foreground = "#000",
+                background = "#f05af4",
+            },
+            columns = {
+                { name = "NAME", type = "file<sub>name</sub>" },
+                { name = "PERM", type = "file<sub>permission</sub>"},
+                &#x2013; modified<sub>date</sub> = "Date",
+                &#x2013; size = "SIZE"
+            },
+            headers = false,
+            cycle = false,
+            mark = {
+                foreground = "#FF5000",
+                background = nil,
+                italic = true,
+                bold = nil,
+                font = "JetBrainsMono Nerd Font Mono",
+                header = {
+                    foreground = "#FF5000",
+                    background = nil,
+                    italic = nil,
+                    bold = true,
+                }
+            }
+        }
+    }
+}
+</p>
+
+<p>
+KEYBINDINGS = {
+    { key = "h", command = "up-directory", desc = "Go to the parent directory" },
+    { key = "j", command = "next-item", desc = "Go to the next item" },
+    { key = "k", command = "prev-item", desc = "Go to the previous item" },
+    { key = "l", command = "select-item", desc = "Select item" },
+    { key = "f", command = "filter", desc = "Filter item visibility" },
+    { key = "g,g", command = "first-item", desc = "Go to the first item" },
+    { key = "z,z", command = "middle-item", desc = "Go to middle item" },
+    { key = "Shift+g", command = "last-item", desc = "Go to the last item" },
+    { key = "Shift+r", command = "rename-dwim", desc = "Rename item(s)" },
+    { key = "Shift+d", command = "delete-dwim", desc = "Delete item(s)" },
+    { key = "Space", command = "toggle-mark-dwim", desc = "Mark item(s)" },
+    { key = "F5", command = "refresh", desc = "Refresh current directory" },
+    { key = "Shift+Space", command = "mark-inverse", desc = "Mark inverse item(s)" },
+    { key = "Shift+v", command = "visual-select", desc = "Visual selection mode" },
+    { key = ":", command = "execute-extended-command", desc = "Execute extended command" },
+    { key = "y,y", command = "copy-dwim", desc = "Copy item(s)" },
+    { key = "p", command = "paste", desc = "Paste item(s)" },
+    { key = "Shift+u", command = "unmark-local", desc = "Unmark all item(s)" },
+    { key = "/", command = "search", desc = "Search (regex)" },
+    { key = "n", command = "search-next", desc = "Search next" },
+    { key = "Shift+n", command = "search-prev", desc = "Search previous" },
+    { key = "Ctrl+m", command = "menu-bar", desc = "Toggle menu bar" },
+    { key = "Ctrl+p", command = "preview-pane", desc = "Toggle preview pane" },
+    { key = "Ctrl+l", command = "focus-path", desc = "Focus path bar" },
+    { key = "Shift+t", command = "trash-dwim", desc = "Trash item(s)" },
+    { key = ".", command = "hidden-files", desc = "Toggle hidden items" },
+}
+</p>
+
+<p>
+function setWallpaper()
+    local file = navi.api.item<sub>name</sub>()
+    navi.shell.execute("xwallpaper &#x2013;stretch " .. file)
+end
+```
+</p>
+
+
+<p>
+Navi uses the following header-only C++ libraries. Thanks to the authors of the following libraries:
+</p>
+
+<ul class="org-ul">
+<li>[ArgParse](<a href="https://github.com/p-ranav/argparse">https://github.com/p-ranav/argparse</a>) (for parsing command</li>
+</ul>
+<p>
+line arguments)
+</p>
+<ul class="org-ul">
+<li>[Sol2](<a href="https://github.com/ThePhD/sol2">https://github.com/ThePhD/sol2</a>) (for lua integration)</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2024-11-17 Sun 19:06</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
