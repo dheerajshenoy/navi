@@ -150,7 +150,6 @@ void FilePanel::initSignalsSlots() noexcept {
                     emit currentItemChanged(m_current_dir + QDir::separator() +
                                             m_model->data(fileNameIndex, Qt::DisplayRole).toString());
                 }
-
                 m_hook_manager->triggerHook("directory_loaded");
             });
 
