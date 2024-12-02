@@ -9,13 +9,14 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 void Navi::initThings() noexcept {
     initLayout();       // init layout
     initBookmarks();
-    initMenubar();      // init menubar
+    initMenubar(); // init menubar
     setupCommandMap();
     initSignalsSlots(); // init signals and slots
     if (m_load_config)
         initConfiguration();
     else
         initKeybinds();
+    initToolbar();
 
     if (m_default_location_list.isEmpty())
         m_file_panel->setCurrentDir("~", true);
@@ -36,6 +37,8 @@ void Navi::initThings() noexcept {
                            .arg(e.what()),
                              MessageType::ERROR);
     }
+
+    m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -84,8 +87,24 @@ void Navi::initConfiguration() noexcept {
         if (ui_table_opt) {
             sol::table ui_table = ui_table_opt.value();
 
-            // tabs
-            sol::optional<sol::table> tabs_table = ui_table["tabs"];
+            sol::optional<sol::table> toolbar_table_opt = ui_table["toolbar"];
+
+            if (toolbar_table_opt) {
+                auto toolbar_table = toolbar_table_opt.value();
+
+                auto shown = toolbar_table["shown"].get_or(true);
+                m_toolbar->setVisible(shown);
+
+                auto icons_only = toolbar_table["icons_only"].get_or(false);
+
+                // if (icons_only) {
+                // } else {
+                // }
+                    m_toolbar__prev_btn = new QPushButton("Previous");
+                    m_toolbar__next_btn = new QPushButton("Next");
+                    m_toolbar__home_btn = new QPushButton("Home");
+                    m_toolbar__parent_btn = new QPushButton("Parent");
+            }
 
             // Preview pane
             sol::optional<sol::table> preview_pane_table = ui_table["preview_pane"];
@@ -241,8 +260,6 @@ void Navi::initConfiguration() noexcept {
                         auto type =
                             QString::fromStdString(col["type"].get_or<std::string>(""));
 
-                        qDebug() << type;
-
                         if (type == "file_name") {
                             column.type = FileSystemModel::ColumnType::FileName;
                             file_name_type_check = true;
@@ -260,8 +277,6 @@ void Navi::initConfiguration() noexcept {
 
                         column.name = name;
                         columnList.append(column);
-
-                        qDebug() << name;
                     }
 
                     // If file_name type is not found in the configuration, inform the
@@ -559,6 +574,11 @@ void Navi::initBookmarks() noexcept {
 
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
+
+  connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
+          this, [&]() {
+      LogMessage("Thumbnail caching finished");
+  });
 
   connect(m_file_panel, &FilePanel::currentItemChanged, this,
           [&]() { m_hook_manager->triggerHook("item_changed"); });
@@ -1264,6 +1284,9 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
+
+    addToolBar(m_toolbar);
+
     m_tasks_widget = new TasksWidget(m_task_manager, this);
     m_hook_manager = new HookManager();
     m_inputbar = new Inputbar(this);
@@ -1648,20 +1671,20 @@ void Navi::initMenubar() noexcept {
     connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
             [&](const bool &state) {
                 if (state) {
-                    if (m_sort_flags & QDir::SortFlag::Reversed) {
-                        m_sort_flags &= ~QDir::SortFlag::Reversed;
-                        m_file_panel->model()->setSortBy(m_sort_flags);
-                    }
+                    if (m_sort_flags & QDir::SortFlag::Reversed)
+                        return;
+                    m_sort_flags |= QDir::SortFlag::Reversed;
+                    m_file_panel->model()->setSortBy(m_sort_flags);
                 }
             });
 
     connect(m_viewmenu__sort_descending, &QAction::triggered, this,
             [&](const bool &state) {
                 if (state) {
-                    if (m_sort_flags & QDir::SortFlag::Reversed)
-                        return;
-                    m_sort_flags |= QDir::SortFlag::Reversed;
-                    m_file_panel->model()->setSortBy(m_sort_flags);
+                    if (m_sort_flags & QDir::SortFlag::Reversed) {
+                        m_sort_flags &= ~QDir::SortFlag::Reversed;
+                        m_file_panel->model()->setSortBy(m_sort_flags);
+                    }
                 }
             });
 
@@ -1796,6 +1819,9 @@ void Navi::ResetFilter() noexcept {
     m_viewmenu__filter->setChecked(false);
 }
 
+// Similar to Statusbar Message function, but this logs message only without
+// printing to the statusbar. The messages can be seen in the messages pane
+// similar to the `m_statusbar->Message()` function.
 void Navi::LogMessage(const QString &message,
                       const MessageType &type) noexcept {
     QString coloredMessage = message;
@@ -2391,10 +2417,16 @@ void Navi::SpawnProcess(const QString &command,
 
 
 void Navi::cacheThumbnails() noexcept {
+    if (m_thumbnail_cache_future_watcher->isRunning()) {
+        m_thumbnail_cache_future_watcher->cancel();
+        m_thumbnail_cache_future_watcher->waitForFinished();
+    }
+
     QStringList files = m_file_panel->model()->files();
-    QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnails,
-                                             m_preview_panel->thumbnailer(),
-                                             files);
+    m_thumbnail_cache_future =
+        QtConcurrent::run(&Thumbnailer::generate_thumbnails,
+                          m_preview_panel->thumbnailer(), files);
+
 }
 
 void Navi::LaunchNewInstance() noexcept {
@@ -2520,4 +2552,19 @@ void Navi::FullScreen() noexcept {
 
 void Navi::Lua__AddContextMenu(const sol::table &table) noexcept {
     // m_file_panel->setContextMenu(cmenu);
+}
+
+void Navi::initToolbar() noexcept {
+    m_toolbar->addWidget(m_toolbar__prev_btn);
+    m_toolbar->addWidget(m_toolbar__next_btn);
+    m_toolbar->addWidget(m_toolbar__parent_btn);
+    m_toolbar->addWidget(m_toolbar__home_btn);
+
+    connect(m_toolbar__prev_btn, &QPushButton::clicked, m_file_panel,
+            &FilePanel::PreviousDirectory);
+    connect(m_toolbar__next_btn, &QPushButton::clicked, this, [&]() {
+        qDebug() << "TODO: Next Location";
+    });
+    connect(m_toolbar__home_btn, &QPushButton::clicked, m_file_panel, &FilePanel::HomeDirectory);
+    connect(m_toolbar__parent_btn, &QPushButton::clicked, m_file_panel, &FilePanel::UpDirectory);
 }

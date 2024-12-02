@@ -4,6 +4,8 @@
 
 // #define SOL_ALL_SAFETIES_ON 1
 
+#include <QFuture>
+#include <QFutureWatcher>
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -36,6 +38,7 @@
 #include <QFuture>
 #include <QThread>
 #include <QClipboard>
+#include <QToolBar>
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -110,11 +113,10 @@ public:
     void ToggleMenuBar() noexcept;
     void Filter() noexcept;
     void ResetFilter() noexcept;
-    void LogMessage(const QString &message, const MessageType &type) noexcept;
+    void LogMessage(const QString &message, const MessageType &type = MessageType::INFO) noexcept;
     void FocusPath() noexcept;
     void AddBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
-    void
-    RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
+    void RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
 
     struct MenuItem {
         std::string label;
@@ -247,6 +249,7 @@ protected:
     bool event(QEvent *e) override;
 
 private:
+    void initToolbar() noexcept;
     void initNaviLuaAPI() noexcept;
     void onQuit() noexcept;
     void initConfiguration() noexcept;
@@ -525,4 +528,13 @@ private:
     HookManager *m_hook_manager = nullptr;
     QClipboard *m_clipboard = QGuiApplication::clipboard();
     QString m_copy_path_join_str = "\n";
+
+    QFuture<void> m_thumbnail_cache_future;
+    QFutureWatcher<void> *m_thumbnail_cache_future_watcher = new QFutureWatcher<void>(this);
+
+    QToolBar *m_toolbar = new QToolBar(this);
+    QPushButton *m_toolbar__prev_btn = nullptr;
+    QPushButton *m_toolbar__next_btn = nullptr;
+    QPushButton *m_toolbar__home_btn = nullptr;
+    QPushButton *m_toolbar__parent_btn = nullptr;
 };

@@ -143,6 +143,14 @@ void FilePanel::initSignalsSlots() noexcept {
                     else
                         m_table_view->clearSelection();
                 }
+
+                QModelIndex current = m_table_view->selectionModel()->currentIndex();
+                if (current.isValid()) {
+                    QModelIndex fileNameIndex = current.siblingAtColumn(m_file_name_column_index);
+                    emit currentItemChanged(m_current_dir + QDir::separator() +
+                                            m_model->data(fileNameIndex, Qt::DisplayRole).toString());
+                }
+
                 m_hook_manager->triggerHook("directory_loaded");
             });
 
