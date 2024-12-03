@@ -1,4 +1,3 @@
-
 var app = document.getElementById("tw");
 
 var typewriter = new Typewriter(app, {
