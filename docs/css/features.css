@@ -1,0 +1,37 @@
+#features_box {
+    display: flex;
+    padding: 100px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+#features_box h3 {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#features_box #col-1 {
+    padding: 20px;
+    width: 40%;
+}
+
+#features_box #col-2 {
+    padding: 20px;
+    width: 40%;
+}
+
+#features_box #col-3 {
+    padding: 20px;
+    width: 40%;
+}
+
+#features_box #col-4 {
+    padding: 20px;
+    width: 40%;
+}
+
+#features_box #icon {
+    font-size: 40px;
+    display: block;
+    text-align: center;
+}
