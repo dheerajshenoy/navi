@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/index.css">
     <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
   <body>
     <nav id="topnav">
+
+      <span class="nav-link" id="navi-text" >Navi</span>
       <a id="logo" class="nav-link" href="index.html">Home</a>
       <a class="nav-link" href="./docs.html">Docs</a>
       <a class="nav-link" href="./features.html">Features</a>
@@ -18,19 +23,33 @@
     <br><br>
     <div id="mainbox">
       <center>
-        <span style="font-size: 40px;">Navi</span><br>
-        <span style="font-size: 20px;">File Manager written in Modern C++</span><br><br>
+        <span style="font-size: 40px;">Navi</span><br><br>
+        <span style="font-size: 20px;">File Manager written in C++</span><br><br>
         <button class="button button4" onclick="get_started()" title="Get started using Navi"><i class="fa fa-rocket"></i> Get Started</button>
         <br><br>
         <div id="tw"></div>
       </center>
     </div>
+
+    <div class="content">
+
+      <h1 class="heading">Introduction</h1>
+
+      This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++.
+      <br><br>
+
+      <h1 class="heading">Why another File Manager ?</h1>
+
+      The file managers for linux aren’t that great for me. So I decided to write my own. And this one is inspired by the TUI (terminal UI) keyboard driven file managers like ranger, vifm, lf, yazi etc. I still use them, but I wanted to get past the limitations of the TUI compared to the GUI.<br><br>
+    </div>
+
     <div class="footer">
       <div class="col-1">
         <ul>
           <h3>Resources</h3>
           <a href="./docs.html">Docs</a>
           <a href="./features.html">Features</a>
+          <a href="./installation.html">Installation</a>
         </ul>
       </div>
 
@@ -41,7 +60,7 @@
       </div>
 
       <div class="col-3">
-        <a href="https://github.com/dheerajshenoy/navi">Github</a>
+        <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
       </div>
     </div>
       <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
