@@ -4,7 +4,7 @@ var typewriter = new Typewriter(app, {
     loop: true
 });
 
-typewriter.typeString('Fast')
+typewriter.typeString('')
     .pauseFor(200)
     .deleteAll()
     .typeString('Minimal')
@@ -18,8 +18,6 @@ typewriter.typeString('Fast')
     .deleteAll()
     .typeString('Extensible')
     .pauseFor(200)
-    .deleteAll()
-    .typeString('Navi')
     .start();
 
 function get_started() {
