@@ -71,6 +71,7 @@ body {
     background-color: orange;
     color: black;
     padding: 70px;
+    padding-bottom: 20px;
     top: 0;
 }
 
@@ -165,7 +166,7 @@ body {
     background-color: #666;
     height: 100% auto;
     width: 100%;
-    padding: 100px;
+    padding: 70px;
     font-size: 1.1em;
     line-height: 1.5em;
 }
@@ -193,8 +194,7 @@ body {
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid orange;
-    box-shadow: 1px 1px 5px 1px black;
+    border: 1px solid black;
 }
 
 .code-container code {
