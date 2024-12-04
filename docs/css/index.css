@@ -5,6 +5,15 @@
     font-family: Comfortaa;
 }
 
+a {
+    color: white;
+    transition-duration: 0.4s;
+}
+
+a:hover {
+    color: orange;
+}
+
 body {
     background-color: black;
     color: white;
