@@ -19,9 +19,7 @@ typewriter.typeString('Fast')
     .typeString('Extensible')
     .pauseFor(200)
     .deleteAll()
-    .typeString('<b>Navi</b>')
-    .pauseFor(200)
-    .deleteAll()
+    .typeString('Navi')
     .start();
 
 function get_started() {
