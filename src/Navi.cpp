@@ -240,6 +240,15 @@ void Navi::initConfiguration() noexcept {
                 auto shown = status_bar["shown"].get_or(true);
                 ToggleStatusBar(shown);
 
+                sol::table modules =
+                    status_bar["modules"].get_or<sol::table>({});
+
+                if (!modules.empty()) {
+                    for (const auto &module : modules) {
+                        m_statusbar->addModule(QString::fromStdString(module.second.as<std::string>()));
+                    }
+                }
+
                 sol::optional<sol::table> visual_line_mode_table =
                     status_bar["visual_line_mode"];
                 if (visual_line_mode_table) {
