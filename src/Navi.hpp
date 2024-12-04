@@ -4,6 +4,7 @@
 
 // #define SOL_ALL_SAFETIES_ON 1
 
+#include <QIcon>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QApplication>
@@ -73,6 +74,7 @@ static const QString BOOKMARK_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + 
 #include "RegisterWidget.hpp"
 #include "HookManager.hpp"
 #include "FolderPropertyWidget.hpp"
+#include "AboutWidget.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -146,7 +148,7 @@ public:
     void DeleteMacro() noexcept;
     void EditMacro() noexcept;
     void ListMacro() noexcept;
-    void ToggleSyntaxHighlight() noexcept;
+    // void ToggleSyntaxHighlight() noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
     void ToggleCycle() noexcept;
@@ -244,11 +246,13 @@ public:
     Navi::MenuItem Lua__parseMenuItem(const sol::table &table) noexcept;
     void FullScreen() noexcept;
     void FullScreen(const bool &state) noexcept;
+    void ShowAbout() noexcept;
 
 protected:
     bool event(QEvent *e) override;
 
 private:
+    void initDefaults() noexcept;
     void initToolbar() noexcept;
     void initNaviLuaAPI() noexcept;
     void onQuit() noexcept;
@@ -283,6 +287,7 @@ private:
     QMenu *m_edit_menu = nullptr;
     QMenu *m_bookmarks_menu = nullptr;
     QMenu *m_go_menu = nullptr;
+    QMenu *m_help_menu = nullptr;
 
     QMenu *m_bookmarks_menu__bookmarks_list_menu = nullptr;
 
@@ -342,9 +347,12 @@ private:
     QAction *m_tools_menu__find_files = nullptr;
 
     QAction *m_go_menu__previous_folder = nullptr;
+    QAction *m_go_menu__next_folder = nullptr;
     QAction *m_go_menu__parent_folder = nullptr;
     QAction *m_go_menu__home_folder = nullptr;
     QAction *m_go_menu__connect_to_server = nullptr;
+
+    QAction *m_help_menu__about = nullptr;
 
     Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;
@@ -489,7 +497,7 @@ private:
       "visual-select",
       "mouse-scroll",
       "drives",
-      "syntax-highlight",
+      // "syntax-highlight",
       "lua",
       "register",
       "repeat-last-command",
@@ -498,6 +506,7 @@ private:
       "folder-property",
       "copy-path",
       "fullscreen",
+      "about",
     };
 
     MessagesBuffer *m_log_buffer = nullptr;
@@ -537,4 +546,5 @@ private:
     QPushButton *m_toolbar__next_btn = nullptr;
     QPushButton *m_toolbar__home_btn = nullptr;
     QPushButton *m_toolbar__parent_btn = nullptr;
+    QPushButton *m_toolbar__refresh_btn = nullptr;
 };

@@ -7,26 +7,8 @@ Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
     m_layout->setContentsMargins(10, 0, 10, 10);
     m_vert_layout->setContentsMargins(10, 0, 10, 0);
 
-    m_message_label->hide();
     m_vert_layout->addLayout(m_layout);
-    m_layout->addWidget(m_macro_mode_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(m_visual_line_mode_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(m_file_name_label);
-    m_layout->addStretch();
-    m_layout->addWidget(m_filter_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(m_search_match_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(new QLabel("Items: "));
-    m_layout->addWidget(m_num_items_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(m_file_size_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(m_file_modified_label);
-    m_layout->addSpacing(10);
-    m_layout->addWidget(m_file_perm_label);
+    m_message_label->hide();
 
     m_visual_line_mode_label->setHidden(true);
     m_macro_mode_label->setHidden(true);
@@ -216,4 +198,60 @@ void Statusbar::show() noexcept {
 void Statusbar::hide() noexcept {
     emit visibilityChanged(false);
     QWidget::hide();
+}
+
+void Statusbar::addModule(const QString &name) noexcept {
+    if (name == "name") {
+        m_layout->addWidget(m_file_name_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "stretch") {
+        m_layout->addStretch();
+    }
+
+    else if (name == "size") {
+        m_layout->addWidget(m_file_size_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "permission") {
+        m_layout->addWidget(m_file_perm_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "count") {
+        m_layout->addWidget(new QLabel("Items: "));
+        m_layout->addWidget(m_num_items_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "modified_date") {
+        m_layout->addWidget(m_file_modified_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "visual_line") {
+        m_layout->addWidget(m_visual_line_mode_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "macro") {
+        m_layout->addWidget(m_macro_mode_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "filter") {
+        m_layout->addWidget(m_filter_label);
+        m_layout->addSpacing(10);
+    }
+
+    else if (name == "search") {
+        m_layout->addWidget(m_search_match_label);
+        m_layout->addSpacing(10);
+    }
+
+}
+
+void Statusbar::addModule(const Module &module) noexcept {
 }

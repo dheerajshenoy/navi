@@ -1,5 +1,4 @@
 #include "PreviewPanel.hpp"
-#include "SyntaxHighlighterTS.hpp"
 
 PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
@@ -33,13 +32,13 @@ void PreviewPanel::showImagePreview(const QImage &image) noexcept {
     m_img_widget->setImage(image);
 }
 
-void PreviewPanel::showTextPreview(const QString &preview,
-                                   const SyntaxHighlighterTS::Language &language) noexcept {
-    this->setCurrentIndex(0);
-    if (m_syntax_highlighting_enabled)
-        m_text_preview_widget->setLanguage(language);
-    m_text_preview_widget->setText(preview);
-}
+// void PreviewPanel::showTextPreview(const QString &preview,
+//                                    const SyntaxHighlighterTS::Language &language) noexcept {
+//     this->setCurrentIndex(0);
+//     if (m_syntax_highlighting_enabled)
+//         m_text_preview_widget->setLanguage(language);
+//     m_text_preview_widget->setText(preview);
+// }
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
     m_img_widget->clear();

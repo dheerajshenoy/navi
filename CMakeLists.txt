@@ -36,7 +36,6 @@ add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(POPPLER REQUIRED poppler poppler-cpp)
-pkg_check_modules(TreeSitter REQUIRED tree-sitter tree-sitter-query)
 find_package(Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
@@ -62,7 +61,7 @@ qt_add_executable(${PROJECT_NAME}
   src/ShortcutsWidget.cpp
   src/NaviWindow.cpp
   src/DriveWidget.cpp
-  src/SyntaxHighlighterTS.cpp
+  # src/SyntaxHighlighterTS.cpp
   src/TasksWidget.cpp
   src/Task.cpp
   src/TaskManager.cpp
@@ -71,6 +70,7 @@ qt_add_executable(${PROJECT_NAME}
   src/FileWorker.cpp
   src/Thumbnailer.cpp
   src/FolderPropertyWidget.cpp
+  src/AboutWidget.cpp
 
   src/TextEdit.hpp
   src/FileSystemModel.cpp
@@ -89,11 +89,26 @@ qt_add_executable(${PROJECT_NAME}
 
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} tree-sitter tree-sitter-query tree-sitter-python tree-sitter-c tree-sitter-lua tree-sitter-markdown ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6
 )
 
+qt_add_resources(${PROJECT_NAME}
+  PREFIX "resources"
+  FILES
+  resources/images/clock.svg
+  resources/images/location.svg
+  resources/images/messages.svg
+  resources/images/pencil-icon.svg
+  resources/images/plus.svg
+  resources/images/reverse.svg
+  resources/images/sort.svg
+  resources/images/menu.svg
+  resources/images/preview.svg
+)
+
+
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${TREESITTER_INCLUDE_DIR} ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
 
 add_custom_target(run
   COMMAND ${PROJECT_NAME}

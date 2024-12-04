@@ -79,10 +79,11 @@
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [X] overwrite copy, paste etc.
 - [X] custom copy, delete, rename etc.
-- [ ] first startup wierd load behavior
+- [X] first startup wierd load behavior
 - [ ] lua API for custom context menu
 - [X] lua API for custom menubar
-- [ ] lua API for statusbar
+- [X] lua API for statusbar
+- [ ] About Menu
 - [ ] Deletion make task if large size
 - [ ] VisibilityChange signal bug
 - [X] Progressbar for `taskswidget`

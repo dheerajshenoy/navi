@@ -18,7 +18,7 @@
 // #include "TreeSitterTextEdit.hpp"
 #include "TextEdit.hpp"
 #include "ImageWidget.hpp"
-#include "SyntaxHighlighterTS.hpp"
+// #include "SyntaxHighlighterTS.hpp"
 #include "Thumbnailer.hpp"
 
 class PreviewPanel : public QStackedWidget {
@@ -45,21 +45,21 @@ public:
     inline void SetMaxPreviewThreshold(const qint64 &thresh) noexcept {
     }
 
-    inline void SetSyntaxHighlighting(const bool &state) noexcept {
-        m_syntax_highlighting_enabled = state;
-        if (!state) {
-            m_text_preview_widget->setSyntaxHighlighting(false);
-        }
-    }
+    // inline void SetSyntaxHighlighting(const bool &state) noexcept {
+    //     m_syntax_highlighting_enabled = state;
+    //     if (!state) {
+    //         m_text_preview_widget->setSyntaxHighlighting(false);
+    //     }
+    // }
 
     inline void SetPreviewDimension(const int &width,
                                     const int &height) noexcept {
     }
 
-    inline void ToggleSyntaxHighlight() noexcept {
-        m_syntax_highlighting_enabled = !m_syntax_highlighting_enabled;
-        m_text_preview_widget->setSyntaxHighlighting(m_syntax_highlighting_enabled);
-    }
+    // inline void ToggleSyntaxHighlight() noexcept {
+    //     m_syntax_highlighting_enabled = !m_syntax_highlighting_enabled;
+    //     m_text_preview_widget->setSyntaxHighlighting(m_syntax_highlighting_enabled);
+    // }
 
     void onFileSelected(const QString &filePath) noexcept;
     inline void clearImageCache() noexcept { m_image_cache_hash.clear(); }
@@ -81,8 +81,8 @@ private:
     QString m_image_filepath;
 
     void showImagePreview(const QImage &image) noexcept;
-    void showTextPreview(const QString &text,
-                         const SyntaxHighlighterTS::Language &language) noexcept;
+    // void showTextPreview(const QString &text,
+    //                      const SyntaxHighlighterTS::Language &language) noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
     QHash<QString, QImage> m_image_cache_hash;

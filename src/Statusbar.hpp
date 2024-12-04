@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include "utils.hpp"
+#include "sol/sol.hpp"
 
 enum class MessageType { INFO = 0, WARNING, ERROR };
 
@@ -25,6 +26,10 @@ public:
     Statusbar(QWidget *parent = nullptr);
     ~Statusbar();
 
+    struct Module {
+        QString name;
+        sol::function func;
+    };
 
     void Message(const QString &message, MessageType type = MessageType::INFO,
                  int ms = 2) noexcept;
@@ -48,6 +53,12 @@ public:
     void SetMacroModeBold(const bool &state) noexcept;
     void SetMacroModePadding(const QString &padding) noexcept;
     void SetMacroModeText(const QString &text) noexcept;
+    void addModule(const Module &module) noexcept;
+    void addModule(const QString &moduleName) noexcept;
+    void addModules(const QList<Module> &modules) noexcept;
+    void createModule(const std::string &name, const sol::function &func,
+                      const sol::table &options);
+    void addModules(const QStringList &names) noexcept;
     void show() noexcept;
     void hide() noexcept;
 private:
