@@ -5,21 +5,22 @@ var typewriter = new Typewriter(app, {
 });
 
 typewriter.typeString('Fast')
-    .pauseFor(500)
+    .pauseFor(200)
     .deleteAll()
     .typeString('Minimal')
-    .pauseFor(500)
+    .pauseFor(200)
     .deleteAll()
     .typeString('Powerful')
-    .pauseFor(500)
+    .pauseFor(200)
     .deleteAll()
     .typeString('Customizable')
-    .pauseFor(500)
+    .pauseFor(200)
     .deleteAll()
     .typeString('Extensible')
-    .pauseFor(500)
+    .pauseFor(200)
+    .deleteAll()
     .typeString('<b>Navi</b>')
-    .pauseFor(500)
+    .pauseFor(200)
     .deleteAll()
     .start();
 
