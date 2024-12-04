@@ -12,6 +12,7 @@
 #include <QWidget>
 #include "utils.hpp"
 #include "sol/sol.hpp"
+#include <QHash>
 
 enum class MessageType { INFO = 0, WARNING, ERROR };
 
@@ -27,8 +28,8 @@ public:
     ~Statusbar();
 
     struct Module {
-        QString name;
-        sol::function func;
+        std::string name;
+        sol::table options;
     };
 
     void Message(const QString &message, MessageType type = MessageType::INFO,
@@ -61,6 +62,15 @@ public:
     void addModules(const QStringList &names) noexcept;
     void show() noexcept;
     void hide() noexcept;
+
+    Statusbar::Module Lua__CreateModule(const std::string &name,
+                                        const sol::table &options) noexcept;
+    void Lua__AddModule(const Statusbar::Module &module) noexcept;
+    void Lua__InsertModule(const Statusbar::Module &module,
+                           const uint32_t &index) noexcept;
+    void Lua__UpdateModuleText(const std::string &name,
+                               const std::string &value) noexcept;
+
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
     QVBoxLayout *m_vert_layout = new QVBoxLayout(this);
@@ -90,4 +100,5 @@ private:
     QString m_file_path;
     QPalette m_message_palette;
     QTimer *m_message_timer = new QTimer(this);
+    QHash<QString, QLabel*> m_module_widget_hash;
 };

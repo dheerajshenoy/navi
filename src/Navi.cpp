@@ -557,8 +557,6 @@ void Navi::initConfiguration() noexcept {
     if (!funcs.isEmpty()) {
         m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);
     }
-
-    m_statusbar->Message("Reading configuration file done!");
 }
 
 // Function to get all global Lua function names using Sol2
@@ -623,6 +621,11 @@ void Navi::initBookmarks() noexcept {
 
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
+
+    connect(m_hook_manager, &HookManager::triggerError, this,
+            [&](const QString &error) {
+                m_statusbar->Message(error, MessageType::ERROR);
+            });
 
   connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
           this, [&]() {

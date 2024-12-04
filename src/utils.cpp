@@ -3,6 +3,9 @@
 QString utils::getPermString(const QFileInfo& fileInfo) noexcept {
     QString permStr;
 
+    if (!fileInfo.exists())
+        return QString();
+
     // File type (directory or file)
     permStr += fileInfo.isDir() ? 'd' : '-';
     QFile::Permissions permissions = fileInfo.permissions();

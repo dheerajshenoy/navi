@@ -12,7 +12,11 @@ void HookManager::clearHookFunctions(const std::string &hook_name) noexcept {
 void HookManager::triggerHook(const std::string &hook_name) noexcept {
     if (m_hooks_map.find(hook_name) != m_hooks_map.end()) {
         for (const auto &func : m_hooks_map[hook_name]) {
-            func();
+            try {
+                func();
+            } catch (const sol::error &e) {
+                emit triggerError(QString(e.what()));
+            }
         }
     }
 }

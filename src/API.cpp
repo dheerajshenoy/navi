@@ -15,6 +15,10 @@ void Navi::initNaviLuaAPI() noexcept {
   //                            }),
   //                            "submenu", &MenuItem::submenu);
 
+  lua.new_usertype<Statusbar::Module>("Module",
+                                      "name", &Statusbar::Module::name,
+                                      "options", &Statusbar::Module::options);
+
   lua["navi"] = lua.create_table();
 
   // HOOK API
@@ -236,7 +240,34 @@ void Navi::initNaviLuaAPI() noexcept {
     ToggleStatusBar(state);
   };
 
-  lua["navi"]["ui"]["statusbar"]["toggle"] = [this]() { ToggleStatusBar(); };
+  lua["navi"]["ui"]["statusbar"]["toggle"] = [this]() noexcept { ToggleStatusBar(); };
+
+  lua["navi"]["ui"]["statusbar"]["add_module"] =
+      [this](const Statusbar::Module &module) noexcept {
+        m_statusbar->Lua__AddModule(module);
+      };
+
+  lua["navi"]["ui"]["statusbar"]["insert_module"] = [this](const Statusbar::Module &module,
+                                                           const uint32_t &index) noexcept {
+      m_statusbar->Lua__InsertModule(module, index);
+  };
+
+  lua["navi"]["ui"]["statusbar"]["create_module"] =
+      [this](const std::string &name, const sol::table &table) noexcept {
+        return m_statusbar->Lua__CreateModule(name, table);
+      };
+
+  lua["navi"]["ui"]["statusbar"]["set_module_text"] =
+      [this](const std::string &name, const sol::object &obj) noexcept {
+          if (obj.is<std::string>())
+              m_statusbar->Lua__UpdateModuleText(name, obj.as<std::string>());
+          else if (obj.is<sol::function>()) {
+              auto func = obj.as<sol::function>();
+              sol::object value = func();
+              if (value.is<std::string>())
+                  m_statusbar->Lua__UpdateModuleText(name, value.as<std::string>());
+          }
+      };
 
   lua["navi"]["ui"]["pathbar"] = [this](const bool &state) {
     TogglePathWidget(state);

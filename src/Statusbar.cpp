@@ -255,3 +255,74 @@ void Statusbar::addModule(const QString &name) noexcept {
 
 void Statusbar::addModule(const Module &module) noexcept {
 }
+
+Statusbar::Module Statusbar::Lua__CreateModule(const std::string &name,
+                                     const sol::table &options) noexcept {
+    Statusbar::Module mod = Module();
+    mod.name = name;
+    mod.options = options;
+    return mod;
+}
+
+void Statusbar::Lua__AddModule(const Statusbar::Module &module) noexcept {
+    auto options = module.options;
+    auto text = options["text"].get_or<std::string>("");
+    auto italic = options["italic"].get_or(false);
+    auto bold = options["bold"].get_or(false);
+    auto bg = options["background"].get_or<std::string>("");
+    auto fg = options["color"].get_or<std::string>("");
+
+    QLabel *label = new QLabel();
+
+    if (!text.empty())
+        label->setText(QString::fromStdString(text));
+
+    QFont font = label->font();
+    font.setItalic(italic);
+    font.setBold(bold);
+    label->setFont(font);
+    label->setStyleSheet(QString("background: %1; color: %2; padding: 2px;")
+            .arg(QString::fromStdString(bg))
+            .arg(QString::fromStdString(fg)));
+
+    m_layout->addWidget(label);
+    m_layout->addSpacing(10);
+
+    m_module_widget_hash.insert(QString::fromStdString(module.name), label);
+}
+
+void Statusbar::Lua__InsertModule(const Statusbar::Module &module,
+                                  const uint32_t &index) noexcept {
+    auto options = module.options;
+    auto text = options["text"].get_or<std::string>("");
+    auto italic = options["italic"].get_or(false);
+    auto bold = options["bold"].get_or(false);
+    auto bg = options["background"].get_or<std::string>("");
+    auto fg = options["color"].get_or<std::string>("");
+
+    QLabel *label = new QLabel();
+
+    if (!text.empty())
+        label->setText(QString::fromStdString(text));
+
+    QFont font = label->font();
+    font.setItalic(italic);
+    font.setBold(bold);
+    label->setFont(font);
+    label->setStyleSheet(QString("background: %1; color: %2; padding: 2px;")
+            .arg(QString::fromStdString(bg))
+            .arg(QString::fromStdString(fg)));
+
+    m_layout->insertWidget(index, label);
+    m_layout->addSpacing(10);
+
+    m_module_widget_hash.insert(QString::fromStdString(module.name), label);
+}
+
+
+void Statusbar::Lua__UpdateModuleText(const std::string &name,
+                                      const std::string &value) noexcept {
+    auto *widget = m_module_widget_hash[QString::fromStdString(name)];
+    if (widget)
+        widget->setText(QString::fromStdString(value));
+}

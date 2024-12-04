@@ -20,6 +20,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
 
 void FilePanel::ResetFilter() noexcept {
     m_model->setNameFilters(QStringList() << "*");
+    m_hook_manager->triggerHook("filter_mode_off");
     ForceUpdate();
 }
 
@@ -680,6 +681,7 @@ void FilePanel::Filters(const QString &filterString) noexcept {
     if (filterStringList.isEmpty())
         filterStringList = {filterString};
     m_model->setNameFilters(filterStringList);
+    m_hook_manager->triggerHook("filter_mode_on");
     ForceUpdate();
 }
 
@@ -1609,11 +1611,13 @@ void FilePanel::ToggleVisualLine() noexcept {
         m_table_view->selectionModel()->select(m_visual_start_index,
                                                QItemSelectionModel::Rows);
         m_table_view->setSelectionMode(QAbstractItemView::MultiSelection);
+        m_hook_manager->triggerHook("visual_line_mode_on");
     } else {
         m_table_view->clearSelection();
         m_table_view->setSelectionMode(QAbstractItemView::SingleSelection);
         m_table_view->selectionModel()->setCurrentIndex(m_table_view->selectionModel()->currentIndex(),
                                                         QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        m_hook_manager->triggerHook("visual_line_mode_off");
     }
 
     m_statusbar->SetVisualLineMode(m_visual_line_mode);

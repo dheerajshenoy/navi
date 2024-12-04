@@ -671,6 +671,8 @@ Hook functions can be of any number. But keep in mind that, after emitting the h
 * Directory Changed `directory_changed`
 * Drive Mounted `drive_mounted`
 * Drive Unmounted `drive_unmounted`
+* Visual Line mode `visual_line_mode_on` & `visual_line_mode_off`
+* Filter mode `filter_mode_on` & `filter_mode_off`
 
 Example:
 
