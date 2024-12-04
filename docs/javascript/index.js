@@ -5,15 +5,21 @@ var typewriter = new Typewriter(app, {
 });
 
 typewriter.typeString('Fast')
-    .pauseFor(2500)
+    .pauseFor(1500)
+    .deleteAll()
+    .typeString('Minimal')
+    .pauseFor(1500)
     .deleteAll()
     .typeString('Powerful')
-    .pauseFor(2500)
-    .deleteAll()
-    .typeString('Extensible')
-    .pauseFor(2500)
+    .pauseFor(1500)
     .deleteAll()
     .typeString('Customizable')
-    .pauseFor(2500)
+    .pauseFor(1500)
     .deleteAll()
+    .typeString('Extensible')
+    .pauseFor(1500)
     .start();
+
+function get_started() {
+    window.location.href = "./installation.html";
+}
