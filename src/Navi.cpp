@@ -243,7 +243,7 @@ void Navi::initConfiguration() noexcept {
                 sol::table modules =
                     status_bar["modules"].get_or<sol::table>({});
 
-                if (!modules.empty()) {
+                if (modules.valid()) {
                     for (const auto &module : modules) {
                         m_statusbar->addModule(QString::fromStdString(module.second.as<std::string>()));
                     }

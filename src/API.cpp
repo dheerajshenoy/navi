@@ -247,6 +247,11 @@ void Navi::initNaviLuaAPI() noexcept {
         m_statusbar->Lua__AddModule(module);
       };
 
+  lua["navi"]["ui"]["statusbar"]["set_modules"] =
+      [this](const sol::table &table) noexcept {
+          m_statusbar->Lua__SetModules(table);
+      };
+
   lua["navi"]["ui"]["statusbar"]["insert_module"] = [this](const Statusbar::Module &module,
                                                            const uint32_t &index) noexcept {
       m_statusbar->Lua__InsertModule(module, index);

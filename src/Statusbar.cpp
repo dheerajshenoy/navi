@@ -26,6 +26,8 @@ Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
 
 void Statusbar::Message(const QString &message, const MessageType type,
                         int ms) noexcept {
+    if (!m_message_label->parent())
+        return;
 
     switch (type) {
     case MessageType::INFO:
@@ -76,6 +78,9 @@ void Statusbar::UpdateFile() noexcept {
 }
 
 void Statusbar::SetFilterMode(const bool state) noexcept {
+    if (!m_filter_label->parent())
+        return;
+
     if (state)
         m_filter_label->show();
     else
@@ -85,6 +90,9 @@ void Statusbar::SetFilterMode(const bool state) noexcept {
 Statusbar::~Statusbar() {}
 
 void Statusbar::SetVisualLineMode(const bool &state) noexcept {
+    if (!m_visual_line_mode_label->parent())
+        return;
+
     if (state)
         m_visual_line_mode_label->show();
     else
@@ -249,11 +257,14 @@ void Statusbar::addModule(const QString &name) noexcept {
     else if (name == "search") {
         m_layout->addWidget(m_search_match_label);
         m_layout->addSpacing(10);
+    } else if (m_module_widget_hash.contains(name)) {
+        auto widget = m_module_widget_hash[name];
+        if (widget) {
+            m_layout->addWidget(widget);
+            m_layout->addSpacing(10);
+        }
     }
 
-}
-
-void Statusbar::addModule(const Module &module) noexcept {
 }
 
 Statusbar::Module Statusbar::Lua__CreateModule(const std::string &name,
@@ -299,6 +310,7 @@ void Statusbar::Lua__InsertModule(const Statusbar::Module &module,
     auto bold = options["bold"].get_or(false);
     auto bg = options["background"].get_or<std::string>("");
     auto fg = options["color"].get_or<std::string>("");
+    auto hidden = options["hidden"].get_or(false);
 
     QLabel *label = new QLabel();
 
@@ -315,6 +327,7 @@ void Statusbar::Lua__InsertModule(const Statusbar::Module &module,
 
     m_layout->insertWidget(index, label);
     m_layout->addSpacing(10);
+    label->setVisible(hidden);
 
     m_module_widget_hash.insert(QString::fromStdString(module.name), label);
 }
@@ -325,4 +338,21 @@ void Statusbar::Lua__UpdateModuleText(const std::string &name,
     auto *widget = m_module_widget_hash[QString::fromStdString(name)];
     if (widget)
         widget->setText(QString::fromStdString(value));
+}
+
+void Statusbar::Lua__SetModules(const sol::table &table) noexcept {
+    if (table.valid()) {
+
+        // If widgets are already present, remove them (not delete)
+        while (QLayoutItem *item = m_layout->takeAt(0)) {
+            if (QWidget *widget = item->widget())
+                widget->setParent(nullptr);
+            delete item;
+        }
+
+        // Add the modules
+        for (const auto &module : table) {
+            addModule(QString::fromStdString(module.second.as<std::string>()));
+        }
+    }
 }

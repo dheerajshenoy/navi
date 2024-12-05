@@ -54,9 +54,7 @@ public:
     void SetMacroModeBold(const bool &state) noexcept;
     void SetMacroModePadding(const QString &padding) noexcept;
     void SetMacroModeText(const QString &text) noexcept;
-    void addModule(const Module &module) noexcept;
     void addModule(const QString &moduleName) noexcept;
-    void addModules(const QList<Module> &modules) noexcept;
     void createModule(const std::string &name, const sol::function &func,
                       const sol::table &options);
     void addModules(const QStringList &names) noexcept;
@@ -68,6 +66,7 @@ public:
     void Lua__AddModule(const Statusbar::Module &module) noexcept;
     void Lua__InsertModule(const Statusbar::Module &module,
                            const uint32_t &index) noexcept;
+    void Lua__SetModules(const sol::table &table) noexcept;
     void Lua__UpdateModuleText(const std::string &name,
                                const std::string &value) noexcept;
 
