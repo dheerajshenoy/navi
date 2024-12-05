@@ -177,12 +177,21 @@ body {
     padding-bottom: 10px;
 }
 
-.list li::marker {
+.list li::marker,
+.olist li::marker {
     color: #04AA6D;
 }
 
 .content .list {
     list-style-type: square;
+    padding-left: 40px;
+}
+
+.olist h3 {
+    color: pink;
+}
+
+.content .olist {
     padding-left: 40px;
 }
 
@@ -236,4 +245,84 @@ body {
 .block:hover {
     background-color: #04AA6D;
     color: #111;
+}
+
+.hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: lightcyan;
+}
+
+.list2 {
+    list-style-type: disc;
+    padding-left: 40px;
+}
+
+.warning {
+    color: yellow;
+    margin: 0px 40px 40px 40px;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.warning h3 {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.warning p {
+}
+
+.example {
+    color: pink;
+    margin: 0px 40px 40px 40px;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.example h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.note {
+    color: cyan;
+    margin: 0px 40px 40px 40px;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.note h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.coming-soon {
+    background-color: #111;
+    padding: 20px;
+    color: orange;
+    margin: 0px 40px 40px 40px;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.coming-soon h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+code
+{
+    margin: 40px;
+    border-radius: 10px;
+    border: 2px solid #04AA6D;
+}
+
+.note .list li::marker {
+    color: cyan;
 }

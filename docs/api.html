@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+  <title>Navi | API</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./javascript/highlight/styles/dark.css">
+  <link rel="stylesheet" href="./css/index.css">
+    <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <body>
+    <nav id="topnav">
+      <span class="nav-link" id="navi-text" >Navi</span>
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="./docs.html">Docs</a>
+      <a id="logo" class="nav-link" href="./api.html">API</a>
+      <a class="nav-link" href="./features.html">Features</a>
+      <a id="about" class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
+    </nav>
+    <br>
+    <div id="mainbox">
+
+      <h1>API</h1><br>
+
+        <span style="font-size: 20px;">
+          Welcome to the Lua API for our file manager, a powerful and flexible interface designed to give users complete control over customizing and automating their file management workflows.
+        </span>
+
+    </div>
+
+    <div class="content">
+
+      <h2 class="heading">Navi API</h2>
+      <hr class="hr">
+        The Lua API for Navi provides a versatile and user-friendly scripting interface, empowering users to tailor the application to their specific needs. With this API, you can create custom commands, define behaviors, and automate repetitive tasks, enhancing productivity and efficiency. Whether you want to modify the file manager's appearance, customize column layouts, or implement advanced file operations, the Lua API makes it all accessible with straightforward scripting. Designed with both beginners and advanced users in mind, the API opens up endless possibilities to adapt the file manager to your workflow, making it a truly personalized tool.
+
+      <br><br>
+
+      <div class="note">
+        <h3>NOTE</h3>
+        This documentation assumes that you know what the Lua programming language is and it's basics. It is important to know this before you can start configuring and extending Navi's behaviour. However, if you do not know what any of this means, you can check out the following materials:<br><br>
+
+        <ul class="list">
+          <li><a href="https://www.lua.org/start.html">Lua Official Website | Get Started</a></li>
+          <li><a href="https://tylerneylon.com/a/learn-lua/">Learn Lua in 15 Minutes | Tyler Neylon</a></li>
+          <li><a href="https://dev.to/jd2r/the-lua-tutorial-544b">The Lua Tutorial | dev.to</a></li>
+        </ul>
+
+        </div>
+
+      <h2 class="heading">Where to define the APIs </h2>
+      Navi uses <span class="block">config.lua</span> file in the navi configuration directory which is <span class="block">~/.config/navi/</span> to read all the configuration options and custom functions.
+      <br><br>
+
+      <h2 class="heading">Entry Point</h2>
+      <hr class="hr">
+        The main entry point for Navi Lua API is the function <span class="block">INIT_NAVI</span>.
+      The function INIT_NAVI will be called during the startup time of Navi. This function can be used to add hooks, definee and call other functions etc.
+
+      <pre><code class="language-lua">function INIT_NAVI()
+    navi.io.msg("Navi just booted") -- this just prints this statment on boot
+-- add other stuff here
+end</code></pre>
+
+      <div class="note">
+        <h3>NOTE</h3>
+        When defining your own custom functions, you have the liberty to name the function whatever you want. But, please be mindful of functions like <span class="block">INIT_NAVI</span> when naming your functions and make sure that there are no overlapping of custom function names and important function names.
+      </div>
+
+      <h2 class="heading">Custom functions</h2>
+      <hr class="hr">
+
+You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.
+
+<pre><code class="language-lua">function someFunction(fileName, dirName)
+    navi.io.msg("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
+end
+</code></pre>
+
+You can then call this function within Navi by calling the lua <span class="block"><function_name></span> command or by just calling <span class="block">lua</span> command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:<br>
+
+  "WOW! Navi is currently on the file <span class="block"><fileName></span> and inside the <span class="block"><dirName> </span> directory!"<br>
+
+      <h2 class="heading">Hooks</h2>
+      <hr class="hr">
+
+Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.<br>
+
+You can add hook using the <span class="block">navi.hook.add api</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.<br>
+
+Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
+
+    </div>
+
+    <div class="footer">
+      <div class="col-1">
+        <ul>
+          <h3>Resources</h3>
+          <a href="./docs.html">Docs</a>
+          <a href="./features.html">Features</a>
+          <a href="./installation.html">Installation</a>
+          <a href="./api.html">API</a>
+        </ul>
+      </div>
+
+      <div class="col-2">
+        <ul>
+
+        </ul>
+      </div>
+
+      <div class="col-3">
+        <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
+      </div>
+    </div>
+      <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
+    <script type="text/javascript" src="./javascript/index.js"></script>
+    <script type="text/javascript" src="./javascript/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+  </body>
+  </html>

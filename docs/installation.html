@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./css/prism.css">
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -74,7 +75,7 @@
       One Liner:
 
       <div class="code-container">
-        <code>
+        <code class="language-bash">
           mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j $(nproc) && sudo make install
         </code>
         <button onclick="copyCode(this)" class="copy-code-btn"><i class="fa fa-clipboard"></i> Copy</button>
@@ -109,5 +110,6 @@
       <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
     <script type="text/javascript" src="./javascript/index.js"></script>
     <script type="text/javascript" src="./javascript/installation.js"></script>
+    <script type="text/javascript" src="./javascript/prism/prism.js"></script>
   </body>
   </html>

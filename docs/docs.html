@@ -16,6 +16,7 @@
       <span class="nav-link" id="navi-text" >Navi</span>
       <a class="nav-link" href="index.html">Home</a>
       <a id="logo" class="nav-link" href="./docs.html">Docs</a>
+      <a class="nav-link" href="./api.html">API</a>
       <a class="nav-link" href="./features.html">Features</a>
       <a id="about" class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
     </nav>
@@ -33,9 +34,12 @@
     </div>
 
     <div class="content">
-      <h1 class="heading"><a id="using-navi">Using Navi</a></h1><br>
+      <h1 class="heading">Using Navi</h1>
+      <hr class="hr">
+      <br>
 
-      <h2><a id="naming-convention">Naming Conventions</a></h2><br>
+      <a id="naming-convention"></a>
+      <h2>Naming Conventions</h2><br>
 
       <ul class="list">
         <li><span class="block">Item</span> refers to a file or a directory.</li><br>
@@ -50,9 +54,477 @@
 
         When you call any of the commands, the commands will be aware of these markings and do the action accordingly. For example, if we use the <span class="block">rename</span> command and if there are marked files, your choice of text editor is opened with the list of all the file names. You can change these and write to the file to rename them accordingly.<br><br><br>
 
-      <center>
-        <span style="color: orange; background-color: black; padding: 10px">More docs to be added soon... Until then, check out the documentation on github <a href="github.com/dheerajshenoy/navi/wiki.md">here</a></span>
-      </center>
+      <a id="interactive-commands"></a>
+      <h1 class="heading">Interactive Commands</h1>
+      <hr class="hr">
+      <br>
+        These are commands that can be executed using the inputbar UI component. By default, pressing : (colon) key pops up the inputbar. You can type a name of the command in this bar or a line number to go to in the current directory of the focused pane. Example: mark or 42, where mark would mark the current item under focus or highlighted items (more than one items).<br><br>
+
+      <h2>Types of Command</h2><br>
+
+        There are four variants for most of the commands: Current, Local, Global and DWIM (Do What I Mean).<br><br>
+
+      <ol class="olist">
+
+        <li><h3>Current Scope</h3></li><br>
+
+          This applies to the currently selected item. Any command that is Current scoped will run only on the currently highlighted item.<br><br>
+
+        <b>This includes mouse selection (also called as Highlighting).</b><br><br>
+
+        <li><h3>Local Scope</h3></li><br>
+
+          This applies to the marks that are in the current directory which is conveniently called as a Local Mark. Any command that is Local scoped will run on the local marks.<br><br>
+
+        <b>This does not include mouse highlighting.</b><br><br>
+
+        <li><h3>Global Scope</h3></li><br>
+
+        This applies to the marks that are present in any directory. Unlike the Local scope the command that is Global scoped will run on the marks that are present in any directory.<br><br>
+
+        <b>This does not include mouse highlighting.</b><br><br>
+
+        <li><h3>DWIM</h3></li><br>
+
+          <a href="https://en.wikipedia.org/wiki/DWIM">DWIM wikipedia page</a><br><br>
+
+          Do What I Mean version of commands. If no local marks are present, run the command on the current item, otherwise run the commands on the marks.<br><br>
+
+      </ol>
+
+      <h2 class="heading">List of all the commands available in Navi</h2>
+      <hr class="hr">
+      <br>
+        Below is an exhaustive list of commands that are available in Navi.<br><br>
+
+
+      <ul class="list">
+
+        <a id="commands-navigation"></a>
+        <li><h3>Navigation</h3></li>
+        <br>
+
+        <ul class="list2">
+          <li><span class="block">next-item</span> Go to the next item
+          <br><br>
+
+          <li><span class="block">prev-item</span> Go to the previous item
+          <br><br>
+
+          <li><span class="block">select-item</span> Select (go to) the current item
+          <br><br>
+
+          <li><span class="block">middle-item</span> Go to the middle item
+          <br><br>
+
+          <li><span class="block">up-directory</span> Go to the parent directory
+          <br><br>
+
+          <li><span class="block">first-item</span> Go to the first item
+          <br><br>
+
+          <li><span class="block">last-item</span> Go to the last item
+          <br><br>
+        </ul>
+
+<li><h3>Echo (Printing)</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">echo-info</span> Echos or prints the information given as argument with the info-face font
+          <br><br>
+
+          <li><span class="block">echo-warn</span> Echos or prints the information given as argument with the warning-face font
+          <br><br>
+
+          <li><span class="block">echo-error</span> Echos or prints the information given as argument with the error-face font
+          <br><br>
+        </ul>
+
+<li><h3>Marking Item</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">mark</span> Marks the current item.
+            <br><br>
+
+          <li><span class="block">toggle-mark</span> Toggle the mark of the current item.
+            <br><br>
+
+          <li><span class="block">toggle-mark-dwim</span> DWIM version of toggle-mark command
+            <br><br>
+
+          <li><span class="block">mark-all</span> Marks all the items in the current directory.
+            <br><br>
+
+          <li><span class="block">mark-inverse</span> Inverses the marks in the current directory.
+            <br><br>
+
+          <li><span class="block">mark-dwim</span> DWIM version of toggle-mark
+            <br><br>
+        </ul>
+
+<li><h3>Unmarking Item</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">unmark</span> Unmarks the current item.
+            <br><br>
+
+          <li><span class="block">unmark-local</span> Unmarks Local Marks
+            <br><br>
+
+          <li><span class="block">unmark-global</span> Unmarks Global Marks
+            <br><br>
+        </ul>
+
+<li><h3>Selecting Item</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">visual-select</span> Enters into visual selection mode. Navigation is followed by selection until the mode is toggled off.
+            <br><br>
+        </ul>
+
+<li><h3>Change Permission</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">chmod</span> Change the permission of the current item using three digit numbers
+            <br><br>
+
+            <div class="example">
+              <h3>Example</h3>
+              777, 666, 000 etc.
+            </div>
+
+          <li><span class="block">chmod-local</span> Change permission for Local Marks
+            <br><br>
+
+          <li><span class="block">chmod-global</span> Change permission for Global Marks
+            <br><br>
+
+          <li><span class="block">chmod-dwim</span> Change permission DWIM style
+            <br><br>
+        </ul>
+
+<li><h3>Renaming Files</h3></li><br>
+
+        <div class="note">
+          <h3>NOTE</h3>
+          Renaming files more than <span class="block">bulk-rename-threshold</span> (configuration option) which is 5 by default will trigger bulk rename process.
+        </div>
+
+          <ul class="list2">
+            <li><span class="block">rename</span> Rename the highlighted item.
+            <br><br>
+
+            <li><span class="block">rename-local</span> Renames items in the Local Marks
+            <br><br>
+
+            <li><span class="block">rename-global</span> Renames items in the Global Marks
+            <br><br>
+
+            <li><span class="block">rename-dwim</span> Renames items in DWIM style
+              <br><br>
+          </ul>
+
+<li><h3>Bulk Rename</h3></li><br>
+
+  This is where a text editor of your choice (set it in the configuration) opens up a temporary "rename file" and enables you to rename all the marked files once you save and close the said "rename file". By default navi uses the neovim text editor.<br><br>
+
+<li><h3>Cutting Files</h3></li><br>
+
+  <ul class="list2">
+        <li><span class="block">cut</span> Cut (prepare for moving) the current item.
+        <br><br>
+
+        <li><span class="block">cut-local</span> Register cut for Local Marks
+        <br><br>
+
+        <li><span class="block">cut-global</span> Register cut for Global Marks
+        <br><br>
+
+        <li><span class="block">cut-dwim</span> Register cut in DWIM style
+          <br><br>
+  </ul>
+
+        <li><h3>Copying Files</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">copy</span> Copy the current item.
+            <br><br>
+
+          <li><span class="block">copy-local</span> Register copy for Local Marks
+            <br><br>
+
+          <li><span class="block">copy-global</span> Register copy for Global Marks
+            <br><br>
+
+          <li><span class="block">copy-dwim</span> Register copy in DWIM style
+            <br><br>
+        </ul>
+
+<li><h3>Pasting (Moving) Files</h3></li><br>
+
+        <ul class="list2">
+          <li><span class="block">paste</span> Paste (Move) the current item.
+            <br><br>
+        </ul>
+
+<li><h3>Deleting Files</h3></li><br>
+
+        <div class="warning">
+          <h3>WARNING</h3>
+          <p>Please be careful when using delete commands, this does not trash the items, it directly deletes them. If you want to trash use the trash command</p>
+        </div>
+
+        <ul class="list2">
+
+          <li><span class="block">delete</span> Delete the highlighted items(s).
+            <br><br>
+
+          <li><span class="block">delete-local</span> Deletes items in the Local Marks
+            <br><br>
+
+          <li><span class="block">delete-global</span> Deletes items in the Global Marks
+            <br><br>
+
+          <li><span class="block">delete-dwim</span> Deletes items in DWIM style
+            <br><br>
+        </ul>
+
+        <li><h3>Trashing Files</h3></li><br>
+
+        <ul class="list2">
+
+          <li><span class="block">trash</span> Trash the current item.
+          <br><br>
+
+          <li><span class="block">trash-local</span> Trashes items in Local Marks
+          <br><br>
+
+          <li><span class="block">trash-global</span> Trashes items in Global Marks
+          <br><br>
+
+          <li><span class="block">trash-dwim</span> Trashes items in DWIM style
+          <br><br>
+
+        </ul>
+
+<li><h3>Filtering Items</h3></li><br>
+
+  <ul class="list2">
+    <li><span class="block">filter</span> Set a filter to directory.
+      <br><br>
+
+      <div class="example">
+        <h3>EXAMPLE</h3>
+        * displays everything, *.csv displays only the csv files, *.png displays only the png files
+      </div>
+
+    <li><span class="block">reset-filter</span> Reset the appplied filter.
+      <br><br>
+
+    <li><span class="block">hidden-files</span> Toggles the hidden files.
+      <br><br>
+
+      <div class="note">
+        <h3>NOTE</h3>
+        Hidden files are those items whose name start with a period like .config, .gitignore etc.
+      </div>
+
+    <li><span class="block">dot-dot</span> Toggles the .. file item.
+      <br><br>
+
+  </ul>
+
+        <li><h3>Panes</h3></li><br>
+
+          <ul class="list2">
+
+        <li><span class="block">bookmark-pane</span> Opens the bookmarks list.
+        <br><br>
+
+        <li><span class="block">marks-pane</span> Opens the marks list.
+          <br><br>
+
+          <li><span class="block">messages-pane</span> Opens the messages list.
+          <br><br>
+
+
+          <li><span class="block">preview-pane</span> Toggles the preview pane.
+          <br><br>
+
+
+            The preview pane handles previewing images (good number of formats) and PDF documents (first page) asynchronously. This means that the previewing experience will be seamless and without any lag. Navi uses ImageMagick library under the hood for previewing images and therefore any image formats supported my ImageMagick is supported by Navi.
+
+            <br><br>
+
+          <li><span class="block">shortcuts-pane</span> This displays the list of all the shortcuts.
+          <br><br>
+
+            </ul>
+
+        <li><h3>Misc</h3></li>
+        <br>
+
+          <ul class="list2">
+
+          <li><span class="block">fullscreen</span> Toggle fullscreen mode for Navi.
+          <br><br>
+
+          <li><span class="block">execute-extended-command</span> This is the function that pops up the inputbar to enter the interactive commands.
+          <br><br>
+
+          <li><span class="block">menu-bar</span> Toggles the menu bar.
+          <br><br>
+
+          <li><span class="block">focus-path</span> Focuses the path widget and sets it in edit mode.
+          <br><br>
+
+          <li><span class="block">item-property</span> Display the property of the currently focused item.
+          <br><br>
+
+          <li><span class="block">header</span> Toggle the display of header information.
+          <br><br>
+
+          <li><span class="block">cycle</span> Toggle the cycle (last item to first item and vice-versa) during navigation.
+          <br><br>
+
+          <li><span class="block">refresh</span> Force refresh the current directory.
+          <br><br>
+
+            <div class="note">
+              <h3>NOTE</h3>
+              By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.
+            </div>
+
+          <li><span class="block">mouse-scroll</span> Toggle mouse scroll support for file panel
+          <br><br>
+
+          <li><span class="block">reload-config</span> Re-reads the configuration file if it exists and loads the configurations.
+          <br><br>
+
+          <li><span class="block">tasks</span> Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.
+          <br><br>
+
+          <li><span class="block">cd</span> Change directory with the provided argument or ask for input.
+          <br><br>
+
+          <li><span class="block">folder-property</span> Get the property of the currently open folder
+          <br><br>
+
+          <li><span class="block">copy-path</span> Copy the path(s) of the currently "highlighted" (not to be confused with marked) files.
+          <br><br>
+
+            You can pass an optional argument which will be the separator that separates the paths of all the selected files.
+            <br><br>
+
+            <div class="note">
+              <h3>NOTE</h3>
+              You can configure the default separator in the config using the copy_path_separator variable
+            </div>
+
+          <li><span class="block">exit</span> Exits Navi
+          <br><br>
+
+
+          <li><span class="block">new-window</span> Creates a new instance of navi
+            <br><br>
+
+              </ul>
+
+            <li><h3>Shell Commands</h3></li>
+        <br>
+          <ul class="list2">
+
+          <li><span class="block">shell</span> Run a shell command asynchronously (non-blocking).
+            <br><br>
+
+          </ul>
+
+        The running commands can be seen in the <span class="block">Task Widget</span> using the tasks command.
+        <br><br>
+
+        <li><h3>Macro</h3></li>
+        <br>
+
+
+          Macros allow you to record actions performed inside Navi and save it, which you can then recall it to perform the action over and over again.
+          <br><br>
+
+          <ul class="list2">
+          <li><span class="block">macro-record</span> This records / finishes recording (if already recording) a macro under a macro key. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.
+          <br><br>
+
+
+          <li><span class="block">macro-play</span> This plays a macro under a specific macro key.
+          <br><br>
+
+          <li><span class="block">macro-edit</span> Opens macro commands recorded under a specific macro key (if it exists) with your editor to edit, which will then be saved and can be recalled.
+          <br><br>
+
+          <li><span class="block">macro-list</span> Lists all the macros that have been defined.
+          <br><br>
+
+          <li><span class="block">macro-save-to-file</span> Saves macro to a file which can be used to load for the next boot of Navi.
+          <br><br>
+
+          <li><span class="block">macro-delete</span> Delete macro under a macro key (if it exists).
+            <br><br>
+
+          </ul>
+
+        <li><h3>Default Keybindings</h3></li>
+        <br>
+
+          Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:
+        <br><br>
+
+        <ul class="list2">
+          <li><span class="block">h</span> to go to the parent directory<br><br>
+          <li><span class="block">j</span> to go the next item<br><br>
+          <li><span class="block">k</span> to go the previous item<br><br>
+          <li><span class="block">l</span> to select the current item<br><br>
+          <li><span class="block">gg</span> to go to the first item<br><br>
+          <li><span class="block">Shift+g</span> to go the last item<br><br>
+          <li><span class="block">Space</span> to toggle marking for the current item<br><br>
+          <li><span class="block">Shift+Space</span> to toggle inverse marking for the current directory<br><br>
+          <li><span class="block">Ctrl+a</span> to mark all the items in the current directory<br><br>
+          <li><span class="block">Shift+r</span> rename-dwim <br><br>
+          <li><span class="block">Shift+d</span> to delete DWIM<br><br>
+          <li><span class="block">yy</span> to copy DWIM<br><br>
+          <li><span class="block">p</span> to paste cut/copy marked items to the current directory<br><br>
+          <li><span class="block">Shift+u</span> to unmark all the local marks<br><br>
+          <li><span class="block">.</span> toggle hidden/dot files<br><br>
+          <li><span class="block">/</span> Search for item in the current directory<br><br>
+          <li><span class="block">n</span> Go to the next match for the search<br><br>
+          <li><span class="block">Shift+n</span> Go to the previous match for the search<br><br>
+          <li><span class="block">Ctrl+m</span> toggle menubar<br><br>
+          <li><span class="block">Ctrl+p</span> toggle preview panel<br><br>
+          <li><span class="block">Ctrl+l</span> focus the path widget<br><br>
+          <li><span class="block">Shift+v</span> Toggle visual line selection mode<br><br>
+        </ul>
+
+          <div class="note">
+            <h3>NOTE</h3>
+            These keybindings are not loaded if there is a keybindings table in the lua configuration file
+          </div>
+
+        <li><h3>Theming</h3></li>
+        <br>
+
+          Since navi is a Qt GUI library based application, it can be styled using the qt6ct package available on linux. The colors mentioned in the configuration file will override the respective control colors of the theme.<br><br>
+
+        <li><h3>Scripting with Lua</h3></li>
+        <br>
+
+          Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks.
+          Please visit <a href="./api.html">this link</a> for in-depth review into how scripting is done and also dive deep into the API functions present in Navi.
+          <br><br>
+
+        </ul>
+
+          <div class="coming-soon">
+            <h3>COMING SOON</h3>
+          More docs to be added soon... Until then, check out the documentation on github <a href="github.com/dheerajshenoy/navi/wiki.md">here</a>
+        </div>
 
     </div>
 
@@ -63,6 +535,7 @@
           <a href="./docs.html">Docs</a>
           <a href="./features.html">Features</a>
           <a href="./installation.html">Installation</a>
+          <a href="./api.html">API</a>
         </ul>
       </div>
 
