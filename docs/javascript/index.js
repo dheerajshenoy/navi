@@ -23,3 +23,12 @@ typewriter.typeString('')
 function get_started() {
     window.location.href = "./installation.html";
 }
+
+function openNavMenu() {
+    var x = document.getElementById("topnav");
+    if (x.className === "topnav") {
+      x.className += " responsive";
+    } else {
+      x.className = "topnav";
+    }
+  }
