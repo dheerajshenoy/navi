@@ -49,4 +49,5 @@ function resetAccentColor() {
     var accent = document.querySelector(":root");
     accent.style.setProperty("--accent", origAccentColor);
     document.getElementById("colorPicker").value = origAccentColor;
+    localStorage.setItem("accentColor", origAccentColor);
 }
