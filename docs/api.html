@@ -24,7 +24,7 @@
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
       <a id="about" class="nav-link" href="javascript:void(0);" onclick="openNavMenu()"><i class="fa fa-bars"></i></a>
     </nav>
-      <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
+    <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
     <br>
     <div id="mainbox">
 
@@ -93,7 +93,7 @@ end</code></pre>
 
         Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.<br><br>
 
-        You can add hook using the function <span class="block">navi.hook.add</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a <span class="block">function</span> that will be executed in response to the hook.<br><br>
+          You can add hook using the function <span class="block">navi.hook.add</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a <span class="block">function</span> that will be executed in response to the hook.<br><br>
 
       <div class="note">
         <h3>NOTE</h3>
@@ -105,21 +105,21 @@ end</code></pre>
 
         Currently the following hooks exist in navi:<br><br>
 
-<ul class="list">
-    <li>Select Item <span class="block">item_select</span></li><br>
-    <li>Item Changed <span class="block">item_changed</span></li><br>
-    <li>Up Directory <span class="block">directory_up</span></li><br>
-    <li>Directory Loaded <span class="block">directory_loaded</span></li><br>
-    <li>Directory Changed <span class="block">directory_changed</span></li><br>
-    <li>Drive Mounted <span class="block">drive_mounted</span></li><br>
-    <li>Drive Unmounted <span class="block">drive_unmounted</span></li><br>
-    <li>Visual Line mode <span class="block">visual_line_mode_on</span> & <span class="block">visual_line_mode_off</span></li><br>
-    <li>Filter mode <span class="block">filter_mode_on</span> & <span class="block">filter_mode_off</span></li><br>
-</ul>
+      <ul class="list">
+        <li>Select Item <span class="block">item_select</span></li><br>
+        <li>Item Changed <span class="block">item_changed</span></li><br>
+        <li>Up Directory <span class="block">directory_up</span></li><br>
+        <li>Directory Loaded <span class="block">directory_loaded</span></li><br>
+        <li>Directory Changed <span class="block">directory_changed</span></li><br>
+        <li>Drive Mounted <span class="block">drive_mounted</span></li><br>
+        <li>Drive Unmounted <span class="block">drive_unmounted</span></li><br>
+        <li>Visual Line mode <span class="block">visual_line_mode_on</span> & <span class="block">visual_line_mode_off</span></li><br>
+        <li>Filter mode <span class="block">filter_mode_on</span> & <span class="block">filter_mode_off</span></li><br>
+      </ul>
 
       Example:
 
-<pre><code class="language-lua">function INIT_NAVI()
+      <pre><code class="language-lua">function INIT_NAVI()
     navi.hook.add("item_select", function ()
         navi.io.msg("You selected an item...YAY!")
     end)
@@ -280,8 +280,8 @@ end</code></pre>
             <span class="value">1 ; type: <span class="block">MenuItem</span></span>
           </div>
 
-            <h3>Example</h3>
-            <pre><code class="language-lua">function INIT_NAVI()
+          <h3>Example</h3>
+          <pre><code class="language-lua">function INIT_NAVI()
     -- This is a function with special meaning to Navi.
     -- This will be called on startup
 
@@ -317,9 +317,90 @@ end</code></pre>
     navi.ui.menubar.add_menu(custom_menu)
 
 end</code></pre>
-
         </ul>
       </ul>
+
+      <h2 class="heading">API</h2>
+
+      <ul class="list">
+        <li>sort_name</li>
+        <li>search</li>
+        Search for the text string given as argument.
+        <li>search_next</li>
+        <li>search_prev</li>
+
+        <li>new_files</li>
+
+        <li>new_folders</li>
+
+        <li>trash</li>
+
+        <li>copy</li>
+
+        <li>copy_dwim</li>
+
+        <li>cut_dwim</li>
+
+        <li>cut</li>
+
+        <li>has_marks_local (bool)</li>
+
+        Returns true if there are local marks, else false
+
+        <li>has_marks_global (bool)</li>
+
+        Returns true if there are global marks, else false
+
+        <li>global_marks (table)</li>
+
+        Returns the list of global marks
+
+        <li>local_marks_count (int)</li>
+        <br>
+          Returns the count of local marks
+
+        <li>global_marks_count (int)</li>
+
+        Returns the count of global marks
+
+        <li>local_marks (table)</li>
+        Returns the list of local marks in the current working directory
+        <li>highlight (void)</li>
+
+        Highlights the item with the name passed as argument if it exists.
+        <li>cd (void)</li>
+
+        Change the current working directory to the string provided as argument.
+        <li>pwd (str)</li>
+
+        Returns the string of the current working directory.
+      </ul>
+      <br>
+
+      <h2 class="heading">
+        IO
+      </h2>
+
+      <li>msg</li>
+      <li>msgtype</li>
+      This is an enum with the following members:
+      <ul class="list2">
+        <li>error</li>
+        <li>warning</li>
+        <li>info</li>
+        <li>input</li>
+      </ul>
+      <br>
+      <h2 class="heading">
+        Shell
+      </h2>
+
+      <li>execute</li>
+
+      You can execute any shell commands from within navi.
+
+    </ul>
+    </ul>
 
     </div>
 

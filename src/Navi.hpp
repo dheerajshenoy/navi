@@ -135,7 +135,7 @@ public:
     void EditBookmarkName(const QStringList &bookmarkName) noexcept;
     void EditBookmarkFile(const QStringList &bookmarkName) noexcept;
     void LoadBookmarkFile(const QStringList &bookmarkFilePath) noexcept;
-    void GoBookmark(const QString &bookmarkName) noexcept;
+    void GoBookmark(const QString &bookmarkName = QString()) noexcept;
     void SaveBookmarkFile() noexcept;
     void SortByName(const bool &reverse = false) noexcept;
     void SortByDate(const bool &reverse = false) noexcept;

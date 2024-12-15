@@ -1003,7 +1003,10 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["bookmark-go"] = [&](const QStringList &args) {
-        GoBookmark(args.at(0));
+        if (args.isEmpty())
+            GoBookmark();
+        else
+            GoBookmark(args.at(0));
     };
 
     commandMap["bookmark-add"] = [&](const QStringList &args) {
@@ -1166,8 +1169,6 @@ void Navi::RemoveBookmark(const QStringList &args) noexcept {
 }
 
 void Navi::GoBookmark(const QString &bookmarkName) noexcept {
-    if (bookmarkName.isEmpty())
-        return;
 
     BookmarkManager::Bookmark bookmark =
         m_bookmark_manager->getBookmark(bookmarkName);

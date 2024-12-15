@@ -191,7 +191,7 @@ void Navi::initNaviLuaAPI() noexcept {
   lua["navi"]["api"]["copy_dwim"] = [this]() { m_file_panel->CopyDWIM(); };
   lua["navi"]["api"]["copy"] = [this]() { return m_file_panel->CopyItem(); };
   lua["navi"]["api"]["trash"] = [this]() { m_file_panel->TrashItem(); };
-  lua["navi"]["api"]["new_folder"] =
+  lua["navi"]["api"]["new_folders"] =
       [this](const std::vector<std::string> &folderNames) {
         QStringList folders = utils::stringListFromVector(folderNames);
         m_file_panel->NewFolder(folders);
