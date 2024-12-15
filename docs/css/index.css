@@ -324,3 +324,10 @@ code {
 .note .list li::marker {
     color: cyan;
 }
+
+#colorPicker {
+    position: relative;
+    top: 100;
+    left: 100;
+    display: none;
+}

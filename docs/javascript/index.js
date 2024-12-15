@@ -12,7 +12,8 @@ function openNavMenu() {
 }
 
 function colorPick() {
-    var element = document.getElementById("colorPicker").jscolor.show();
+    var element = document.getElementById("colorPicker");
+    element.jscolor.show();
 }
 
 function colorUpdate(picker) {
@@ -41,3 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
             colorUpdate(this);
         });
 });
+
+
+function resetAccentColor() {
+    var origAccentColor = "#04AA6D";
+    var accent = document.querySelector(":root");
+    accent.style.setProperty("--accent", origAccentColor);
+    document.getElementById("colorPicker").value = origAccentColor;
+}

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Navi | API</title>
@@ -12,9 +13,10 @@
   <link rel="stylesheet" href="./javascript/highlight/styles/dark.css">
   <link rel="stylesheet" href="./css/index.css">
   <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
   <body>
     <nav id="topnav">
-      <span class="nav-link" id="navi-text" >Navi</span>
+      <a class="nav-link" id="navi-text" href="javascript:colorPick()">Navi</a>
       <a class="nav-link" href="index.html">Home</a>
       <a class="nav-link" href="./docs.html">Docs</a>
       <a id="logo" class="nav-link" href="./api.html">API</a>
@@ -22,6 +24,7 @@
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
       <a id="about" class="nav-link" href="javascript:void(0);" onclick="openNavMenu()"><i class="fa fa-bars"></i></a>
     </nav>
+      <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
     <br>
     <div id="mainbox">
 

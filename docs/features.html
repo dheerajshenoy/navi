@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
   <title>Navi | Features</title>
@@ -13,15 +15,17 @@
   <link rel="stylesheet" href="./css/index.css">
   <link rel="stylesheet" href="./css/features.css">
     <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
   <body>
     <nav id="topnav">
-      <span class="nav-link" id="navi-text" >Navi</span>
+      <a class="nav-link" id="navi-text" href="javascript:colorPick()">Navi</a>
       <a class="nav-link" href="index.html">Home</a>
       <a class="nav-link" href="./docs.html">Docs</a>
       <a class="nav-link" href="./api.html">API</a>
       <a id="logo" class="nav-link" href="./features.html">Features</a>
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
     </nav>
+      <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
     <div id="mainbox">
       <br>
       <h1>Features</h1>
