@@ -1,7 +1,7 @@
 SETTINGS = {
     terminal = os.getenv("TERMINAL"),
     copy_path_separator = " " ,
-
+    default_directory = "~",
     bookmarks = {
         auto_save = true,
     },
