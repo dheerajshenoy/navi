@@ -4,8 +4,6 @@
 1.  [Introduction](#orgad64bb1)
 2.  [Why another file manager ?](#org326bc2f)
 3.  [Features](#org667977f)
-4.  [TODOs](#org2eefded)
-5.  [Wiki](#orgb2dd5a8)
 
 A file manager for the minimalist & impatient
 
@@ -13,7 +11,7 @@ A file manager for the minimalist & impatient
 
 # Introduction
 
-This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++.
+This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++. Check out <a href="dheerajshenoy.github.io/navi">navi homepage</a> for latest documentation.
 
 <a id="org326bc2f"></a>
 
@@ -69,14 +67,3 @@ Command bar
 Mount and Unmount Drives
 
 <img src="https://github.com/user-attachments/assets/a05bc654-5ab5-4d6c-95a0-c05bd05569e1" height="300px" width="400px">
-
-
-# TODOs
-
-Please refer to [this file](./TODO.md) for looking at the TODOs and DONEs.
-
-<a id="orgb2dd5a8"></a>
-
-# Wiki
-
-Please refer to [this file](./wiki.md) for in depth look into the features and functionalities of navi.

@@ -1,5 +1,3 @@
-**NOTE: This page is still a work in progress.**
-
 # Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 
@@ -52,9 +50,6 @@
 - [Acknowledgement](#acknowledgement)
 
 <!-- markdown-toc end -->
-
-
-
 
 # Installation
 
