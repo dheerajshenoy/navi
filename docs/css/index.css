@@ -49,6 +49,28 @@ body {
     overflow: hidden;
 }
 
+@media screen and (max-width: 750px) {
+    #topnav a:not(:first-child) {
+        display: none;
+    }
+
+    #topnav #about {
+        display: block;
+    }
+
+    #topnav.responsive a.nav-link {
+        display: block;
+        width: auto;
+    }
+
+}
+
+@media screen and (min-width: 750px) {
+    #topnav #about {
+        display: none;
+    }
+}
+
 .nav-link {
     text-decoration: none !important;
     display: inline-block;

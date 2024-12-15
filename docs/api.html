@@ -1,17 +1,17 @@
 <html lang="en">
-<head>
-  <title>Navi | API</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-</head>
+  <head>
+    <title>Navi | API</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  </head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./javascript/highlight/styles/dark.css">
   <link rel="stylesheet" href="./css/index.css">
-    <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
   <body>
     <nav id="topnav">
       <span class="nav-link" id="navi-text" >Navi</span>
@@ -26,9 +26,9 @@
 
       <h1>API</h1><br>
 
-        <span style="font-size: 20px;">
-          Welcome to the Lua API for our file manager, a powerful and flexible interface designed to give users complete control over customizing and automating their file management workflows.
-        </span>
+      <span style="font-size: 20px;">
+        Welcome to the Lua API for our file manager, a powerful and flexible interface designed to give users complete control over customizing and automating their file management workflows.
+      </span>
 
     </div>
 
@@ -50,7 +50,7 @@
           <li><a href="https://dev.to/jd2r/the-lua-tutorial-544b">The Lua Tutorial | dev.to</a></li>
         </ul>
 
-        </div>
+      </div>
 
       <h2 class="heading">Where to define the APIs </h2>
       Navi uses <span class="block">config.lua</span> file in the navi configuration directory which is <span class="block">~/.config/navi/</span> to read all the configuration options and custom functions.
@@ -74,25 +74,25 @@ end</code></pre>
       <h2 class="heading">Custom functions</h2>
       <hr class="hr">
 
-You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.
+        You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.
 
-<pre><code class="language-lua">function someFunction(fileName, dirName)
+      <pre><code class="language-lua">function someFunction(fileName, dirName)
     navi.io.msg("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
 end
-</code></pre>
+      </code></pre>
 
-You can then call this function within Navi by calling the lua <span class="block"><function_name></span> command or by just calling <span class="block">lua</span> command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:<br>
+      You can then call this function within Navi by calling the lua <span class="block"><function_name></span> command or by just calling <span class="block">lua</span> command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:<br>
 
-  "WOW! Navi is currently on the file <span class="block"><fileName></span> and inside the <span class="block"><dirName> </span> directory!"<br>
+        "WOW! Navi is currently on the file <span class="block"> fileName </span> and inside the <span class="block">dirName</span> directory!"<br><br>
 
       <h2 class="heading">Hooks</h2>
       <hr class="hr">
 
-Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.<br>
+        Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.<br>
 
-You can add hook using the <span class="block">navi.hook.add api</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.<br>
+          You can add hook using the <span class="block">navi.hook.add api</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.<br>
 
-Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
+            Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
 
     </div>
 
@@ -117,9 +117,9 @@ Hook functions can be of any number. But keep in mind that, after emitting the h
         <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
       </div>
     </div>
-      <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
+    <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
     <script type="text/javascript" src="./javascript/index.js"></script>
     <script type="text/javascript" src="./javascript/highlight/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
   </body>
-  </html>
+</html>

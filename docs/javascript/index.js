@@ -31,4 +31,4 @@ function openNavMenu() {
     } else {
       x.className = "topnav";
     }
-  }
+}
