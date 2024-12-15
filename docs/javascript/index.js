@@ -1,25 +1,3 @@
-var app = document.getElementById("tw");
-
-var typewriter = new Typewriter(app, {
-    loop: true
-});
-
-typewriter.typeString('')
-    .pauseFor(200)
-    .deleteAll()
-    .typeString('Minimal')
-    .pauseFor(200)
-    .deleteAll()
-    .typeString('Powerful')
-    .pauseFor(200)
-    .deleteAll()
-    .typeString('Customizable')
-    .pauseFor(200)
-    .deleteAll()
-    .typeString('Extensible')
-    .pauseFor(200)
-    .start();
-
 function get_started() {
     window.location.href = "./installation.html";
 }
@@ -32,3 +10,34 @@ function openNavMenu() {
       x.className = "topnav";
     }
 }
+
+function colorPick() {
+    var element = document.getElementById("colorPicker").jscolor.show();
+}
+
+function colorUpdate(picker) {
+    var color = picker.toHEXString();
+    var accent = document.querySelector(":root");
+    accent.style.setProperty("--accent", color);
+    localStorage.setItem("accentColor", color);
+}
+
+function loadAccentColor() {
+    var savedColor = localStorage.getItem("accentColor");
+
+    if (savedColor) {
+        var accent = document.querySelector(":root");
+        accent.style.setProperty("--accent", savedColor);
+        document.getElementById("colorPicker").value = savedColor;
+    }
+}
+
+// Initialize color picker and set default color
+document.addEventListener("DOMContentLoaded", () => {
+    loadAccentColor();
+    document
+        .getElementById("colorPicker")
+        .addEventListener("input", function () {
+            colorUpdate(this);
+        });
+});

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -14,20 +15,21 @@
 <link rel="stylesheet" href="./css/index.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
   rel="stylesheet">
-<script type="text/javascript" src="./javascript/typewriter/core.js"></script>
-
+  <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
 <body>
   <nav id="topnav">
-    <span class="nav-link" id="navi-text">Navi</span>
+    <a class="nav-link" id="navi-text" href="javascript:colorPick()">Navi</a>
     <a class="nav-link" href="index.html">Home</a>
     <a id="logo" class="nav-link" href="./docs.html">Docs</a>
     <a class="nav-link" href="./api.html">API</a>
     <a class="nav-link" href="./features.html">Features</a>
-    <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i
-        class="fa fa-link"></i></a>
+    <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
   </nav>
+
+      <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
   <br>
   <div id="mainbox">
     <h1>Docs</h1><br>
@@ -654,6 +656,7 @@
   <span class="copyright_text">
     <center>Copyright (c) 2024 Navi.</center>
   </span>
+
   <script type="text/javascript" src="./javascript/index.js"></script>
 </body>
 

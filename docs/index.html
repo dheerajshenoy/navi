@@ -1,28 +1,33 @@
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Navi | Home</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-</head>
+  <head>
+    <title>Navi | Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  </head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/index.css">
-    <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
   <body>
 
     <nav id="topnav">
 
-      <span class="nav-link" id="navi-text" >Navi</span>
+      <a class="nav-link" id="navi-text" href="javascript:colorPick()">Navi</a>
       <a id="logo" class="nav-link" href="index.html">Home</a>
       <a class="nav-link" href="./docs.html">Docs</a>
       <a class="nav-link" href="./api.html">API</a>
       <a class="nav-link" href="./features.html">Features</a>
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
       <a class="nav-link" id="about" onclick="openNavMenu()" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
+
     </nav>
+
+    <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
 
     <br><br>
     <div id="mainbox">
@@ -68,7 +73,11 @@
         <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
       </div>
     </div>
-      <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
+    <span class="copyright_text">
+      <center>Copyright (c) 2024 Navi.</center>
+    </span>
+
     <script type="text/javascript" src="./javascript/index.js"></script>
+    <script type="text/javascript" src="./javascript/type.js"></script>
   </body>
-  </html>
+</html>

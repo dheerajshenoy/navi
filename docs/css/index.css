@@ -1,3 +1,7 @@
+:root {
+    --accent: #04AA6D;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +15,7 @@ a {
 }
 
 a:hover {
-    color: #04AA6D;
+    color: var(--accent);
 }
 
 body {
@@ -20,7 +24,7 @@ body {
 }
 
 .button {
-    background-color: #04AA6D;
+    background-color: var(--accent);
     /* Green */
     border: none;
     color: white;
@@ -84,12 +88,12 @@ body {
 }
 
 .nav-link:hover {
-    color: #04AA6D;
+    color: var(--accent);
 }
 
 #logo {
     width: 120px;
-    background-color: #04AA6D;
+    background-color: var(--accent);
 
     color: black;
     font-weight: bold;
@@ -105,7 +109,7 @@ body {
     height: auto;
     width: auto;
 
-    background-color: #04AA6D;
+    background-color: var(--accent);
     color: black;
     padding: 70px;
     padding-bottom: 20px;
@@ -125,9 +129,9 @@ body {
 
 .button4:hover {
     background-color: #e7e7e7;
-    color: #04AA6D;
+    color: var(--accent);
     /* Green */
-    border-color: #04AA6D;
+    border-color: var(--accent);
     /* Green */
 }
 
@@ -197,13 +201,13 @@ body {
 }
 
 .content .heading {
-    color: #04AA6D;
+    color: var(--accent);
     padding-bottom: 10px;
 }
 
 .list li::marker,
 .olist li::marker {
-    color: #04AA6D;
+    color: var(--accent);
 }
 
 .content .list {
@@ -219,40 +223,8 @@ body {
     padding-left: 40px;
 }
 
-.code-container {
-    display: flex;
-    background-color: darkgray;
-    margin: 20px;
-    color: black;
-    padding: 10px;
-    border-radius: 10px;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid black;
-}
-
-.code-container code {
-    font-family: JetBrains Mono;
-    overflow-x: auto;
-    /* Allows horizontal scrolling for long content */
-    flex-grow: 1;
-    /* Allows code content to take available space */
-}
-
-.copy-code-btn {
-    margin-top: 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    right: 10px;
-}
-
-.code-container .copy-code-btn:hover {
-    font-weight: bold;
-}
-
 #navi-text {
-    color: #04AA6D;
+    color: var(--accent);
     font-size: 20px;
     line-height: 60px;
     /* vertically */
@@ -260,7 +232,7 @@ body {
 }
 
 .block {
-    color: #04AA6D;
+    color: var(--accent);
     font-weight: bold;
     display: inline-block;
     border-radius: 5px;
@@ -270,7 +242,7 @@ body {
 }
 
 .block:hover {
-    background-color: #04AA6D;
+    background-color: var(--accent);
     color: #111;
 }
 
@@ -345,7 +317,8 @@ body {
 code {
     margin: 40px;
     border-radius: 10px;
-    border: 2px solid #04AA6D;
+    border: 2px solid var(--accent);
+    font-family: JetBrains Mono;
 }
 
 .note .list li::marker {

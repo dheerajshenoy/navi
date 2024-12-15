@@ -20,6 +20,7 @@
       <a id="logo" class="nav-link" href="./api.html">API</a>
       <a class="nav-link" href="./features.html">Features</a>
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
+      <a id="about" class="nav-link" href="javascript:void(0);" onclick="openNavMenu()"><i class="fa fa-bars"></i></a>
     </nav>
     <br>
     <div id="mainbox">
@@ -78,21 +79,41 @@ end</code></pre>
 
       <pre><code class="language-lua">function someFunction(fileName, dirName)
     navi.io.msg("WOW! Navi is currently on the file " .. fileName .. " and inside the " .. dirName .. " directory!")
-end
-      </code></pre>
+end</code></pre>
 
-      You can then call this function within Navi by calling the lua <span class="block"><function_name></span> command or by just calling <span class="block">lua</span> command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:<br>
+      You can then call this function within Navi by calling the lua <span class="block"><function_name></span> command or by just calling <span class="block">lua</span> command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:<br><br>
 
         "WOW! Navi is currently on the file <span class="block"> fileName </span> and inside the <span class="block">dirName</span> directory!"<br><br>
 
       <h2 class="heading">Hooks</h2>
       <hr class="hr">
 
-        Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.<br>
+        Hooks are signals that are emitted when navi does a certain action which you can "subscribe" to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.<br><br>
 
-          You can add hook using the <span class="block">navi.hook.add api</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.<br>
+        You can add hook using the function <span class="block">navi.hook.add</span>. It takes two arguments, both of which are required. The first one is a <span class="block">hook_name</span> which is a valid hook name (see hook names below). Second argument is a <span class="block">function</span> that will be executed in response to the hook.<br><br>
 
-            Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
+      <div class="note">
+        <h3>NOTE</h3>
+        You can define more than one hook functions. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it's best to add functions that are efficient.
+      </div>
+
+      <h2 class="heading">Hook Names</h2>
+      <hr class="hr">
+
+        Currently the following hooks exist in navi:<br><br>
+
+<ul class="list">
+    <li>Select Item <span class="block">item_select</span></li><br>
+    <li>Item Changed <span class="block">item_changed</span></li><br>
+    <li>Up Directory <span class="block">directory_up</span></li><br>
+    <li>Directory Loaded <span class="block">directory_loaded</span></li><br>
+    <li>Directory Changed <span class="block">directory_changed</span></li><br>
+    <li>Drive Mounted <span class="block">drive_mounted</span></li><br>
+    <li>Drive Unmounted <span class="block">drive_unmounted</span></li><br>
+    <li>Visual Line mode <span class="block">visual_line_mode_on</span> & <span class="block">visual_line_mode_off</span></li><br>
+    <li>Filter mode <span class="block">filter_mode_on</span> & <span class="block">filter_mode_off</span></li><br>
+  </ul>
+
 
     </div>
 
