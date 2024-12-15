@@ -115,8 +115,17 @@ end</code></pre>
     <li>Drive Unmounted <span class="block">drive_unmounted</span></li><br>
     <li>Visual Line mode <span class="block">visual_line_mode_on</span> & <span class="block">visual_line_mode_off</span></li><br>
     <li>Filter mode <span class="block">filter_mode_on</span> & <span class="block">filter_mode_off</span></li><br>
-  </ul>
+</ul>
 
+      Example:
+
+<pre><code class="language-lua">function INIT_NAVI()
+    navi.hook.add("item_select", function ()
+        navi.io.msg("You selected an item...YAY!")
+    end)
+end</code></pre>
+
+      Output: Whenever you select an item in Navi, this function will be called, which in turn prints the message You selected an item...YAY!
 
     </div>
 
@@ -133,9 +142,11 @@ end</code></pre>
 
       <div class="col-2">
         <ul>
-
+          <h3>Easter</h3>
+          <a href="javascript:resetAccentColor()">Reset accent color</a>
         </ul>
       </div>
+
 
       <div class="col-3">
         <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
