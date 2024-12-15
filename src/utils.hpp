@@ -7,6 +7,7 @@
 #include <QList>
 #include <QProcess>
 #include <QDir>
+#include <QTextEdit>
 #include "StorageDevice.hpp"
 
 class utils {
@@ -32,4 +33,5 @@ public:
     static QStringList getAssociatedApplications(const QString &mimeType) noexcept;
 
     static FolderInfo getFolderInfo(const QString &path) noexcept;
+    static void addTextToFirstLine(QTextEdit *textedit, const QString &text) noexcept;
 };

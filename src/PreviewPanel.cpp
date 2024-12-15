@@ -1,4 +1,5 @@
 #include "PreviewPanel.hpp"
+#include <archive.h>
 
 PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
@@ -32,32 +33,69 @@ void PreviewPanel::showImagePreview(const QImage &image) noexcept {
     m_img_widget->setImage(image);
 }
 
-// void PreviewPanel::showTextPreview(const QString &preview,
-//                                    const SyntaxHighlighterTS::Language &language) noexcept {
-//     this->setCurrentIndex(0);
-//     if (m_syntax_highlighting_enabled)
-//         m_text_preview_widget->setLanguage(language);
-//     m_text_preview_widget->setText(preview);
-// }
+void PreviewPanel::showTextPreview(const QString &preview) noexcept {
+    this->setCurrentIndex(0);
+    m_text_preview_widget->setText(preview);
+}
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
     m_img_widget->clear();
-    m_image_filepath = filePath;
+    auto mimetype = getMimeType(filePath);
+    m_filepath = filePath;
+    if (m_supported_mimetypes.contains(mimetype)) {
+        previewArchive();
+        return;
+    }
     m_image_preview_timer->start(150);
 }
 
 void PreviewPanel::loadImageAfterDelay() noexcept {
-    if (m_image_cache_hash.contains(m_image_filepath)) {
-        QImage img = m_image_cache_hash[m_image_filepath];
+    if (m_image_cache_hash.contains(m_filepath)) {
+        QImage img = m_image_cache_hash[m_filepath];
         showImagePreview(img);
         return;
     } else {
-        QImage img = m_thumbnailer->get_image_from_cache(m_image_filepath);
+        QImage img = m_thumbnailer->get_image_from_cache(m_filepath);
         if (!img.isNull()) {
-            m_image_cache_hash.insert(m_image_filepath, img);
+            m_image_cache_hash.insert(m_filepath, img);
             showImagePreview(img);
         }
     }
 }
 
 void PreviewPanel::clearPreview() noexcept { m_img_widget->clear(); }
+
+void PreviewPanel::previewArchive() noexcept {
+    m_archive = archive_read_new();
+    archive_read_support_filter_all(m_archive);
+    archive_read_support_format_all(m_archive);
+    auto r = archive_read_open_filename(m_archive, m_filepath.toUtf8().constData(),
+                                   10240); // Block size = 10KB
+
+    if (r != ARCHIVE_OK) {
+        qWarning() << "Failed to open archive:" << archive_error_string(m_archive);
+        archive_read_free(m_archive);
+        return;
+    }
+
+    int count = 0;
+
+    m_text_preview_widget->clear();
+
+    while (archive_read_next_header(m_archive, &m_archive_entry) == ARCHIVE_OK) {
+        QString fileName = archive_entry_pathname(m_archive_entry);
+        m_text_preview_widget->append(fileName);
+        count++;
+    }
+
+    m_text_preview_widget->append("");
+    m_text_preview_widget->append("");
+    m_text_preview_widget->append(QString("File: %1 (items: %2)")
+                           .arg(m_filepath)
+                           .arg(count));
+
+    archive_read_close(m_archive);
+    archive_read_free(m_archive);
+
+    this->setCurrentIndex(0);
+}

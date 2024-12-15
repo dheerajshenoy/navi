@@ -3,7 +3,6 @@
 #include "Statusbar.hpp"
 #include "argparse.hpp"
 #include "sol/sol.hpp"
-#include <qstyle.h>
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
@@ -66,6 +65,9 @@ void Navi::initConfiguration() noexcept {
 
     if (settings_table_opt) {
         sol::table settings_table = settings_table_opt.value();
+
+        auto default_directory = settings_table["default_directory"].get_or<std::string>("~");
+        m_default_location_list.append(QString::fromStdString(default_directory));
 
         // TERMINAL SETTINGS
         auto terminal = settings_table["terminal"].get_or<std::string>("kitty");

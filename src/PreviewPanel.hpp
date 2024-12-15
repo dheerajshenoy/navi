@@ -13,6 +13,8 @@
 #include <QStackedWidget>
 #include <QTimer>
 #include <QHash>
+#include <archive.h>
+#include <archive_entry.h>
 
 #include "FilePreviewWorker.hpp"
 // #include "TreeSitterTextEdit.hpp"
@@ -20,6 +22,7 @@
 #include "ImageWidget.hpp"
 // #include "SyntaxHighlighterTS.hpp"
 #include "Thumbnailer.hpp"
+#include "utils.hpp"
 
 class PreviewPanel : public QStackedWidget {
     Q_OBJECT
@@ -67,6 +70,7 @@ public:
     Thumbnailer* thumbnailer() noexcept { return m_thumbnailer; }
 
 private:
+    void previewArchive() noexcept;
     void loadImageAfterDelay() noexcept;
     QString readFirstFewLines(const QString &filePath, int lineCount = 5) noexcept;
     QString getMimeType( const QString& filePath ) {
@@ -78,13 +82,27 @@ private:
     QWidget *m_empty_widget = new QWidget();
 
     QTimer *m_image_preview_timer = nullptr;
-    QString m_image_filepath;
+    QString m_filepath;
 
     void showImagePreview(const QImage &image) noexcept;
-    // void showTextPreview(const QString &text,
-    //                      const SyntaxHighlighterTS::Language &language) noexcept;
+    void showTextPreview(const QString &text) noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
     QHash<QString, QImage> m_image_cache_hash;
     Thumbnailer *m_thumbnailer = new Thumbnailer();
+
+    struct archive *m_archive;
+    struct archive_entry *m_archive_entry;
+
+    QStringList m_supported_mimetypes = {
+
+      "application/zip",
+      "application/x-rar-compressed",
+      "application/x-gtar",
+      "application/x-tar",
+      "application/x-bzip2",
+      "application/gzip",
+      "application/x-7z-compressed",
+
+    };
 };

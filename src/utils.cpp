@@ -203,3 +203,15 @@ utils::FolderInfo utils::getFolderInfo(const QString &folderPath) noexcept {
 
     return finfo;
 }
+
+void utils::addTextToFirstLine(QTextEdit *textEdit, const QString &textToAdd) noexcept {
+    QTextCursor cursor = textEdit->textCursor(); // Get the current text cursor
+
+    cursor.movePosition(QTextCursor::Start);    // Move to the start of the document
+    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor); // Select first line
+
+    QString firstLine = cursor.selectedText();  // Get the first line's text
+    firstLine = textToAdd + firstLine;          // Prepend new text to the first line
+
+    cursor.insertText(firstLine);               // Replace the first line with updated text
+}

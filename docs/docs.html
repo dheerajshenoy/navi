@@ -45,9 +45,22 @@
   </div>
 
   <div class="content">
+
+    <h1 class="heading">Configuring Navi</h1>
+    <hr class="hr">
+    <p>Navi is configured using the <a href="https://www.lua.org/start.html">lua</a> scripting language. Do not worry if you do not know this programming language as it's very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <span class="block">~/.config/navi/</span> and the file <span class="block">config.lua</span>. If no such file exists, navi loads with the defaults settings with the vim style <a href="./docs.html#default-keybindings">keybindings</a> and sane defaults.</p>
+    <br>
+
+    <h1 class="heading">Sample configuration file</h1>
+    <hr class="hr">
+Check out the sample config file <a href="config.lua">here</a>. Copy this file to the <span class="block">~/.config/navi/</span> directory and relaunch navi to see the new settings.
+    <br><br>
+
     <h1 class="heading">Using Navi</h1>
     <hr class="hr">
     <br>
+
+    Navi starts up with the default directory (home directory). This can be changed using the configuration option <span class="block">default_directory</span>.
 
     <a id="naming-convention"></a>
     <h2>Naming Conventions</h2><br>
@@ -565,6 +578,7 @@
 
       <li>
         <h3>Default Keybindings</h3>
+        <a id="default-keybindings"></a>
       </li>
       <br>
 

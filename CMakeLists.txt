@@ -36,6 +36,7 @@ add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(POPPLER REQUIRED poppler poppler-cpp)
+pkg_check_modules(LIBARCHIVE REQUIRED libarchive)
 find_package(Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
@@ -89,8 +90,7 @@ qt_add_executable(${PROJECT_NAME}
 
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES})
 
 qt_add_resources(${PROJECT_NAME}
   PREFIX "resources"
@@ -108,7 +108,7 @@ qt_add_resources(${PROJECT_NAME}
 
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LIBARCHIVE_INCLUDE_DIRS})
 
 add_custom_target(run
   COMMAND ${PROJECT_NAME}
