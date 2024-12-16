@@ -1575,9 +1575,6 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__sort_menu->addAction(m_viewmenu__sort_by_date);
     m_viewmenu->addMenu(m_viewmenu__sort_menu);
 
-    m_viewmenu__sort_ascending->setCheckable(true);
-    m_viewmenu__sort_ascending->setChecked(true);
-
     m_viewmenu__files_menu = new QMenu("&Files");
 
     m_viewmenu__files_menu__hidden = new QAction("Hidden");
@@ -1745,28 +1742,13 @@ void Navi::initMenubar() noexcept {
     connect(m_viewmenu__headers, &QAction::triggered, this,
             [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
 
-    connect(m_viewmenu__sort_ascending, &QAction::triggered, this,
-            [&](const bool &state) {
-                if (state) {
-                    if (m_sort_flags & QDir::SortFlag::Reversed)
-                        return;
-                    m_sort_flags |= QDir::SortFlag::Reversed;
-                    m_file_panel->model()->setSortBy(m_sort_flags);
-                }
-            });
+    connect(m_viewmenu__sort_ascending, &QAction::triggered, this, &Navi::SortAscending);
 
-    connect(m_viewmenu__sort_descending, &QAction::triggered, this,
-            [&](const bool &state) {
-                if (state) {
-                    if (m_sort_flags & QDir::SortFlag::Reversed) {
-                        m_sort_flags &= ~QDir::SortFlag::Reversed;
-                        m_file_panel->model()->setSortBy(m_sort_flags);
-                    }
-                }
-            });
+    connect(m_viewmenu__sort_descending, &QAction::triggered, this, &Navi::SortDescending);
 
     connect(m_viewmenu__sort_by_name, &QAction::triggered, this,
             &Navi::SortByName);
+
     connect(m_viewmenu__sort_by_date, &QAction::triggered, this,
             &Navi::SortByDate);
     connect(m_viewmenu__sort_by_size, &QAction::triggered, this,
@@ -2668,4 +2650,22 @@ void Navi::initDefaults() noexcept {
 
 void Navi::ShowAbout() noexcept {
     AboutWidget *about = new AboutWidget(this);
+}
+
+void Navi::SortAscending(const bool &state) noexcept {
+    if (state) {
+        if (m_sort_flags & QDir::SortFlag::Reversed) {
+            m_sort_flags &= ~QDir::SortFlag::Reversed;
+            m_file_panel->model()->setSortBy(m_sort_flags);
+        }
+    }
+}
+
+void Navi::SortDescending(const bool &state) noexcept {
+    if (state) {
+        if (m_sort_flags & QDir::SortFlag::Reversed)
+            return;
+        m_sort_flags |= QDir::SortFlag::Reversed;
+        m_file_panel->model()->setSortBy(m_sort_flags);
+    }
 }

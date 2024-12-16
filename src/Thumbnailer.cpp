@@ -13,6 +13,7 @@ void Thumbnailer::generate_thumbnails(const QStringList &files) noexcept {
       if (mimeName.startsWith("image/")) {
           QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_image,
                                                    this, file, URI);
+          qDebug() << file;
       } else if (mimeName == "application/pdf") {
           QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_pdf,
                                                    this, file, URI);

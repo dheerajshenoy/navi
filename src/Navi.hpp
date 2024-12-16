@@ -119,6 +119,8 @@ public:
     void FocusPath() noexcept;
     void AddBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
+    void SortDescending(const bool &state) noexcept;
+    void SortAscending(const bool &state) noexcept;
 
     struct MenuItem {
         std::string label;
