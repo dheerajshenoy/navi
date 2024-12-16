@@ -33,5 +33,7 @@ public:
     static QStringList getAssociatedApplications(const QString &mimeType) noexcept;
 
     static FolderInfo getFolderInfo(const QString &path) noexcept;
-    static void addTextToFirstLine(QTextEdit *textedit, const QString &text) noexcept;
+    static void addTextToFirstLine(QTextEdit *textedit,
+                                   const QString &text) noexcept;
+    static QStringList readLinesFromFile(const QString &filename, const int &lines) noexcept;
 };

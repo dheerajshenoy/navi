@@ -2655,8 +2655,10 @@ void Navi::ShowAbout() noexcept {
 void Navi::SortAscending(const bool &state) noexcept {
     if (state) {
         if (m_sort_flags & QDir::SortFlag::Reversed) {
+            QString itemName = m_file_panel->getCurrentItem();
             m_sort_flags &= ~QDir::SortFlag::Reversed;
             m_file_panel->model()->setSortBy(m_sort_flags);
+            m_file_panel->HighlightItem(itemName);
         }
     }
 }
@@ -2665,7 +2667,9 @@ void Navi::SortDescending(const bool &state) noexcept {
     if (state) {
         if (m_sort_flags & QDir::SortFlag::Reversed)
             return;
+        QString itemName = m_file_panel->getCurrentItem();
         m_sort_flags |= QDir::SortFlag::Reversed;
         m_file_panel->model()->setSortBy(m_sort_flags);
+        m_file_panel->HighlightItem(itemName);
     }
 }

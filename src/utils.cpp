@@ -215,3 +215,26 @@ void utils::addTextToFirstLine(QTextEdit *textEdit, const QString &textToAdd) no
 
     cursor.insertText(firstLine);               // Replace the first line with updated text
 }
+
+
+QStringList utils::readLinesFromFile(const QString &filename,
+                                     const int &nlines) noexcept {
+    QStringList lines;
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCritical() << "Error opening file:" << file.errorString();
+        return QStringList();
+    }
+
+    int count = 0;
+
+    while (!file.atEnd() && count < nlines) {
+        QString line = file.readLine().trimmed();
+        lines.append(line);
+        ++count;
+    }
+
+    file.close();
+    return lines;
+
+}

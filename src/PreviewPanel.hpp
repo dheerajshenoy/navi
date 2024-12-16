@@ -81,11 +81,13 @@ private:
     TextEdit *m_text_preview_widget = new TextEdit();
     QWidget *m_empty_widget = new QWidget();
 
-    QTimer *m_image_preview_timer = nullptr;
+    QTimer *m_image_preview_timer = nullptr, *m_archive_preview_timer = nullptr,
+           *m_text_file_preview_timer = nullptr;
+
     QString m_filepath;
 
     void showImagePreview(const QImage &image) noexcept;
-    void showTextPreview(const QString &text) noexcept;
+    void showTextPreview() noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
     QHash<QString, QImage> m_image_cache_hash;
@@ -94,7 +96,7 @@ private:
     struct archive *m_archive;
     struct archive_entry *m_archive_entry;
 
-    QStringList m_supported_mimetypes = {
+    QStringList m_archive_mimetypes = {
 
       "application/zip",
       "application/x-rar-compressed",
