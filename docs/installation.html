@@ -7,7 +7,7 @@
 </head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="./javascript/highlight/styles/dark.css">
@@ -17,16 +17,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/index.css">
     <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
+  <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
   <body>
     <nav id="topnav">
-      <span class="nav-link" id="navi-text" >Navi</span>
+      <a class="nav-link" id="navi-text" href="javascript:colorPick()">Navi</a>
       <a class="nav-link" href="./index.html">Home</a>
+      <a id="logo" class="nav-link" href="./installation.html">Get Started</a>
       <a class="nav-link" href="./docs.html">Docs</a>
+      <a class="nav-link" href="./api.html">API</a>
       <a class="nav-link" href="./features.html">Features</a>
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
+      <a class="nav-link" id="about" onclick="openNavMenu()" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
     </nav>
+    <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
+
+    <div id="mainbox">
+      <span style="font-weight: bold; font-size: 40px;">Get Started</span><br><br>
+      <span style="font-size: 20px;">Get started and take control—because your files deserve more than just 'open' and 'close'.</span>
+    </div>
     <div class="content">
-      <br>
       <h1 class="heading">Installation</h1><br>
       Navi supports <span style="color:; font-weight: bold;">linux</span> platform only.<br><br>
         For now, Navi can only be built from source.
@@ -75,18 +84,21 @@ sudo make install</code></pre>
           <a href="./docs.html">Docs</a>
           <a href="./features.html">Features</a>
           <a href="./installation.html">Installation</a>
+          <a href="./api.html">API</a>
+          <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
         </ul>
       </div>
 
       <div class="col-2">
-        <ul>
-
-        </ul>
       </div>
 
       <div class="col-3">
-        <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
+        <ul>
+          <h3>Easter</h3>
+          <a href="javascript:resetAccentColor()">Reset accent color</a>
+        </ul>
       </div>
+
     </div>
       <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
     <script type="text/javascript" src="./javascript/index.js"></script>

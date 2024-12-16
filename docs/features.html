@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <title>Navi | Features</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-</head>
+  <head>
+    <title>Navi | Features</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/index.css">
-  <link rel="stylesheet" href="./css/features.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/features.css">
     <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
-  <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
+    <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
+  </head>
   <body>
     <nav id="topnav">
       <a class="nav-link" id="navi-text" href="javascript:colorPick()">Navi</a>
       <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="./installation.html">Get Started</a>
       <a class="nav-link" href="./docs.html">Docs</a>
       <a class="nav-link" href="./api.html">API</a>
       <a id="logo" class="nav-link" href="./features.html">Features</a>
       <a class="nav-link" target="_blank" href="https://github.com/dheerajshenoy/navi">Github <i class="fa fa-link"></i></a>
+      <a class="nav-link" id="about" onclick="openNavMenu()" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
     </nav>
-      <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
+    <input id="colorPicker" data-jscolor="{onInput:'colorUpdate(this)'}" value="var(--accent)">
     <div id="mainbox">
       <br>
       <span style="font-weight: bold; font-size: 40px;">Features</span>
@@ -75,21 +77,21 @@
           <a href="./features.html">Features</a>
           <a href="./installation.html">Installation</a>
           <a href="./api.html">API</a>
+          <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
         </ul>
       </div>
 
       <div class="col-2">
+      </div>
+
+      <div class="col-3">
         <ul>
           <h3>Easter</h3>
           <a href="javascript:resetAccentColor()">Reset accent color</a>
         </ul>
       </div>
-
-      <div class="col-3">
-        <a target="_blank" href="https://github.com/dheerajshenoy/navi">Github</a>
-      </div>
     </div>
-      <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
+    <span class="copyright_text"><center>Copyright (c) 2024 Navi.</center></span>
     <script type="text/javascript" src="./javascript/index.js"></script>
   </body>
-  </html>
+</html>

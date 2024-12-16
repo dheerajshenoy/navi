@@ -55,7 +55,7 @@ body {
     overflow: hidden;
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 850px) {
     #topnav a:not(:first-child) {
         display: none;
     }
@@ -78,9 +78,14 @@ body {
         display: block;
     }
 
+    .footer {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
 }
 
-@media screen and (min-width: 750px) {
+@media screen and (min-width: 850px) {
     #topnav #about {
         display: none;
     }
@@ -90,7 +95,7 @@ body {
     float: left;
     text-decoration: none !important;
     display: block;
-    width: 100px;
+    width: 120px;
     color: White;
     padding: 14px;
     text-align: center;

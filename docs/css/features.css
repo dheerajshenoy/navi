@@ -1,14 +1,27 @@
 #features_box {
     display: flex;
-    padding: 70px;
-    margin: 0;
     font-weight: bold;
     font-style: italic;
+}
+
+@media screen and (max-width:850px) {
+
+    #features_box {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    #features_box div {
+        padding: 0px;
+    }
+
 }
 
 #features_box h3 {
     text-align: center;
     margin-top: 10px;
+    margin: 10px;
 }
 
 #features_box div {
@@ -26,22 +39,22 @@
 #features_box #col-1 {
     padding: 20px;
     margin: 10px;
-    width: 40%;
+    width: 60%;
 }
 
 #features_box #col-2 {
     padding: 20px;
-    width: 40%;
+    width: 60%;
 }
 
 #features_box #col-3 {
     padding: 20px;
-    width: 40%;
+    width: 60%;
 }
 
 #features_box #col-4 {
     padding: 20px;
-    width: 40%;
+    width: 60%;
 }
 
 #features_box #icon {
