@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./javascript/highlight/styles/dark.css">
   <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/api.css">
   <script type="text/javascript" src="./javascript/typewriter/core.js"></script>
   <script type="text/javascript" src="./javascript/jscolor/jscolor.min.js"></script>
   <body>
@@ -323,82 +324,322 @@ end</code></pre>
 
       <h2 class="heading">API</h2>
 
-      <ul class="list">
-        <li>sort_name</li>
-        <li>search</li>
-        Search for the text string given as argument.
-        <li>search_next</li>
-        <li>search_prev</li>
+      <ul class="api-list">
+        <li>sort_name ( ) </li><h1>TODO</h1><br>
 
-        <li>new_files</li>
+        Sort the item list according to the name.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">1 ; type: <span class="block">String</span></span>
+        </div>
+        <br>
 
-        <li>new_folders</li>
+        <li>search (string) </li>
+        <br>
+        Search for the text string given as argument. Highlights the item with the name if it exists.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">1 ; type: <span class="block">String</span></span>
+        </div>
+        <br>
 
-        <li>trash</li>
+        <li>search_next ( ) </li>
+        <br>
+        Highlight the next item from the current search index that matches the search query. This function requires search to be done before this function is called.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
 
-        <li>copy</li>
+        <li>search_prev ( ) </li>
+        <br>
+        Highlight the previous item from the current search index that matches the search query. This function requires search to be done before this function is called.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
 
-        <li>copy_dwim</li>
+        <li>new_files (file1, [file2, file3], ...]) </li>
+        <br>
+          Creates one or more files in the current working directory with the names provided as arguments. Returns <span class="block">true</span> if operation is successful else <span class="block">false</span>.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">bool</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value"><span class="block">String</span> or <span class="block">[String, String...]</span></span>
+        </div>
+        <br>
 
-        <li>cut_dwim</li>
+        <li>new_folders (folder1, [folder2, folder3, ...]) </li>
+        <br>
+          Creates one or more folders in the current working directory with the names provided as arguments. Returns <span class="block">true</span> if operation is successful else <span class="block">false</span>.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">bool</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value"><span class="block">String</span> or <span class="block">[String, String...]</span></span>
+        </div>
+        <br>
 
-        <li>cut</li>
+        <li>trash ( ) </li>
+        <br>
+          Trashes one or more files provided as arguments. Returns <span class="block">true</span> if operation is successful else <span class="block">false</span>.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">bool</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value"><span class="block">String</span> or <span class="block">[String, String...]</span></span>
+        </div>
+        <br>
 
-        <li>has_marks_local (bool)</li>
+        <li>copy ( )</li>
+        <br>
+          Prepares the currently highlighted item for copying. This function only "prepares" or puts the files into the copy register.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
 
-        Returns true if there are local marks, else false
+        <li>copy_dwim ( )</li>
+        <br>
+          Copy in DWIM style. If markings exist, prepares all of them for copying, else prepares the currently highlighted item for copying.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
 
-        <li>has_marks_global (bool)</li>
+        <li>cut_dwim ( )</li>
+        <br>
 
-        Returns true if there are global marks, else false
+        <li>cut ( )</li>
+        <br>
 
-        <li>global_marks (table)</li>
+        <li>has_marks_local ( )</li>
+        <br>
+
+        Returns <span class="block">true</span> if there are local marks, else <span class="block">false</span>
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">bool</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
+
+        <li>has_marks_global ( )</li>
+        <br>
+
+        Returns <span class="block">true</span> if there are global marks, else <span class="block">false</span>
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">bool</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
+
+        <li>global_marks ( )</li>
+        <br>
 
         Returns the list of global marks
-
-        <li>local_marks_count (int)</li>
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">[string]</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
         <br>
-          Returns the count of local marks
 
-        <li>global_marks_count (int)</li>
+        <li>local_marks_count ( )</li>
+        <br>
+
+          Returns the count of local marks
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">int</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
+
+        <li>global_marks_count ( )</li>
+        <br>
 
         Returns the count of global marks
 
-        <li>local_marks (table)</li>
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">int</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
+
+        <li>local_marks ( )</li>
+        <br>
         Returns the list of local marks in the current working directory
-        <li>highlight (void)</li>
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">[string]</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
+
+        <li>highlight ( )</li>
+        <br>
 
         Highlights the item with the name passed as argument if it exists.
-        <li>cd (void)</li>
+        <br>
+        Returns the list of local marks in the current working directory
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
+
+        <li>cd ( )</li>
+        <br>
 
         Change the current working directory to the string provided as argument.
-        <li>pwd (str)</li>
+        <br>
+        Returns the list of local marks in the current working directory
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
 
-        Returns the string of the current working directory.
-      </ul>
-      <br>
+        <li>pwd ( )</li>
+        <br>
+
+        Returns the current working directory.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">string</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">None</span>
+        </div>
+        <br>
 
       <h2 class="heading">
         IO
       </h2>
 
-      <li>msg</li>
-      <li>msgtype</li>
-      This is an enum with the following members:
+      <li>msg (message, type) </li>
+      <br>
+
+        Can be used to print message.
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">2; 1: String, 2: MsgType</span>
+        </div>
+        <br>
+
+        <li>msgtype</li>
+        <br>
+
+          This is a table. Each member has an associated color which is used when printing the message. It has the following members:
+
       <ul class="list2">
         <li>error</li>
         <li>warning</li>
         <li>info</li>
-        <li>input</li>
       </ul>
+
+        <br>
+
+        <li>input (prompt, default_text, selection_string) </li>
+        <br>
+
+          Asks input from the user, and returns the input received.
+
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">string</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">1; String, </span>
+        </div>
       <br>
       <h2 class="heading">
         Shell
       </h2>
 
-      <li>execute</li>
+        <li>execute (command) </li>
+        <br>
 
-      You can execute any shell commands from within navi.
+          You can execute any shell commands from within navi. Execution takes place asynchronously. Running tasks can be viewed from the tasks pane using the <span class="block">tasks</span> command.
+
+        <div class="simple-block">
+          <span class="key">Return type</span>
+          <span class="value"><span class="block">void</span></span>
+        </div>
+        <div class="simple-block">
+          <span class="key">Argument(s)</span>
+          <span class="value">1; String</span>
+        </div>
 
     </ul>
     </ul>

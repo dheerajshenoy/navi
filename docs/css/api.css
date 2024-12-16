@@ -1,0 +1,8 @@
+.api-list li::marker {
+    list-style-type: disk;
+    color: var(--accent);
+}
+
+.api-list li {
+    font-size: 1.25em;
+}
