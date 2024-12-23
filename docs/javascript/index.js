@@ -1,5 +1,5 @@
 function get_started() {
-    window.location.href = "./installation.html";
+    window.location.href = "navi.readthedocs.io";
 }
 
 function openNavMenu() {
