@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lua scripting &mdash; Navi 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Navi
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Lua scripting</a><ul>
+<li><a class="reference internal" href="#special-function-init-navi">Special Function (INIT_NAVI)</a></li>
+<li><a class="reference internal" href="#custom-functions">Custom functions</a></li>
+<li><a class="reference internal" href="#hooks">Hooks</a><ul>
+<li><a class="reference internal" href="#hook-names">Hook Names</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#navi-lua-api">Navi Lua API</a><ul>
+<li><a class="reference internal" href="#ui">UI</a><ul>
+<li><a class="reference internal" href="#marks"><code class="docutils literal notranslate"><span class="pre">marks()</span></code></a></li>
+<li><a class="reference internal" href="#shortcuts"><code class="docutils literal notranslate"><span class="pre">shortcuts()</span></code></a></li>
+<li><a class="reference internal" href="#messages"><code class="docutils literal notranslate"><span class="pre">messages()</span></code></a></li>
+<li><a class="reference internal" href="#preview_panel"><code class="docutils literal notranslate"><span class="pre">preview_panel()</span></code></a></li>
+<li><a class="reference internal" href="#pathbar"><code class="docutils literal notranslate"><span class="pre">pathbar()</span></code></a></li>
+<li><a class="reference internal" href="#statusbar"><code class="docutils literal notranslate"><span class="pre">statusbar()</span></code></a></li>
+<li><a class="reference internal" href="#menubar">menubar</a><ul>
+<li><a class="reference internal" href="#toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
+<li><a class="reference internal" href="#add_menu"><code class="docutils literal notranslate"><span class="pre">add_menu()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example-usage">Example Usage:</a></li>
+<li><a class="reference internal" href="#api">API</a><ul>
+<li><a class="reference internal" href="#sort_name"><code class="docutils literal notranslate"><span class="pre">sort_name()</span></code></a></li>
+<li><a class="reference internal" href="#search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
+<li><a class="reference internal" href="#search_next"><code class="docutils literal notranslate"><span class="pre">search_next()</span></code></a></li>
+<li><a class="reference internal" href="#search_prev"><code class="docutils literal notranslate"><span class="pre">search_prev()</span></code></a></li>
+<li><a class="reference internal" href="#new_files"><code class="docutils literal notranslate"><span class="pre">new_files()</span></code></a></li>
+<li><a class="reference internal" href="#new_folder"><code class="docutils literal notranslate"><span class="pre">new_folder()</span></code></a></li>
+<li><a class="reference internal" href="#trash"><code class="docutils literal notranslate"><span class="pre">trash()</span></code></a></li>
+<li><a class="reference internal" href="#copy"><code class="docutils literal notranslate"><span class="pre">copy()</span></code></a></li>
+<li><a class="reference internal" href="#copy_dwim"><code class="docutils literal notranslate"><span class="pre">copy_dwim()</span></code></a></li>
+<li><a class="reference internal" href="#cut_dwim"><code class="docutils literal notranslate"><span class="pre">cut_dwim()</span></code></a></li>
+<li><a class="reference internal" href="#cut"><code class="docutils literal notranslate"><span class="pre">cut()</span></code></a></li>
+<li><a class="reference internal" href="#has_marks_local"><code class="docutils literal notranslate"><span class="pre">has_marks_local()</span></code></a></li>
+<li><a class="reference internal" href="#has_marks_global"><code class="docutils literal notranslate"><span class="pre">has_marks_global()</span></code></a></li>
+<li><a class="reference internal" href="#global_marks"><code class="docutils literal notranslate"><span class="pre">global_marks()</span></code></a></li>
+<li><a class="reference internal" href="#local_marks_count"><code class="docutils literal notranslate"><span class="pre">local_marks_count()</span></code></a></li>
+<li><a class="reference internal" href="#global_marks_count"><code class="docutils literal notranslate"><span class="pre">global_marks_count()</span></code></a></li>
+<li><a class="reference internal" href="#local_marks"><code class="docutils literal notranslate"><span class="pre">local_marks()</span></code></a></li>
+<li><a class="reference internal" href="#highlight"><code class="docutils literal notranslate"><span class="pre">highlight()</span></code></a></li>
+<li><a class="reference internal" href="#cd"><code class="docutils literal notranslate"><span class="pre">cd()</span></code></a></li>
+<li><a class="reference internal" href="#pwd"><code class="docutils literal notranslate"><span class="pre">pwd()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#io">IO</a><ul>
+<li><a class="reference internal" href="#msg"><code class="docutils literal notranslate"><span class="pre">msg()</span></code></a></li>
+<li><a class="reference internal" href="#MsgType"><code class="docutils literal notranslate"><span class="pre">MsgType</span></code></a></li>
+<li><a class="reference internal" href="#input"><code class="docutils literal notranslate"><span class="pre">input()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#shell">Shell</a><ul>
+<li><a class="reference internal" href="#execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-can-you-do-with-scripting">What can you do with scripting ?</a><ul>
+<li><a class="reference internal" href="#setting-wallpaper">Setting wallpaper</a></li>
+<li><a class="reference internal" href="#open-a-terminal-at-the-current-directory">Open a terminal at the current directory</a></li>
+<li><a class="reference internal" href="#using-fd-to-navigate-to-directory-with-matching-name">Using <cite>fd</cite> to navigate to directory with matching name</a><ul>
+<li><a class="reference internal" href="#helper-function">Helper function</a></li>
+<li><a class="reference internal" href="#fd-and-rg-for-file-searching">FD and RG for file searching</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content">Use <cite>rg</cite> (ripgrep) command to navigate to a directory with the matching content</a></li>
+<li><a class="reference internal" href="#use-zoxide-for-faster-navigation">Use <cite>zoxide</cite> for faster navigation</a></li>
+<li><a class="reference internal" href="#go-to-a-random-directory-inside-your-home-directory">Go to a random directory inside your home directory</a></li>
+<li><a class="reference internal" href="#highlight-a-random-file-inside-your-home-directory">Highlight a random file inside your home directory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Navi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Lua scripting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lua_scripting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lua-scripting">
+<h1>Lua scripting<a class="headerlink" href="#lua-scripting" title="Link to this heading"></a></h1>
+<p>Navi can be extended using lua for adding custom behaviour by creating functions, subscribing to hooks, changing default navi behaviour.</p>
+<section id="special-function-init-navi">
+<h2>Special Function (INIT_NAVI)<a class="headerlink" href="#special-function-init-navi" title="Link to this heading"></a></h2>
+<p>The function <cite>INIT_NAVI</cite> will be called during the startup time of Navi. This function can be used to add hooks and whatnot to your configuration.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;Navi just booted&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-functions">
+<h2>Custom functions<a class="headerlink" href="#custom-functions" title="Link to this heading"></a></h2>
+<p>You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">someFunction</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">dirName</span><span class="p">)</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;WOW! Navi is currently on the file &quot;</span> <span class="o">..</span> <span class="n">fileName</span> <span class="o">..</span> <span class="s2">&quot; and inside the &quot;</span> <span class="o">..</span> <span class="n">dirName</span> <span class="o">..</span> <span class="s2">&quot; directory!&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+<p>You can then call this function within Navi by calling the <cite>lua &lt;function_name&gt;</cite> command or by just calling <cite>lua</cite> command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:</p>
+<p>“WOW! Navi is currently on the file <cite>&lt;fileName&gt;</cite> and inside the <cite>&lt;dirName&gt;</cite> directory!”</p>
+</section>
+<section id="hooks">
+<h2>Hooks<a class="headerlink" href="#hooks" title="Link to this heading"></a></h2>
+<p>Hooks are signals that are emitted when navi does a certain action which you can “subscribe” to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.</p>
+<p>You can add hook using the <cite>navi.hook.add</cite> api. It takes two arguments, both of which are required. The first one is a <cite>hook_name</cite> which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.</p>
+<p>Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it’s best to add functions that are efficient.</p>
+<section id="hook-names">
+<h3>Hook Names<a class="headerlink" href="#hook-names" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Select Item <code class="docutils literal notranslate"><span class="pre">item_select</span></code></p></li>
+<li><p>Item Changed <code class="docutils literal notranslate"><span class="pre">item_changed</span></code></p></li>
+<li><p>Up Directory <code class="docutils literal notranslate"><span class="pre">directory_up</span></code></p></li>
+<li><p>Directory Loaded <code class="docutils literal notranslate"><span class="pre">directory_loaded</span></code></p></li>
+<li><p>Directory Changed <code class="docutils literal notranslate"><span class="pre">directory_changed</span></code></p></li>
+<li><p>Drive Mounted <code class="docutils literal notranslate"><span class="pre">drive_mounted</span></code></p></li>
+<li><p>Drive Unmounted <code class="docutils literal notranslate"><span class="pre">drive_unmounted</span></code></p></li>
+<li><p>Visual Line mode <code class="docutils literal notranslate"><span class="pre">visual_line_mode_on</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">visual_line_mode_off</span></code></p></li>
+<li><p>Filter mode <code class="docutils literal notranslate"><span class="pre">filter_mode_on</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">filter_mode_off</span></code></p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;item</span><span class="err">\</span><span class="s2">_select&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
+        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;You selected an item...YAY!&quot;</span><span class="p">)</span>
+    <span class="kr">end</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+<p>Now, whenever you select (open or enter a directory) an item, you’ll get the message, “You selected an item…YAY!”.</p>
+</section>
+</section>
+<section id="navi-lua-api">
+<h2>Navi Lua API<a class="headerlink" href="#navi-lua-api" title="Link to this heading"></a></h2>
+<p>API or Application Programming Interface allows user to customize the behaviour or add extra functionalities to Navi.</p>
+<p>There is a main <cite>navi</cite> table. In this table are <em>four</em> more tables: <cite>ui</cite>, <cite>api</cite>, <cite>io</cite> and <cite>shell</cite>.</p>
+<section id="ui">
+<h3>UI<a class="headerlink" href="#ui" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="marks">
+<span class="sig-name descname"><span class="pre">marks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#marks" title="Link to this definition"></a></dt>
+<dd><p>Toggles the marks pane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="shortcuts">
+<span class="sig-name descname"><span class="pre">shortcuts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#shortcuts" title="Link to this definition"></a></dt>
+<dd><p>Toggles the shortcuts pane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="messages">
+<span class="sig-name descname"><span class="pre">messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#messages" title="Link to this definition"></a></dt>
+<dd><p>Toggles the messages pane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="preview_panel">
+<span class="sig-name descname"><span class="pre">preview_panel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#preview_panel" title="Link to this definition"></a></dt>
+<dd><p>Toggles the preview pane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="pathbar">
+<span class="sig-name descname"><span class="pre">pathbar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pathbar" title="Link to this definition"></a></dt>
+<dd><p>Toggles the path bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="statusbar">
+<span class="sig-name descname"><span class="pre">statusbar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#statusbar" title="Link to this definition"></a></dt>
+<dd><p>Toggles the statusbar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+</ul>
+<section id="menubar">
+<h4>menubar<a class="headerlink" href="#menubar" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>Menubar table</p>
+<dl class="field-list simple">
+<dt class="field-odd">type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
+</dd>
+</dl>
+<ul>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="toggle">
+<span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#toggle" title="Link to this definition"></a></dt>
+<dd><p>Toggles the visibility state of the menubar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span> <span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Toggles the menubar with the state <em>state</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">State<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Visibility state of the menubar</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+</ul>
+</div></blockquote>
+<dl class="py function">
+<dt class="sig sig-object py" id="add_menu">
+<span class="sig-name descname"><span class="pre">add_menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">menu_item</span> <span class="pre">MenuItem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#add_menu" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Menu_item<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The menu item table to add to the menu</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">MenuItem</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+<p>Adds the menuitem provided as argument to the menubar.</p>
+<p>MenuItem has the following structure:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">MenuItem</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;menu label&quot;</span><span class="p">,</span>  <span class="c1">-- The label of the menu item.</span>
+    <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>            <span class="c1">-- A nested submenu (optional).</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;submenu&quot;</span><span class="p">,</span> <span class="c1">-- The label of the submenu.</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span> <span class="c1">-- Action associated with the submenu.</span>
+            <span class="c1">-- Function implementation here</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="c1">-- Additional submenu items can be added here.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="example-usage">
+<h3>Example Usage:<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
+    <span class="c1">-- This is a function with special meaning to Navi.</span>
+    <span class="c1">-- This will be called on startup</span>
+
+    <span class="n">custom_menu</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Custom Menu&quot;</span><span class="p">,</span>
+        <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">{</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Open&quot;</span><span class="p">,</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+                    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">);</span>
+                <span class="kr">end</span><span class="p">,</span>
+            <span class="p">},</span>
+
+            <span class="p">{</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;sub&quot;</span><span class="p">,</span>
+                <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="p">{</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;item 1&quot;</span><span class="p">,</span>
+                        <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
+                            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;SUB HELLO&quot;</span><span class="p">);</span>
+                        <span class="kr">end</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+
+            <span class="p">{</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Save&quot;</span><span class="p">,</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save clicked&quot;</span><span class="p">)</span> <span class="kr">end</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">menubar</span><span class="p">.</span><span class="n">add_menu</span><span class="p">(</span><span class="n">custom_menu</span><span class="p">)</span>
+
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="sort_name">
+<span class="sig-name descname"><span class="pre">sort_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sort_name" title="Link to this definition"></a></dt>
+<dd><p>Sorts the item by name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#search" title="Link to this definition"></a></dt>
+<dd><p>Search for the text string given as argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="search_next">
+<span class="sig-name descname"><span class="pre">search_next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#search_next" title="Link to this definition"></a></dt>
+<dd><p>Search for the next item matching the search term. If no search has been performed, asks user for the search term.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="search_prev">
+<span class="sig-name descname"><span class="pre">search_prev</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#search_prev" title="Link to this definition"></a></dt>
+<dd><p>Search for the previous item matching the search item. If no search has been performed, asks user for the search term.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="new_files">
+<span class="sig-name descname"><span class="pre">new_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span> <span class="pre">str</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">filename2</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#new_files" title="Link to this definition"></a></dt>
+<dd><p>Create one or more files in the current working directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Filename<span class="colon">:</span></dt>
+<dd class="field-odd"><p>name of the file</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="new_folder">
+<span class="sig-name descname"><span class="pre">new_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">foldername</span> <span class="pre">str</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">foldername2</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#new_folder" title="Link to this definition"></a></dt>
+<dd><p>Create one or more folders in the current working directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Foldername<span class="colon">:</span></dt>
+<dd class="field-odd"><p>name of the folder</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="trash">
+<span class="sig-name descname"><span class="pre">trash</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#trash" title="Link to this definition"></a></dt>
+<dd><p>Trashes the currently highlighted file(s) (if no marked files exist).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#copy" title="Link to this definition"></a></dt>
+<dd><p>Registers the currently highlighted file(s) (if no marked files exist) for copying.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="copy_dwim">
+<span class="sig-name descname"><span class="pre">copy_dwim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#copy_dwim" title="Link to this definition"></a></dt>
+<dd><p>Registers the file for copying in a DWIM fashion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="cut_dwim">
+<span class="sig-name descname"><span class="pre">cut_dwim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cut_dwim" title="Link to this definition"></a></dt>
+<dd><p>Registers the file for cutting in a DWIM fashion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cut" title="Link to this definition"></a></dt>
+<dd><p>Registers the file (s) for copying (if no marked files exist).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="has_marks_local">
+<span class="sig-name descname"><span class="pre">has_marks_local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#has_marks_local" title="Link to this definition"></a></dt>
+<dd><p>Check for local marks. Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if there are local marks, else <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="has_marks_global">
+<span class="sig-name descname"><span class="pre">has_marks_global</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#has_marks_global" title="Link to this definition"></a></dt>
+<dd><p>Check for global marks. Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if there are global marks, else <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="global_marks">
+<span class="sig-name descname"><span class="pre">global_marks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#global_marks" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of global marks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="local_marks_count">
+<span class="sig-name descname"><span class="pre">local_marks_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#local_marks_count" title="Link to this definition"></a></dt>
+<dd><p>Returns the count of local marks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="global_marks_count">
+<span class="sig-name descname"><span class="pre">global_marks_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#global_marks_count" title="Link to this definition"></a></dt>
+<dd><p>Returns the count of global marks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="local_marks">
+<span class="sig-name descname"><span class="pre">local_marks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#local_marks" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of local marks in the current working directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="highlight">
+<span class="sig-name descname"><span class="pre">highlight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_name</span> <span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#highlight" title="Link to this definition"></a></dt>
+<dd><p>Highlights the item with the name passed as argument if it exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Item_name<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="cd">
+<span class="sig-name descname"><span class="pre">cd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cd" title="Link to this definition"></a></dt>
+<dd><p>Change the current working directory to the string provided as argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="pwd">
+<span class="sig-name descname"><span class="pre">pwd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pwd" title="Link to this definition"></a></dt>
+<dd><p>Returns the current working directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+</ul>
+</section>
+<section id="io">
+<h3>IO<a class="headerlink" href="#io" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="msg">
+<span class="sig-name descname"><span class="pre">msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msgtype</span> <span class="pre">MsgType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#msg" title="Link to this definition"></a></dt>
+<dd><p>Prints message in the statusbar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Message<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The message string to print out</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Msgtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The type of the message</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">MsgType</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py data">
+<dt class="sig sig-object py" id="MsgType">
+<span class="sig-name descname"><span class="pre">MsgType</span></span><a class="headerlink" href="#MsgType" title="Link to this definition"></a></dt>
+<dd><p>Represents message types.</p>
+<p><strong>Members</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p>
+<blockquote>
+<div><p>Prints the message using the <em>error face</em></p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warning</span></code></p>
+<blockquote>
+<div><p>Prints the message using the <em>warning face</em></p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info</span></code></p>
+<blockquote>
+<div><p>Prints the message using the <em>info face</em></p>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="input">
+<span class="sig-name descname"><span class="pre">input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_text</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_text</span> <span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#input" title="Link to this definition"></a></dt>
+<dd><p>Get input from the user and return the value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Prompt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Prompt text</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Default_text<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The default text in the input field</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Selection_text<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The text that has to be selected in the input field</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+</ul>
+</section>
+<section id="shell">
+<h3>Shell<a class="headerlink" href="#shell" title="Link to this heading"></a></h3>
+<ul>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span> <span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#execute" title="Link to this definition"></a></dt>
+<dd><p>Execute a shell command asynchronously.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Command<span class="colon">:</span></dt>
+<dd class="field-odd"><p>command string to execute</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+</ul>
+<p>You can execute any shell commands from within navi.</p>
+</section>
+</section>
+<section id="what-can-you-do-with-scripting">
+<h2>What can you do with scripting ?<a class="headerlink" href="#what-can-you-do-with-scripting" title="Link to this heading"></a></h2>
+<section id="setting-wallpaper">
+<h3>Setting wallpaper<a class="headerlink" href="#setting-wallpaper" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">setWallpaper</span><span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">shell</span><span class="p">(</span><span class="s2">&quot;xwallpaper --stretch&quot;</span> <span class="o">..</span> <span class="n">filename</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="open-a-terminal-at-the-current-directory">
+<h3>Open a terminal at the current directory<a class="headerlink" href="#open-a-terminal-at-the-current-directory" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">terminalAtPoint</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">terminal</span> <span class="o">=</span> <span class="nb">os.getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL&quot;</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">pwd</span><span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">terminal</span><span class="p">,</span> <span class="p">{</span> <span class="n">dir</span> <span class="p">})</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="using-fd-to-navigate-to-directory-with-matching-name">
+<h3>Using <cite>fd</cite> to navigate to directory with matching name<a class="headerlink" href="#using-fd-to-navigate-to-directory-with-matching-name" title="Link to this heading"></a></h3>
+<section id="helper-function">
+<h4>Helper function<a class="headerlink" href="#helper-function" title="Link to this heading"></a></h4>
+<p><em>NOTE: Use the following helper function if you want the `fd` and `rg` code to run correctly</em></p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Helper function that returns the STDOUT of a command `commandString`</span>
+<span class="kr">function</span> <span class="nf">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">command</span> <span class="o">=</span> <span class="n">commandString</span>
+    <span class="kd">local</span> <span class="n">handle</span> <span class="o">=</span> <span class="nb">io.popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;*a&quot;</span><span class="p">)</span>
+    <span class="n">handle</span><span class="p">:</span><span class="n">close</span><span class="p">()</span>
+    <span class="kr">return</span> <span class="n">result</span><span class="p">:</span><span class="n">gsub</span><span class="p">(</span><span class="s1">&#39;[</span><span class="se">\n\r</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="fd-and-rg-for-file-searching">
+<h4>FD and RG for file searching<a class="headerlink" href="#fd-and-rg-for-file-searching" title="Link to this heading"></a></h4>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Use `fd` to go to the best file match having the name given as the input</span>
+<span class="kr">function</span> <span class="nf">fd</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">input</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;Search (FD)&quot;</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">input</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+        <span class="kd">local</span> <span class="n">pwd</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">pwd</span><span class="p">()</span>
+        <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;fd %s %s --type=directory | head -n 1&quot;</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
+        <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
+        <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="kr">else</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">messagetype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
+        <span class="kr">end</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content">
+<h3>Use <cite>rg</cite> (ripgrep) command to navigate to a directory with the matching content<a class="headerlink" href="#use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Use `ripgrep` to go to the file content with the name given as the input</span>
+<span class="kr">function</span> <span class="nf">rg</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">input</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;Search (RG)&quot;</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">input</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+        <span class="kd">local</span> <span class="n">pwd</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">pwd</span><span class="p">()</span>
+        <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;rg %s %s -l --sort-files | head -n 1&quot;</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
+        <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
+        <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="kr">else</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">messagetype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
+        <span class="kr">end</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="use-zoxide-for-faster-navigation">
+<h3>Use <cite>zoxide</cite> for faster navigation<a class="headerlink" href="#use-zoxide-for-faster-navigation" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">zoxide</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">input</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;Zoxide CD&quot;</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">input</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+        <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;zoxide %s&quot;</span><span class="p">,</span> <span class="n">input</span><span class="p">)</span>
+        <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
+        <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="kr">else</span>
+            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">messagetype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
+        <span class="kr">end</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+<p><em>NOTE: You could also use the `navi.shell.execute` api to execute the commands. But because this functionality exists in Lua, we use it.</em></p>
+</section>
+<section id="go-to-a-random-directory-inside-your-home-directory">
+<h3>Go to a random directory inside your home directory<a class="headerlink" href="#go-to-a-random-directory-inside-your-home-directory" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">randomDirectory</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="s2">&quot;fd . ~ -t d | shuf -n 1&quot;</span>
+    <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+        <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+<section id="highlight-a-random-file-inside-your-home-directory">
+<h3>Highlight a random file inside your home directory<a class="headerlink" href="#highlight-a-random-file-inside-your-home-directory" title="Link to this heading"></a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">randomFile</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="s2">&quot;fd . ~ | shuf -n 1&quot;</span>
+    <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
+        <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dheeraj Vittal Shenoy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

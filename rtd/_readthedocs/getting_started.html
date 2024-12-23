@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; Navi 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Navi
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Getting Started</a></li>
+<li><a class="reference internal" href="#configuring-navi">Configuring Navi</a></li>
+<li><a class="reference internal" href="#sample-configuration-file">Sample configuration file</a></li>
+<li><a class="reference internal" href="#scripting-with-lua">Scripting with Lua</a></li>
+<li><a class="reference internal" href="#using-navi">Using Navi</a><ul>
+<li><a class="reference internal" href="#naming-conventions">Naming Conventions</a></li>
+<li><a class="reference internal" href="#bookmarks">Bookmarks</a><ul>
+<li><a class="reference internal" href="#go-to-bookmark">Go to bookmark</a></li>
+<li><a class="reference internal" href="#edit-bookmark">Edit bookmark</a><ul>
+<li><a class="reference internal" href="#name">Name</a></li>
+<li><a class="reference internal" href="#filepath">Filepath</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#add-bookmark">Add bookmark</a></li>
+<li><a class="reference internal" href="#save-bookmark">Save bookmark</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#interactive-commands">Interactive Commands</a><ul>
+<li><a class="reference internal" href="#types-of-command">Types of Command</a><ul>
+<li><a class="reference internal" href="#current-scope">Current Scope</a></li>
+<li><a class="reference internal" href="#local-scope">Local Scope</a></li>
+<li><a class="reference internal" href="#global-scope">Global Scope</a></li>
+<li><a class="reference internal" href="#dwim">DWIM</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands-list">Commands List</a><ul>
+<li><a class="reference internal" href="#navigation">Navigation</a></li>
+<li><a class="reference internal" href="#echo-printing-commands">Echo (Printing) Commands</a></li>
+<li><a class="reference internal" href="#marking-item">Marking Item</a></li>
+<li><a class="reference internal" href="#unmarking-item">Unmarking Item</a></li>
+<li><a class="reference internal" href="#selecting-item">Selecting Item</a></li>
+<li><a class="reference internal" href="#change-permission">Change Permission</a></li>
+<li><a class="reference internal" href="#renaming-files">Renaming Files</a></li>
+<li><a class="reference internal" href="#bulk-rename">Bulk Rename</a></li>
+<li><a class="reference internal" href="#cutting-files">Cutting Files</a></li>
+<li><a class="reference internal" href="#copying-files">Copying Files</a></li>
+<li><a class="reference internal" href="#pasting-moving-files">Pasting (Moving) Files</a></li>
+<li><a class="reference internal" href="#deleting-files">Deleting Files</a></li>
+<li><a class="reference internal" href="#trashing-files">Trashing Files</a></li>
+<li><a class="reference internal" href="#filtering-items">Filtering Items</a></li>
+<li><a class="reference internal" href="#panes">Panes</a></li>
+<li><a class="reference internal" href="#misc">Misc</a></li>
+<li><a class="reference internal" href="#shell-commands">Shell Commands</a></li>
+<li><a class="reference internal" href="#macro">Macro</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#default-keybindings">Default Keybindings</a></li>
+<li><a class="reference internal" href="#theming">Theming</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Navi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>Take control of your files because they deserve more than just ‘open’ and ‘close’.</p>
+</section>
+<section id="configuring-navi">
+<h1>Configuring Navi<a class="headerlink" href="#configuring-navi" title="Link to this heading"></a></h1>
+<p>Navi is configured using the <a class="reference external" href="https://www.lua.org/start.html">Lua</a> scripting language. Do not worry if you do not know this programming language as it’s very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <em>~/.config/navi/</em> and the file <em>config.lua</em>. If no such file exists, navi loads with the defaults settings with the vim style <a class="reference internal" href="#default-keybindings"><span class="std std-ref">Default Keybindings</span></a> and sane defaults.</p>
+</section>
+<section id="sample-configuration-file">
+<h1>Sample configuration file<a class="headerlink" href="#sample-configuration-file" title="Link to this heading"></a></h1>
+<p>Check out the sample <a class="reference download internal" download="" href="_downloads/8752fc5bc3ce9569ac688571f93ef6ce/config.lua"><code class="xref download docutils literal notranslate"><span class="pre">config</span> <span class="pre">file</span></code></a>. Copy this file to the <em>~/.config/navi/</em> directory and relaunch navi to see the new settings.</p>
+</section>
+<section id="scripting-with-lua">
+<h1>Scripting with Lua<a class="headerlink" href="#scripting-with-lua" title="Link to this heading"></a></h1>
+<p>Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks. Check out <a class="reference internal" href="lua_scripting.html"><span class="doc">Lua scripting</span></a> to know more about scripting and including custom behavior to navi and extending it.</p>
+</section>
+<section id="using-navi">
+<h1>Using Navi<a class="headerlink" href="#using-navi" title="Link to this heading"></a></h1>
+<section id="naming-conventions">
+<h2>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><cite>Item</cite> refers to a file or a directory.</p></li>
+<li><p><cite>Highlighting</cite> refers to the action of clicking a directory item (one or more than one) once. This means that you can use your mouse to select and highlight multiple items in the directory.</p></li>
+<li><p><cite>Marking</cite> refers to the action of the <cite>mark</cite> or <cite>toggle-mark</cite> command to “select” one or more currently highlighted directory items. You can see the list of all the files that you have marked in the <cite>Marks List</cite> using <cite>View -&gt; Marks List</cite> or by using the <cite>show-marks</cite> command. When you call any of the commands, the commands will be aware of these markings and do the action accordingly. For example, if we use the <cite>rename</cite> command and if there are marked files, your choice of text editor is opened with the list of all the file names. You can change these and write to the file to rename them accordingly.</p></li>
+</ol>
+</section>
+<section id="bookmarks">
+<h2>Bookmarks<a class="headerlink" href="#bookmarks" title="Link to this heading"></a></h2>
+<p>Bookmarks allows you to instantly go to your favourite or frequently visited directories. You can add, edit, remove and load bookmarks from a special bookmarks file <cite>bookmark.lua</cite> which should be stored in config directory where the <cite>config.lua</cite> file exists. Bookmark file has the following structure:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">BOOKMARKS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">bookmarkName1</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;bookmarkPath1&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+
+    <span class="n">bookmarkName2</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;bookmarkPath2&quot;</span><span class="p">,</span>
+        <span class="n">highlight_only</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <em>highlight_only</em> key tells Navi not to go into the directory bookmarkPath2, instead just go the directory containing that file and just put the cursor (or highlight) the item pointed by the location.</p>
+<p><strong>NOTE: When navi startsup, it checks for the `bookmark.lua` file and loads it if it exists.</strong></p>
+<section id="go-to-bookmark">
+<h3>Go to bookmark<a class="headerlink" href="#go-to-bookmark" title="Link to this heading"></a></h3>
+<p>Once bookmarks are loaded, you can use the command <cite>bookmark-go</cite> and provide a bookmark name as argument to it (or it asks for the bookmark name if you do not give the argument) and if the name exists, it takes you to the path associated with that bookmark name.</p>
+</section>
+<section id="edit-bookmark">
+<h3>Edit bookmark<a class="headerlink" href="#edit-bookmark" title="Link to this heading"></a></h3>
+<section id="name">
+<h4>Name<a class="headerlink" href="#name" title="Link to this heading"></a></h4>
+<p>You can use the command <cite>bookmark-edit-name</cite> to edit the name of the bookmark which exists.</p>
+</section>
+<section id="filepath">
+<h4>Filepath<a class="headerlink" href="#filepath" title="Link to this heading"></a></h4>
+<p>You can use the command <cite>bookmark-edit-path</cite> to edit the path pointed to an item associated with a bookmark name.</p>
+</section>
+</section>
+<section id="add-bookmark">
+<h3>Add bookmark<a class="headerlink" href="#add-bookmark" title="Link to this heading"></a></h3>
+<p>You can add new bookmarks directly to the <cite>bookmark.lua</cite> file BOOKMARKS table. Or, you can add bookmarks interactively from within Navi. You can visit any directory you want to bookmark, and then once you are there, just call <cite>bookmark-add</cite> followed by the name of the bookmark as argument (or it asks for the bookmark name if no argument is provided).</p>
+<p><strong>NOTE: The bookmark names have to be unique, and therefore navi errors out if you provide the same bookmark name that already exists in the bookmarks file</strong></p>
+</section>
+<section id="save-bookmark">
+<h3>Save bookmark<a class="headerlink" href="#save-bookmark" title="Link to this heading"></a></h3>
+<p>Once you add bookmarks from within navi, you can save the changes by calling <cite>bookmarks-save</cite> to write the bookmarks to the <cite>bookmark.lua</cite> file.</p>
+</section>
+</section>
+<section id="interactive-commands">
+<h2>Interactive Commands<a class="headerlink" href="#interactive-commands" title="Link to this heading"></a></h2>
+<p>These are commands that can be executed using the <cite>inputbar</cite> UI component. By default, pressing <cite>: (colon)</cite> key pops up the inputbar. You can type a name of the command in this bar or a line number to go to in the current directory of the focused pane. Example: <cite>mark</cite> or <cite>42</cite>, where <cite>mark</cite> would mark the current item under focus or highlighted items (more than one items).</p>
+<section id="types-of-command">
+<h3>Types of Command<a class="headerlink" href="#types-of-command" title="Link to this heading"></a></h3>
+<p>There are four variants for most of the commands: <cite>Current</cite>, <cite>Local</cite>, <cite>Global</cite> and <cite>DWIM</cite> (Do What I Mean).</p>
+<section id="current-scope">
+<h4>Current Scope<a class="headerlink" href="#current-scope" title="Link to this heading"></a></h4>
+<p>This applies to the currently selected item. Any command that is <cite>Current</cite> scoped will run only on the currently highlighted item.</p>
+<p><strong>This includes mouse selection (also called as Highlighting)</strong>.</p>
+</section>
+<section id="local-scope">
+<h4>Local Scope<a class="headerlink" href="#local-scope" title="Link to this heading"></a></h4>
+<p>This applies to the marks that are in the current directory which is conveniently called as a <strong>Local Mark</strong>. Any command that is <cite>Local</cite> scoped will run on the local marks.</p>
+<p><strong>This does not include mouse highlighting.</strong></p>
+</section>
+<section id="global-scope">
+<h4>Global Scope<a class="headerlink" href="#global-scope" title="Link to this heading"></a></h4>
+<p>This applies to the marks that are present in any directory. Unlike the <cite>Local</cite> scope the command that is <cite>Global</cite> scoped will run on the marks that are present in any directory.</p>
+<p><strong>This does not include mouse highlighting</strong>.</p>
+</section>
+<section id="dwim">
+<h4>DWIM<a class="headerlink" href="#dwim" title="Link to this heading"></a></h4>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/DWIM">DWIM wikipedia page</a></p>
+<p>Do What I Mean version of commands. If no local marks are present, run the command on the current item, otherwise run the commands on the marks.</p>
+</section>
+</section>
+<section id="commands-list">
+<h3>Commands List<a class="headerlink" href="#commands-list" title="Link to this heading"></a></h3>
+<p>Below is an exhaustive list of commands that are currently available in Navi.</p>
+<section id="navigation">
+<h4>Navigation<a class="headerlink" href="#navigation" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">next-item</span></code></p>
+<p>Go to the next item</p>
+<p><code class="docutils literal notranslate"><span class="pre">prev-item</span></code></p>
+<p>Go to the previous item</p>
+<p><code class="docutils literal notranslate"><span class="pre">select-item</span></code></p>
+<p>Select the current item</p>
+<p><code class="docutils literal notranslate"><span class="pre">middle-item</span></code></p>
+<p>Go to the middle item</p>
+<p><code class="docutils literal notranslate"><span class="pre">up-directory</span></code></p>
+<p>Go to the parent directory</p>
+<p><code class="docutils literal notranslate"><span class="pre">first-item</span></code></p>
+<p>Go to the first item</p>
+<p><code class="docutils literal notranslate"><span class="pre">last-item</span></code></p>
+<p>Go to the last item</p>
+</section>
+<section id="echo-printing-commands">
+<h4>Echo (Printing) Commands<a class="headerlink" href="#echo-printing-commands" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">echo-info</span></code></p>
+<p>Echos or prints the information given as argument with the <em>info-face</em> font</p>
+<p><code class="docutils literal notranslate"><span class="pre">echo-warn</span></code></p>
+<p>Echos or prints the information given as argument with the <em>warning-face</em> font</p>
+<p><code class="docutils literal notranslate"><span class="pre">echo-error</span></code></p>
+<p>Echos or prints the information given as argument with the <em>error-face</em> font</p>
+</section>
+<section id="marking-item">
+<h4>Marking Item<a class="headerlink" href="#marking-item" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">mark</span></code></p>
+<p>Marks the current item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">toggle-mark</span></code></p>
+<p>Toggle the mark of the current item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">toggle-mark-dwim</span></code></p>
+<p>DWIM version of <cite>toggle-mark</cite> command</p>
+<p><code class="docutils literal notranslate"><span class="pre">mark-all</span></code></p>
+<p>Marks all the items in the current directory.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mark-inverse</span></code></p>
+<p>Inverses the marks in the current directory.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mark-dwim</span></code></p>
+<p>DWIM version of <cite>toggle-mark</cite></p>
+</section>
+<section id="unmarking-item">
+<h4>Unmarking Item<a class="headerlink" href="#unmarking-item" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">unmark</span></code></p>
+<p>Unmarks the current item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">unmark-local</span></code></p>
+<p>Unmarks <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">unmark-global</span></code></p>
+<p>Unmarks <strong>Global Marks</strong></p>
+</section>
+<section id="selecting-item">
+<h4>Selecting Item<a class="headerlink" href="#selecting-item" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">visual-select</span></code></p>
+<p>Enters into <em>visual selection</em> mode. Navigation is followed by selection until the mode is toggled off.</p>
+</section>
+<section id="change-permission">
+<h4>Change Permission<a class="headerlink" href="#change-permission" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">chmod</span></code></p>
+<p>Change the permission of the current item using three digit numbers</p>
+<p>Example: 777, 666, 000 etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">chmod-local</span></code></p>
+<p>Change permission for <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">chmod-global</span></code></p>
+<p>Change permission for <strong>Global Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">chmod-dwim</span></code></p>
+<p>Change permission <strong>DWIM</strong> style</p>
+</section>
+<section id="renaming-files">
+<h4>Renaming Files<a class="headerlink" href="#renaming-files" title="Link to this heading"></a></h4>
+<p><strong>NOTE: Renaming more than `bulk-rename-threshold` (configuration option) which is by default 5 will trigger a **[Bulk Rename](#bulk-rename)</strong> process.</p>
+<p><code class="docutils literal notranslate"><span class="pre">rename</span></code></p>
+<p>Rename the highlighted item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">rename-local</span></code></p>
+<p>Renames items in the <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">rename-global</span></code></p>
+<p>Renames items in the <strong>Global Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">rename-dwim</span></code></p>
+<p>Renames items in <strong>DWIM</strong> style</p>
+</section>
+<section id="bulk-rename">
+<h4>Bulk Rename<a class="headerlink" href="#bulk-rename" title="Link to this heading"></a></h4>
+<p>This is where a text editor of your choice (set it in the configuration) opens up a temporary “rename file” and enables you to rename all the marked files once you save and close the said “rename file”. By default navi uses the <cite>neovim</cite> text editor.</p>
+</section>
+<section id="cutting-files">
+<h4>Cutting Files<a class="headerlink" href="#cutting-files" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">cut</span></code></p>
+<p>Cut (prepare for moving) the current item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cut-local</span></code></p>
+<p>Register cut for <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">cut-global</span></code></p>
+<p>Register cut for <strong>Global Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">cut-dwim</span></code></p>
+<p>Register cut in <strong>DWIM</strong> style</p>
+</section>
+<section id="copying-files">
+<h4>Copying Files<a class="headerlink" href="#copying-files" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">copy</span></code></p>
+<p>Copy the current item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">copy-local</span></code></p>
+<p>Register copy for <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">copy-global</span></code></p>
+<p>Register copy for <strong>Global Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">copy-dwim</span></code></p>
+<p>Register copy in <strong>DWIM</strong> style</p>
+</section>
+<section id="pasting-moving-files">
+<h4>Pasting (Moving) Files<a class="headerlink" href="#pasting-moving-files" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">paste</span></code></p>
+<p>Paste (Move) the current item.</p>
+</section>
+<section id="deleting-files">
+<h4>Deleting Files<a class="headerlink" href="#deleting-files" title="Link to this heading"></a></h4>
+<p><strong>WARNING: Please be careful when using delete commands, this does not trash the items, it directly deletes them. If you want to trash use the *trash* command</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">delete</span></code></p>
+<p>Delete the highlighted items(s).</p>
+<p><code class="docutils literal notranslate"><span class="pre">delete-local</span></code></p>
+<p>Deletes items in the <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">delete-global</span></code></p>
+<p>Deletes items in the <strong>Global Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">delete-dwim</span></code></p>
+<p>Deletes items in <strong>DWIM</strong> style</p>
+</section>
+<section id="trashing-files">
+<h4>Trashing Files<a class="headerlink" href="#trashing-files" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">trash</span></code></p>
+<p>Trash the current item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">trash-local</span></code></p>
+<p>Trashes items in <strong>Local Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">trash-global</span></code></p>
+<p>Trashes items in <strong>Global Marks</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">trash-dwim</span></code></p>
+<p>Trashes items in <strong>DWIM</strong> style</p>
+</section>
+<section id="filtering-items">
+<h4>Filtering Items<a class="headerlink" href="#filtering-items" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">filter</span></code></p>
+<p>Set a filter to directory.</p>
+<p>Example: <cite>*</cite> displays everything, <cite>*.csv</cite> displays only the csv files, <cite>*.png</cite> displays only the png files</p>
+<p><code class="docutils literal notranslate"><span class="pre">reset-filter</span></code></p>
+<p>Reset the appplied filter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hidden-files</span></code></p>
+<p>Toggles the hidden files.</p>
+<p><strong>NOTE</strong>: Hidden files are those items whose name start with a period like <cite>.config</cite>, <cite>.gitignore</cite> etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dot-dot</span></code></p>
+<p>Toggles the .. file item.</p>
+</section>
+<section id="panes">
+<h4>Panes<a class="headerlink" href="#panes" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">bookmark-pane</span></code></p>
+<p>Opens the bookmarks list.</p>
+<p>TODO: work in progress</p>
+<p><code class="docutils literal notranslate"><span class="pre">marks-pane</span></code></p>
+<p>Opens the marks list.</p>
+<p>&lt;img src=”./screenshot/marks-pane-demo.gif” height=”400px” width=”600px” /&gt;</p>
+<p><code class="docutils literal notranslate"><span class="pre">messages-pane</span></code></p>
+<p>Opens the messages list.</p>
+<p>&lt;img src=”./screenshot/messages_pane.png” height=”400px” width=”500px” /&gt;</p>
+<p><code class="docutils literal notranslate"><span class="pre">preview-pane</span></code></p>
+<p>Toggles the preview pane.</p>
+<p>The preview pane handles previewing images (good number of formats) and PDF documents (first page) <cite>asynchronously</cite>. This means that the previewing experience will be seamless and without any lag. Navi uses <cite>ImageMagick</cite> library under the hood for previewing images and therefore any image formats supported my ImageMagick is supported by Navi.</p>
+<p><code class="docutils literal notranslate"><span class="pre">shortcuts-pane</span></code></p>
+<p>This displays the list of all the shortcuts.</p>
+<p>&lt;img src=”./screenshot/shortcuts_pane.png” height=”400px” width=”600px” /&gt;</p>
+</section>
+<section id="misc">
+<h4>Misc<a class="headerlink" href="#misc" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">fullscreen</span></code></p>
+<p>Toggle fullscreen mode for Navi.</p>
+<p><code class="docutils literal notranslate"><span class="pre">execute-extended-command</span></code></p>
+<p>This is the function that pops up the inputbar to enter the interactive commands.</p>
+<p><code class="docutils literal notranslate"><span class="pre">menu-bar</span></code></p>
+<p>Toggles the menu bar.</p>
+<p><code class="docutils literal notranslate"><span class="pre">focus-path</span></code></p>
+<p>Focuses the path widget and sets it in edit mode.</p>
+<p><code class="docutils literal notranslate"><span class="pre">item-property</span></code></p>
+<p>Display the property of the currently focused item.</p>
+<p><code class="docutils literal notranslate"><span class="pre">header</span></code></p>
+<p>Toggle the display of header information.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cycle</span></code></p>
+<p>Toggle the cycle (last item to first item and vice-versa) during navigation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">refresh</span></code></p>
+<p>Force refresh the current directory.</p>
+<p><code class="docutils literal notranslate"><span class="pre">syntax-highlight</span></code></p>
+<p>Toggle the syntax highlight for text preview</p>
+<p><strong>NOTE: By default, Navi watches the directory for changes and loads them, so there is no requirement to refresh the directory. This command is there just in case something does not look right.</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">mouse-scroll</span></code></p>
+<p>Toggle mouse scroll support for file panel</p>
+<p><code class="docutils literal notranslate"><span class="pre">reload-config</span></code></p>
+<p>Re-reads the configuration file if it exists and loads the configurations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tasks</span></code></p>
+<p>Opens the task widget showing all the running tasks like command execution with outputs and file operations like copying, moving and deleting/trashing.</p>
+<p><a class="reference external" href="https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a">https://github.com/user-attachments/assets/7cc31950-3cd1-4d2b-a244-b6ba6cdcd32a</a></p>
+<p><code class="docutils literal notranslate"><span class="pre">cd</span></code></p>
+<p>Change directory with the provided argument or ask for input.</p>
+<p><code class="docutils literal notranslate"><span class="pre">folder-property</span></code></p>
+<p>Get the property of the currently open folder</p>
+<p><code class="docutils literal notranslate"><span class="pre">copy-path</span></code></p>
+<p>Copy the path(s) of the currently “highlighted” (not to be confused with marked) files.</p>
+<p>You can pass an optional argument which will be the separator that separates the paths of all the selected files.</p>
+<p><strong>NOTE: You can configure the default separator in the config using the `copy_path_separator` variable</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">exit</span></code></p>
+<p>Exits Navi</p>
+<p><code class="docutils literal notranslate"><span class="pre">new-window</span></code></p>
+<p>Creates a new instance of navi</p>
+</section>
+<section id="shell-commands">
+<h4>Shell Commands<a class="headerlink" href="#shell-commands" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">shell</span></code></p>
+<p>Run a shell command <em>asynchronously</em> (non-blocking).</p>
+<p>The running commands can be seen in the <cite>Task Widget</cite> using the <cite>tasks</cite> command</p>
+</section>
+<section id="macro">
+<h4>Macro<a class="headerlink" href="#macro" title="Link to this heading"></a></h4>
+<p>Macros allow you to record actions performed inside Navi and save it, which you can then recall it to perform the action over and over again.</p>
+<p><code class="docutils literal notranslate"><span class="pre">macro-record</span></code></p>
+<p>This records / finishes recording (if already recording) a macro under a _macro <a href="#id2"><span class="problematic" id="id3">key_</span></a>. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.</p>
+<p><code class="docutils literal notranslate"><span class="pre">macro-play</span></code></p>
+<p>This plays a macro under a specific macro key.</p>
+<p><code class="docutils literal notranslate"><span class="pre">macro-edit</span></code></p>
+<p>Opens macro commands recorded under a specific macro key (if it exists) with your editor to edit, which will then be saved and can be recalled.</p>
+<p><code class="docutils literal notranslate"><span class="pre">macro-list</span></code></p>
+<p>Lists all the macros that have been defined.</p>
+<p><code class="docutils literal notranslate"><span class="pre">macro-save-to-file</span></code></p>
+<p>Saves macro to a file which can be used to load for the next boot of Navi.</p>
+<p><code class="docutils literal notranslate"><span class="pre">macro-delete</span></code></p>
+<p>Delete macro under a macro key (if it exists).</p>
+</section>
+</section>
+</section>
+</section>
+<section id="default-keybindings">
+<span id="id1"></span><h1>Default Keybindings<a class="headerlink" href="#default-keybindings" title="Link to this heading"></a></h1>
+<p>Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:</p>
+<ul class="simple">
+<li><p><cite>h</cite> to go to the parent directory</p></li>
+<li><p><cite>j</cite> to go the next item</p></li>
+<li><p><cite>k</cite> to go the previous item</p></li>
+<li><p><cite>l</cite> to select the current item</p></li>
+<li><p><cite>gg</cite> to go to the first item</p></li>
+<li><p><cite>Shift+g</cite> to go the last item</p></li>
+<li><p><cite>Space</cite> to toggle marking for the current item</p></li>
+<li><p><cite>Shift+Space</cite> to toggle inverse marking for the current directory</p></li>
+<li><p><cite>Ctrl+a</cite> to mark all the items in the current directory</p></li>
+<li><p><cite>Shift+r</cite> to rename current item if no marks are present or all the marked items if marks are present</p></li>
+<li><p><cite>Shift+d</cite> to delete DWIM</p></li>
+<li><p><cite>yy</cite> to copy DWIM</p></li>
+<li><p><cite>p</cite> to paste cut/copy marked items to the current directory</p></li>
+<li><p><cite>Shift+u</cite> to unmark all the local marks</p></li>
+<li><p><cite>.</cite> toggle hidden/dot files</p></li>
+<li><p><cite>/</cite> Search for item in the current directory</p></li>
+<li><p><cite>n</cite> Go to the next match for the search</p></li>
+<li><p><cite>Shift+n</cite> Go to the previous match for the search</p></li>
+<li><p><cite>Ctrl+m</cite> toggle menubar</p></li>
+<li><p><cite>Ctrl+p</cite> toggle preview panel</p></li>
+<li><p><cite>Ctrl+l</cite> focus the path widget</p></li>
+<li><p><cite>Shift+v</cite> Toggle visual line selection mode</p></li>
+</ul>
+<p><strong>NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file</strong></p>
+</section>
+<section id="theming">
+<h1>Theming<a class="headerlink" href="#theming" title="Link to this heading"></a></h1>
+<p>Since navi is a Qt GUI library based application, it can be styled using the <cite>qt6ct</cite> package available on linux. The colors mentioned in the configuration file will override the respective control colors of the theme.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dheeraj Vittal Shenoy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
