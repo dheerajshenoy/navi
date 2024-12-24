@@ -20,7 +20,9 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gallery" href="gallery.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,85 +44,83 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Lua scripting</a><ul>
-<li><a class="reference internal" href="#special-function-init-navi">Special Function (INIT_NAVI)</a></li>
-<li><a class="reference internal" href="#custom-functions">Custom functions</a></li>
-<li><a class="reference internal" href="#hooks">Hooks</a><ul>
-<li><a class="reference internal" href="#hook-names">Hook Names</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lua scripting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#special-function-init-navi">Special Function (INIT_NAVI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-functions">Custom functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hooks">Hooks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hook-names">Hook Names</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#navi-lua-api">Navi Lua API</a><ul>
-<li><a class="reference internal" href="#ui">UI</a><ul>
-<li><a class="reference internal" href="#marks"><code class="docutils literal notranslate"><span class="pre">marks()</span></code></a></li>
-<li><a class="reference internal" href="#shortcuts"><code class="docutils literal notranslate"><span class="pre">shortcuts()</span></code></a></li>
-<li><a class="reference internal" href="#messages"><code class="docutils literal notranslate"><span class="pre">messages()</span></code></a></li>
-<li><a class="reference internal" href="#preview_panel"><code class="docutils literal notranslate"><span class="pre">preview_panel()</span></code></a></li>
-<li><a class="reference internal" href="#pathbar"><code class="docutils literal notranslate"><span class="pre">pathbar()</span></code></a></li>
-<li><a class="reference internal" href="#statusbar"><code class="docutils literal notranslate"><span class="pre">statusbar()</span></code></a></li>
-<li><a class="reference internal" href="#menubar">menubar</a><ul>
-<li><a class="reference internal" href="#toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
-<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
-<li><a class="reference internal" href="#add_menu"><code class="docutils literal notranslate"><span class="pre">add_menu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#navi-lua-api">Navi Lua API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ui">UI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#marks"><code class="docutils literal notranslate"><span class="pre">marks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shortcuts"><code class="docutils literal notranslate"><span class="pre">shortcuts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#messages"><code class="docutils literal notranslate"><span class="pre">messages()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preview_panel"><code class="docutils literal notranslate"><span class="pre">preview_panel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pathbar"><code class="docutils literal notranslate"><span class="pre">pathbar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statusbar"><code class="docutils literal notranslate"><span class="pre">statusbar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#menubar">menubar</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#example-usage">Example Usage:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sort_name"><code class="docutils literal notranslate"><span class="pre">sort_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#search_next"><code class="docutils literal notranslate"><span class="pre">search_next()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#search_prev"><code class="docutils literal notranslate"><span class="pre">search_prev()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#new_files"><code class="docutils literal notranslate"><span class="pre">new_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#new_folder"><code class="docutils literal notranslate"><span class="pre">new_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trash"><code class="docutils literal notranslate"><span class="pre">trash()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#copy"><code class="docutils literal notranslate"><span class="pre">copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#copy_dwim"><code class="docutils literal notranslate"><span class="pre">copy_dwim()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cut_dwim"><code class="docutils literal notranslate"><span class="pre">cut_dwim()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cut"><code class="docutils literal notranslate"><span class="pre">cut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#has_marks_local"><code class="docutils literal notranslate"><span class="pre">has_marks_local()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#has_marks_global"><code class="docutils literal notranslate"><span class="pre">has_marks_global()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global_marks"><code class="docutils literal notranslate"><span class="pre">global_marks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#local_marks_count"><code class="docutils literal notranslate"><span class="pre">local_marks_count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global_marks_count"><code class="docutils literal notranslate"><span class="pre">global_marks_count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#local_marks"><code class="docutils literal notranslate"><span class="pre">local_marks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#highlight"><code class="docutils literal notranslate"><span class="pre">highlight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cd"><code class="docutils literal notranslate"><span class="pre">cd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pwd"><code class="docutils literal notranslate"><span class="pre">pwd()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#example-usage">Example Usage:</a></li>
-<li><a class="reference internal" href="#api">API</a><ul>
-<li><a class="reference internal" href="#sort_name"><code class="docutils literal notranslate"><span class="pre">sort_name()</span></code></a></li>
-<li><a class="reference internal" href="#search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
-<li><a class="reference internal" href="#search_next"><code class="docutils literal notranslate"><span class="pre">search_next()</span></code></a></li>
-<li><a class="reference internal" href="#search_prev"><code class="docutils literal notranslate"><span class="pre">search_prev()</span></code></a></li>
-<li><a class="reference internal" href="#new_files"><code class="docutils literal notranslate"><span class="pre">new_files()</span></code></a></li>
-<li><a class="reference internal" href="#new_folder"><code class="docutils literal notranslate"><span class="pre">new_folder()</span></code></a></li>
-<li><a class="reference internal" href="#trash"><code class="docutils literal notranslate"><span class="pre">trash()</span></code></a></li>
-<li><a class="reference internal" href="#copy"><code class="docutils literal notranslate"><span class="pre">copy()</span></code></a></li>
-<li><a class="reference internal" href="#copy_dwim"><code class="docutils literal notranslate"><span class="pre">copy_dwim()</span></code></a></li>
-<li><a class="reference internal" href="#cut_dwim"><code class="docutils literal notranslate"><span class="pre">cut_dwim()</span></code></a></li>
-<li><a class="reference internal" href="#cut"><code class="docutils literal notranslate"><span class="pre">cut()</span></code></a></li>
-<li><a class="reference internal" href="#has_marks_local"><code class="docutils literal notranslate"><span class="pre">has_marks_local()</span></code></a></li>
-<li><a class="reference internal" href="#has_marks_global"><code class="docutils literal notranslate"><span class="pre">has_marks_global()</span></code></a></li>
-<li><a class="reference internal" href="#global_marks"><code class="docutils literal notranslate"><span class="pre">global_marks()</span></code></a></li>
-<li><a class="reference internal" href="#local_marks_count"><code class="docutils literal notranslate"><span class="pre">local_marks_count()</span></code></a></li>
-<li><a class="reference internal" href="#global_marks_count"><code class="docutils literal notranslate"><span class="pre">global_marks_count()</span></code></a></li>
-<li><a class="reference internal" href="#local_marks"><code class="docutils literal notranslate"><span class="pre">local_marks()</span></code></a></li>
-<li><a class="reference internal" href="#highlight"><code class="docutils literal notranslate"><span class="pre">highlight()</span></code></a></li>
-<li><a class="reference internal" href="#cd"><code class="docutils literal notranslate"><span class="pre">cd()</span></code></a></li>
-<li><a class="reference internal" href="#pwd"><code class="docutils literal notranslate"><span class="pre">pwd()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#io">IO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#msg"><code class="docutils literal notranslate"><span class="pre">msg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MsgType"><code class="docutils literal notranslate"><span class="pre">MsgType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#input"><code class="docutils literal notranslate"><span class="pre">input()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#io">IO</a><ul>
-<li><a class="reference internal" href="#msg"><code class="docutils literal notranslate"><span class="pre">msg()</span></code></a></li>
-<li><a class="reference internal" href="#MsgType"><code class="docutils literal notranslate"><span class="pre">MsgType</span></code></a></li>
-<li><a class="reference internal" href="#input"><code class="docutils literal notranslate"><span class="pre">input()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#shell">Shell</a><ul>
-<li><a class="reference internal" href="#execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shell">Shell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#what-can-you-do-with-scripting">What can you do with scripting ?</a><ul>
-<li><a class="reference internal" href="#setting-wallpaper">Setting wallpaper</a></li>
-<li><a class="reference internal" href="#open-a-terminal-at-the-current-directory">Open a terminal at the current directory</a></li>
-<li><a class="reference internal" href="#using-fd-to-navigate-to-directory-with-matching-name">Using <cite>fd</cite> to navigate to directory with matching name</a><ul>
-<li><a class="reference internal" href="#helper-function">Helper function</a></li>
-<li><a class="reference internal" href="#fd-and-rg-for-file-searching">FD and RG for file searching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-can-you-do-with-scripting">What can you do with scripting ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-wallpaper">Setting wallpaper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-a-terminal-at-the-current-directory">Open a terminal at the current directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-fd-to-navigate-to-directory-with-matching-name">Using <cite>fd</cite> to navigate to directory with matching name</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#helper-function">Helper function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fd-and-rg-for-file-searching">FD and RG for file searching</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content">Use <cite>rg</cite> (ripgrep) command to navigate to a directory with the matching content</a></li>
-<li><a class="reference internal" href="#use-zoxide-for-faster-navigation">Use <cite>zoxide</cite> for faster navigation</a></li>
-<li><a class="reference internal" href="#go-to-a-random-directory-inside-your-home-directory">Go to a random directory inside your home directory</a></li>
-<li><a class="reference internal" href="#highlight-a-random-file-inside-your-home-directory">Highlight a random file inside your home directory</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content">Use <cite>rg</cite> (ripgrep) command to navigate to a directory with the matching content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-zoxide-for-faster-navigation">Use <cite>zoxide</cite> for faster navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#go-to-a-random-directory-inside-your-home-directory">Go to a random directory inside your home directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#highlight-a-random-file-inside-your-home-directory">Highlight a random file inside your home directory</a></li>
 </ul>
 </li>
 </ul>
-</div>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -145,7 +145,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lua-scripting">
+  <div class="toctree-wrapper compound">
+</div>
+<section id="lua-scripting">
 <h1>Lua scripting<a class="headerlink" href="#lua-scripting" title="Link to this heading"></a></h1>
 <p>Navi can be extended using lua for adding custom behaviour by creating functions, subscribing to hooks, changing default navi behaviour.</p>
 <section id="special-function-init-navi">
@@ -188,7 +190,7 @@
 </ul>
 <p>Example:</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;item</span><span class="err">\</span><span class="s2">_select&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;item_select&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
         <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;You selected an item...YAY!&quot;</span><span class="p">)</span>
     <span class="kr">end</span><span class="p">)</span>
 <span class="kr">end</span>
@@ -883,7 +885,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gallery.html" class="btn btn-neutral float-right" title="Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

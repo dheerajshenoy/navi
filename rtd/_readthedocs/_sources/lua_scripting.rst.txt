@@ -1,3 +1,6 @@
+.. toctree::
+    :maxdepth: 1
+
 Lua scripting
 =============
 
@@ -57,7 +60,7 @@ Example:
 .. code-block:: lua
 
     function INIT_NAVI()
-        navi.hook.add("item\_select", function ()
+        navi.hook.add("item_select", function ()
             navi.io.msg("You selected an item...YAY!")
         end)
     end

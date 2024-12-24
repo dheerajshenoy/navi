@@ -1,5 +1,3 @@
-.. toctree::
-    :titlesonly:
 
 Getting Started
 ===============
@@ -7,25 +5,21 @@ Getting Started
 Take control of your files because they deserve more than just 'open' and 'close'.
 
 Configuring Navi
-================
+++++++++++++++++
 
 Navi is configured using the `Lua <https://www.lua.org/start.html>`_ scripting language. Do not worry if you do not know this programming language as it's very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory *~/.config/navi/* and the file *config.lua*. If no such file exists, navi loads with the defaults settings with the vim style :ref:`Default_Keybindings` and sane defaults.
 
 Sample configuration file
-=========================
++++++++++++++++++++++++++
 
 Check out the sample :download:`config file <./_static/config.lua>`. Copy this file to the *~/.config/navi/* directory and relaunch navi to see the new settings.
 
-Scripting with Lua
-==================
-
-Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks. Check out :doc:`lua_scripting` to know more about scripting and including custom behavior to navi and extending it.
-
 Using Navi
-==========
+++++++++++
+
 
 Naming Conventions
-++++++++++++++++++
+~~~~~~~~~~~~~~~~~~
 
 1.  `Item` refers to a file or a directory.
 
@@ -531,36 +525,62 @@ Delete macro under a macro key (if it exists).
 .. _Default_Keybindings:
 
 Default Keybindings
-===================
++++++++++++++++++++
 
 Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:
 
-* `h` to go to the parent directory
-* `j` to go the next item
-* `k` to go the previous item
-* `l` to select the current item
-* `gg` to go to the first item
-* `Shift+g` to go the last item
-* `Space` to toggle marking for the current item
-* `Shift+Space` to toggle inverse marking for the current directory
-* `Ctrl+a` to mark all the items in the current directory
-* `Shift+r` to rename current item if no marks are present or all the marked items if marks are present
-* `Shift+d` to delete DWIM
-* `yy` to copy DWIM
-* `p` to paste cut/copy marked items to the current directory
-* `Shift+u` to unmark all the local marks
-* `.` toggle hidden/dot files
-* `/` Search for item in the current directory
-* `n` Go to the next match for the search
-* `Shift+n` Go to the previous match for the search
-* `Ctrl+m` toggle menubar
-* `Ctrl+p` toggle preview panel
-* `Ctrl+l` focus the path widget
-* `Shift+v` Toggle visual line selection mode
-
 **NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file**
 
++-------------+-----------------------------+
+| Key         | Action                      |
++=============+=============================+
+| h           | go to parent directory      |
++-------------+-----------------------------+
+| j           | go to next item             |
++-------------+-----------------------------+
+| k           | go to previous item         |
++-------------+-----------------------------+
+| l           | select current item         |
++-------------+-----------------------------+
+| gg          | go to first item            |
++-------------+-----------------------------+
+| Shift+g     | go to last item             |
++-------------+-----------------------------+
+| Space       | toggle marking              |
++-------------+-----------------------------+
+| Shift+Space | toggle inverse marking      |
++-------------+-----------------------------+
+| Ctrl+a      | mark all items              |
++-------------+-----------------------------+
+| Shift+r     | rename dwim                 |
++-------------+-----------------------------+
+| Shift+d     | delete dwim                 |
++-------------+-----------------------------+
+| yy          | copy dwim                   |
++-------------+-----------------------------+
+| p           | paste                       |
++-------------+-----------------------------+
+| Shift+u     | unmark all items            |
++-------------+-----------------------------+
+| .           | toggle dotfiles             |
++-------------+-----------------------------+
+| /           | Search                      |
++-------------+-----------------------------+
+| n           | Go to next search match     |
++-------------+-----------------------------+
+| Shift+n     | Go to previous search match |
++-------------+-----------------------------+
+| Ctrl+m      | toggle menubar              |
++-------------+-----------------------------+
+| Ctrl+p      | toggle preview panel        |
++-------------+-----------------------------+
+| Ctrl+l      | focus path widget           |
++-------------+-----------------------------+
+| Shift+v     | toggle visual selection     |
++-------------+-----------------------------+
+
+
 Theming
-=======
++++++++
 
 Since navi is a Qt GUI library based application, it can be styled using the `qt6ct` package available on linux. The colors mentioned in the configuration file will override the respective control colors of the theme.

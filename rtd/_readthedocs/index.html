@@ -20,7 +20,8 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,15 +43,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Navi Documentation</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_scripting.html">Lua scripting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#acknowledgement">Acknowledgement</a></li>
-</ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -77,54 +77,37 @@
              
   <section id="navi-documentation">
 <h1>Navi Documentation<a class="headerlink" href="#navi-documentation" title="Link to this heading"></a></h1>
+<img alt="_images/banner.png" class="align-center" src="_images/banner.png" />
 <p>Welcome to the documentation for Navi.</p>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<p>Navi can be built from source. The following libraries are dependencies for navi:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.qt.io/product/qt6">Qt6</a></p></li>
-<li><p><a class="reference external" href="https://www.lua.org/start.html">Lua</a></p></li>
-<li><p><a class="reference external" href="https://imagemagick.org/script/magick++.php">ImageMagick(Magick++)</a></p></li>
-<li><p><a class="reference external" href="https://poppler.freedesktop.org/api/qt6/">Poppler (Poppler-Qt6)</a></p></li>
-<li><p><a class="reference external" href="https://www.freedesktop.org/wiki/Software/udisks/">Udisks</a></p></li>
+<p>Navi is a minimalist and efficient file manager designed for users who value speed and simplicity. Developed using the Qt framework in C++, Navi offers a keyboard-driven interface inspired by terminal-based file managers like Ranger and Vifm, while leveraging the enhanced capabilities of a graphical user interface.</p>
+<p>Key Features:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Performance-Oriented</strong>: Built with C++ and Qt for optimal speed and responsiveness.</p></li>
+<li><p><strong>Keyboard-Centric Navigation</strong>: Navigate and manage files swiftly using intuitive keyboard shortcuts.</p></li>
+<li><p><strong>Customizable</strong>: Tailor the software to suit your workflow preferences.</p></li>
+<li><p><strong>Extensibility</strong>: Supports plugins and scripts for added functionality.</p></li>
 </ul>
-<p>If you’re on ArchLinux you can copy paste the following <cite>pacman</cite> code to install these dependencies:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>qt6-base<span class="w"> </span>lua<span class="w"> </span>imagemagick<span class="w"> </span>poppler<span class="w"> </span>poppler-qt6<span class="w"> </span>udisks2<span class="w"> </span>libarchive
-</pre></div>
+</div></blockquote>
+<p>Navi is ideal for users seeking a streamlined file management experience without the overhead of more complex applications. Its design philosophy centers on delivering essential features with maximum efficiency, making it a suitable choice for both beginners and advanced users.</p>
+<div class="toctree-wrapper compound">
 </div>
-<p>If you’re on Ubuntu/Debian based distribution, you can paste the following <cite>apt</cite> code to install the dependencies:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>qt6-base-dev<span class="w"> </span>lua5.4<span class="w"> </span>libmagick++-dev<span class="w"> </span>libpoppler-dev<span class="w"> </span>libpoppler-cpp-dev<span class="w"> </span>libpoppler-qt6-dev<span class="w"> </span>udisks2<span class="w"> </span>libarchive
-</pre></div>
-</div>
-<p><strong>NOTE</strong>: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.</p>
-<p>After installing these dependencies on your system and cloning this project repository, you can build navi by using the following command (inside the project’s directory):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>..
-make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
-sudo<span class="w"> </span>make<span class="w"> </span>install
-</pre></div>
-</div>
-<p>One liner:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cmake<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>..<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>-j<span class="w"> </span><span class="k">$(</span>nproc<span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>make<span class="w"> </span>install
-</pre></div>
-</div>
-<p>If everything went well, you should have navi installed on your system. You can launch navi using the command <cite>navi</cite>.</p>
-<p>Next, you can check out <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> to know more about the configuration options and customizations in navi.</p>
-</section>
-</section>
 <section id="acknowledgement">
-<h1>Acknowledgement<a class="headerlink" href="#acknowledgement" title="Link to this heading"></a></h1>
+<h2>Acknowledgement<a class="headerlink" href="#acknowledgement" title="Link to this heading"></a></h2>
 <p>Navi uses the following header-only C++ libraries. Thanks to the authors of the following libraries:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/p-ranav/argparse">ArgParse</a> (for parsing command line arguments)</p></li>
 <li><p><a class="reference external" href="https://github.com/ThePhD/sol2">Sol2</a> (for lua integration)</p></li>
 </ul>
 </section>
+</section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

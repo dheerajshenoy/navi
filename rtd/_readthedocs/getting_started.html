@@ -20,7 +20,9 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lua scripting" href="lua_scripting.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,62 +44,66 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Getting Started</a></li>
-<li><a class="reference internal" href="#configuring-navi">Configuring Navi</a></li>
-<li><a class="reference internal" href="#sample-configuration-file">Sample configuration file</a></li>
-<li><a class="reference internal" href="#scripting-with-lua">Scripting with Lua</a></li>
-<li><a class="reference internal" href="#using-navi">Using Navi</a><ul>
-<li><a class="reference internal" href="#naming-conventions">Naming Conventions</a></li>
-<li><a class="reference internal" href="#bookmarks">Bookmarks</a><ul>
-<li><a class="reference internal" href="#go-to-bookmark">Go to bookmark</a></li>
-<li><a class="reference internal" href="#edit-bookmark">Edit bookmark</a><ul>
-<li><a class="reference internal" href="#name">Name</a></li>
-<li><a class="reference internal" href="#filepath">Filepath</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuring-navi">Configuring Navi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-configuration-file">Sample configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-navi">Using Navi</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#naming-conventions">Naming Conventions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#add-bookmark">Add bookmark</a></li>
-<li><a class="reference internal" href="#save-bookmark">Save bookmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bookmarks">Bookmarks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#go-to-bookmark">Go to bookmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edit-bookmark">Edit bookmark</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#name">Name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filepath">Filepath</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#interactive-commands">Interactive Commands</a><ul>
-<li><a class="reference internal" href="#types-of-command">Types of Command</a><ul>
-<li><a class="reference internal" href="#current-scope">Current Scope</a></li>
-<li><a class="reference internal" href="#local-scope">Local Scope</a></li>
-<li><a class="reference internal" href="#global-scope">Global Scope</a></li>
-<li><a class="reference internal" href="#dwim">DWIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#add-bookmark">Add bookmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#save-bookmark">Save bookmark</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#commands-list">Commands List</a><ul>
-<li><a class="reference internal" href="#navigation">Navigation</a></li>
-<li><a class="reference internal" href="#echo-printing-commands">Echo (Printing) Commands</a></li>
-<li><a class="reference internal" href="#marking-item">Marking Item</a></li>
-<li><a class="reference internal" href="#unmarking-item">Unmarking Item</a></li>
-<li><a class="reference internal" href="#selecting-item">Selecting Item</a></li>
-<li><a class="reference internal" href="#change-permission">Change Permission</a></li>
-<li><a class="reference internal" href="#renaming-files">Renaming Files</a></li>
-<li><a class="reference internal" href="#bulk-rename">Bulk Rename</a></li>
-<li><a class="reference internal" href="#cutting-files">Cutting Files</a></li>
-<li><a class="reference internal" href="#copying-files">Copying Files</a></li>
-<li><a class="reference internal" href="#pasting-moving-files">Pasting (Moving) Files</a></li>
-<li><a class="reference internal" href="#deleting-files">Deleting Files</a></li>
-<li><a class="reference internal" href="#trashing-files">Trashing Files</a></li>
-<li><a class="reference internal" href="#filtering-items">Filtering Items</a></li>
-<li><a class="reference internal" href="#panes">Panes</a></li>
-<li><a class="reference internal" href="#misc">Misc</a></li>
-<li><a class="reference internal" href="#shell-commands">Shell Commands</a></li>
-<li><a class="reference internal" href="#macro">Macro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-commands">Interactive Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#types-of-command">Types of Command</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#current-scope">Current Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#local-scope">Local Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global-scope">Global Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dwim">DWIM</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#commands-list">Commands List</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navigation">Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#echo-printing-commands">Echo (Printing) Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#marking-item">Marking Item</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unmarking-item">Unmarking Item</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#selecting-item">Selecting Item</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#change-permission">Change Permission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#renaming-files">Renaming Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bulk-rename">Bulk Rename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cutting-files">Cutting Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#copying-files">Copying Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pasting-moving-files">Pasting (Moving) Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deleting-files">Deleting Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trashing-files">Trashing Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filtering-items">Filtering Items</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#panes">Panes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#misc">Misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shell-commands">Shell Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macro">Macro</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#default-keybindings">Default Keybindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#theming">Theming</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#default-keybindings">Default Keybindings</a></li>
-<li><a class="reference internal" href="#theming">Theming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_scripting.html">Lua scripting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 </ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -122,33 +128,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="toctree-wrapper compound">
-</div>
-<section id="getting-started">
+  <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
 <p>Take control of your files because they deserve more than just ‘open’ and ‘close’.</p>
-</section>
 <section id="configuring-navi">
-<h1>Configuring Navi<a class="headerlink" href="#configuring-navi" title="Link to this heading"></a></h1>
+<h2>Configuring Navi<a class="headerlink" href="#configuring-navi" title="Link to this heading"></a></h2>
 <p>Navi is configured using the <a class="reference external" href="https://www.lua.org/start.html">Lua</a> scripting language. Do not worry if you do not know this programming language as it’s very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <em>~/.config/navi/</em> and the file <em>config.lua</em>. If no such file exists, navi loads with the defaults settings with the vim style <a class="reference internal" href="#default-keybindings"><span class="std std-ref">Default Keybindings</span></a> and sane defaults.</p>
 </section>
 <section id="sample-configuration-file">
-<h1>Sample configuration file<a class="headerlink" href="#sample-configuration-file" title="Link to this heading"></a></h1>
+<h2>Sample configuration file<a class="headerlink" href="#sample-configuration-file" title="Link to this heading"></a></h2>
 <p>Check out the sample <a class="reference download internal" download="" href="_downloads/8752fc5bc3ce9569ac688571f93ef6ce/config.lua"><code class="xref download docutils literal notranslate"><span class="pre">config</span> <span class="pre">file</span></code></a>. Copy this file to the <em>~/.config/navi/</em> directory and relaunch navi to see the new settings.</p>
 </section>
-<section id="scripting-with-lua">
-<h1>Scripting with Lua<a class="headerlink" href="#scripting-with-lua" title="Link to this heading"></a></h1>
-<p>Navi can be scripted to include custom actions by subscribing to hooks and perform custom actions in response to those hooks. Check out <a class="reference internal" href="lua_scripting.html"><span class="doc">Lua scripting</span></a> to know more about scripting and including custom behavior to navi and extending it.</p>
-</section>
 <section id="using-navi">
-<h1>Using Navi<a class="headerlink" href="#using-navi" title="Link to this heading"></a></h1>
+<h2>Using Navi<a class="headerlink" href="#using-navi" title="Link to this heading"></a></h2>
 <section id="naming-conventions">
-<h2>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h2>
+<h3>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p><cite>Item</cite> refers to a file or a directory.</p></li>
 <li><p><cite>Highlighting</cite> refers to the action of clicking a directory item (one or more than one) once. This means that you can use your mouse to select and highlight multiple items in the directory.</p></li>
 <li><p><cite>Marking</cite> refers to the action of the <cite>mark</cite> or <cite>toggle-mark</cite> command to “select” one or more currently highlighted directory items. You can see the list of all the files that you have marked in the <cite>Marks List</cite> using <cite>View -&gt; Marks List</cite> or by using the <cite>show-marks</cite> command. When you call any of the commands, the commands will be aware of these markings and do the action accordingly. For example, if we use the <cite>rename</cite> command and if there are marked files, your choice of text editor is opened with the list of all the file names. You can change these and write to the file to rename them accordingly.</p></li>
 </ol>
+</section>
 </section>
 <section id="bookmarks">
 <h2>Bookmarks<a class="headerlink" href="#bookmarks" title="Link to this heading"></a></h2>
@@ -451,45 +451,99 @@
 </section>
 </section>
 </section>
-</section>
 <section id="default-keybindings">
-<span id="id1"></span><h1>Default Keybindings<a class="headerlink" href="#default-keybindings" title="Link to this heading"></a></h1>
+<span id="id1"></span><h2>Default Keybindings<a class="headerlink" href="#default-keybindings" title="Link to this heading"></a></h2>
 <p>Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:</p>
-<ul class="simple">
-<li><p><cite>h</cite> to go to the parent directory</p></li>
-<li><p><cite>j</cite> to go the next item</p></li>
-<li><p><cite>k</cite> to go the previous item</p></li>
-<li><p><cite>l</cite> to select the current item</p></li>
-<li><p><cite>gg</cite> to go to the first item</p></li>
-<li><p><cite>Shift+g</cite> to go the last item</p></li>
-<li><p><cite>Space</cite> to toggle marking for the current item</p></li>
-<li><p><cite>Shift+Space</cite> to toggle inverse marking for the current directory</p></li>
-<li><p><cite>Ctrl+a</cite> to mark all the items in the current directory</p></li>
-<li><p><cite>Shift+r</cite> to rename current item if no marks are present or all the marked items if marks are present</p></li>
-<li><p><cite>Shift+d</cite> to delete DWIM</p></li>
-<li><p><cite>yy</cite> to copy DWIM</p></li>
-<li><p><cite>p</cite> to paste cut/copy marked items to the current directory</p></li>
-<li><p><cite>Shift+u</cite> to unmark all the local marks</p></li>
-<li><p><cite>.</cite> toggle hidden/dot files</p></li>
-<li><p><cite>/</cite> Search for item in the current directory</p></li>
-<li><p><cite>n</cite> Go to the next match for the search</p></li>
-<li><p><cite>Shift+n</cite> Go to the previous match for the search</p></li>
-<li><p><cite>Ctrl+m</cite> toggle menubar</p></li>
-<li><p><cite>Ctrl+p</cite> toggle preview panel</p></li>
-<li><p><cite>Ctrl+l</cite> focus the path widget</p></li>
-<li><p><cite>Shift+v</cite> Toggle visual line selection mode</p></li>
-</ul>
 <p><strong>NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>h</p></td>
+<td><p>go to parent directory</p></td>
+</tr>
+<tr class="row-odd"><td><p>j</p></td>
+<td><p>go to next item</p></td>
+</tr>
+<tr class="row-even"><td><p>k</p></td>
+<td><p>go to previous item</p></td>
+</tr>
+<tr class="row-odd"><td><p>l</p></td>
+<td><p>select current item</p></td>
+</tr>
+<tr class="row-even"><td><p>gg</p></td>
+<td><p>go to first item</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+g</p></td>
+<td><p>go to last item</p></td>
+</tr>
+<tr class="row-even"><td><p>Space</p></td>
+<td><p>toggle marking</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+Space</p></td>
+<td><p>toggle inverse marking</p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+a</p></td>
+<td><p>mark all items</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+r</p></td>
+<td><p>rename dwim</p></td>
+</tr>
+<tr class="row-even"><td><p>Shift+d</p></td>
+<td><p>delete dwim</p></td>
+</tr>
+<tr class="row-odd"><td><p>yy</p></td>
+<td><p>copy dwim</p></td>
+</tr>
+<tr class="row-even"><td><p>p</p></td>
+<td><p>paste</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+u</p></td>
+<td><p>unmark all items</p></td>
+</tr>
+<tr class="row-even"><td><p>.</p></td>
+<td><p>toggle dotfiles</p></td>
+</tr>
+<tr class="row-odd"><td><p>/</p></td>
+<td><p>Search</p></td>
+</tr>
+<tr class="row-even"><td><p>n</p></td>
+<td><p>Go to next search match</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+n</p></td>
+<td><p>Go to previous search match</p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+m</p></td>
+<td><p>toggle menubar</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+p</p></td>
+<td><p>toggle preview panel</p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+l</p></td>
+<td><p>focus path widget</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+v</p></td>
+<td><p>toggle visual selection</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="theming">
-<h1>Theming<a class="headerlink" href="#theming" title="Link to this heading"></a></h1>
+<h2>Theming<a class="headerlink" href="#theming" title="Link to this heading"></a></h2>
 <p>Since navi is a Qt GUI library based application, it can be styled using the <cite>qt6ct</cite> package available on linux. The colors mentioned in the configuration file will override the respective control colors of the theme.</p>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_scripting.html" class="btn btn-neutral float-right" title="Lua scripting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
