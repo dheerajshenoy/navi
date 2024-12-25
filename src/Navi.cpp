@@ -101,6 +101,7 @@ void Navi::initConfiguration() noexcept {
 
                 auto icons_only = toolbar_table["icons_only"].get_or(false);
 
+
                 if (icons_only) {
                     auto style = this->style();
                     m_toolbar__prev_btn = new QPushButton(style->standardIcon(QStyle::SP_ArrowBack), "");
@@ -115,6 +116,30 @@ void Navi::initConfiguration() noexcept {
                     m_toolbar__parent_btn = new QPushButton("Parent");
                     m_toolbar__refresh_btn = new QPushButton("Refresh");
                 }
+
+                sol::optional<sol::table> layout_opt = toolbar_table["layout"];
+
+                if (layout_opt) {
+                    sol::table layout = layout_opt.value();
+
+                    for (size_t i=1; i <= layout.size(); i++) {
+
+                        auto item = layout[i].get<std::string>();
+
+                        if (item == "previous_dir")
+                            m_toolbar->addWidget(m_toolbar__prev_btn);
+                        else if (item == "next_dir")
+                            m_toolbar->addWidget(m_toolbar__next_btn);
+                        else if (item == "parent_dir")
+                            m_toolbar->addWidget(m_toolbar__parent_btn);
+                        else if (item == "home")
+                            m_toolbar->addWidget(m_toolbar__home_btn);
+                        else if (item == "refresh")
+                            m_toolbar->addWidget(m_toolbar__refresh_btn);
+
+                    }
+                }
+
 
                 initToolbar();
             }
@@ -2563,6 +2588,7 @@ Navi::MenuItem Navi::Lua__parseMenuItem(const sol::table &table) noexcept {
     return item;
 }
 
+
 void Navi::Lua__AddMenu(const sol::table& menuTable) noexcept {
     Navi::MenuItem menu = Lua__parseMenuItem(menuTable);
     QMenu *qmenu = new QMenu(QString::fromStdString(menu.label));
@@ -2613,12 +2639,58 @@ void Navi::Lua__AddContextMenu(const sol::table &table) noexcept {
     // m_file_panel->setContextMenu(cmenu);
 }
 
+Navi::ToolbarItem Navi::Lua__parseToolbarItem(const sol::table &table) noexcept {
+    ToolbarItem item;
+
+    // Extract the label
+    item.label = table["label"];
+
+    // Extract the action
+    if (table["action"].valid()) {
+        sol::function luaAction = table["action"];
+        item.action = [luaAction]() { luaAction(); };
+    }
+
+    item.icon = table["icon"];
+
+    item.position = table["position"];
+
+    return item;
+}
+
+void Navi::Lua__AddToolbarButton(const sol::table &table) noexcept {
+    Navi::ToolbarItem toolbar_item = Lua__parseToolbarItem(table);
+    
+    QPushButton *widget = new QPushButton(QString::fromStdString(toolbar_item.label));
+    QIcon icon = QIcon::fromTheme(QString::fromStdString(toolbar_item.icon));
+
+    if (icon.isNull()) {
+        auto iconpath = QString::fromStdString(toolbar_item.icon);
+        iconpath = iconpath.replace("~", QDir::homePath());
+        QFileInfo file(iconpath);
+        if (file.exists()) {
+            QIcon icon(iconpath);
+            widget->setText("");
+            widget->setIcon(icon);
+        }
+    } else {
+        widget->setText("");
+        widget->setIcon(icon);
+    }
+
+
+    connect(widget, &QPushButton::clicked, this, toolbar_item.action);
+
+    if (toolbar_item.position != -1) {
+        QAction* before = m_toolbar->actions().at(toolbar_item.position - 1);
+        m_toolbar->insertWidget(before, widget);
+    } else {
+        m_toolbar->addWidget(widget);
+    }
+
+}
+
 void Navi::initToolbar() noexcept {
-    m_toolbar->addWidget(m_toolbar__prev_btn);
-    m_toolbar->addWidget(m_toolbar__next_btn);
-    m_toolbar->addWidget(m_toolbar__parent_btn);
-    m_toolbar->addWidget(m_toolbar__home_btn);
-    m_toolbar->addWidget(m_toolbar__refresh_btn);
 
     m_toolbar__home_btn->setToolTip("Go to Home folder");
     m_toolbar__next_btn->setToolTip("Go to Next folder");

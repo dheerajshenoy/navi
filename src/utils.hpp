@@ -36,4 +36,6 @@ public:
     static void addTextToFirstLine(QTextEdit *textedit,
                                    const QString &text) noexcept;
     static QStringList readLinesFromFile(const QString &filename, const int &lines) noexcept;
+
+    static QString fileName(const QString &path) noexcept;
 };

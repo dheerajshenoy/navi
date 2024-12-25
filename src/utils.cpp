@@ -238,3 +238,7 @@ QStringList utils::readLinesFromFile(const QString &filename,
     return lines;
 
 }
+
+QString utils::fileName(const QString &path) noexcept {
+    return QFileInfo(path).fileName();
+}

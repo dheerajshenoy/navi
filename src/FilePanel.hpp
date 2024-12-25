@@ -220,7 +220,7 @@ protected:
 private:
     void dragRequested() noexcept;
     void selectHelper(const QModelIndex &index, const bool selectFirst) noexcept;
-    void selectFirstItem() noexcept;
+    void SelectFirstItem() noexcept;
     void initContextMenu() noexcept;
     void handleItemDoubleClicked(const QModelIndex &index) noexcept;
     void initSignalsSlots() noexcept;

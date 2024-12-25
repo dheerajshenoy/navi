@@ -334,13 +334,14 @@ void FileSystemModel::removeMarkedFiles(const QStringList &paths) noexcept {
         return;
 
     for (const auto &mark : paths) {
-        QModelIndex index = getIndexFromString(mark);
-        if (index.isValid()) {
-            if (m_markedFiles.contains(mark)) {
+        if (m_markedFiles.contains(mark)) {
+            QModelIndex index = getIndexFromString(mark);
+            if (index.isValid()) {
                 setData(index, false, static_cast<int>(Role::Marked));
-                m_markedFiles.remove(mark);
-                emit marksListChanged();
             }
+
+            m_markedFiles.remove(mark);
+            emit marksListChanged();
         }
     }
 }

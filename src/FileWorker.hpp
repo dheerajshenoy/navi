@@ -48,8 +48,8 @@ public slots:
 private:
     void copyFiles() noexcept;
     void cutFiles() noexcept;
-    void copyFile(const QString &, QString &) noexcept;
-    void cutFile(const QString &, QString &) noexcept;
+    void copyFile(const QString &, QString) noexcept;
+    void cutFile(const QString &, QString) noexcept;
     void renameFile(const QString &, const QString &) noexcept;
     void deleteFile(const QString &) noexcept;
     void trashFile(const QString &) noexcept;

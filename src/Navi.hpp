@@ -79,8 +79,8 @@ static const QString BOOKMARK_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + 
 class Menubar : public QMenuBar {
     Q_OBJECT
 
-signals:
-  void visibilityChanged(const bool &state);
+    signals:
+    void visibilityChanged(const bool &state);
 
 public:
     explicit Menubar(QWidget *parent = nullptr) : QMenuBar(parent) {}
@@ -131,6 +131,20 @@ public:
             if (action) {
                 action();
             }
+        }
+    };
+
+    struct ToolbarItem {
+        std::string label;
+        std::string icon;
+        int position = -1;
+        std::function<void()> action;
+
+        inline void execute() noexcept {
+            if (action) {
+                action();
+            }
+
         }
     };
 
@@ -245,7 +259,9 @@ public:
     void Lua__CreateFolders(const std::vector<std::string> &paths) noexcept;
     void Lua__AddMenu(const sol::table &menu) noexcept;
     void Lua__AddContextMenu(const sol::table &cmenu) noexcept;
+    void Lua__AddToolbarButton(const sol::table &table) noexcept;
     Navi::MenuItem Lua__parseMenuItem(const sol::table &table) noexcept;
+    Navi::ToolbarItem Lua__parseToolbarItem(const sol::table &table) noexcept;
     void FullScreen() noexcept;
     void FullScreen(const bool &state) noexcept;
     void ShowAbout() noexcept;
@@ -366,149 +382,149 @@ private:
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
     QStringList m_valid_command_list = {
-      // Shell command
-      "shell",
+        // Shell command
+        "shell",
 
-      // Mark
-      "mark",
-      "toggle-mark",
-      "toggle-mark-dwim",
-      "mark-inverse",
-      "mark-all",
-      "mark-dwim",
-      "mark-regex",
+        // Mark
+        "mark",
+        "toggle-mark",
+        "toggle-mark-dwim",
+        "mark-inverse",
+        "mark-all",
+        "mark-dwim",
+        "mark-regex",
 
-      // Unmark
-      "unmark",
-      "unmark-global",
-      "unmark-local",
-      "unmark-dwim",
-      "unmark-regex",
+        // Unmark
+        "unmark",
+        "unmark-global",
+        "unmark-local",
+        "unmark-dwim",
+        "unmark-regex",
 
-      // Chmod
-      "chmod",
-      "chmod-global",
-      "chmod-local",
-      "chmod-dwim",
+        // Chmod
+        "chmod",
+        "chmod-global",
+        "chmod-local",
+        "chmod-dwim",
 
-      // Rename
-      "rename",
-      "rename-global",
-      "rename-local",
-      "rename-dwim",
+        // Rename
+        "rename",
+        "rename-global",
+        "rename-local",
+        "rename-dwim",
 
-      // Cut
-      "cut",
-      "cut-local",
-      "cut-global",
-      "cut-dwim",
+        // Cut
+        "cut",
+        "cut-local",
+        "cut-global",
+        "cut-dwim",
 
-      // Copy
-      "copy",
-      "copy-local",
-      "copy-global",
-      "copy-dwim",
+        // Copy
+        "copy",
+        "copy-local",
+        "copy-global",
+        "copy-dwim",
 
-      // Paste
-      "paste",
+        // Paste
+        "paste",
 
-      // Delete
-      "delete",
-      "delete-local",
-      "delete-global",
-      "delete-dwim",
+        // Delete
+        "delete",
+        "delete-local",
+        "delete-global",
+        "delete-dwim",
 
-      // Trash
-      "trash",
-      "trash-local",
-      "trash-global",
-      "trash-dwim",
+        // Trash
+        "trash",
+        "trash-local",
+        "trash-global",
+        "trash-dwim",
 
-      // Task
-      "tasks",
+        // Task
+        "tasks",
 
-      // Bookmarks
-      "bookmark-add",
-      "bookmark-remove",
-      "bookmark-edit-name",
-      "bookmark-edit-path",
-      "bookmark-go",
-      "bookmarks-save",
+        // Bookmarks
+        "bookmark-add",
+        "bookmark-remove",
+        "bookmark-edit-name",
+        "bookmark-edit-path",
+        "bookmark-go",
+        "bookmarks-save",
 
-      // Creation
-      "new-file",
-      "new-folder",
+        // Creation
+        "new-file",
+        "new-folder",
 
-      // Panes
-      "messages-pane",
-      "preview-pane",
-      "marks-pane",
-      "bookmarks-pane",
-      "shortcuts-pane",
+        // Panes
+        "messages-pane",
+        "preview-pane",
+        "marks-pane",
+        "bookmarks-pane",
+        "shortcuts-pane",
 
-      // Search
-      "search",
-      "search-regex",
-      "search-next",
-      "search-prev",
+        // Search
+        "search",
+        "search-regex",
+        "search-next",
+        "search-prev",
 
-      // Sort
-      "sort-name",
-      "sort-name-desc",
-      "sort-date",
-      "sort-date-desc",
-      "sort-size",
-      "sort-size-desc",
+        // Sort
+        "sort-name",
+        "sort-name-desc",
+        "sort-date",
+        "sort-date-desc",
+        "sort-size",
+        "sort-size-desc",
 
-      // Navigation
-      "next-item",
-      "prev-item",
-      "first-item",
-      "last-item",
-      "middle-item",
-      "up-directory",
-      "select-item",
+        // Navigation
+        "next-item",
+        "prev-item",
+        "first-item",
+        "last-item",
+        "middle-item",
+        "up-directory",
+        "select-item",
 
-      "macro-play",
-      "macro-record",
-      "macro-delete",
-      "macro-list",
-      "macro-edit",
-      "macro-save-to-file",
+        "macro-play",
+        "macro-record",
+        "macro-delete",
+        "macro-list",
+        "macro-edit",
+        "macro-save-to-file",
 
-      // Echo
-      "echo-info",
-      "echo-warn",
-      "echo-error",
+        // Echo
+        "echo-info",
+        "echo-warn",
+        "echo-error",
 
-      // misc
-      "new-window",
-      "exit",
-      "filter",
-      "reset-filter",
-      "refresh",
-      "hidden-files",
-      "dot-dot",
-      "menu-bar",
-      "focus-path",
-      "item-property",
-      "cycle",
-      "header",
-      "reload-config",
-      "execute-extended-command",
-      "visual-select",
-      "mouse-scroll",
-      "drives",
-      // "syntax-highlight",
-      "lua",
-      "register",
-      "repeat-last-command",
-      "cd",
-      "terminal",
-      "folder-property",
-      "copy-path",
-      "fullscreen",
-      "about",
+        // misc
+        "new-window",
+        "exit",
+        "filter",
+        "reset-filter",
+        "refresh",
+        "hidden-files",
+        "dot-dot",
+        "menu-bar",
+        "focus-path",
+        "item-property",
+        "cycle",
+        "header",
+        "reload-config",
+        "execute-extended-command",
+        "visual-select",
+        "mouse-scroll",
+        "drives",
+        // "syntax-highlight",
+        "lua",
+        "register",
+        "repeat-last-command",
+        "cd",
+        "terminal",
+        "folder-property",
+        "copy-path",
+        "fullscreen",
+        "about",
     };
 
     MessagesBuffer *m_log_buffer = nullptr;

@@ -5,7 +5,7 @@ FileWorker::FileWorker(const QStringList &files, const QString &destDir,
                        Statusbar *sb, Inputbar *ib) : m_srcFiles(files), m_destDir(destDir),
 m_type(type), m_task_manager(taskManager), m_statusbar(sb), m_inputbar(ib) {}
 
-void FileWorker::copyFile(const QString &src, QString &dest) noexcept {
+void FileWorker::copyFile(const QString &src, QString dest) noexcept {
     QString fileName = QFileInfo(src).fileName();
     std::ifstream srcFile(src.toStdString(), std::ios::binary);
 
@@ -16,6 +16,7 @@ void FileWorker::copyFile(const QString &src, QString &dest) noexcept {
 
     assert(m_task_manager != nullptr && "Task Manager does not exist");
 
+    qDebug() << "DD " << dest;
     dest = dest + QDir::separator() + fileName;
     std::string dest_std_str = dest.toStdString();
 
@@ -24,6 +25,7 @@ void FileWorker::copyFile(const QString &src, QString &dest) noexcept {
       if (confirm != "y" || confirm != "yes")
           return;
     }
+
 
     std::ofstream destFile(dest_std_str, std::ios::binary);
     if (!destFile.is_open()) {
@@ -61,7 +63,7 @@ void FileWorker::copyFile(const QString &src, QString &dest) noexcept {
     emit finished();
 }
 
-void FileWorker::cutFile(const QString &src, QString &dest) noexcept {
+void FileWorker::cutFile(const QString &src, QString dest) noexcept {
     QString fileName = QFileInfo(src).fileName();
     std::ifstream srcFile(src.toStdString(), std::ios::binary);
 
