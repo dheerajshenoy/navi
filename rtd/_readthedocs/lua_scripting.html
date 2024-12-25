@@ -63,10 +63,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#preview_panel"><code class="docutils literal notranslate"><span class="pre">preview_panel()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pathbar"><code class="docutils literal notranslate"><span class="pre">pathbar()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statusbar"><code class="docutils literal notranslate"><span class="pre">statusbar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#toolbar">toolbar</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#menubar">menubar</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#example-usage">Example Usage:</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api">API</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sort_name"><code class="docutils literal notranslate"><span class="pre">sort_name()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
@@ -279,10 +279,10 @@
 
 </li>
 </ul>
-<section id="menubar">
-<h4>menubar<a class="headerlink" href="#menubar" title="Link to this heading"></a></h4>
+<section id="toolbar">
+<h4>toolbar<a class="headerlink" href="#toolbar" title="Link to this heading"></a></h4>
 <blockquote>
-<div><p>Menubar table</p>
+<div><p>Toolbar table</p>
 <dl class="field-list simple">
 <dt class="field-odd">type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
@@ -319,9 +319,101 @@
 </dd></dl>
 
 </li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="add_button">
+<span class="sig-name descname"><span class="pre">add_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toolbar_item</span> <span class="pre">ToolbarItem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#add_button" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Toolbar_item<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The toolbar item table to add to the toolbar</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ToolbarItem</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+<p>Adds the toolbar_item provided as argument to the menubar.</p>
+<p>ToolbarItem has the following structure:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">ToolbarItem</span> <span class="p">{</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+    <span class="c1">-- path to supported image for icon or xdg-standard icons</span>
+    <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;&lt;path-to-image-file&gt;&quot;</span><span class="p">,</span> <span class="c1">-- or icon = &quot;&lt;xdg-standard-icons&gt;&quot;,</span>
+    <span class="c1">-- action to execute on user click</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msgtype</span><span class="p">.</span><span class="n">info</span><span class="p">)</span>
+    <span class="kr">end</span><span class="p">,</span>
+    <span class="cm">--[[</span>
+<span class="cm">    position of the button in the toolbar.</span>
+<span class="cm">    Not zero index based.</span>
+<span class="cm">    If not mentioned, widget will be inserted at the end.</span>
+<span class="cm">    --]]</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example Usage</strong></p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
+    <span class="kd">local</span> <span class="n">btn</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;~/Downloads/QNoIbtmy.png&quot;</span><span class="p">,</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
+        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msgtype</span><span class="p">.</span><span class="n">info</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">-- not zero based indexed</span>
+    <span class="p">}</span>
+
+    <span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">toolbar</span><span class="p">.</span><span class="n">add_button</span><span class="p">(</span><span class="n">btn</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</li>
 </ul>
 </div></blockquote>
-<dl class="py function">
+</section>
+<section id="menubar">
+<h4>menubar<a class="headerlink" href="#menubar" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>Menubar table</p>
+<dl class="field-list simple">
+<dt class="field-odd">type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
+</dd>
+</dl>
+<ul>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Toggles the visibility state of the menubar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span> <span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd><p>Toggles the menubar with the state <em>state</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">State<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Visibility state of the menubar</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</li>
+<li><dl class="py function">
 <dt class="sig sig-object py" id="add_menu">
 <span class="sig-name descname"><span class="pre">add_menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">menu_item</span> <span class="pre">MenuItem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#add_menu" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -340,21 +432,16 @@
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">MenuItem</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;menu label&quot;</span><span class="p">,</span>  <span class="c1">-- The label of the menu item.</span>
     <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>            <span class="c1">-- A nested submenu (optional).</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;submenu&quot;</span><span class="p">,</span> <span class="c1">-- The label of the submenu.</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span> <span class="c1">-- Action associated with the submenu.</span>
-            <span class="c1">-- Function implementation here</span>
-        <span class="kr">end</span><span class="p">,</span>
-        <span class="c1">-- Additional submenu items can be added here.</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;submenu&quot;</span><span class="p">,</span> <span class="c1">-- The label of the submenu.</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span> <span class="c1">-- Action associated with the submenu.</span>
+    <span class="c1">-- Function implementation here</span>
+    <span class="kr">end</span><span class="p">,</span>
+    <span class="c1">-- Additional submenu items can be added here.</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</dd></dl>
-
-</section>
-</section>
-<section id="example-usage">
-<h3>Example Usage:<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h3>
+<p><strong>Example Usage</strong></p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
     <span class="c1">-- This is a function with special meaning to Navi.</span>
     <span class="c1">-- This will be called on startup</span>
@@ -393,6 +480,12 @@
 <span class="kr">end</span>
 </pre></div>
 </div>
+</dd></dl>
+
+</li>
+</ul>
+</div></blockquote>
+</section>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading"></a></h3>

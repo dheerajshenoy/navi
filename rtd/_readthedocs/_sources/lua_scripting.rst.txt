@@ -113,6 +113,74 @@ UI
 
     :rtype: ``void``
 
+toolbar
+*******
+
+    Toolbar table
+
+    :type: ``table``
+
+
+    + .. function:: toggle
+
+        Toggles the visibility state of the menubar.
+
+        :rtype: ``void``
+
+    + .. function:: toggle(state bool)
+
+        Toggles the menubar with the state *state*.
+
+        :state: Visibility state of the menubar
+        :type: ``bool``
+
+        :rtype: ``void``
+
+    + .. function:: add_button(toolbar_item ToolbarItem)
+
+        :toolbar_item: The toolbar item table to add to the toolbar
+        :type: ``ToolbarItem``
+        :returns: ``void``
+
+        Adds the toolbar_item provided as argument to the menubar.
+
+        ToolbarItem has the following structure:
+
+        .. code-block:: lua
+
+            ToolbarItem {
+                label = "Hello World",
+                -- path to supported image for icon or xdg-standard icons
+                icon = "<path-to-image-file>", -- or icon = "<xdg-standard-icons>",
+                -- action to execute on user click
+                action = function ()
+                navi.io.msg("HELLO WORLD", navi.io.msgtype.info)
+                end,
+                --[[
+                position of the button in the toolbar.
+                Not zero index based.
+                If not mentioned, widget will be inserted at the end.
+                --]]
+                position = 2,
+            }
+
+        **Example Usage**
+
+        .. code-block:: lua
+
+            function INIT_NAVI()
+                local btn = {
+                    label = "Hello World",
+                    icon = "~/Downloads/QNoIbtmy.png",
+                    action = function ()
+                    navi.io.msg("HELLO WORLD", navi.io.msgtype.info)
+                    end,
+                    position = 2, -- not zero based indexed
+                }
+
+                navi.ui.toolbar.add_button(btn)
+            end
+
 menubar
 *******
 
@@ -136,71 +204,69 @@ menubar
         :rtype: ``void``
 
 
-.. function:: add_menu(menu_item MenuItem)
+    + .. function:: add_menu(menu_item MenuItem)
 
-   :menu_item: The menu item table to add to the menu
-   :type: ``MenuItem``
-   :returns: ``void``
+        :menu_item: The menu item table to add to the menu
+        :type: ``MenuItem``
+        :returns: ``void``
 
-   Adds the menuitem provided as argument to the menubar.
+        Adds the menuitem provided as argument to the menubar.
 
-   MenuItem has the following structure:
+        MenuItem has the following structure:
 
-   .. code-block:: lua
+        .. code-block:: lua
 
-    MenuItem = {
-        label = "menu label",  -- The label of the menu item.
-        submenu = {            -- A nested submenu (optional).
-            label = "submenu", -- The label of the submenu.
-            action = function() -- Action associated with the submenu.
+            MenuItem = {
+                label = "menu label",  -- The label of the menu item.
+                submenu = {            -- A nested submenu (optional).
+                label = "submenu", -- The label of the submenu.
+                action = function() -- Action associated with the submenu.
                 -- Function implementation here
-            end,
-            -- Additional submenu items can be added here.
-        }
-    }
-
-
-Example Usage:
-~~~~~~~~~~~~~~
-
-.. code-block:: lua
-
-    function INIT_NAVI()
-        -- This is a function with special meaning to Navi.
-        -- This will be called on startup
-
-        custom_menu = {
-            label = "Custom Menu",
-            submenu = {
-                {
-                    label = "Open",
-                    action = function()
-                        navi.io.msg("HELLO WORLD");
-                    end,
-                },
-
-                {
-                    label = "sub",
-                    submenu = {
-                        {
-                            label = "item 1",
-                            action = function ()
-                                navi.io.msg("SUB HELLO");
-                            end
-                        }
-                    },
-                },
-
-                {
-                    label = "Save",
-                    action = function() print("Save clicked") end,
+                end,
+                -- Additional submenu items can be added here.
                 }
             }
-        }
 
-        navi.ui.menubar.add_menu(custom_menu)
+        **Example Usage**
 
-    end
+        .. code-block:: lua
+
+            function INIT_NAVI()
+                -- This is a function with special meaning to Navi.
+                -- This will be called on startup
+
+                custom_menu = {
+                    label = "Custom Menu",
+                    submenu = {
+                        {
+                            label = "Open",
+                            action = function()
+                                navi.io.msg("HELLO WORLD");
+                            end,
+                        },
+
+                        {
+                            label = "sub",
+                            submenu = {
+                                {
+                                    label = "item 1",
+                                    action = function ()
+                                        navi.io.msg("SUB HELLO");
+                                    end
+                                }
+                            },
+                        },
+
+                        {
+                            label = "Save",
+                            action = function() print("Save clicked") end,
+                        }
+                    }
+                }
+
+                navi.ui.menubar.add_menu(custom_menu)
+
+            end
 
 
 API
