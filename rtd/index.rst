@@ -29,6 +29,7 @@ Navi is ideal for users seeking a streamlined file management experience without
     installation.rst
     getting_started.rst
     lua_scripting.rst
+    api.rst
     gallery.rst
 
 Acknowledgement

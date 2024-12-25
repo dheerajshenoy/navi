@@ -46,6 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lua_scripting.html">Lua scripting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 </ul>
 
@@ -86,6 +87,7 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -98,7 +100,7 @@
     add_button()
 
       <ul>
-        <li><a href="lua_scripting.html#add_button">built-in function</a>
+        <li><a href="api.html#add_button">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -107,7 +109,7 @@
     add_menu()
 
       <ul>
-        <li><a href="lua_scripting.html#add_menu">built-in function</a>
+        <li><a href="api.html#add_menu">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -120,69 +122,75 @@
     built-in function
 
       <ul>
-        <li><a href="lua_scripting.html#add_button">add_button()</a>
+        <li><a href="api.html#add_button">add_button()</a>
 </li>
-        <li><a href="lua_scripting.html#add_menu">add_menu()</a>
+        <li><a href="api.html#add_menu">add_menu()</a>
 </li>
-        <li><a href="lua_scripting.html#cd">cd()</a>
+        <li><a href="api.html#cd">cd()</a>
 </li>
-        <li><a href="lua_scripting.html#copy">copy()</a>
+        <li><a href="api.html#copy">copy()</a>
 </li>
-        <li><a href="lua_scripting.html#copy_dwim">copy_dwim()</a>
+        <li><a href="api.html#copy_dwim">copy_dwim()</a>
 </li>
-        <li><a href="lua_scripting.html#cut">cut()</a>
+        <li><a href="api.html#create_button">create_button()</a>
 </li>
-        <li><a href="lua_scripting.html#cut_dwim">cut_dwim()</a>
+        <li><a href="api.html#create_module">create_module()</a>
 </li>
-        <li><a href="lua_scripting.html#execute">execute()</a>
+        <li><a href="api.html#cut">cut()</a>
 </li>
-        <li><a href="lua_scripting.html#global_marks">global_marks()</a>
+        <li><a href="api.html#cut_dwim">cut_dwim()</a>
 </li>
-        <li><a href="lua_scripting.html#global_marks_count">global_marks_count()</a>
+        <li><a href="api.html#execute">execute()</a>
 </li>
-        <li><a href="lua_scripting.html#has_marks_global">has_marks_global()</a>
+        <li><a href="api.html#global_marks">global_marks()</a>
 </li>
-        <li><a href="lua_scripting.html#has_marks_local">has_marks_local()</a>
+        <li><a href="api.html#global_marks_count">global_marks_count()</a>
 </li>
-        <li><a href="lua_scripting.html#highlight">highlight()</a>
+        <li><a href="api.html#has_marks_global">has_marks_global()</a>
 </li>
-        <li><a href="lua_scripting.html#input">input()</a>
+        <li><a href="api.html#has_marks_local">has_marks_local()</a>
 </li>
-        <li><a href="lua_scripting.html#local_marks">local_marks()</a>
+        <li><a href="api.html#highlight">highlight()</a>
 </li>
-        <li><a href="lua_scripting.html#local_marks_count">local_marks_count()</a>
+        <li><a href="api.html#input">input()</a>
 </li>
-        <li><a href="lua_scripting.html#marks">marks()</a>
+        <li><a href="api.html#local_marks">local_marks()</a>
 </li>
-        <li><a href="lua_scripting.html#messages">messages()</a>
+        <li><a href="api.html#local_marks_count">local_marks_count()</a>
 </li>
-        <li><a href="lua_scripting.html#msg">msg()</a>
+        <li><a href="api.html#marks">marks()</a>
 </li>
-        <li><a href="lua_scripting.html#new_files">new_files()</a>
+        <li><a href="api.html#messages">messages()</a>
 </li>
-        <li><a href="lua_scripting.html#new_folder">new_folder()</a>
+        <li><a href="api.html#msg">msg()</a>
 </li>
-        <li><a href="lua_scripting.html#pathbar">pathbar()</a>
+        <li><a href="api.html#new_files">new_files()</a>
 </li>
-        <li><a href="lua_scripting.html#preview_panel">preview_panel()</a>
+        <li><a href="api.html#new_folder">new_folder()</a>
 </li>
-        <li><a href="lua_scripting.html#pwd">pwd()</a>
+        <li><a href="api.html#pathbar">pathbar()</a>
 </li>
-        <li><a href="lua_scripting.html#search">search()</a>
+        <li><a href="api.html#preview_panel">preview_panel()</a>
 </li>
-        <li><a href="lua_scripting.html#search_next">search_next()</a>
+        <li><a href="api.html#pwd">pwd()</a>
 </li>
-        <li><a href="lua_scripting.html#search_prev">search_prev()</a>
+        <li><a href="api.html#search">search()</a>
 </li>
-        <li><a href="lua_scripting.html#shortcuts">shortcuts()</a>
+        <li><a href="api.html#search_next">search_next()</a>
 </li>
-        <li><a href="lua_scripting.html#sort_name">sort_name()</a>
+        <li><a href="api.html#search_prev">search_prev()</a>
 </li>
-        <li><a href="lua_scripting.html#statusbar">statusbar()</a>
+        <li><a href="api.html#set_items">set_items()</a>
 </li>
-        <li><a href="lua_scripting.html#id0">toggle()</a>, <a href="lua_scripting.html#id1">[1]</a>, <a href="lua_scripting.html#id2">[2]</a>, <a href="lua_scripting.html#toggle">[3]</a>
+        <li><a href="api.html#set_modules">set_modules()</a>
 </li>
-        <li><a href="lua_scripting.html#trash">trash()</a>
+        <li><a href="api.html#shortcuts">shortcuts()</a>
+</li>
+        <li><a href="api.html#sort_name">sort_name()</a>
+</li>
+        <li><a href="api.html#id0">toggle()</a>, <a href="api.html#id2">[1]</a>, <a href="api.html#id3">[2]</a>, <a href="api.html#id4">[3]</a>, <a href="api.html#id5">[4]</a>, <a href="api.html#toggle">[5]</a>
+</li>
+        <li><a href="api.html#trash">trash()</a>
 </li>
       </ul></li>
   </ul></td>
@@ -195,37 +203,51 @@
     cd()
 
       <ul>
-        <li><a href="lua_scripting.html#cd">built-in function</a>
+        <li><a href="api.html#cd">built-in function</a>
 </li>
       </ul></li>
       <li>
     copy()
 
       <ul>
-        <li><a href="lua_scripting.html#copy">built-in function</a>
+        <li><a href="api.html#copy">built-in function</a>
 </li>
       </ul></li>
       <li>
     copy_dwim()
 
       <ul>
-        <li><a href="lua_scripting.html#copy_dwim">built-in function</a>
+        <li><a href="api.html#copy_dwim">built-in function</a>
+</li>
+      </ul></li>
+      <li>
+    create_button()
+
+      <ul>
+        <li><a href="api.html#create_button">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
+    create_module()
+
+      <ul>
+        <li><a href="api.html#create_module">built-in function</a>
+</li>
+      </ul></li>
+      <li>
     cut()
 
       <ul>
-        <li><a href="lua_scripting.html#cut">built-in function</a>
+        <li><a href="api.html#cut">built-in function</a>
 </li>
       </ul></li>
       <li>
     cut_dwim()
 
       <ul>
-        <li><a href="lua_scripting.html#cut_dwim">built-in function</a>
+        <li><a href="api.html#cut_dwim">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -238,7 +260,7 @@
     execute()
 
       <ul>
-        <li><a href="lua_scripting.html#execute">built-in function</a>
+        <li><a href="api.html#execute">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -251,7 +273,7 @@
     global_marks()
 
       <ul>
-        <li><a href="lua_scripting.html#global_marks">built-in function</a>
+        <li><a href="api.html#global_marks">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -260,7 +282,7 @@
     global_marks_count()
 
       <ul>
-        <li><a href="lua_scripting.html#global_marks_count">built-in function</a>
+        <li><a href="api.html#global_marks_count">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -273,14 +295,14 @@
     has_marks_global()
 
       <ul>
-        <li><a href="lua_scripting.html#has_marks_global">built-in function</a>
+        <li><a href="api.html#has_marks_global">built-in function</a>
 </li>
       </ul></li>
       <li>
     has_marks_local()
 
       <ul>
-        <li><a href="lua_scripting.html#has_marks_local">built-in function</a>
+        <li><a href="api.html#has_marks_local">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -289,7 +311,7 @@
     highlight()
 
       <ul>
-        <li><a href="lua_scripting.html#highlight">built-in function</a>
+        <li><a href="api.html#highlight">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -302,7 +324,7 @@
     input()
 
       <ul>
-        <li><a href="lua_scripting.html#input">built-in function</a>
+        <li><a href="api.html#input">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -315,7 +337,7 @@
     local_marks()
 
       <ul>
-        <li><a href="lua_scripting.html#local_marks">built-in function</a>
+        <li><a href="api.html#local_marks">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -324,7 +346,7 @@
     local_marks_count()
 
       <ul>
-        <li><a href="lua_scripting.html#local_marks_count">built-in function</a>
+        <li><a href="api.html#local_marks_count">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -337,14 +359,14 @@
     marks()
 
       <ul>
-        <li><a href="lua_scripting.html#marks">built-in function</a>
+        <li><a href="api.html#marks">built-in function</a>
 </li>
       </ul></li>
       <li>
     messages()
 
       <ul>
-        <li><a href="lua_scripting.html#messages">built-in function</a>
+        <li><a href="api.html#messages">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -353,10 +375,10 @@
     msg()
 
       <ul>
-        <li><a href="lua_scripting.html#msg">built-in function</a>
+        <li><a href="api.html#msg">built-in function</a>
 </li>
       </ul></li>
-      <li><a href="lua_scripting.html#MsgType">MsgType (built-in variable)</a>
+      <li><a href="api.html#MsgType">MsgType (built-in variable)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -368,7 +390,7 @@
     new_files()
 
       <ul>
-        <li><a href="lua_scripting.html#new_files">built-in function</a>
+        <li><a href="api.html#new_files">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -377,9 +399,17 @@
     new_folder()
 
       <ul>
-        <li><a href="lua_scripting.html#new_folder">built-in function</a>
+        <li><a href="api.html#new_folder">built-in function</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#options">options (built-in variable)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -390,14 +420,14 @@
     pathbar()
 
       <ul>
-        <li><a href="lua_scripting.html#pathbar">built-in function</a>
+        <li><a href="api.html#pathbar">built-in function</a>
 </li>
       </ul></li>
       <li>
     preview_panel()
 
       <ul>
-        <li><a href="lua_scripting.html#preview_panel">built-in function</a>
+        <li><a href="api.html#preview_panel">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -406,7 +436,7 @@
     pwd()
 
       <ul>
-        <li><a href="lua_scripting.html#pwd">built-in function</a>
+        <li><a href="api.html#pwd">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -419,44 +449,51 @@
     search()
 
       <ul>
-        <li><a href="lua_scripting.html#search">built-in function</a>
+        <li><a href="api.html#search">built-in function</a>
 </li>
       </ul></li>
       <li>
     search_next()
 
       <ul>
-        <li><a href="lua_scripting.html#search_next">built-in function</a>
+        <li><a href="api.html#search_next">built-in function</a>
 </li>
       </ul></li>
       <li>
     search_prev()
 
       <ul>
-        <li><a href="lua_scripting.html#search_prev">built-in function</a>
+        <li><a href="api.html#search_prev">built-in function</a>
+</li>
+      </ul></li>
+      <li>
+    set_items()
+
+      <ul>
+        <li><a href="api.html#set_items">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
+    set_modules()
+
+      <ul>
+        <li><a href="api.html#set_modules">built-in function</a>
+</li>
+      </ul></li>
+      <li>
     shortcuts()
 
       <ul>
-        <li><a href="lua_scripting.html#shortcuts">built-in function</a>
+        <li><a href="api.html#shortcuts">built-in function</a>
 </li>
       </ul></li>
       <li>
     sort_name()
 
       <ul>
-        <li><a href="lua_scripting.html#sort_name">built-in function</a>
-</li>
-      </ul></li>
-      <li>
-    statusbar()
-
-      <ul>
-        <li><a href="lua_scripting.html#statusbar">built-in function</a>
+        <li><a href="api.html#sort_name">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
@@ -469,16 +506,18 @@
     toggle()
 
       <ul>
-        <li><a href="lua_scripting.html#id0">built-in function</a>, <a href="lua_scripting.html#id1">[1]</a>, <a href="lua_scripting.html#id2">[2]</a>, <a href="lua_scripting.html#toggle">[3]</a>
+        <li><a href="api.html#id0">built-in function</a>, <a href="api.html#id2">[1]</a>, <a href="api.html#id3">[2]</a>, <a href="api.html#id4">[3]</a>, <a href="api.html#id5">[4]</a>, <a href="api.html#toggle">[5]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#ToolbarItem">ToolbarItem (built-in variable)</a>
+</li>
       <li>
     trash()
 
       <ul>
-        <li><a href="lua_scripting.html#trash">built-in function</a>
+        <li><a href="api.html#trash">built-in function</a>
 </li>
       </ul></li>
   </ul></td>
