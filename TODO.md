@@ -91,3 +91,5 @@
 - [ ] Connect to internet server
 - [ ] Selection wierd behaviour
 - ~~[ ] Tabs~~
+- [X] highlight file after pasting
+- [ ] view copy/cut file register
