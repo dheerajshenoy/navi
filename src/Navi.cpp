@@ -35,7 +35,7 @@ void Navi::initThings() noexcept {
             lua["INIT_NAVI"]();
     } catch (const sol::error &e) {
         m_statusbar->Message(QString("Error in the config file: %1")
-                           .arg(e.what()),
+                             .arg(e.what()),
                              MessageType::ERROR);
     }
 
@@ -155,11 +155,11 @@ void Navi::initConfiguration() noexcept {
                 auto fraction = preview_pane["fraction"].get_or(0.5);
                 auto totalSize = m_splitter->width();
                 QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
-                            static_cast<int>(totalSize * fraction)};
+                    static_cast<int>(totalSize * fraction)};
                 m_splitter->setSizes(sizes);
 
                 auto max_file_size = QString::fromStdString(
-                                                            preview_pane["max_size"].get_or<std::string>("10M"));
+                    preview_pane["max_size"].get_or<std::string>("10M"));
 
                 auto max_file_bytes = utils::parseFileSize(max_file_size);
                 m_preview_panel->SetMaxPreviewThreshold(max_file_bytes);
@@ -227,7 +227,7 @@ void Navi::initConfiguration() noexcept {
                     m_viewmenu__menubar->setIcon(QIcon(":resources/images/menu.svg"));
                     m_viewmenu__statusbar->setIcon(QIcon(":resources/images/statusbar.svg"));
                     m_viewmenu__preview_panel->setIcon(
-                                                       QIcon(":resources/images/preview.svg"));
+                        QIcon(":resources/images/preview.svg"));
                     m_help_menu__about->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
                 }
             }
@@ -281,15 +281,15 @@ void Navi::initConfiguration() noexcept {
                 if (visual_line_mode_table) {
                     auto visual_line_mode = visual_line_mode_table.value();
                     auto bg = QString::fromStdString(
-                                                     visual_line_mode["background"].get_or<std::string>(""));
+                        visual_line_mode["background"].get_or<std::string>(""));
                     auto fg = QString::fromStdString(
-                                                     visual_line_mode["foreground"].get_or<std::string>(""));
+                        visual_line_mode["foreground"].get_or<std::string>(""));
                     auto bold = visual_line_mode["bold"].get_or(false);
                     auto italic = visual_line_mode["italic"].get_or(false);
                     auto padding = QString::fromStdString(
-                                                          visual_line_mode["padding"].get_or<std::string>("2px"));
+                        visual_line_mode["padding"].get_or<std::string>("2px"));
                     auto text = QString::fromStdString(
-                                                       visual_line_mode["text"].get_or<std::string>(""));
+                        visual_line_mode["text"].get_or<std::string>(""));
 
                     if (!fg.isEmpty())
                         m_statusbar->SetVisualLineModeForeground(fg);
@@ -308,15 +308,15 @@ void Navi::initConfiguration() noexcept {
                 if (macro_mode_table) {
                     auto macro_mode = macro_mode_table.value();
                     auto bg = QString::fromStdString(
-                                                     macro_mode["background"].get_or<std::string>(""));
+                        macro_mode["background"].get_or<std::string>(""));
                     auto fg = QString::fromStdString(
-                                                     macro_mode["foreground"].get_or<std::string>(""));
+                        macro_mode["foreground"].get_or<std::string>(""));
                     auto bold = macro_mode["bold"].get_or(false);
                     auto italic = macro_mode["italic"].get_or(false);
                     auto padding = QString::fromStdString(
-                                                          macro_mode["padding"].get_or<std::string>("2px"));
+                        macro_mode["padding"].get_or<std::string>("2px"));
                     auto text = QString::fromStdString(
-                                                       macro_mode["text"].get_or<std::string>(""));
+                        macro_mode["text"].get_or<std::string>(""));
 
                     if (!fg.isEmpty())
                         m_statusbar->SetMacroModeForeground(fg);
@@ -372,9 +372,9 @@ void Navi::initConfiguration() noexcept {
                     // user
                     if (!file_name_type_check) {
                         m_statusbar->Message(
-                                             "*file_name* key is mandatory in the columns table."
-                                             "Consider adding it to get the columns working",
-                                             MessageType::ERROR);
+                            "*file_name* key is mandatory in the columns table."
+                            "Consider adding it to get the columns working",
+                            MessageType::ERROR);
                     }
 
                     model->setColumns(columnList);
@@ -448,19 +448,19 @@ void Navi::initConfiguration() noexcept {
                         model->setMarkBackgroundColor(markBackground);
                     else
                         model->setMarkBackgroundColor(m_file_panel->tableView()
-                                              ->palette()
-                                              .brush(QWidget::backgroundRole())
-                                              .color()
-                                              .name());
+                                                      ->palette()
+                                                      .brush(QWidget::backgroundRole())
+                                                      .color()
+                                                      .name());
 
                     if (!(markForeground.isNull() || markForeground.isEmpty()))
                         model->setMarkForegroundColor(markForeground);
                     else
                         model->setMarkForegroundColor(m_file_panel->tableView()
-                                              ->palette()
-                                              .brush(QWidget::backgroundRole())
-                                              .color()
-                                              .name());
+                                                      ->palette()
+                                                      .brush(QWidget::backgroundRole())
+                                                      .color()
+                                                      .name());
 
                     // header
                     sol::optional<sol::table> header_table = mark["header"];
@@ -486,24 +486,24 @@ void Navi::initConfiguration() noexcept {
                             model->setMarkHeaderFontBold(true);
 
                         if (!(markHeaderBackground.isNull() ||
-                              markHeaderBackground.isEmpty()))
+                            markHeaderBackground.isEmpty()))
                             model->setMarkHeaderBackgroundColor(markHeaderBackground);
                         else
                             model->setMarkHeaderBackgroundColor(m_file_panel->tableView()
-                      ->palette()
-                      .brush(QWidget::backgroundRole())
-                      .color()
-                      .name());
+                                                                ->palette()
+                                                                .brush(QWidget::backgroundRole())
+                                                                .color()
+                                                                .name());
 
                         if (!(markHeaderForeground.isNull() ||
-                              markHeaderForeground.isEmpty()))
+                            markHeaderForeground.isEmpty()))
                             model->setMarkHeaderForegroundColor(markHeaderForeground);
                         else
                             model->setMarkHeaderForegroundColor(m_file_panel->tableView()
-                      ->palette()
-                      .brush(QWidget::backgroundRole())
-                      .color()
-                      .name());
+                                                                ->palette()
+                                                                .brush(QWidget::backgroundRole())
+                                                                .color()
+                                                                .name());
                     }
                 }
             }
@@ -601,7 +601,7 @@ QStringList Navi::getLuaFunctionNames() noexcept {
         }
         return luaFunctions;
     } else
-        return {};
+    return {};
 }
 
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
@@ -635,7 +635,7 @@ void Navi::initBookmarks() noexcept {
             auto bookmark = pair.second.as<sol::table>();
             BookmarkManager::Bookmark item {
                 .file_path =
-                  QString::fromStdString(bookmark["path"].get<std::string>()),
+                QString::fromStdString(bookmark["path"].get<std::string>()),
                 .highlight_only = bookmark["highlight_only"].get_or(false),
             };
             bookmarks_hash.insert(name, item);
@@ -651,44 +651,44 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_hook_manager, &HookManager::triggerError, this,
             [&](const QString &error) {
-                m_statusbar->Message(error, MessageType::ERROR);
+            m_statusbar->Message(error, MessageType::ERROR);
             });
 
-  connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
-          this, [&]() {
-      LogMessage("Thumbnail caching finished");
-  });
+    connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
+            this, [&]() {
+            LogMessage("Thumbnail caching finished");
+            });
 
-  connect(m_file_panel, &FilePanel::currentItemChanged, this,
-          [&]() { m_hook_manager->triggerHook("item_changed"); });
+    connect(m_file_panel, &FilePanel::currentItemChanged, this,
+            [&]() { m_hook_manager->triggerHook("item_changed"); });
 
-  connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, this,
-          [&]() { m_bookmarks_buffer->loadBookmarks(); });
+    connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, this,
+            [&]() { m_bookmarks_buffer->loadBookmarks(); });
 
-  connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, this,
-          [&](const QString &name) {
-              GoBookmark(name);
-          });
+    connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, this,
+            [&](const QString &name) {
+            GoBookmark(name);
+            });
 
     connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
             [&](const QString &mountPoint) {
-                m_file_panel->setCurrentDir(mountPoint);
+            m_file_panel->setCurrentDir(mountPoint);
             });
 
     connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
             [&](const QString &driveName) {
-                QString confirm = m_inputbar->getInput(QString("Do you want to mount %1 ? (y, N)").arg(driveName));
-                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-                    return;
-                MountDrive(driveName);
+            QString confirm = m_inputbar->getInput(QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+            if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+            return;
+            MountDrive(driveName);
             });
 
     connect(m_drives_widget, &DriveWidget::driveUnmountRequested, this,
             [&](const QString &driveName) {
-                QString confirm = m_inputbar->getInput(QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
-                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-                    return;
-                UnmountDrive(driveName);
+            QString confirm = m_inputbar->getInput(QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
+            if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+            return;
+            UnmountDrive(driveName);
             });
 
     connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
@@ -699,24 +699,24 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_file_panel, &FilePanel::afterDirChange, this,
             [&](const QString &path) {
-                m_file_path_widget->setCurrentDir(path);
-                m_hook_manager->triggerHook("directory_changed");
-                m_preview_panel->clearImageCache();
-                cacheThumbnails();
+            m_file_path_widget->setCurrentDir(path);
+            m_hook_manager->triggerHook("directory_changed");
+            m_preview_panel->clearImageCache();
+            cacheThumbnails();
             });
 
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             m_file_panel, [&](const QString &dirName) {
-        m_file_panel->setCurrentDir(dirName, true);
-    });
+            m_file_panel->setCurrentDir(dirName, true);
+            });
 
     connect(m_file_panel, &FilePanel::fileOperationDone, this,
             [&](const bool &state, const QString &reason) {
-                if (state)
-                    m_statusbar->Message("Operation Successful");
-                else
-                    m_statusbar->Message(QString("Error during file operation! (%1)").arg(reason),
-                                         MessageType::ERROR, 5);
+            if (state)
+            m_statusbar->Message("Operation Successful");
+            else
+            m_statusbar->Message(QString("Error during file operation! (%1)").arg(reason),
+                                 MessageType::ERROR, 5);
             });
 
     connect(m_statusbar, &Statusbar::logMessage, this, &Navi::LogMessage);
@@ -730,21 +730,21 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
-  commandMap["execute-extended-command"] = [this](const QStringList &args) {
-    ExecuteExtendedCommand();
-  };
+    commandMap["execute-extended-command"] = [this](const QStringList &args) {
+        ExecuteExtendedCommand();
+    };
 
-  commandMap["fullscreen"] = [this](const QStringList &args) {
-      UNUSED(args);
-      FullScreen();
-  };
+    commandMap["fullscreen"] = [this](const QStringList &args) {
+        UNUSED(args);
+        FullScreen();
+    };
 
-  commandMap["copy-path"] = [this](const QStringList &args) {
-      if (args.isEmpty())
-          CopyPath();
-      else
-          CopyPath(args.at(0));
-  };
+    commandMap["copy-path"] = [this](const QStringList &args) {
+        if (args.isEmpty())
+            CopyPath();
+        else
+            CopyPath(args.at(0));
+    };
 
     commandMap["exit"] = [this](const QStringList &args) {
         Exit();
@@ -1043,7 +1043,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["bookmark-edit-name"] = [&](const QStringList &args) {
-      EditBookmarkName(args);
+        EditBookmarkName(args);
     };
 
     commandMap["bookmark-edit-path"] = [&](const QStringList &args) {
@@ -1075,7 +1075,7 @@ void Navi::EditBookmarkName(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
     } else
-        bookmarkName = args.at(0);
+    bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -1095,12 +1095,12 @@ void Navi::EditBookmarkName(const QStringList &args) noexcept {
     // If bookmark title is provided
     if (m_bookmark_manager->setBookmarkName(bookmarkName, newBookmarkName)) {
         m_statusbar->Message(QString("Bookmark title changed from %1 to %2")
-                               .arg(bookmarkName)
-                               .arg(newBookmarkName));
+                             .arg(bookmarkName)
+                             .arg(newBookmarkName));
         return;
     } else {
-      m_statusbar->Message("Error changing bookmark title name!",
-                           MessageType::ERROR);
+        m_statusbar->Message("Error changing bookmark title name!",
+                             MessageType::ERROR);
         return;
     }
 }
@@ -1111,7 +1111,7 @@ void Navi::EditBookmarkFile(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
     } else
-        bookmarkName = args.at(0);
+    bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -1120,7 +1120,7 @@ void Navi::EditBookmarkFile(const QStringList &args) noexcept {
 
     QString newBookmarkPath =
         m_inputbar->getInput(QString("New bookmark path (Default: %1)")
-                                 .arg(m_file_panel->getCurrentDir()),
+                             .arg(m_file_panel->getCurrentDir()),
                              bookmarkName);
 
     // If the bookmark title name is null, do nothing and return
@@ -1135,8 +1135,8 @@ void Navi::EditBookmarkFile(const QStringList &args) noexcept {
         m_bookmark_manager->getBookmarkFilePath(bookmarkName);
     if (m_bookmark_manager->setBookmarkFile(bookmarkName, newBookmarkPath, false)) {
         m_statusbar->Message(QString("Bookmark file path changed from %1 to %2")
-                               .arg(oldBookmarkPath)
-                               .arg(newBookmarkPath));
+                             .arg(oldBookmarkPath)
+                             .arg(newBookmarkPath));
         return;
     } else {
         m_statusbar->Message("Error changing bookmark title name!",
@@ -1151,7 +1151,7 @@ void Navi::AddBookmark(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
     } else
-        bookmarkName = args.at(0);
+    bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -1170,7 +1170,7 @@ void Navi::AddBookmark(const QStringList &args) noexcept {
                                         m_file_panel->getCurrentDir(), highlight)) {
         m_statusbar->Message("Added bookmark");
     } else
-        m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
+    m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
 }
 
 void Navi::RemoveBookmark(const QStringList &args) noexcept {
@@ -1178,7 +1178,7 @@ void Navi::RemoveBookmark(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Remove bookmark) Bookmark name");
     } else
-        bookmarkName = args.at(0);
+    bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -1189,8 +1189,8 @@ void Navi::RemoveBookmark(const QStringList &args) noexcept {
         m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
     }
     else
-        m_statusbar->Message(QString("Error removing bookmark %1").arg(bookmarkName),
-                             MessageType::ERROR, 5);
+    m_statusbar->Message(QString("Error removing bookmark %1").arg(bookmarkName),
+                         MessageType::ERROR, 5);
 }
 
 void Navi::GoBookmark(const QString &bookmarkName) noexcept {
@@ -1208,14 +1208,14 @@ void Navi::GoBookmark(const QString &bookmarkName) noexcept {
             // Get the parent directory path
             int lastSlashIndex = bookmarkPath.lastIndexOf('/'); // Find the last slash
             QString parentDirPath = (lastSlashIndex != -1)
-                                        ? bookmarkPath.left(lastSlashIndex)
-                                    : QString();
+                ? bookmarkPath.left(lastSlashIndex)
+                : QString();
 
             QFileInfo f(bookmarkPath);
             m_file_panel->setCurrentDir(parentDirPath);
             m_file_panel->HighlightItemWithBaseName(f.fileName());
         } else
-            m_file_panel->setCurrentDir(bookmarkPath, true);
+        m_file_panel->setCurrentDir(bookmarkPath, true);
     }
 }
 
@@ -1245,7 +1245,7 @@ void Navi::ToggleShortcutsBuffer() noexcept {
         m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
         connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
                 [&](const bool &state) {
-                    m_viewmenu__shortcuts_widget->setChecked(state);
+                m_viewmenu__shortcuts_widget->setChecked(state);
                 });
         m_shortcuts_widget->show();
     }
@@ -1323,9 +1323,9 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
 
         } else {
             m_statusbar->Message(
-                                 QString("Command %1 is not a valid interactive command")
-              .arg(subcommand),
-                                 MessageType::ERROR);
+                QString("Command %1 is not a valid interactive command")
+                .arg(subcommand),
+                MessageType::ERROR);
         }
     }
 }
@@ -1491,7 +1491,7 @@ void Navi::initKeybinds() noexcept {
 void Navi::ExecuteExtendedCommand() noexcept {
     m_inputbar->enableCommandCompletions();
     m_inputbar->currentCompletionStringList(
-                                            Inputbar::CompletionModelType::COMMAND);
+        Inputbar::CompletionModelType::COMMAND);
     QString command = m_inputbar->getInput("Command");
     ProcessCommand(command);
 }
@@ -1755,10 +1755,10 @@ void Navi::initMenubar() noexcept {
 
     connect(m_viewmenu__filter, &QAction::triggered, this,
             [&](const bool &state) {
-                if (state)
-                    Filter();
-                else
-                    ResetFilter();
+            if (state)
+            Filter();
+            else
+            ResetFilter();
             });
 
     connect(m_viewmenu__tasks_widget, &QAction::triggered, this,
@@ -1823,12 +1823,12 @@ void Navi::initMenubar() noexcept {
 
     connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
             [&](const bool &state) {
-                m_viewmenu__bookmarks_buffer->setChecked(state);
+            m_viewmenu__bookmarks_buffer->setChecked(state);
             });
 
     connect(m_tasks_widget, &TasksWidget::visibilityChanged, this,
             [&](const bool &state) {
-                m_viewmenu__tasks_widget->setChecked(state);
+            m_viewmenu__tasks_widget->setChecked(state);
             });
 
     connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
@@ -1911,17 +1911,17 @@ void Navi::LogMessage(const QString &message,
     QString coloredMessage = message;
     switch (type) {
 
-    case MessageType::INFO:
-        coloredMessage = "<font color='white'>" + message + "</font>";
-        break;
+        case MessageType::INFO:
+            coloredMessage = "<font color='white'>" + message + "</font>";
+            break;
 
-    case MessageType::WARNING:
-        coloredMessage = "<font color='yellow'>" + message + "</font>";
-        break;
+        case MessageType::WARNING:
+            coloredMessage = "<font color='yellow'>" + message + "</font>";
+            break;
 
-    case MessageType::ERROR:
-        coloredMessage = "<font color='red'>" + message + "</font>";
-        break;
+        case MessageType::ERROR:
+            coloredMessage = "<font color='red'>" + message + "</font>";
+            break;
     }
     m_log_buffer->AppendText(coloredMessage);
 }
@@ -1973,12 +1973,12 @@ void Navi::SaveBookmarkFile() noexcept {
         BookmarkManager::Bookmark bookmark = bookmarks_hash[key];
         if (bookmark.highlight_only) {
             bookmarks_str += QString("\t%1 = { path = \"%2\",\n\thighlight_only = true,\n\t},\n")
-                               .arg(key)
-                               .arg(bookmark.file_path);
+                .arg(key)
+                .arg(bookmark.file_path);
         } else {
             bookmarks_str += QString("\t%1 = { path = \"%2\" },\n")
-                               .arg(key)
-                               .arg(bookmark.file_path);
+                .arg(key)
+                .arg(bookmark.file_path);
         }
     }
 
@@ -2092,7 +2092,7 @@ void Navi::ToggleRecordMacro() noexcept {
                 QMessageBox::question(this, "Macro exists",
                                       QString("A macro with the key %1 already "
                                               "exists. Do you want to overwrite ?")
-                                    .arg(macro_key));
+                                      .arg(macro_key));
             if (reply != QMessageBox::Yes) {
                 return;
             }
@@ -2141,8 +2141,8 @@ void Navi::MountDrive(const QString &driveName) noexcept {
     // Wait for the process to finish
     if (!process.waitForFinished()) {
         m_statusbar->Message(
-                             QString("Failed to mount device: %1").arg(process.errorString()),
-                             MessageType::ERROR);
+            QString("Failed to mount device: %1").arg(process.errorString()),
+            MessageType::ERROR);
         return;
     }
 
@@ -2152,7 +2152,7 @@ void Navi::MountDrive(const QString &driveName) noexcept {
 
     if (!output.isEmpty()) {
         m_statusbar->Message(
-                             QString("Mount Successful (%1)").arg(output.trimmed()));
+            QString("Mount Successful (%1)").arg(output.trimmed()));
         return;
     }
 
@@ -2183,8 +2183,8 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
     // Wait for the process to finish
     if (!process.waitForFinished()) {
         m_statusbar->Message(
-                             QString("Failed to unmount device: %1").arg(process.errorString()),
-                             MessageType::ERROR);
+            QString("Failed to unmount device: %1").arg(process.errorString()),
+            MessageType::ERROR);
         return;
     }
 
@@ -2194,7 +2194,7 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
 
     if (!output.isEmpty()) {
         m_statusbar->Message(
-                             QString("Unmount Successful (%1)").arg(output.trimmed()));
+            QString("Unmount Successful (%1)").arg(output.trimmed()));
         return;
     }
 
@@ -2342,7 +2342,7 @@ void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
 
     QStringList folders;
     for (const auto &path : paths)
-        folders << QString::fromStdString(path);
+    folders << QString::fromStdString(path);
 
     m_file_panel->NewFolder(folders);
 }
@@ -2556,10 +2556,10 @@ void Navi::SelectInverse() noexcept {
         QModelIndex index = model->index(row, 0);
         if (selectionModel->isRowSelected(row))
             selectionModel->select(index, QItemSelectionModel::Rows |
-                                          QItemSelectionModel::Deselect);
+                                   QItemSelectionModel::Deselect);
         else
-          selectionModel->select(index, QItemSelectionModel::Rows |
-                                        QItemSelectionModel::Select);
+            selectionModel->select(index, QItemSelectionModel::Rows |
+                                   QItemSelectionModel::Select);
     }
 }
 
@@ -2607,12 +2607,12 @@ void Navi::Lua__AddMenu(const sol::table& menuTable) noexcept {
                 QMenu *submenu = new QMenu(QString::fromStdString(subitem.label));
                 qmenu->addMenu(submenu);
                 for (const auto &subitem : subitem.submenu) {
-                  QAction *action =
-                      new QAction(QString::fromStdString(subitem.label));
-                  submenu->addAction(action);
-                  connect(action, &QAction::triggered, this, [subitem]() {
-                      subitem.action();
-                  });
+                    QAction *action =
+                        new QAction(QString::fromStdString(subitem.label));
+                    submenu->addAction(action);
+                    connect(action, &QAction::triggered, this, [subitem]() {
+                        subitem.action();
+                    });
                 }
             }
         }
@@ -2658,9 +2658,8 @@ Navi::ToolbarItem Navi::Lua__parseToolbarItem(const sol::table &table) noexcept 
     return item;
 }
 
-void Navi::Lua__AddToolbarButton(const sol::table &table) noexcept {
-    Navi::ToolbarItem toolbar_item = Lua__parseToolbarItem(table);
-    
+void Navi::Lua__AddToolbarButton(const Navi::ToolbarItem &toolbar_item) noexcept {
+
     QPushButton *widget = new QPushButton(QString::fromStdString(toolbar_item.label));
     QIcon icon = QIcon::fromTheme(QString::fromStdString(toolbar_item.icon));
 
@@ -2744,4 +2743,50 @@ void Navi::SortDescending(const bool &state) noexcept {
         m_file_panel->model()->setSortBy(m_sort_flags);
         m_file_panel->HighlightItem(itemName);
     }
+}
+
+void Navi::Lua__SetToolbarItems(const sol::table &table) noexcept {
+
+    m_toolbar->clear();
+
+    for (size_t i=1; i <= table.size(); i++) {
+        auto temp = table[i];
+        if (temp.is<std::string>()) {
+            auto item_name = temp.get<std::string>();
+
+            if (item_name == "previous_dir")
+                m_toolbar->addWidget(m_toolbar__prev_btn);
+            else if (item_name == "next_dir")
+                m_toolbar->addWidget(m_toolbar__next_btn);
+            else if (item_name == "parent_dir")
+                m_toolbar->addWidget(m_toolbar__parent_btn);
+            else if (item_name == "home")
+                m_toolbar->addWidget(m_toolbar__home_btn);
+            else if (item_name == "refresh")
+                m_toolbar->addWidget(m_toolbar__refresh_btn);
+        } else if (temp.is<Navi::ToolbarItem>()) {
+            Lua__AddToolbarButton(temp.get<Navi::ToolbarItem>());
+        }
+    }
+}
+
+
+Navi::ToolbarItem Navi::Lua__CreateToolbarButton(const std::string &name,
+                                                 const sol::table &table) noexcept {
+    Navi::ToolbarItem item;
+
+    item.name = name;
+    item.icon = table["icon"].get_or<std::string>("");
+    item.label = table["label"].get_or<std::string>("");
+
+
+    // Extract the action
+    if (table["action"].valid()) {
+        sol::function luaAction = table["action"];
+        item.action = [luaAction]() { luaAction(); };
+    }
+
+    item.position = table["position"].get_or(-1);
+
+    return item;
 }

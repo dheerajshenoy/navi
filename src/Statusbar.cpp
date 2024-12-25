@@ -352,7 +352,11 @@ void Statusbar::Lua__SetModules(const sol::table &table) noexcept {
 
         // Add the modules
         for (const auto &module : table) {
-            addModule(QString::fromStdString(module.second.as<std::string>()));
+            if (module.second.is<std::string>())
+                addModule(QString::fromStdString(module.second.as<std::string>()));
+            else if (module.second.is<Statusbar::Module>()) {
+                Lua__AddModule(module.second.as<Statusbar::Module>());
+            }
         }
     }
 }

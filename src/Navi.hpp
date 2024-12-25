@@ -135,6 +135,7 @@ public:
     };
 
     struct ToolbarItem {
+        std::string name;
         std::string label;
         std::string icon;
         int position = -1;
@@ -252,6 +253,12 @@ public:
     void Exit() noexcept;
     void CopyPath(const QString &separator = QString()) noexcept;
 
+    void FullScreen() noexcept;
+    void FullScreen(const bool &state) noexcept;
+    void ShowAbout() noexcept;
+
+    // Lua helper functions
+    
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
                            const std::string &default_selection) noexcept;
@@ -259,12 +266,13 @@ public:
     void Lua__CreateFolders(const std::vector<std::string> &paths) noexcept;
     void Lua__AddMenu(const sol::table &menu) noexcept;
     void Lua__AddContextMenu(const sol::table &cmenu) noexcept;
-    void Lua__AddToolbarButton(const sol::table &table) noexcept;
+    void Lua__AddToolbarButton(const ToolbarItem &item) noexcept;
     Navi::MenuItem Lua__parseMenuItem(const sol::table &table) noexcept;
     Navi::ToolbarItem Lua__parseToolbarItem(const sol::table &table) noexcept;
-    void FullScreen() noexcept;
-    void FullScreen(const bool &state) noexcept;
-    void ShowAbout() noexcept;
+    void Lua__SetToolbarItems(const sol::table &table) noexcept;
+    Navi::ToolbarItem Lua__CreateToolbarButton(const std::string &name,
+                                               const sol::table &table) noexcept;
+
 
 protected:
     bool event(QEvent *e) override;

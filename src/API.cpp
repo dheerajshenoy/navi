@@ -8,16 +8,22 @@ void Navi::initNaviLuaAPI() noexcept {
         &FilePanel::ItemProperty::size, "mimeName",
         &FilePanel::ItemProperty::mimeName);
 
-    // lua.new_usertype<MenuItem>("MenuItem",
-    //                            "label", &MenuItem::label, "action",
-    //                            sol::property([](MenuItem &m, sol::function func) {
-    //                                m.action = [func]() { func(); };
-    //                            }),
-    //                            "submenu", &MenuItem::submenu);
+    lua.new_usertype<MenuItem>("MenuItem",
+                               "label", &MenuItem::label, "action",
+                               sol::property([](MenuItem &m, sol::function func) {
+                               m.action = [func]() { func(); };
+                               }),
+                               "submenu", &MenuItem::submenu);
 
     lua.new_usertype<Statusbar::Module>("Module",
                                         "name", &Statusbar::Module::name,
                                         "options", &Statusbar::Module::options);
+
+    lua.new_usertype<Navi::ToolbarItem>("ToolbarItem",
+                                        "label", &Navi::ToolbarItem::label,
+                                        "icon", &Navi::ToolbarItem::icon,
+                                        "position", &Navi::ToolbarItem::position,
+                                        "action", &Navi::ToolbarItem::action);
 
     lua["navi"] = lua.create_table();
 
@@ -284,36 +290,44 @@ void Navi::initNaviLuaAPI() noexcept {
         TogglePreviewPanel(state);
     };
 
-    lua["navi"]["ui"]["preview_panel"] = [this]() { TogglePreviewPanel(); };
+    lua["navi"]["ui"]["preview_panel"] = [this]() noexcept { TogglePreviewPanel(); };
 
-    lua["navi"]["ui"]["messages"] = [this]() { ToggleMessagesBuffer(); };
+    lua["navi"]["ui"]["messages"] = [this]() noexcept { ToggleMessagesBuffer(); };
 
-    lua["navi"]["ui"]["messages"] = [this](const bool &state) {
+    lua["navi"]["ui"]["messages"] = [this](const bool &state) noexcept {
         ToggleMessagesBuffer(state);
     };
 
-    lua["navi"]["ui"]["shortcuts"] = [this](const bool &state) {
+    lua["navi"]["ui"]["shortcuts"] = [this](const bool &state) noexcept {
         ToggleShortcutsBuffer(state);
     };
 
-    lua["navi"]["ui"]["shortcuts"] = [this]() { ToggleShortcutsBuffer(); };
+    lua["navi"]["ui"]["shortcuts"] = [this]() noexcept { ToggleShortcutsBuffer(); };
 
-    lua["navi"]["ui"]["marks"] = [this](const bool &state) {
+    lua["navi"]["ui"]["marks"] = [this](const bool &state) noexcept {
         ToggleMarksBuffer(state);
     };
 
-    lua["navi"]["ui"]["marks"] = [this]() { ToggleMarksBuffer(); };
+    lua["navi"]["ui"]["marks"] = [this]() noexcept { ToggleMarksBuffer(); };
 
     lua["navi"]["ui"]["context_menu"] = lua.create_table();
 
-    lua["navi"]["ui"]["context_menu"]["create"] = [this](const sol::table &table) {
+    lua["navi"]["ui"]["context_menu"]["create"] = [this](const sol::table &table) noexcept {
         Lua__AddContextMenu(table);
     };
 
     lua["navi"]["ui"]["toolbar"] = lua.create_table();
 
-    lua["navi"]["ui"]["toolbar"]["add_button"] = [this](const sol::table &table) {
-        Lua__AddToolbarButton(table);
+    lua["navi"]["ui"]["toolbar"]["add_button"] = [this](const Navi::ToolbarItem &tb_item) noexcept {
+        Lua__AddToolbarButton(tb_item);
+    };
+
+    lua["navi"]["ui"]["toolbar"]["create_button"] = [this](const std::string &name, const sol::table &table) noexcept {
+        return Lua__CreateToolbarButton(name, table);
+    };
+
+    lua["navi"]["ui"]["toolbar"]["set_items"] = [this](const sol::table &table) noexcept {
+        Lua__SetToolbarItems(table);
     };
 
     // IO API
