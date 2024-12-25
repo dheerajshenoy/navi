@@ -254,11 +254,20 @@ toolbar
 
         .. code-block:: lua
 
+            local btn = navi.ui.toolbar.create_button("btn", {
+                label = "BTN",
+                action = function ()
+                    navi.io.msg("HELLO WORLD", navi.io.msgtype.warn)
+                end,
+                icon = "printer",
+            })
+
             navi.ui.toolbar.set_items({
                 "home",
                 "previous_dir",
                 "next_dir",
                 "parent_dir",
+                btn,
                 "refresh",
             })
 
