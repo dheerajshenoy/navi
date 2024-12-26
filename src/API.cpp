@@ -60,14 +60,6 @@ void Navi::initNaviLuaAPI() noexcept {
         m_bookmark_manager->removeBookmark(QString::fromStdString(bookmark_name));
     };
 
-    lua["navi"]["bookmark"]["edit_name"] =
-        [this](const std::string &bookmark_name,
-               const std::string &new_bookmark_name) noexcept {
-            m_bookmark_manager->setBookmarkName(
-                QString::fromStdString(bookmark_name),
-                QString::fromStdString(new_bookmark_name));
-        };
-
     // API API
     lua["navi"]["api"] = lua.create_table();
 
@@ -75,13 +67,32 @@ void Navi::initNaviLuaAPI() noexcept {
         m_file_panel->setCurrentDir(QString::fromStdString(dir), true);
     };
 
-    lua["navi"]["api"]["count"] = [this](const std::string &path) noexcept {
+    lua["navi"]["api"]["register_function"] = [this](const std::string &name,
+                                                     const sol::function &func) noexcept {
+        Lua__register_lua_function(name, func);
+    };
+
+    lua["navi"]["api"]["unregister_function"] = [this](const std::string &name) noexcept {
+        Lua__unregister_lua_function(name);
+    };
+
+    lua["navi"]["api"]["list_registered_functions"] = [this]() noexcept {
+        return Lua__registered_lua_functions();
+    };
+
+    lua["navi"]["api"]["count"] = [this]() noexcept {
         return m_file_panel->ItemCount();
     };
 
     lua["navi"]["api"]["create_dir"] =
         [this](const std::vector<std::string> &paths) noexcept {
             this->Lua__CreateFolders(paths);
+        };
+
+    lua["navi"]["api"]["create_file"] =
+        [this](const std::vector<std::string> &fileNames) noexcept {
+            QStringList files = utils::stringListFromVector(fileNames);
+            m_file_panel->NewFile(files);
         };
 
     lua["navi"]["api"]["is_file"] = [this](const std::string &path) noexcept {
@@ -106,11 +117,11 @@ void Navi::initNaviLuaAPI() noexcept {
         m_file_panel->GotoMiddleItem();
     };
 
-    lua["navi"]["api"]["parent_directory"] = [this]() noexcept {
+    lua["navi"]["api"]["parent_dir"] = [this]() noexcept {
         m_file_panel->UpDirectory();
     };
 
-    lua["navi"]["api"]["previous_directory"] = [this]() noexcept {
+    lua["navi"]["api"]["prev_dir"] = [this]() noexcept {
         m_file_panel->PreviousDirectory();
     };
 
@@ -214,17 +225,6 @@ void Navi::initNaviLuaAPI() noexcept {
 
     lua["navi"]["api"]["trash_dwim"] = [this]() noexcept{ m_file_panel->TrashDWIM(); };
 
-    lua["navi"]["api"]["new_folders"] =
-        [this](const std::vector<std::string> &folderNames) noexcept {
-            QStringList folders = utils::stringListFromVector(folderNames);
-            m_file_panel->NewFolder(folders);
-        };
-
-    lua["navi"]["api"]["new_files"] =
-        [this](const std::vector<std::string> &fileNames) noexcept {
-            QStringList files = utils::stringListFromVector(fileNames);
-            m_file_panel->NewFile(files);
-        };
 
     lua["navi"]["api"]["search"] = [this](const std::string &searchTerm) noexcept {
         m_file_panel->Search(QString::fromStdString(searchTerm));

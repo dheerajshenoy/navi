@@ -577,30 +577,30 @@ void Navi::initConfiguration() noexcept {
         generateKeybinds();
     }
 
-    auto funcs = getLuaFunctionNames();
-
-    if (!funcs.isEmpty()) {
-        m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);
-    }
+    /*auto funcs = getLuaFunctionNames();*/
+    /**/
+    /*if (!funcs.isEmpty()) {*/
+    /*    m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);*/
+    /*}*/
 }
 
 // Function to get all global Lua function names using Sol2
-QStringList Navi::getLuaFunctionNames() noexcept {
-
-    // Access the global Lua table
-    sol::table function_table = lua.globals();
-
-    if (!function_table.empty()) {
-        QStringList luaFunctions;
-        for (const auto &[key, value] : function_table) {
-            if (value.get_type() == sol::type::function) {
-                luaFunctions << QString::fromStdString(key.as<std::string>());
-            }
-        }
-        return luaFunctions;
-    } else
-    return {};
-}
+/*QStringList Navi::getLuaFunctionNames() noexcept {*/
+/**/
+/*    // Access the global Lua table*/
+/*    sol::table function_table = lua.globals();*/
+/**/
+/*    if (!function_table.empty()) {*/
+/*        QStringList luaFunctions;*/
+/*        for (const auto &[key, value] : function_table) {*/
+/*            if (value.get_type() == sol::type::function) {*/
+/*                luaFunctions << QString::fromStdString(key.as<std::string>());*/
+/*            }*/
+/*        }*/
+/*        return luaFunctions;*/
+/*    } else*/
+/*    return {};*/
+/*}*/
 
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
 void Navi::generateKeybinds() noexcept {
@@ -775,7 +775,7 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["lua"] = [this](const QStringList &args) {
-        ExecuteLuaFunction(args);
+        Execute_lua_function(args);
     };
 
     commandMap["shell"] = [this](const QStringList &args) {
@@ -2313,24 +2313,33 @@ std::string Navi::Lua__Input(const std::string &prompt,
                                 QString::fromStdString(selection)).toStdString();
 }
 
-void Navi::ExecuteLuaFunction(const QStringList &args) {
-    if (args.isEmpty()) {
-        QString funcName = m_inputbar->getInput("Enter the lua function name");
-        try {
-            lua[funcName.toStdString().c_str()]();
-        } catch (const sol::error &e) {
-            m_statusbar->Message(QString("Lua: %1").arg(e.what()),
-                                 MessageType::ERROR);
-        }
-    } else {
-        std::string luaFunc = args.at(0).toStdString();
-        std::vector<std::string> _args = utils::convertToStdVector(args.mid(1));
-        try {
-            lua[luaFunc](_args);
-        } catch (const sol::error &e) {
-            m_statusbar->Message(QString("Lua: %1").arg(e.what()),
-                                 MessageType::ERROR);
-        }
+/*void Navi::ExecuteLuaFunction(const QStringList &args) {*/
+/*    if (args.isEmpty()) {*/
+/*        QString funcName = m_inputbar->getInput("Enter the lua function name");*/
+/*        try {*/
+/*            lua[funcName.toStdString().c_str()]();*/
+/*        } catch (const sol::error &e) {*/
+/*            m_statusbar->Message(QString("Lua: %1").arg(e.what()),*/
+/*                                 MessageType::ERROR);*/
+/*        }*/
+/*    } else {*/
+/*        std::string luaFunc = args.at(0).toStdString();*/
+/*        std::vector<std::string> _args = utils::convertToStdVector(args.mid(1));*/
+/*        try {*/
+/*            lua[luaFunc](_args);*/
+/*        } catch (const sol::error &e) {*/
+/*            m_statusbar->Message(QString("Lua: %1").arg(e.what()),*/
+/*                                 MessageType::ERROR);*/
+/*        }*/
+/*    }*/
+/*}*/
+
+void Navi::Execute_lua_function(const QStringList &args) noexcept {
+    if (args.isEmpty() || m_registered_lua_func_hash.isEmpty())
+        return;
+
+    if (m_registered_lua_func_hash.contains(args.at(0).toStdString())) {
+        m_registered_lua_func_hash[args.at(0).toStdString()]();
     }
 }
 
@@ -2866,4 +2875,26 @@ void Navi::Lua__keymap_set(const std::string &key,
             [&, kb]() {
             ProcessCommand(kb.command);
             });
+}
+
+
+void Navi::Lua__register_lua_function(const std::string &name,
+                                      const sol::function &func) noexcept {
+    m_registered_lua_func_hash.insert(name, func);
+}
+
+void Navi::Lua__unregister_lua_function(const std::string &name) noexcept {
+    m_registered_lua_func_hash.remove(name);
+}
+
+sol::table Navi::Lua__registered_lua_functions() noexcept {
+    sol::table table;
+
+    for (auto it = m_registered_lua_func_hash.begin(); it != m_registered_lua_func_hash.end(); ++it) {
+        std::string key = it.key();
+        sol::function lua_func = it.value();
+        table[key] = lua_func;
+    }
+
+    return table;
 }

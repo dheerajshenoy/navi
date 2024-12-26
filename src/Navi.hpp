@@ -41,6 +41,7 @@
 #include <QClipboard>
 #include <QToolBar>
 #include <QSet>
+#include <QHash>
 
 // Config related things
 static const QString APP_NAME = "navi";
@@ -250,7 +251,7 @@ public:
     void ToggleTasksWidget(const bool &state) noexcept;
     void ToggleRegisterWidget() noexcept;
     void ToggleRegisterWidget(const bool &state) noexcept;
-    void ExecuteLuaFunction(const QStringList &args);
+    void Execute_lua_function(const QStringList &args) noexcept;
     void MountDrive(const QString &driveName) noexcept;
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
@@ -286,6 +287,12 @@ public:
     void Lua__keymap_set(const std::string &key,
                          const std::string &command,
                          const std::string &desc) noexcept;
+    void Lua__register_lua_function(const std::string &name,
+                                    const sol::function &func) noexcept;
+
+    void Lua__unregister_lua_function(const std::string &name) noexcept;
+
+    sol::table Lua__registered_lua_functions() noexcept;
 
 protected:
     bool event(QEvent *e) override;
@@ -309,7 +316,7 @@ private:
     void ProcessCommand(const QString &commandtext) noexcept;
     void generateKeybinds() noexcept;
     void initTabBar() noexcept;
-    QStringList getLuaFunctionNames() noexcept;
+    /*QStringList getLuaFunctionNames() noexcept;*/
     void addCommandToMacroRegister(const QStringList &commandlist) noexcept;
     void addCommandToMacroRegister(const QString &command) noexcept;
     void cacheThumbnails() noexcept;
@@ -587,6 +594,8 @@ private:
     QPushButton *m_toolbar__home_btn = nullptr;
     QPushButton *m_toolbar__parent_btn = nullptr;
     QPushButton *m_toolbar__refresh_btn = nullptr;
+
+    QHash<std::string, sol::function> m_registered_lua_func_hash;
 
     QSet<QString> m_runtime_path = {};
 };
