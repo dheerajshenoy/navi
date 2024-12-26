@@ -345,8 +345,10 @@ void Statusbar::Lua__SetModules(const sol::table &table) noexcept {
 
         // If widgets are already present, remove them (not delete)
         while (QLayoutItem *item = m_layout->takeAt(0)) {
-            if (QWidget *widget = item->widget())
+            if (QWidget *widget = item->widget()) {
                 widget->setParent(nullptr);
+                widget->deleteLater();
+            }
             delete item;
         }
 

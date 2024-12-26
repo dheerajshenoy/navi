@@ -9,6 +9,8 @@
 #include <QDir>
 #include <QTextEdit>
 #include "StorageDevice.hpp"
+#include "sol/sol.hpp"
+#include <QDirIterator>
 
 class utils {
 

@@ -1300,39 +1300,32 @@ void FilePanel::ChmodItemsGlobal() noexcept {
 }
 
 void FilePanel::PasteItems() noexcept {
-    if (!m_register_files_list.isEmpty()) {
-        QString destDir = m_current_dir;
 
-        const QStringList filesList =
-            QStringList(m_register_files_list.cbegin(), m_register_files_list.cend());
-
-        QThread *thread = new QThread(this);
-        FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type, m_task_manager, m_statusbar, m_inputbar);
-        worker->moveToThread(thread);
-
-        connect(thread, &QThread::started, worker, &FileWorker::performOperation);
-
-        connect(worker, &FileWorker::finished, this, [&, filesList]() {
-            if (!filesList.isEmpty())
-                m_model->removeMarkedFiles(filesList);
-            emit fileOperationDone(true);
-
-            auto itemName = utils::fileName(filesList.last());
-            HighlightItemWithBaseName(itemName);
-        });
-
-        connect(worker, &FileWorker::error, this, [&](const QString &reason) {
-            emit fileOperationDone(false, reason);
-        });
-
-        // connect(worker, &FileCopyWorker::progress, this,
-        // &FileCopyWidget::updateProgress);
-
-        connect(worker, &FileWorker::finished, worker, &QObject::deleteLater);
-        connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-
-        thread->start();
+    if (m_register_files_list.isEmpty()) {
+        m_statusbar->Message("No files in the register!", MessageType::INFO);
+        return;
     }
+
+    QString destDir = m_current_dir;
+
+    const QStringList filesList =
+        QStringList(m_register_files_list.cbegin(), m_register_files_list.cend());
+
+    FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type, m_task_manager, m_statusbar, m_inputbar);
+    worker->performOperation();
+
+    connect(worker, &FileWorker::finished, this, [&, filesList]() {
+        if (!filesList.isEmpty())
+            m_model->removeMarkedFiles(filesList);
+        emit fileOperationDone(true);
+
+        auto itemName = utils::fileName(filesList.last());
+        HighlightItemWithBaseName(itemName);
+    });
+
+    connect(worker, &FileWorker::error, this, [&](const QString &reason) {
+        emit fileOperationDone(false, reason);
+    });
 }
 
 void FilePanel::CopyDWIM() noexcept {

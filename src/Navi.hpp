@@ -40,15 +40,23 @@
 #include <QThread>
 #include <QClipboard>
 #include <QToolBar>
+#include <QSet>
 
 // Config related things
 static const QString APP_NAME = "navi";
+
 static const QString CONFIG_DIR_PATH =
     QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) +
     QDir::separator() + APP_NAME;
-static const QString CONFIG_FILE_NAME = "config.lua";
+
+static const QString CONFIG_FILE_NAME = "init.lua";
+
 static const QString CONFIG_FILE_PATH =
     CONFIG_DIR_PATH + QDir::separator() + CONFIG_FILE_NAME;
+
+static const QString LUA_DIR_NAME = "lua";
+static const QString LUA_DIR_PATH = CONFIG_DIR_PATH + QDir::separator() + LUA_DIR_NAME + QDir::separator();
+
 static const QString BOOKMARK_FILE_NAME = "bookmark.lua";
 static const QString BOOKMARK_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + BOOKMARK_FILE_NAME;
 
@@ -258,7 +266,7 @@ public:
     void ShowAbout() noexcept;
 
     // Lua helper functions
-    
+
     std::string Lua__Input(const std::string &prompt,
                            const std::string &default_value,
                            const std::string &default_selection) noexcept;
@@ -273,6 +281,11 @@ public:
     Navi::ToolbarItem Lua__CreateToolbarButton(const std::string &name,
                                                const sol::table &table) noexcept;
 
+    sol::table Lua__list_runtime_paths() noexcept;
+    void Lua__keymap_set(const sol::table &table) noexcept;
+    void Lua__keymap_set(const std::string &key,
+                         const std::string &command,
+                         const std::string &desc) noexcept;
 
 protected:
     bool event(QEvent *e) override;
@@ -300,6 +313,7 @@ private:
     void addCommandToMacroRegister(const QStringList &commandlist) noexcept;
     void addCommandToMacroRegister(const QString &command) noexcept;
     void cacheThumbnails() noexcept;
+    void update_lua_package_path(const QString &baseDir) noexcept;
 
     QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
@@ -573,4 +587,6 @@ private:
     QPushButton *m_toolbar__home_btn = nullptr;
     QPushButton *m_toolbar__parent_btn = nullptr;
     QPushButton *m_toolbar__refresh_btn = nullptr;
+
+    QSet<QString> m_runtime_path = {};
 };

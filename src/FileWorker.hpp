@@ -12,11 +12,15 @@
 #include "TaskManager.hpp"
 #include "Statusbar.hpp"
 #include "Inputbar.hpp"
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QAtomicInt>
 
 class FileWorker : public QObject {
     Q_OBJECT
 
-public:
+    public:
     enum class FileOPType {
         COPY = 0,
         CUT,
@@ -29,13 +33,13 @@ public:
 public slots:
     void performOperation() {
         switch (m_type) {
-        case FileOPType::COPY:
-            copyFiles();
-            break;
+            case FileOPType::COPY:
+                copyFiles();
+                break;
 
-        case FileOPType::CUT:
-            cutFiles();
-            break;
+            case FileOPType::CUT:
+                cutFiles();
+                break;
         }
     }
 
@@ -53,6 +57,10 @@ private:
     void renameFile(const QString &, const QString &) noexcept;
     void deleteFile(const QString &) noexcept;
     void trashFile(const QString &) noexcept;
+    void offloadOperation(const QString &src,
+                          const QString &dest) noexcept;
+
+    void decrement_and_check_operations() noexcept;
 
     QStringList m_srcFiles;
     QString m_destDir;   // Destination directory
@@ -60,4 +68,6 @@ private:
     TaskManager *m_task_manager = nullptr;
     Statusbar *m_statusbar = nullptr;
     Inputbar *m_inputbar = nullptr;
+    QAtomicInt m_activeOperations;
+    bool m_overwrite_confirm_all = false;
 };

@@ -12,12 +12,17 @@ void Navi::initThings() noexcept {
     initMenubar(); // init menubar
     setupCommandMap();
     initSignalsSlots(); // init signals and slots
+    initNaviLuaAPI();
     if (m_load_config)
         initConfiguration();
     else {
         initDefaults();
         initKeybinds();
     }
+
+    // Get the current working directory
+    QString currentDir = QDir::currentPath();
+
 
     if (m_default_location_list.isEmpty())
         m_file_panel->setCurrentDir("~", true);
@@ -26,17 +31,6 @@ void Navi::initThings() noexcept {
         if (location == ".")
             location = QDir::currentPath();
         m_file_panel->setCurrentDir(location, true);
-    }
-
-    initNaviLuaAPI();
-
-    try {
-        if (lua["INIT_NAVI"].valid())
-            lua["INIT_NAVI"]();
-    } catch (const sol::error &e) {
-        m_statusbar->Message(QString("Error in the config file: %1")
-                             .arg(e.what()),
-                             MessageType::ERROR);
     }
 
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
@@ -48,6 +42,10 @@ void Navi::initConfiguration() noexcept {
 
     lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
                        sol::lib::os, sol::lib::jit, sol::lib::package);
+
+    // Lua's package.path modification
+
+    update_lua_package_path(CONFIG_DIR_PATH);
 
     try {
         lua.script_file(m_config_location.toStdString(), sol::load_mode::any);
@@ -2789,4 +2787,83 @@ Navi::ToolbarItem Navi::Lua__CreateToolbarButton(const std::string &name,
     item.position = table["position"].get_or(-1);
 
     return item;
+}
+
+
+sol::table Navi::Lua__list_runtime_paths() noexcept {
+    sol::table table = lua.create_table();
+    QStringList rtps = m_runtime_path.values();
+    for (int i=0; i < m_runtime_path.size(); i++) {
+        table[i + 1] = rtps.at(i).toStdString();
+    }
+
+    return table;
+}
+
+void Navi::update_lua_package_path(const QString &baseDir) noexcept {
+    QStringList visitedDirs;  // To track directories already added to package.path
+    
+    lua.script(R"(
+        package = package or {}
+        package.path = package.path or ""
+    )");
+
+    // Create a QDirIterator to iterate through all subdirectories and files
+    QDirIterator it(baseDir, QStringList() << "*.lua", QDir::Files, QDirIterator::Subdirectories);
+
+    while (it.hasNext()) {
+        QString filePath = it.next();
+        QString parentDir = QFileInfo(filePath).absolutePath();  // Get the parent directory
+
+        // Add to package.path only if this directory hasn't been added yet
+        if (!visitedDirs.contains(parentDir)) {
+            m_runtime_path.insert(parentDir);
+            lua.script("package.path = package.path .. ';" + parentDir.toStdString() + "/?.lua'");
+            visitedDirs.append(parentDir);  // Mark the directory as visited
+        }
+    }
+}
+
+void Navi::Lua__keymap_set(const sol::table &table) noexcept {
+
+    if (!table["key"]) {
+        m_statusbar->Message("No key found in the keybinding table", MessageType::WARNING);
+        return;
+    }
+
+    if (!table["command"]) {
+        m_statusbar->Message("No command found in the keybinding table", MessageType::WARNING);
+        return;
+    }
+
+    Keybind kb {
+        .key = QString::fromStdString(table["key"].get_or<std::string>("")),
+        .command = QString::fromStdString(table["command"].get_or<std::string>("")),
+        .desc = QString::fromStdString(table["desc"].get_or<std::string>(""))
+    };
+    m_keybind_list.append(kb);
+
+    QShortcut *shortcut = new QShortcut(QKeySequence(kb.key), this);
+    connect(shortcut, &QShortcut::activated, this,
+            [&, kb]() { ProcessCommand(kb.command); });
+
+}
+
+void Navi::Lua__keymap_set(const std::string &key,
+                           const std::string &command,
+                           const std::string &desc) noexcept {
+
+    Keybind kb {
+        .key = QString::fromStdString(key),
+        .command = QString::fromStdString(command),
+        .desc = QString::fromStdString(desc)
+    };
+
+    m_keybind_list.append(kb);
+
+    QShortcut *shortcut = new QShortcut(QKeySequence(kb.key), this);
+    connect(shortcut, &QShortcut::activated, this,
+            [&, kb]() {
+            ProcessCommand(kb.command);
+            });
 }

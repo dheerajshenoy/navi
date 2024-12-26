@@ -1,120 +1,158 @@
 #include "FileWorker.hpp"
+#include <qmessagebox.h>
 
 FileWorker::FileWorker(const QStringList &files, const QString &destDir,
                        const FileOPType &type, TaskManager *taskManager,
                        Statusbar *sb, Inputbar *ib) : m_srcFiles(files), m_destDir(destDir),
-m_type(type), m_task_manager(taskManager), m_statusbar(sb), m_inputbar(ib) {}
+m_type(type), m_task_manager(taskManager), m_statusbar(sb), m_inputbar(ib) {
+
+    connect(this, &FileWorker::finished, this, [&]() {
+        m_overwrite_confirm_all = false;
+    });
+}
 
 void FileWorker::copyFile(const QString &src, QString dest) noexcept {
     QString fileName = QFileInfo(src).fileName();
-    std::ifstream srcFile(src.toStdString(), std::ios::binary);
-
-    if (!srcFile.is_open()) {
-        emit error("Unable to open source file!");
-        return;
-    }
 
     assert(m_task_manager != nullptr && "Task Manager does not exist");
 
-    qDebug() << "DD " << dest;
     dest = dest + QDir::separator() + fileName;
-    std::string dest_std_str = dest.toStdString();
 
-    if (std::filesystem::exists(dest_std_str)) {
-      QString confirm = m_inputbar->getInput(QString("%1 file already exists, overwrite ? (y/N)").arg(dest)).toLower();
-      if (confirm != "y" || confirm != "yes")
-          return;
+    if (!m_overwrite_confirm_all) {
+        if (QFile::exists(dest)) {
+
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Question);
+            msgBox.setWindowTitle("Overwrite File?");
+            msgBox.setText(QString("The file '%1' already exists. Do you want to overwrite it?").arg(fileName));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            QPushButton *yesToAllButton = msgBox.addButton("Overwrite all files", QMessageBox::AcceptRole);
+            msgBox.setDefaultButton(QMessageBox::No);
+
+            // Show the message box and handle the response
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == yesToAllButton) {
+                m_overwrite_confirm_all = true;
+            }
+            else if (msgBox.result() != QMessageBox::No) {
+                return;
+            }
+        }
     }
 
+    QFuture<void> future = QtConcurrent::run([=]() {
+        offloadOperation(std::ref(src), std::ref(dest));
+        decrement_and_check_operations();
+    });
+}
 
-    std::ofstream destFile(dest_std_str, std::ios::binary);
-    if (!destFile.is_open()) {
-        emit error("Unable to open destination file!");
-        return;
+
+void FileWorker::decrement_and_check_operations() noexcept {
+    if (m_activeOperations.fetchAndSubRelaxed(1) == 1) {
+        emit finished();
     }
+}
 
+void FileWorker::offloadOperation(const QString &src,
+                                  const QString &dest) noexcept {
     Task *task = new Task();
     task->setTaskType(Task::TaskType::COPY);
     m_task_manager->addTask(task);
 
-    const size_t bufferSize = 1024 * 1024; // 1 MB
-    std::vector<char> buffer(bufferSize);
+    QFile srcFile(src);
 
-    const auto total_size = std::filesystem::file_size(src.toStdString());
-    size_t bytes_copied = 0;
-
-    while (srcFile.read(buffer.data(), buffer.size()) || srcFile.gcount() > 0) {
-        destFile.write(buffer.data(), srcFile.gcount());
-        bytes_copied += srcFile.gcount();
-        auto _progress = static_cast<float>(bytes_copied) / total_size * 100;
-        // emit progress(src, dest,
-        //               static_cast<float>(bytes_copied) / total_size * 100);
-        task->setProgress(_progress);
-    }
-
-    // Check for errors
-    if (!srcFile.eof() || srcFile.bad()) {
-        emit error(QString("Error: Failed during file copy from %1 to %2")
-                        .arg(src)
-                        .arg(dest));
-    }
-
-    task->setFinished(true);
-    emit finished();
-}
-
-void FileWorker::cutFile(const QString &src, QString dest) noexcept {
-    QString fileName = QFileInfo(src).fileName();
-    std::ifstream srcFile(src.toStdString(), std::ios::binary);
-
-    if (!srcFile.is_open()) {
+    if (!srcFile.open(QIODevice::ReadOnly)) {
         emit error("Unable to open source file!");
         return;
     }
 
-    assert(m_task_manager != nullptr && "Task Manager does not exist");
+    QFile destFile(dest);
 
-    dest = dest + QDir::separator() + fileName;
-    std::ofstream destFile(dest.toStdString(), std::ios::binary);
-
-    if (!destFile.is_open()) {
+    if (!destFile.open(QIODevice::WriteOnly)) {
         emit error("Unable to open destination file!");
         return;
     }
 
-    Task *task = new Task();
-    task->setTaskType(Task::TaskType::COPY);
 
-    const size_t bufferSize = 1024 * 1024; // 1 MB
-    std::vector<char> buffer(bufferSize);
+    // Read and write in chunks
+    constexpr qint64 bufferSize = 4096;
+    char buffer[bufferSize];
 
-    const auto total_size = std::filesystem::file_size(src.toStdString());
-    size_t bytes_copied = 0;
+    qint64 bytesCopied = 0;
+    qint64 totalSize = srcFile.size();
 
-    while (srcFile.read(buffer.data(), buffer.size()) || srcFile.gcount() > 0) {
-        destFile.write(buffer.data(), srcFile.gcount());
-        bytes_copied += srcFile.gcount();
-        emit progress(src, dest,
-                      static_cast<float>(bytes_copied) / total_size * 100);
+    while (!srcFile.atEnd()) {
+        qint64 bytesRead = srcFile.read(buffer, bufferSize);
+
+        if (bytesRead == -1) {
+            emit error("Error reading from source file");
+            return;
+        }
+
+        qint64 bytesWritten = destFile.write(buffer, bytesRead);
+        if (bytesWritten != bytesRead) {
+            emit error("Error writing to destination file");
+            return;
+        }
+
+        bytesCopied += bytesWritten;
+
+        auto _progress = static_cast<float>(bytesCopied) / totalSize * 100;
+
+        // emit progress(src, dest,
+        //               static_cast<float>(bytes_copied) / total_size * 100);
+        
+        task->setProgress(_progress);
     }
 
-    // Check for errors
-    if (!srcFile.eof() || srcFile.bad()) {
-        emit error(QString("Error: Failed during moving file from %1 to %2")
-                     .arg(src)
-                     .arg(dest));
-        return;
+    task->setFinished(true);
+}
+
+void FileWorker::cutFile(const QString &src, QString dest) noexcept {
+
+    QString fileName = QFileInfo(src).fileName();
+
+    assert(m_task_manager != nullptr && "Task Manager does not exist");
+
+    dest = dest + QDir::separator() + fileName;
+
+    if (!m_overwrite_confirm_all) {
+        if (QFile::exists(dest)) {
+
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Question);
+            msgBox.setWindowTitle("Overwrite File?");
+            msgBox.setText(QString("The file '%1' already exists. Do you want to overwrite it?").arg(fileName));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            QPushButton *yesToAllButton = msgBox.addButton("Overwrite all files", QMessageBox::AcceptRole);
+            msgBox.setDefaultButton(QMessageBox::No);
+
+            // Show the message box and handle the response
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == yesToAllButton) {
+                m_overwrite_confirm_all = true;
+            }
+            else if (msgBox.result() != QMessageBox::No) {
+                return;
+            }
+        }
     }
 
-    if (!std::filesystem::remove(src.toStdString())) {
+    QFuture<void> future = QtConcurrent::run([=]() {
+        offloadOperation(std::ref(src), std::ref(dest));
+        decrement_and_check_operations();
+    });
+
+    if (!QFile::remove(src)) {
         emit error("Unable to delete source file");
-        emit finished();
         return;
     }
-    emit finished();
 }
 
 void FileWorker::copyFiles() noexcept {
+    m_activeOperations = m_srcFiles.size();
     for (const auto &file : m_srcFiles) {
         copyFile(file, m_destDir);
     }
