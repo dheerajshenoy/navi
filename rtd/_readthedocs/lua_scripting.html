@@ -22,7 +22,9 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Navi Lua API" href="api.html" />
-    <link rel="prev" title="Getting Started" href="getting_started.html" /> 
+    <link rel="prev" title="Getting Started" href="getting_started.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,8 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lua scripting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#special-function-init-navi">Special Function (INIT_NAVI)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#custom-functions">Custom functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-function">Custom Function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hooks">Hooks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#hook-names">Hook Names</a></li>
 </ul>
@@ -104,18 +105,9 @@
 <section id="lua-scripting">
 <h1>Lua scripting<a class="headerlink" href="#lua-scripting" title="Link to this heading"></a></h1>
 <p>Navi can be extended using lua for adding custom behaviour by creating functions, subscribing to hooks, changing default navi behaviour.</p>
-<section id="special-function-init-navi">
-<h2>Special Function (INIT_NAVI)<a class="headerlink" href="#special-function-init-navi" title="Link to this heading"></a></h2>
-<p>The function <cite>INIT_NAVI</cite> will be called during the startup time of Navi. This function can be used to add hooks and whatnot to your configuration.</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;Navi just booted&quot;</span><span class="p">)</span>
-<span class="kr">end</span>
-</pre></div>
-</div>
-</section>
-<section id="custom-functions">
-<h2>Custom functions<a class="headerlink" href="#custom-functions" title="Link to this heading"></a></h2>
-<p>You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.</p>
+<section id="custom-function">
+<h2>Custom Function<a class="headerlink" href="#custom-function" title="Link to this heading"></a></h2>
+<p>You can write custom functions in lua with arguments.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">someFunction</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">dirName</span><span class="p">)</span>
     <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;WOW! Navi is currently on the file &quot;</span> <span class="o">..</span> <span class="n">fileName</span> <span class="o">..</span> <span class="s2">&quot; and inside the &quot;</span> <span class="o">..</span> <span class="n">dirName</span> <span class="o">..</span> <span class="s2">&quot; directory!&quot;</span><span class="p">)</span>
 <span class="kr">end</span>
@@ -125,7 +117,7 @@
 <p>“WOW! Navi is currently on the file <cite>&lt;fileName&gt;</cite> and inside the <cite>&lt;dirName&gt;</cite> directory!”</p>
 </section>
 <section id="hooks">
-<h2>Hooks<a class="headerlink" href="#hooks" title="Link to this heading"></a></h2>
+<span id="hooks-section"></span><h2>Hooks<a class="headerlink" href="#hooks" title="Link to this heading"></a></h2>
 <p>Hooks are signals that are emitted when navi does a certain action which you can “subscribe” to to create a custom action associated with that signal. Hooks are emitted for actions like selecting an item, changing directory etc.</p>
 <p>You can add hook using the <cite>navi.hook.add</cite> api. It takes two arguments, both of which are required. The first one is a <cite>hook_name</cite> which is a valid hook name (see hook names below). Second argument is a function that will be executed in response to the hook.</p>
 <p>Hook functions can be of any number. But keep in mind that, after emitting the hook, Navi executes each of these functions (if there are multiple), so it’s best to add functions that are efficient.</p>
@@ -143,11 +135,9 @@
 <li><p>Filter mode <code class="docutils literal notranslate"><span class="pre">filter_mode_on</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">filter_mode_off</span></code></p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">INIT_NAVI</span><span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;item_select&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;You selected an item...YAY!&quot;</span><span class="p">)</span>
-    <span class="kr">end</span><span class="p">)</span>
-<span class="kr">end</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;item_select&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
+    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;You selected an item...YAY!&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now, whenever you select (open or enter a directory) an item, you’ll get the message, “You selected an item…YAY!”.</p>
