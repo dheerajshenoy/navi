@@ -6,15 +6,62 @@ Take control of your files because they deserve more than just 'open' and 'close
 Configuring Navi
 ++++++++++++++++
 
-Navi is configured using the `Lua <https://www.lua.org/start.html>`_ scripting language. Do not worry if you do not know this programming language as it's very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory *~/.config/navi/* and the file *config.lua*. If no such file exists, navi loads with the defaults settings with the vim style :ref:`Default_Keybindings` and sane defaults.
+Navi is configured using the `Lua <https://www.lua.org/start.html>`_ scripting language. Do not worry if you do not know this programming language as it's very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory *~/.config/navi/* and the file *init.lua*. If no such file exists, navi loads with the defaults settings with the vim style :ref:`Default_Keybindings` and sane defaults.
 
 Sample configuration file
 +++++++++++++++++++++++++
 
 Check out the sample :download:`config file <./_static/config.lua>`. Copy this file to the *~/.config/navi/* directory and relaunch navi to see the new settings.
 
+Directory Structure
++++++++++++++++++++
+
+You can have your *~/.config/navi/* directory structured in the following way:
+
+.. code-block:: text
+
+    ~/.config/navi/
+    ├── init.lua
+    ├── bookmarks.lua
+    └── lua/
+        ├── functions.lua
+        └── some_other_file.lua
+
+The ``lua`` directory is a special directory which is added to the :ref:`runtime_path` of navi. Any lua files in this directory can be used to load functions, variabled etc. from. This becomes very useful and powerful for organizing and modularizing your navi scripts.
+
+**Example**
+
+Assume we have the directory structure as the following:
+
+.. code-block:: text
+
+    ~/.config/navi/
+    ├── init.lua
+    ├── bookmarks.lua
+    └── lua/
+        ├── functions.lua
+        └── keymaps.lua
+
+Inside the ``init.lua`` file you can do something like:
+
+.. code-block:: lua
+
+   local functions = require("functions")
+   functions.hello() -- assuming that hello function exists in the functions.lua file
+
+   require("keymaps") -- we just include and load keymaps here without using whatever is inside.
+
 Using Navi
 ++++++++++
+
+.. _runtime_path:
+
+Runtime Path
+~~~~~~~~~~~~
+
+The runtime path is a mechanism for managing the locations where Lua scripts are loaded from. It is particularly important in situations where Lua files are stored in various directories, and you need to dynamically determine where to load these scripts from, based on user preferences, installation directories, or custom paths.
+
+The runtime path refers to a collection of directories that Lua uses to search for Lua files during runtime. This search path is defined by the package.path in Lua, which consists of one or more directory paths where Lua scripts (with the .lua extension) are located. Each time navi executes Lua code, it uses the paths specified in the runtime path to locate and load the necessary Lua files.
 
 
 Naming Conventions

@@ -52,7 +52,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuring-navi">Configuring Navi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-configuration-file">Sample configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#directory-structure">Directory Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-navi">Using Navi</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#runtime-path">Runtime Path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#naming-conventions">Naming Conventions</a></li>
 </ul>
 </li>
@@ -136,14 +138,49 @@
 <p>Take control of your files because they deserve more than just ‘open’ and ‘close’.</p>
 <section id="configuring-navi">
 <h2>Configuring Navi<a class="headerlink" href="#configuring-navi" title="Link to this heading"></a></h2>
-<p>Navi is configured using the <a class="reference external" href="https://www.lua.org/start.html">Lua</a> scripting language. Do not worry if you do not know this programming language as it’s very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <em>~/.config/navi/</em> and the file <em>config.lua</em>. If no such file exists, navi loads with the defaults settings with the vim style <a class="reference internal" href="#default-keybindings"><span class="std std-ref">Default Keybindings</span></a> and sane defaults.</p>
+<p>Navi is configured using the <a class="reference external" href="https://www.lua.org/start.html">Lua</a> scripting language. Do not worry if you do not know this programming language as it’s very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <em>~/.config/navi/</em> and the file <em>init.lua</em>. If no such file exists, navi loads with the defaults settings with the vim style <a class="reference internal" href="#default-keybindings"><span class="std std-ref">Default Keybindings</span></a> and sane defaults.</p>
 </section>
 <section id="sample-configuration-file">
 <h2>Sample configuration file<a class="headerlink" href="#sample-configuration-file" title="Link to this heading"></a></h2>
 <p>Check out the sample <a class="reference download internal" download="" href="_downloads/8752fc5bc3ce9569ac688571f93ef6ce/config.lua"><code class="xref download docutils literal notranslate"><span class="pre">config</span> <span class="pre">file</span></code></a>. Copy this file to the <em>~/.config/navi/</em> directory and relaunch navi to see the new settings.</p>
 </section>
+<section id="directory-structure">
+<h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
+<p>You can have your <em>~/.config/navi/</em> directory structured in the following way:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>~/.config/navi/
+├── init.lua
+├── bookmarks.lua
+└── lua/
+    ├── functions.lua
+    └── some_other_file.lua
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">lua</span></code> directory is a special directory which is added to the <a class="reference internal" href="#runtime-path"><span class="std std-ref">Runtime Path</span></a> of navi. Any lua files in this directory can be used to load functions, variabled etc. from. This becomes very useful and powerful for organizing and modularizing your navi scripts.</p>
+<p><strong>Example</strong></p>
+<p>Assume we have the directory structure as the following:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>~/.config/navi/
+├── init.lua
+├── bookmarks.lua
+└── lua/
+    ├── functions.lua
+    └── keymaps.lua
+</pre></div>
+</div>
+<p>Inside the <code class="docutils literal notranslate"><span class="pre">init.lua</span></code> file you can do something like:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">functions</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;functions&quot;</span><span class="p">)</span>
+<span class="n">functions</span><span class="p">.</span><span class="n">hello</span><span class="p">()</span> <span class="c1">-- assuming that hello function exists in the functions.lua file</span>
+
+<span class="nb">require</span><span class="p">(</span><span class="s2">&quot;keymaps&quot;</span><span class="p">)</span> <span class="c1">-- we just include and load keymaps here without using whatever is inside.</span>
+</pre></div>
+</div>
+</section>
 <section id="using-navi">
 <h2>Using Navi<a class="headerlink" href="#using-navi" title="Link to this heading"></a></h2>
+<section id="runtime-path">
+<span id="id1"></span><h3>Runtime Path<a class="headerlink" href="#runtime-path" title="Link to this heading"></a></h3>
+<p>The runtime path is a mechanism for managing the locations where Lua scripts are loaded from. It is particularly important in situations where Lua files are stored in various directories, and you need to dynamically determine where to load these scripts from, based on user preferences, installation directories, or custom paths.</p>
+<p>The runtime path refers to a collection of directories that Lua uses to search for Lua files during runtime. This search path is defined by the package.path in Lua, which consists of one or more directory paths where Lua scripts (with the .lua extension) are located. Each time navi executes Lua code, it uses the paths specified in the runtime path to locate and load the necessary Lua files.</p>
+</section>
 <section id="naming-conventions">
 <h3>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
@@ -440,7 +477,7 @@
 <h4>Macro<a class="headerlink" href="#macro" title="Link to this heading"></a></h4>
 <p>Macros allow you to record actions performed inside Navi and save it, which you can then recall it to perform the action over and over again.</p>
 <p><code class="docutils literal notranslate"><span class="pre">macro-record</span></code></p>
-<p>This records / finishes recording (if already recording) a macro under a _macro <a href="#id2"><span class="problematic" id="id3">key_</span></a>. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.</p>
+<p>This records / finishes recording (if already recording) a macro under a _macro <a href="#id3"><span class="problematic" id="id4">key_</span></a>. Macro key is a string identifier under which the macro has to be recorded. It can be any random string that you can remember to recall it when you want to play the macro.</p>
 <p><code class="docutils literal notranslate"><span class="pre">macro-play</span></code></p>
 <p>This plays a macro under a specific macro key.</p>
 <p><code class="docutils literal notranslate"><span class="pre">macro-edit</span></code></p>
@@ -455,7 +492,7 @@
 </section>
 </section>
 <section id="default-keybindings">
-<span id="id1"></span><h2>Default Keybindings<a class="headerlink" href="#default-keybindings" title="Link to this heading"></a></h2>
+<span id="id2"></span><h2>Default Keybindings<a class="headerlink" href="#default-keybindings" title="Link to this heading"></a></h2>
 <p>Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:</p>
 <p><strong>NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file</strong></p>
 <table class="docutils align-default">

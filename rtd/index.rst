@@ -10,6 +10,10 @@ Welcome to the documentation for Navi.
 
 Navi is a minimalist and efficient file manager designed for users who value speed and simplicity. Developed using the Qt framework in C++, Navi offers a keyboard-driven interface inspired by terminal-based file managers like Ranger and Vifm, while leveraging the enhanced capabilities of a graphical user interface.
 
+`Project Github <https://github.com/dheerajshenoy/navi>`_
+
+`Project Website <https://dheerajshenoy.github.io/navi>`_
+
 Key Features:
 
     + **Performance-Oriented**: Built with C++ and Qt for optimal speed and responsiveness.

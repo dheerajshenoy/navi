@@ -6,22 +6,10 @@ Lua scripting
 
 Navi can be extended using lua for adding custom behaviour by creating functions, subscribing to hooks, changing default navi behaviour.
 
-Special Function (INIT_NAVI)
+Custom Function
 ++++++++++++++++
 
-The function `INIT_NAVI` will be called during the startup time of Navi. This function can be used to add hooks and whatnot to your configuration.
-
-.. code-block:: lua
-
-    function INIT_NAVI()
-        navi.io.msg("Navi just booted")
-    end
-
-
-Custom functions
-++++++++++++++++
-
-You can write custom functions in lua with arguments. Navi passes the current file name and directory name to each of these functions when they are called. You can then proceed to process the file from within lua using Navi.
+You can write custom functions in lua with arguments.
 
 .. code-block:: lua
 
@@ -32,6 +20,8 @@ You can write custom functions in lua with arguments. Navi passes the current fi
 You can then call this function within Navi by calling the `lua <function_name>` command or by just calling `lua` command and then typing in the function name in the inputbar. Doing this will execute the function. The function in the example above when executed will display:
 
 "WOW! Navi is currently on the file `<fileName>` and inside the `<dirName>` directory!"
+
+.. _hooks-section:
 
 Hooks
 +++++
@@ -59,11 +49,9 @@ Example:
 
 .. code-block:: lua
 
-    function INIT_NAVI()
-        navi.hook.add("item_select", function ()
-            navi.io.msg("You selected an item...YAY!")
-        end)
-    end
+    navi.hook.add("item_select", function ()
+        navi.io.msg("You selected an item...YAY!")
+    end)
 
 Now, whenever you select (open or enter a directory) an item, you'll get the message, "You selected an item...YAY!".
 
