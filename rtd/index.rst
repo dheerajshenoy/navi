@@ -35,6 +35,7 @@ Navi is ideal for users seeking a streamlined file management experience without
     lua_scripting.rst
     api.rst
     gallery.rst
+    changelog.rst
 
 Acknowledgement
 ===============
