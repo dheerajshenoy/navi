@@ -59,7 +59,7 @@ void FilePathWidget::setBold(const bool &state) noexcept {
     m_path_line->setFont(font);
 }
 
-void FilePathWidget::setFont(const QString &fontName) noexcept {
+void FilePathWidget::set_font_family(const QString &fontName) noexcept {
     QFont font = m_path_line->font();
     font.setFamily(fontName);
     m_path_line->setFont(font);

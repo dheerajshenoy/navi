@@ -70,7 +70,7 @@ public:
     void SelectItemHavingString(const QString &item) noexcept;
     void NextItem() noexcept;
     void PrevItem() noexcept;
-    inline unsigned int ItemCount() noexcept { return m_item_count; }
+    inline int ItemCount() noexcept { return m_item_count; }
     const ItemProperty getItemProperty() noexcept;
 
     void AsyncShellCommand(const QString &command) noexcept;
@@ -83,14 +83,14 @@ public:
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
     void MarkDWIM() noexcept;
-    void MarkRegex() noexcept;
+    void MarkRegex(const QString &regex = QString()) noexcept;
 
     void UnmarkItem() noexcept;
     void UnmarkItems(const QModelIndexList &list) noexcept;
     void UnmarkItemsLocal() noexcept;
     void UnmarkItemsGlobal() noexcept;
     void UnmarkDWIM() noexcept;
-    void UnmarkRegex() noexcept;
+    void UnmarkRegex(const QString &regex = QString()) noexcept;
 
     void GotoFirstItem() noexcept;
     void GotoLastItem() noexcept;
@@ -164,16 +164,33 @@ public:
         m_bulk_rename_threshold = threshold;
     }
 
+    inline int Bulk_rename_threshold() noexcept {
+        return m_bulk_rename_threshold;
+    }
+
+    // Editor to use when bulk renaming
     inline void SetBulkRenameEditor(const QString &editor) noexcept {
         m_bulk_rename_editor = editor;
     }
 
+    // Returns the editor used for bulk renaming (if set)
+    inline std::string Bulk_rename_editor() noexcept {
+        return m_bulk_rename_editor.toStdString();
+    }
+
+    // Terminal for use from within `m_file_panel`
     inline void SetTerminal(const QString &terminal) noexcept {
         m_terminal = terminal;
     }
 
+    // Whether to use the terminal editor when bulk renaming
     inline void SetBulkRenameWithTerminal(const bool &state) noexcept {
         m_bulk_rename_with_terminal = state;
+    }
+
+    // Whether to use the terminal editor when bulk renaming
+    inline bool Is_bulk_rename_with_terminal() noexcept {
+        return m_bulk_rename_with_terminal;
     }
 
     inline void setCurrentForeground(const QString &color) noexcept {
@@ -265,14 +282,14 @@ private:
     bool m_cycle_item = true;
     bool m_visual_line_mode = false;
     bool m_scroll_action = true;
-    unsigned int m_bulk_rename_threshold = 5;
-    QString m_bulk_rename_editor;
+    int m_bulk_rename_threshold = 5;
+    QString m_bulk_rename_editor = "nvim";
     QModelIndex m_visual_start_index;
     int m_file_name_column_index = -1;
     QColor m_current_background, m_current_foreground;
     int m_highlight_row;
     QString m_highlight_text;
     QHash<QString, QString> m_default_applications_hash;
-    bool m_bulk_rename_with_terminal = false;
+    bool m_bulk_rename_with_terminal = true;
     QString m_previous_dir_path;
 };

@@ -15,6 +15,7 @@
 #include <QHash>
 #include <archive.h>
 #include <archive_entry.h>
+#include <qtypes.h>
 
 #include "FilePreviewWorker.hpp"
 // #include "TreeSitterTextEdit.hpp"
@@ -22,6 +23,7 @@
 #include "ImageWidget.hpp"
 // #include "SyntaxHighlighterTS.hpp"
 #include "Thumbnailer.hpp"
+#include "sol/sol.hpp"
 #include "utils.hpp"
 
 class PreviewPanel : public QStackedWidget {
@@ -45,7 +47,12 @@ public:
         QWidget::show();
     }
 
-    inline void SetMaxPreviewThreshold(const qint64 &thresh) noexcept {
+    inline void Set_max_preview_threshold(const qint64 &thresh) noexcept {
+        m_preview_threshold = thresh;
+    }
+
+    inline std::string Max_preview_threshold() noexcept {
+        return utils::bytes_to_string(m_preview_threshold).toStdString();
     }
 
     // inline void SetSyntaxHighlighting(const bool &state) noexcept {
@@ -55,8 +62,18 @@ public:
     //     }
     // }
 
-    inline void SetPreviewDimension(const int &width,
+    inline void Set_preview_dimension(const int &width,
                                     const int &height) noexcept {
+        m_img_widget->setFixedWidth(width);
+        m_img_widget->setFixedHeight(height);
+    }
+
+    inline sol::table Preview_dimension(sol::this_state L) noexcept {
+        sol::state_view lua(L);
+        sol::table table;
+        table["width"] = m_img_widget->width();
+        table["height"] = m_img_widget->height();
+        return table;
     }
 
     // inline void ToggleSyntaxHighlight() noexcept {
@@ -107,4 +124,6 @@ private:
       "application/x-7z-compressed",
 
     };
+
+    qint64 m_preview_threshold = utils::parseFileSize("10M");
 };

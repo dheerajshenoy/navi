@@ -81,6 +81,15 @@ void Inputbar::setBackground(const QString &background) noexcept {
     QPalette palette;
     palette.setColor(QPalette::Window, QColor(background));
     m_line_edit->setPalette(palette);
+    m_background_color = background;
+    // TODO: Unable to apply this
+}
+
+void Inputbar::setBackground(const std::string &background) noexcept {
+    QPalette palette;
+    m_background_color = QString::fromStdString(background);
+    palette.setColor(QPalette::Window, QColor(m_background_color));
+    m_line_edit->setPalette(palette);
     // TODO: Unable to apply this
 }
 
@@ -88,11 +97,25 @@ void Inputbar::setForeground(const QString &foreground) noexcept {
     QPalette palette;
     palette.setColor(QPalette::Text, QColor(foreground));
     m_line_edit->setPalette(palette);
+    m_foreground_color = foreground;
+}
+
+void Inputbar::setForeground(const std::string &foreground) noexcept {
+    QPalette palette;
+    m_foreground_color = QString::fromStdString(foreground);
+    palette.setColor(QPalette::Text, QColor(m_foreground_color));
+    m_line_edit->setPalette(palette);
 }
 
 void Inputbar::setFontFamily(const QString &family) noexcept {
     QFont font = m_line_edit->font();
     font.setFamily(family);
+    m_line_edit->setFont(font);
+}
+
+void Inputbar::setFontFamily(const std::string &family) noexcept {
+    QFont font = m_line_edit->font();
+    font.setFamily(QString::fromStdString(family));
     m_line_edit->setFont(font);
 }
 
@@ -106,4 +129,11 @@ void Inputbar::currentCompletionStringList(const CompletionModelType &type) noex
         m_completer_model->setStringList(m_completion_list_hash[type]);
     else
         m_completer_model->setStringList({});
+}
+
+
+void Inputbar::set_font_size(const int &size) noexcept {
+    QFont _font = font();
+    _font.setPixelSize(size);
+    this->setFont(_font);
 }

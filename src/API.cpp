@@ -1,399 +1,186 @@
 #include "Navi.hpp"
-
-void Navi::initNaviLuaAPI() noexcept {
-
-    // ItemProperty type
-    lua.new_usertype<FilePanel::ItemProperty>(
-        "ItemProperty", "name", &FilePanel::ItemProperty::name, "size",
-        &FilePanel::ItemProperty::size, "mimeName",
-        &FilePanel::ItemProperty::mimeName);
-
-    lua.new_usertype<MenuItem>("MenuItem",
-                               "label", &MenuItem::label, "action",
-                               sol::property([](MenuItem &m, sol::function func) {
-                               m.action = [func]() { func(); };
-                               }),
-                               "submenu", &MenuItem::submenu);
-
-    lua.new_usertype<Statusbar::Module>("Module",
-                                        "name", &Statusbar::Module::name,
-                                        "options", &Statusbar::Module::options);
-
-    lua.new_usertype<Navi::ToolbarItem>("ToolbarItem",
-                                        "label", &Navi::ToolbarItem::label,
-                                        "icon", &Navi::ToolbarItem::icon,
-                                        "position", &Navi::ToolbarItem::position,
-                                        "action", &Navi::ToolbarItem::action);
-
-    lua["navi"] = lua.create_table();
-
-    // HOOK API
-
-    lua["navi"]["hook"] = lua.create_table();
-
-    lua["navi"]["hook"]["add"] = [this](const std::string &hook_name,
-                                        const sol::function &func) noexcept {
-            m_hook_manager->addHook(hook_name, func);
-        };
-
-    lua["navi"]["hook"]["trigger"] = [this](const std::string &hook_name) noexcept {
-        m_hook_manager->triggerHook(hook_name);
-    };
-
-    lua["navi"]["hook"]["clear_functions"] = [this](const std::string &hook_name,
-                                                    const sol::function &func) noexcept {
-            m_hook_manager->clearHookFunctions(hook_name);
-        };
-
-    // BOOKMARK API
-    lua["navi"]["bookmark"] = lua.create_table();
-
-    lua["navi"]["bookmark"]["add"] = [this](const std::string &bookmark_name,
-                                            const std::string &file_path,
-                                            const bool &highlight) noexcept {
-            m_bookmark_manager->addBookmark(QString::fromStdString(bookmark_name),
-                                            QString::fromStdString(file_path),
-                                            highlight);
-        };
-
-    lua["navi"]["bookmark"]["remove"] = [this](const std::string &bookmark_name) noexcept {
-        m_bookmark_manager->removeBookmark(QString::fromStdString(bookmark_name));
-    };
-
-    // API API
-    lua["navi"]["api"] = lua.create_table();
-
-    lua["navi"]["api"]["cd"] = [this](const std::string &dir) noexcept {
-        m_file_panel->setCurrentDir(QString::fromStdString(dir), true);
-    };
-
-    lua["navi"]["api"]["register_function"] = [this](const std::string &name,
-                                                     const sol::function &func) noexcept {
-        Lua__register_lua_function(name, func);
-    };
-
-    lua["navi"]["api"]["unregister_function"] = [this](const std::string &name) noexcept {
-        Lua__unregister_lua_function(name);
-    };
-
-    lua["navi"]["api"]["list_registered_functions"] = [this]() noexcept {
-        return Lua__registered_lua_functions();
-    };
-
-    lua["navi"]["api"]["count"] = [this]() noexcept {
-        return m_file_panel->ItemCount();
-    };
-
-    lua["navi"]["api"]["create_dir"] =
-        [this](const std::vector<std::string> &paths) noexcept {
-            this->Lua__CreateFolders(paths);
-        };
-
-    lua["navi"]["api"]["create_file"] =
-        [this](const std::vector<std::string> &fileNames) noexcept {
-            QStringList files = utils::stringListFromVector(fileNames);
-            m_file_panel->NewFile(files);
-        };
-
-    lua["navi"]["api"]["is_file"] = [this](const std::string &path) noexcept {
-        return QFileInfo(QString::fromStdString(path)).isFile();
-    };
-
-    lua["navi"]["api"]["is_dir"] = [this](const std::string &path) noexcept {
-        return QFileInfo(QString::fromStdString(path)).isDir();
-    };
-
-    lua["navi"]["api"]["next_item"] = [this]() noexcept { m_file_panel->NextItem(); };
-
-    lua["navi"]["api"]["prev_item"] = [this]() noexcept { m_file_panel->PrevItem(); };
-
-    lua["navi"]["api"]["first_item"] = [this]() noexcept {
-        m_file_panel->GotoFirstItem();
-    };
-
-    lua["navi"]["api"]["last_item"] = [this]() noexcept { m_file_panel->GotoLastItem(); };
-
-    lua["navi"]["api"]["middle_item"] = [this]() noexcept {
-        m_file_panel->GotoMiddleItem();
-    };
-
-    lua["navi"]["api"]["parent_dir"] = [this]() noexcept {
-        m_file_panel->UpDirectory();
-    };
-
-    lua["navi"]["api"]["prev_dir"] = [this]() noexcept {
-        m_file_panel->PreviousDirectory();
-    };
-
-    lua["navi"]["api"]["select_item"] = [this]() noexcept { m_file_panel->SelectItem(); };
-
-    lua["navi"]["api"]["item_name"] = [this]() noexcept {
-        return m_file_panel->getCurrentItem().toStdString();
-    };
-
-    lua["navi"]["api"]["item_property"] = [this]() noexcept {
-        return m_file_panel->getItemProperty();
-    };
-
-    lua["navi"]["api"]["pwd"] = [this]() noexcept {
-        return m_file_panel->getCurrentDir().toStdString();
-    };
-    lua["navi"]["api"]["filter"] = [this](const QString &filter) noexcept {
-        m_file_panel->Filters(filter);
-    };
-    lua["navi"]["api"]["reset_filter"] = [this]() noexcept {
-        m_file_panel->ResetFilter();
-    };
-    lua["navi"]["api"]["mark"] = [this]() noexcept { return m_file_panel->MarkItem(); };
-    lua["navi"]["api"]["mark_inverse"] = [this]() noexcept {
-        m_file_panel->MarkInverse();
-    };
-    lua["navi"]["api"]["mark_all"] = [this]() noexcept {
-        return m_file_panel->MarkAllItems();
-    };
-    lua["navi"]["api"]["mark_dwim"] = [this]() noexcept {
-        return m_file_panel->MarkDWIM();
-    };
-    lua["navi"]["api"]["unmark"] = [this]() noexcept { m_file_panel->UnmarkItem(); };
-
-    lua["navi"]["api"]["unmark_dwim"] = [this]() noexcept { m_file_panel->UnmarkDWIM(); };
-
-    lua["navi"]["api"]["toggle_mark"] = [this]() noexcept {
-        m_file_panel->ToggleMarkItem();
-    };
-
-    lua["navi"]["api"]["toggle_mark_dwim"] = [this]() noexcept {
-        m_file_panel->ToggleMarkDWIM();
-    };
-    lua["navi"]["api"]["rename"] = [this]() noexcept { m_file_panel->RenameItem(); };
-
-    lua["navi"]["api"]["rename_dwim"] = [this]() noexcept { m_file_panel->RenameDWIM(); };
-
-    lua["navi"]["api"]["delete"] = [this]() noexcept { m_file_panel->DeleteItem(); };
-
-    lua["navi"]["api"]["delete_dwim"] = [this]() noexcept { m_file_panel->DeleteDWIM(); };
-
-    lua["navi"]["api"]["chmod"] = [this]() noexcept { m_file_panel->ChmodItem(); };
-
-    lua["navi"]["api"]["spawn"] = [this](const std::string &command,
-                                         const std::vector<std::string> args) noexcept {
-            QStringList arglist;
-
-            for (const auto &str : args)
-            arglist.push_back(QString::fromStdString(str));
-
-            SpawnProcess(QString::fromStdString(command), arglist);
-        };
-
-    lua["navi"]["api"]["has_selection"] = [this]() noexcept {
-        return m_file_panel->has_selection();
-    };
-
-    lua["navi"]["api"]["local_marks"] = [this]() noexcept {
-        return utils::convertToStdVector(
-            m_file_panel->model()->getMarkedFilesLocal());
-    };
-
-    lua["navi"]["api"]["local_marks_count"] = [this]() noexcept {
-        return m_file_panel->model()->getMarkedFilesCountLocal();
-    };
-
-    lua["navi"]["api"]["global_marks"] = [this]() noexcept {
-        return utils::convertToStdVector(m_file_panel->model()->getMarkedFiles());
-    };
-
-    lua["navi"]["api"]["global_marks_count"] = [this]() noexcept {
-        return m_file_panel->model()->getMarkedFilesCount();
-    };
-
-    lua["navi"]["api"]["has_marks_global"] = [this]() noexcept {
-        return m_file_panel->model()->hasMarks();
-    };
-
-    lua["navi"]["api"]["has_marks_local"] = [this]() noexcept {
-        return m_file_panel->model()->hasMarksLocal();
-    };
-    lua["navi"]["api"]["cut"] = [this]() noexcept { m_file_panel->CutItem(); };
-
-    lua["navi"]["api"]["cut_dwim"] = [this]() noexcept { m_file_panel->CutDWIM(); };
-
-    lua["navi"]["api"]["copy_dwim"] = [this]() noexcept { m_file_panel->CopyDWIM(); };
-
-    lua["navi"]["api"]["copy"] = [this]() noexcept { return m_file_panel->CopyItem(); };
-
-    lua["navi"]["api"]["trash"] = [this]() noexcept { m_file_panel->TrashItem(); };
-
-    lua["navi"]["api"]["trash_dwim"] = [this]() noexcept{ m_file_panel->TrashDWIM(); };
-
-
-    lua["navi"]["api"]["search"] = [this](const std::string &searchTerm) noexcept {
-        m_file_panel->Search(QString::fromStdString(searchTerm));
-    };
-
-    lua["navi"]["api"]["search_next"] = [this]() noexcept { m_file_panel->SearchNext(); };
-
-    lua["navi"]["api"]["search_prev"] = [this]() noexcept { m_file_panel->SearchPrev(); };
-
-    lua["navi"]["api"]["sort_name"] = [this]() noexcept {};
-
-    lua["navi"]["api"]["highlight"] = [this](const std::string &item_path) noexcept {
-        m_file_panel->HighlightItem(QString::fromStdString(item_path));
-    };
-
-    lua["navi"]["api"]["mount_drive"] = [this](const std::string &path) noexcept {
-        MountDrive(QString::fromStdString(path));
-    };
-
-    lua["navi"]["api"]["unmount_drive"] = [this](const std::string &path) noexcept {
-        UnmountDrive(QString::fromStdString(path));
-    };
-
-    lua["navi"]["api"]["list_runtime_paths"] = [this]() noexcept {
-        return Lua__list_runtime_paths();
-    };
-
-    lua["navi"]["keymap"] = lua.create_table();
-
-    lua["navi"]["keymap"]["set"] = sol::overload(
-        [this](const sol::table &table) noexcept {
-            Lua__keymap_set(table);
-        },
-
-        [this](const std::string &key,
-               const std::string &command,
-               const std::string &desc) noexcept {
-            Lua__keymap_set(key, command, desc);
-        });
-
-    // UI API
-
-    lua["navi"]["ui"] = lua.create_table();
-
-    lua["navi"]["ui"]["menubar"] = lua.create_table();
-
-    lua["navi"]["ui"]["menubar"]["toggle"] = [this](const bool &state) noexcept {
-        ToggleMenuBar(state);
-    };
-
-    lua["navi"]["ui"]["menubar"]["toggle"] = [this]() noexcept { ToggleMenuBar(); };
-
-    lua["navi"]["ui"]["menubar"]["add_menu"] =
-        [this](const sol::table &menu_item) noexcept {
-            Lua__AddMenu(menu_item);
-        };
-
-    lua["navi"]["ui"]["statusbar"] = lua.create_table();
-
-    lua["navi"]["ui"]["statusbar"]["toggle"] = [this](const bool &state) noexcept {
-        ToggleStatusBar(state);
-    };
-
-    lua["navi"]["ui"]["statusbar"]["toggle"] = [this]() noexcept { ToggleStatusBar(); };
-
-    lua["navi"]["ui"]["statusbar"]["add_module"] =
-        [this](const Statusbar::Module &module) noexcept {
-            m_statusbar->Lua__AddModule(module);
-        };
-
-    lua["navi"]["ui"]["statusbar"]["set_modules"] =
-        [this](const sol::table &table) noexcept {
-            m_statusbar->Lua__SetModules(table);
-        };
-
-    lua["navi"]["ui"]["statusbar"]["insert_module"] = [this](const Statusbar::Module &module,
-                                                             const uint32_t &index) noexcept {
-            m_statusbar->Lua__InsertModule(module, index);
-        };
-
-    lua["navi"]["ui"]["statusbar"]["create_module"] =
-        [this](const std::string &name, const sol::table &table) noexcept {
-            return m_statusbar->Lua__CreateModule(name, table);
-        };
-
-    lua["navi"]["ui"]["statusbar"]["set_module_text"] =
-        [this](const std::string &name, const sol::object &obj) noexcept {
-            if (obj.is<std::string>())
-                m_statusbar->Lua__UpdateModuleText(name, obj.as<std::string>());
-            else if (obj.is<sol::function>()) {
-                auto func = obj.as<sol::function>();
-                sol::object value = func();
-                if (value.is<std::string>())
-                    m_statusbar->Lua__UpdateModuleText(name, value.as<std::string>());
+#include "API.hpp"
+
+void init_lua_api(sol::state &lua) noexcept {
+
+    lua.open_libraries(sol::lib::base, sol::lib::jit,
+                       sol::lib::package, sol::lib::package,
+                       sol::lib::io,
+                       sol::lib::os);
+
+    update_lua_package_path(lua);
+
+    // Bind MyClass to Lua
+    lua.new_usertype<Navi>("Navi",
+                           sol::constructors<Navi>(),
+                           "get_terminal", &Navi::Get_terminal,
+                           "set_terminal", &Navi::Set_terminal,
+                           "set_keymap", &Navi::Lua__keymap_set,
+                           "set_copy_path_separator", sol::resolve<void(const std::string &)>(&Navi::Set_copy_path_separator),
+                           "get_copy_path_separator", &Navi::Get_copy_path_separator,
+                           "set_default_dir", sol::resolve<void(const std::string &)>(&Navi::Set_default_directory),
+                           "get_default_dir", &Navi::Get_default_directory,
+
+                           // Inputbar font
+                           "get_inputbar_font", &Navi::get_inputbar_font,
+                           "set_inputbar_font", &Navi::set_inputbar_font,
+                           "get_inputbar_background", &Navi::get_inputbar_background,
+                           "set_inputbar_background", &Navi::set_inputbar_background,
+                           "get_inputbar_foreground", &Navi::get_inputbar_foreground,
+                           "set_inputbar_foreground", &Navi::set_inputbar_foreground,
+                           "set_inputbar_font_size", &Navi::set_inputbar_font_size,
+                           "get_inputbar_font_size", &Navi::get_inputbar_font_size,
+                           "set_inputbar_props", &Navi::set_inputbar_props,
+                           "get_inputbar_props", &Navi::get_inputbar_props,
+                           "get_inputbar_visible", &Navi::get_inputbar_visible,
+
+                           // Statusbar
+                           "create_statusbar_module", &Navi::create_statusbar_module,
+                           "toggle_statusbar", sol::resolve<void()>(&Navi::ToggleStatusBar),
+                           "set_statusbar_modules", &Navi::set_statusbar_modules,
+                           "set_statusbar_module_text", &Navi::set_statusbar_module_text,
+                           "set_statusbar_visible", &Navi::set_statusbar_visible,
+                           "get_statusbar_visible", &Navi::get_statusbar_visible,
+
+                           // Pathbar
+                           "toggle_pathbar", sol::resolve<void()>(&Navi::ToggleStatusBar),
+                           "focus_pathbar", &Navi::FocusPath,
+                           "set_pathbar_font", &Navi::set_pathbar_font,
+                           "get_pathbar_font", &Navi::get_pathbar_font,
+                           "set_pathbar_visible", &Navi::set_pathbar_visible,
+                           "get_pathbar_visible", &Navi::get_pathbar_visible,
+
+                           // Toolbar
+                           "toggle_toolbar", &Navi::toggle_toolbar,
+                           "create_toolbar_button", &Navi::Lua__CreateToolbarButton,
+                           "add_toolbar_button", &Navi::Lua__AddToolbarButton,
+                           "set_toolbar_items", &Navi::Lua__SetToolbarItems,
+                           "set_toolbar_visible", &Navi::set_toolbar_visible,
+                           "get_toolbar_visible", &Navi::get_toolbar_visible,
+
+                           // Menubar
+                           "toggle_menubar", sol::resolve<void(void)>(&Navi::ToggleMenuBar),
+                           "add_menubar_menu", &Navi::Lua__AddMenu,
+                           "set_menubar_visible", &Navi::set_menubar_visible,
+                           "get_menubar_visible", &Navi::get_menubar_visible,
+
+                           // Preview Panel
+                           "toggle_preview_panel", sol::resolve<void(void)>(&Navi::TogglePreviewPanel),
+                           "set_preview_panel_visible", &Navi::set_preview_panel_visible,
+                           "get_preview_panel_visible", &Navi::get_preview_panel_visible,
+
+                           // API
+                           "list_runtime_paths", &Navi::list_runtime_paths,
+                           "register_function", &Navi::Lua__register_lua_function,
+                           "unregister_function", &Navi::Lua__unregister_lua_function,
+                           "list_registered_functions", &Navi::Lua__registered_lua_functions,
+                           "count", &Navi::count_item,
+                           "search", sol::resolve<void(const std::string&)>(&Navi::Search),
+                           "search_next", &Navi::SearchNext,
+                           "search_prev", &Navi::SearchPrev,
+                           "next_item", &Navi::NextItem,
+                           "prev_item", &Navi::PrevItem,
+                           "first_item", &Navi::GotoFirstItem,
+                           "last_item", &Navi::GotoLastItem,
+                           "middle_item", &Navi::GotoMiddleItem,
+                           "select_item", &Navi::SelectItem,
+                           "item_name", &Navi::current_item_name,
+                           "item_property", &Navi::item_property,
+                           "parent_directory", &Navi::UpDirectory,
+                           "mount_drive", sol::resolve<bool(const std::string&)>(&Navi::mount_drive),
+                           "unmount_drive", sol::resolve<bool(const std::string&)>(&Navi::unmount_drive),
+                           "create_file", &Navi::new_file,
+                           "create_directory", &Navi::new_folder,
+                           "trash", &Navi::TrashItem,
+                           "trash_dwim", &Navi::TrashDWIM,
+                           "copy", &Navi::CopyItem,
+                           "copy_dwim", &Navi::CopyDWIM,
+                           "cut", &Navi::CutItem,
+                           "cut_dwim", &Navi::CutDWIM,
+                           "has_marks_local", &Navi::has_marks_local,
+                           "has_marks_global", &Navi::has_marks_global,
+                           "global_marks", &Navi::global_marks,
+                           "local_marks", &Navi::local_marks,
+                           "local_marks_count", &Navi::local_marks_count,
+                           "global_marks_count", &Navi::global_marks_count,
+                           "highlight", &Navi::highlight,
+                           "cd", &Navi::change_directory,
+                           "pwd", &Navi::working_directory,
+                           "filter", &Navi::filter,
+                           "reset_filter", &Navi::ResetFilter,
+                           "mark", &Navi::MarkItem,
+                           "mark_dwim", &Navi::MarkDWIM,
+                           "mark_all", &Navi::MarkAllItems,
+                           "mark_inverse", &Navi::MarkInverse,
+                           "mark_regex", &Navi::mark_regex,
+                           "unmark", &Navi::UnmarkItem,
+                           "unmark_dwim", &Navi::UnmarkDWIM,
+                           "unmark_regex", &Navi::unmark_regex,
+                           "toggle_mark", &Navi::ToggleMarkItem,
+                           "toggle_mark_dwim", &Navi::ToggleMarkDWIM,
+                           "rename", &Navi::RenameItem,
+                           "rename_dwim", &Navi::RenameDWIM,
+                           "delete", &Navi::DeleteItem,
+                           "delete_dwim", &Navi::DeleteDWIM,
+                           "chmod", &Navi::ChmodItem,
+                           "chmod_dwim", &Navi::ChmodDWIM,
+                           "has_selection", &Navi::has_selection,
+                           "message", &Navi::message,
+                           "input", &Navi::input,
+                           "input_items", &Navi::input_items,
+
+                           "execute", &Navi::execute_shell_command,
+                           "set_statusbar_font", &Navi::set_statusbar_font,
+                           "get_statusbar_font", &Navi::get_statusbar_font,
+                           "set_statusbar_font_size", &Navi::set_statusbar_font_size,
+                           "get_statusbar_font_size", &Navi::get_statusbar_font_size,
+                           "set_statusbar_background", &Navi::set_statusbar_background,
+                           "get_statusbar_background", &Navi::get_statusbar_background,
+
+                           "add_hook", &Navi::add_hook,
+                           "trigger_hook", &Navi::trigger_hook,
+                           "clear_functions_for_hook", &Navi::clear_functions_for_hook,
+
+                           "add_bookmark", &Navi::add_bookmark,
+                           "remove_bookmark", &Navi::remove_bookmark
+
+                           );
+
+    lua.set_function("_navi_msgtype", [&lua]() {
+        return lua.create_table_with(
+            "warning", MessageType::WARNING,
+            "info", MessageType::INFO,
+            "error", MessageType::ERROR);
+    });
+
+}
+
+void update_lua_package_path(sol::state &lua) noexcept {
+    QStringList visitedDirs;  // To track directories already added to package.path
+
+    lua.script(R"(
+               package = package or {}
+               package.path = package.path or ""
+               )");
+
+    auto iterateDir = [&](const QString &folder) {
+        // Create a QDirIterator to iterate through all subdirectories and files
+        QDirIterator it(folder, QStringList() << "*.lua", QDir::Files, QDirIterator::Subdirectories);
+
+        while (it.hasNext()) {
+            QString filePath = it.next();
+            QString parentDir = QFileInfo(filePath).absolutePath();  // Get the parent directory
+
+            // Add to package.path only if this directory hasn't been added yet
+            if (!visitedDirs.contains(parentDir)) {
+                /*m_runtime_path.insert(parentDir);*/
+                lua.script("package.path = package.path .. ';" + parentDir.toStdString() + "/?.lua'");
+                visitedDirs.append(parentDir);  // Mark the directory as visited
             }
-        };
-
-    lua["navi"]["ui"]["pathbar"] = [this](const bool &state) noexcept {
-        TogglePathWidget(state);
+        }
     };
 
-    lua["navi"]["ui"]["pathbar"] = [this]() noexcept { TogglePathWidget(); };
-
-    lua["navi"]["ui"]["preview_panel"] = [this](const bool &state) noexcept {
-        TogglePreviewPanel(state);
-    };
-
-    lua["navi"]["ui"]["preview_panel"] = [this]() noexcept { TogglePreviewPanel(); };
-
-    lua["navi"]["ui"]["messages"] = [this]() noexcept { ToggleMessagesBuffer(); };
-
-    lua["navi"]["ui"]["messages"] = [this](const bool &state) noexcept {
-        ToggleMessagesBuffer(state);
-    };
-
-    lua["navi"]["ui"]["shortcuts"] = [this](const bool &state) noexcept {
-        ToggleShortcutsBuffer(state);
-    };
-
-    lua["navi"]["ui"]["shortcuts"] = [this]() noexcept { ToggleShortcutsBuffer(); };
-
-    lua["navi"]["ui"]["marks"] = [this](const bool &state) noexcept {
-        ToggleMarksBuffer(state);
-    };
-
-    lua["navi"]["ui"]["marks"] = [this]() noexcept { ToggleMarksBuffer(); };
-
-    lua["navi"]["ui"]["context_menu"] = lua.create_table();
-
-    lua["navi"]["ui"]["context_menu"]["create"] = [this](const sol::table &table) noexcept {
-        Lua__AddContextMenu(table);
-    };
-
-    lua["navi"]["ui"]["toolbar"] = lua.create_table();
-
-    lua["navi"]["ui"]["toolbar"]["add_button"] = [this](const Navi::ToolbarItem &tb_item) noexcept {
-        Lua__AddToolbarButton(tb_item);
-    };
-
-    lua["navi"]["ui"]["toolbar"]["create_button"] = [this](const std::string &name, const sol::table &table) noexcept {
-        return Lua__CreateToolbarButton(name, table);
-    };
-
-    lua["navi"]["ui"]["toolbar"]["set_items"] = [this](const sol::table &table) noexcept {
-        Lua__SetToolbarItems(table);
-    };
-
-    // IO API
-    lua["navi"]["io"] = lua.create_table();
-
-    lua["navi"]["io"]["msg"] = [this](const std::string &message,
-                                      const MessageType &type) noexcept {
-            m_statusbar->Message(QString::fromStdString(message), type);
-        };
-
-    lua["navi"]["io"]["msgtype"] =
-        lua.create_table_with("info", MessageType::INFO, "warn",
-                              MessageType::WARNING, "error", MessageType::ERROR);
-
-    lua["navi"]["io"]["input"] = [this](const std::string &prompt,
-                                        const std::string &def_text,
-                                        const std::string &selection_text) noexcept {
-            return this->Lua__Input(prompt, def_text, selection_text);
-        };
-
-    // SHELL API
-
-    lua["navi"]["shell"] = lua.create_table();
-    lua["navi"]["shell"]["execute"] = [this](const std::string &command) noexcept {
-        ShellCommandAsync(QString::fromStdString(command));
-    };
+    iterateDir(CONFIG_DIR_PATH);
+    iterateDir("/usr/share/navi");
+    iterateDir("~/.local/share/navi");
 }

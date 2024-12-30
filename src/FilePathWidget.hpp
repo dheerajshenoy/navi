@@ -81,7 +81,17 @@ public:
     void setBackgroundColor(const QString &color) noexcept;
     void setItalic(const bool &state) noexcept;
     void setBold(const bool &state) noexcept;
-    void setFont(const QString &name) noexcept;
+    void set_font_family(const QString &name) noexcept;
+
+    inline int get_font_size() noexcept {
+        return font().pixelSize();
+    }
+
+    inline void set_font_size(const int &size) noexcept {
+        QFont _font = font();
+        _font.setPixelSize(size);
+        setFont(_font);
+    }
 
 signals:
     void directoryChangeRequested(const QString& path);

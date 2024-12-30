@@ -6,7 +6,7 @@
 class Result {
 
 public:
-    Result(const bool &ok, const QString &value) : ok(ok), value(value) {}
+    Result(const bool &ok, const QString &value = QString()) : ok(ok), value(value) {}
     std::string toStdStringValue() noexcept { return value.toStdString(); }
     bool ok;
     QString value;

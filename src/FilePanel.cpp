@@ -432,11 +432,17 @@ void FilePanel::MarkDWIM() noexcept {
     ToggleVisualLine(false);
 }
 
-void FilePanel::MarkRegex() noexcept {
-    QString searchExpression = m_inputbar->getInput("Mark items with regex");
-    m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
-                                         searchExpression, -1,
-                                         Qt::MatchRegularExpression);
+void FilePanel::MarkRegex(const QString &regex) noexcept {
+    if (regex.isEmpty() || regex.isNull()) {
+        QString searchExpression = m_inputbar->getInput("Mark items with regex");
+        m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                                             searchExpression, -1,
+                                             Qt::MatchRegularExpression);
+    } else {
+        m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                                             regex, -1,
+                                             Qt::MatchRegularExpression);
+    }
     if (m_search_index_list.isEmpty())
         return;
 
@@ -499,11 +505,17 @@ void FilePanel::UnmarkItemsLocal() noexcept {
     m_statusbar->Message("No local marks found", MessageType::WARNING);
 }
 
-void FilePanel::UnmarkRegex() noexcept {
-    QString searchExpression = m_inputbar->getInput("Unmark items with regex");
-    m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
-                                         searchExpression, -1,
-                                         Qt::MatchRegularExpression);
+void FilePanel::UnmarkRegex(const QString &regex) noexcept {
+    if (regex.isEmpty() || regex.isNull()) {
+        QString searchExpression = m_inputbar->getInput("Unmark items with regex");
+        m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                                             searchExpression, -1,
+                                             Qt::MatchRegularExpression);
+    } else {
+        m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
+                                             regex, -1,
+                                             Qt::MatchRegularExpression);
+    }
     if (m_search_index_list.isEmpty())
         return;
 

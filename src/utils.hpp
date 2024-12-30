@@ -9,7 +9,6 @@
 #include <QDir>
 #include <QTextEdit>
 #include "StorageDevice.hpp"
-#include "sol/sol.hpp"
 #include <QDirIterator>
 
 class utils {
@@ -40,4 +39,11 @@ public:
     static QStringList readLinesFromFile(const QString &filename, const int &lines) noexcept;
 
     static QString fileName(const QString &path) noexcept;
+    static QString bytes_to_string(const qint64 &bytes) noexcept;
+
+
+    static QString joinPaths(const QString& first) noexcept;
+
+    template <typename... Args>
+    static QString joinPaths(const QString& first, const Args&... args) noexcept;
 };

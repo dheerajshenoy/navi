@@ -19,11 +19,8 @@ enum class MessageType { INFO = 0, WARNING, ERROR };
 class Statusbar : public QWidget {
     Q_OBJECT
 
-signals:
-    void visibilityChanged(const bool &state);
-    void logMessage(const QString &message, const MessageType &type);
-
 public:
+
     Statusbar(QWidget *parent = nullptr);
     ~Statusbar();
 
@@ -67,8 +64,40 @@ public:
     void Lua__InsertModule(const Statusbar::Module &module,
                            const uint32_t &index) noexcept;
     void Lua__SetModules(const sol::table &table) noexcept;
+    sol::table Lua__Get_modules() noexcept;
     void Lua__UpdateModuleText(const std::string &name,
                                const std::string &value) noexcept;
+
+    inline void set_font_family(const QString &family) noexcept {
+        QFont _font = this->font();
+        _font.setFamily(family);
+        setFont(_font);
+    }
+
+    inline void set_background_color(const QString &color) noexcept {
+        QPalette palette;
+        m_background_color = color;
+        palette.setColor(QPalette::Window, QColor(m_background_color));
+        this->setPalette(palette);
+    }
+
+    inline std::string get_background_color() noexcept {
+        return m_background_color.toStdString();
+    }
+
+    inline std::string get_font_family() noexcept {
+        return font().family().toStdString();
+    }
+
+    void set_font_size(const int &size) noexcept;
+
+    inline int get_font_size() noexcept {
+        return font().pixelSize();
+    }
+
+signals:
+    void visibilityChanged(const bool &state);
+    void logMessage(const QString &message, const MessageType &type);
 
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
@@ -100,4 +129,6 @@ private:
     QPalette m_message_palette;
     QTimer *m_message_timer = new QTimer(this);
     QHash<QString, QLabel*> m_module_widget_hash;
+    QString m_background_color;
+    sol::table m_modules;
 };

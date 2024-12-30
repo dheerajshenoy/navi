@@ -8,8 +8,10 @@ project(navi VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set installation prefix (default is /usr/local)
-set(CMAKE_INSTALL_PREFIX "/usr/")
+set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Install path prefix" FORCE)
+
+# Define the target directory for shared files
+set(SHAREDIR "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 
 # Enable verbose output during build
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -46,9 +48,8 @@ qt_standard_project_setup()
 # define an executable built from a source file
 qt_add_executable(${PROJECT_NAME}
   src/main.cpp
-  src/utils.cpp
   src/Navi.cpp
-  src/API.cpp
+  src/utils.cpp
   src/FilePanel.cpp
   src/PreviewPanel.cpp
   src/TableView.cpp
@@ -72,7 +73,9 @@ qt_add_executable(${PROJECT_NAME}
   src/Thumbnailer.cpp
   src/FolderPropertyWidget.cpp
   src/AboutWidget.cpp
+  src/API.cpp
 
+  src/Globals.hpp
   src/TextEdit.hpp
   src/FileSystemModel.cpp
   src/MessagesBuffer.hpp
@@ -119,3 +122,5 @@ add_custom_target(run
 # Install the executable
 install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin)
+
+install(DIRECTORY data/ DESTINATION ${SHAREDIR} COMPONENT Runtime)

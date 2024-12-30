@@ -242,3 +242,35 @@ QStringList utils::readLinesFromFile(const QString &filename,
 QString utils::fileName(const QString &path) noexcept {
     return QFileInfo(path).fileName();
 }
+
+
+QString utils::bytes_to_string(const qint64 &bytes) noexcept {
+    const char* suffixes[] = { "B", "K", "M", "G", "T", "P" };
+    double size = static_cast<double>(bytes);
+    int suffixIndex = 0;
+
+    // Iterate over the suffixes and divide the size by 1024
+    while (size >= 1024 && suffixIndex < 5) {
+        size /= 1024;
+        suffixIndex++;
+    }
+
+    // Return the formatted string
+    return QString::number(size, 'f', 2) + suffixes[suffixIndex];
+}
+
+QString utils::joinPaths(const QString& first) noexcept {
+    return first;
+}
+
+template <typename... Args>
+QString utils::joinPaths(const QString& first, const Args&... args) noexcept {
+    QString rest = joinPaths(args...);
+    if (first.endsWith("/") && rest.startsWith("/")) {
+        return first + rest.mid(1); // Remove extra slash
+    } else if (!first.endsWith("/") && !rest.startsWith("/")) {
+        return first + "/" + rest; // Add a slash between
+    } else {
+        return first + rest; // Already properly joined
+    }
+}

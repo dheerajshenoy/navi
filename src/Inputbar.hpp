@@ -96,13 +96,34 @@ public:
     void setFontItalic(const bool &state) noexcept;
     void setFontBold(const bool &state) noexcept;
     void setForeground(const QString &foreground) noexcept;
+    void setForeground(const std::string &foreground) noexcept;
     void setBackground(const QString &background) noexcept;
+    void setBackground(const std::string &background) noexcept;
     void setFontFamily(const QString &family) noexcept;
+    void setFontFamily(const std::string &family) noexcept;
     void addCompletionStringList(const CompletionModelType &type,
                             const QStringList &stringList) noexcept;
     void currentCompletionStringList(const CompletionModelType &type) noexcept;
 
+    // returns the QLineEdit
     LineEdit *lineEdit() noexcept { return m_line_edit; }
+
+    // returns the font family
+    inline std::string get_font() noexcept { return font().family().toStdString(); }
+
+    // sets the font
+    void set_font_size(const int &size = 14) noexcept;
+
+    // returns the font pixel size
+    inline int get_font_size() noexcept {
+        return font().pixelSize();
+    }
+
+    // return the background color
+    inline std::string Get_background_color() noexcept { return m_background_color.toStdString(); }
+
+    // return the foreground color
+    inline std::string Get_foreground_color() noexcept { return m_foreground_color.toStdString(); }
 
 signals:
     void lineEditTextChanged(const QString &text);
@@ -117,4 +138,6 @@ private:
     QStringList m_lua_function_stringlist = {};
     OrderlessFilterModel *m_filter_model = nullptr;
     QHash<CompletionModelType, QStringList> m_completion_list_hash;
+    QString m_background_color,
+            m_foreground_color;
 };

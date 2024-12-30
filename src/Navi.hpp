@@ -1,9 +1,12 @@
 #pragma once
 
+#include "utils.hpp"
+
 #define UNUSED(x) (void) x
-
 // #define SOL_ALL_SAFETIES_ON 1
+#include "Globals.hpp"
 
+#include <unistd.h>
 #include <QIcon>
 #include <QFuture>
 #include <QFutureWatcher>
@@ -42,24 +45,7 @@
 #include <QToolBar>
 #include <QSet>
 #include <QHash>
-
-// Config related things
-static const QString APP_NAME = "navi";
-
-static const QString CONFIG_DIR_PATH =
-    QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) +
-    QDir::separator() + APP_NAME;
-
-static const QString CONFIG_FILE_NAME = "init.lua";
-
-static const QString CONFIG_FILE_PATH =
-    CONFIG_DIR_PATH + QDir::separator() + CONFIG_FILE_NAME;
-
-static const QString LUA_DIR_NAME = "lua";
-static const QString LUA_DIR_PATH = CONFIG_DIR_PATH + QDir::separator() + LUA_DIR_NAME + QDir::separator();
-
-static const QString BOOKMARK_FILE_NAME = "bookmark.lua";
-static const QString BOOKMARK_FILE_PATH = CONFIG_DIR_PATH + QDir::separator() + BOOKMARK_FILE_NAME;
+#include <unordered_map>
 
 // Local includes
 #include "FilePathWidget.hpp"
@@ -111,25 +97,106 @@ public:
     Navi(QWidget *parent = nullptr);
     ~Navi();
 
+    inline FilePanel* file_panel() noexcept { return m_file_panel; }
+    inline Inputbar* get_inputbar() noexcept { return m_inputbar; }
     void initThings() noexcept;
     void SelectAllItems() noexcept;
     void SelectInverse() noexcept;
     // Interactive Functions
     void ExecuteExtendedCommand() noexcept;
     void NewFolder(const QStringList &folders = {}) noexcept;
+    void new_folder(const std::vector<std::string> &folders = {}) noexcept;
     void NewFile(const QStringList &files = {}) noexcept;
+    void new_file(const std::vector<std::string> &files = {}) noexcept;
+    void change_directory(const std::string &path) noexcept;
+
+    std::string working_directory() noexcept {
+        return m_file_panel->getCurrentDir().toStdString();
+    }
+
+    QString GetInput(const QString &prompt,
+                     const QString &title,
+                     const QString &default_text) noexcept;
+
+    QString GetInput(const QString &prompt,
+                     const QString &title,
+                     const QStringList &choice,
+                     const int &default_choice) noexcept;
+
     void PasteItems() noexcept;
     void ShowHelp() noexcept;
     void ToggleMenuBar(const bool &state) noexcept;
     void ToggleMenuBar() noexcept;
-    void Filter() noexcept;
+
+
+    void Filter(const QString &filter_string = QString()) noexcept;
+    void filter(const std::string &filter_string = std::string()) noexcept;
     void ResetFilter() noexcept;
     void LogMessage(const QString &message, const MessageType &type = MessageType::INFO) noexcept;
-    void FocusPath() noexcept;
+    inline void FocusPath() noexcept { m_file_path_widget->setFocus(); }
     void AddBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
     void RemoveBookmark(const QStringList &bookmarkName = QStringList()) noexcept;
     void SortDescending(const bool &state) noexcept;
     void SortAscending(const bool &state) noexcept;
+
+    std::map<std::string, std::string> Get_bulk_rename() noexcept {
+        std::map<std::string, std::string> map;
+        map["file_threshold"] = m_file_panel->Bulk_rename_threshold();
+        map["editor"] = m_file_panel->Bulk_rename_editor();
+        map["with_terminal"] = m_file_panel->Is_bulk_rename_with_terminal();
+        return map;
+    }
+
+    inline void set_pathbar_font(const std::string &font) noexcept {
+        m_file_path_widget->setFont(QString::fromStdString(font));
+    }
+
+    inline std::string get_pathbar_font() noexcept {
+        return m_file_path_widget->font().family().toStdString();
+    }
+
+    inline int get_pathbar_font_size() noexcept {
+        return m_file_path_widget->get_font_size();
+    }
+
+    inline void set_pathbar_font_size(const int &size) noexcept {
+        m_file_path_widget->set_font_size(size);
+    }
+
+    inline void message(const std::string &msg, const MessageType &type) noexcept {
+        m_statusbar->Message(QString::fromStdString(msg), type);
+    }
+
+    inline std::string input(const std::string &prompt,
+                             const std::string &title,
+                             const std::string &def) noexcept {
+
+        QString result = GetInput(QString::fromStdString(prompt),
+                                  QString::fromStdString(title),
+                                  QString::fromStdString(def));
+        return result.toStdString();
+    }
+
+    inline std::string input_items(const std::string &prompt,
+                                   const std::string &title,
+                                   const std::vector<std::string> &items,
+                                   const int &default_choice) noexcept {
+
+        return GetInput(QString::fromStdString(prompt),
+                        QString::fromStdString(title),
+                        utils::stringListFromVector(items), default_choice - 1).toStdString();
+    }
+
+    inline void Set_bulk_rename(const sol::table &table) noexcept {
+        auto editor = table["editor"].get<std::string>();
+        auto threshold = table["file_threshold"].get<int>();
+        auto state = table["with_terminal"].get<bool>();
+        m_file_panel->SetBulkRenameEditor(QString::fromStdString(editor));
+        m_file_panel->SetBulkRenameThreshold(threshold);
+        m_file_panel->SetBulkRenameWithTerminal(state);
+    }
+
+    inline void sleep_for_seconds(const int &s) noexcept { sleep(s); }
 
     struct MenuItem {
         std::string label;
@@ -167,7 +234,8 @@ public:
     void SortByDate(const bool &reverse = false) noexcept;
     void SortBySize(const bool &reverse = false) noexcept;
     void ShellCommandAsync(const QString &command = "") noexcept;
-    void Search() noexcept;
+    void Search(const QString & = QString()) noexcept;
+    void Search(const std::string & = std::string()) noexcept;
     void SearchRegex() noexcept;
     void ToggleRecordMacro() noexcept;
     void PlayMacro() noexcept;
@@ -200,6 +268,8 @@ public:
     void TrashItemsLocal() noexcept;
     void TrashDWIM() noexcept;
     void MarkRegex() noexcept;
+    void mark_regex(const std::string &) noexcept;
+    void highlight(const std::string &name) noexcept;
     void MarkItem() noexcept;
     void MarkInverse() noexcept;
     void MarkAllItems() noexcept;
@@ -210,6 +280,7 @@ public:
     void UnmarkItemsLocal() noexcept;
     void UnmarkItemsGlobal() noexcept;
     void UnmarkRegex() noexcept;
+    void UnmarkDWIM() noexcept;
     void ForceUpdate() noexcept;
     void ChmodItem() noexcept;
     void ChmodItemsLocal() noexcept;
@@ -261,11 +332,15 @@ public:
     void ShowFolderProperty() noexcept;
     void Exit() noexcept;
     void CopyPath(const QString &separator = QString()) noexcept;
-
     void FullScreen() noexcept;
     void FullScreen(const bool &state) noexcept;
     void ShowAbout() noexcept;
 
+    void execute_shell_command(const std::string &command,
+                               std::vector<std::string> &args) noexcept;
+    void unmark_regex(const std::string &term) noexcept;
+    bool mount_drive(const std::string &drive_name) noexcept;
+    bool unmount_drive(const std::string &drive_name) noexcept;
     // Lua helper functions
 
     std::string Lua__Input(const std::string &prompt,
@@ -281,26 +356,263 @@ public:
     void Lua__SetToolbarItems(const sol::table &table) noexcept;
     Navi::ToolbarItem Lua__CreateToolbarButton(const std::string &name,
                                                const sol::table &table) noexcept;
-
-    sol::table Lua__list_runtime_paths() noexcept;
-    void Lua__keymap_set(const sol::table &table) noexcept;
+    void Lua__keymap_set_from_table(const sol::table &table) noexcept;
     void Lua__keymap_set(const std::string &key,
                          const std::string &command,
                          const std::string &desc) noexcept;
     void Lua__register_lua_function(const std::string &name,
                                     const sol::function &func) noexcept;
-
     void Lua__unregister_lua_function(const std::string &name) noexcept;
+    sol::table Lua__registered_lua_functions(sol::state &lua) noexcept;
+    void Set_default_directory(const QString &dir) noexcept;
+    void Set_default_directory(const std::string &dir) noexcept;
+    inline std::string Get_default_directory() noexcept { return m_default_dir.toStdString(); }
+    void Set_menubar_icons() noexcept;
+    double Preview_pane_fraction() noexcept;
+    void Set_preview_pane_fraction(const double &fraction) noexcept;
 
-    sol::table Lua__registered_lua_functions() noexcept;
+    inline void set_statusbar_background(const std::string &color) noexcept {
+        m_statusbar->set_background_color(QString::fromStdString(color));
+    }
+
+    inline void add_hook(const std::string &name, const sol::function &func) noexcept {
+        m_hook_manager->addHook(name, func);
+    }
+
+    inline void trigger_hook(const std::string &hook) noexcept {
+        m_hook_manager->triggerHook(hook);
+    }
+
+    inline void clear_functions_for_hook(const std::string &hook) noexcept {
+        m_hook_manager->clearHookFunctions(hook);
+    }
+
+    inline bool add_bookmark(const std::string &bookmark_name, const bool &highlight = false) noexcept {
+        return m_bookmark_manager->addBookmark(QString::fromStdString(bookmark_name),
+                                        QString::fromStdString(current_item_name()),
+                                        highlight);
+    }
+
+    inline bool remove_bookmark(const std::string &bookmark_name) noexcept {
+        return m_bookmark_manager->removeBookmark(QString::fromStdString(bookmark_name));
+    }
+
+    inline std::string get_statusbar_background() noexcept {
+        return m_statusbar->get_background_color();
+    }
+    inline std::string Get_copy_path_separator() noexcept { return m_copy_path_join_str.toStdString(); }
+
+
+    void Set_copy_path_separator(const QString &sep) noexcept {
+        m_copy_path_join_str = sep;
+    }
+
+    void Set_copy_path_separator(const std::string &sep) noexcept {
+        m_copy_path_join_str = QString::fromStdString(sep);
+    }
+
+    inline void Set_terminal(const std::string &term) noexcept {
+        m_terminal = QString::fromStdString(term);
+        m_file_panel->SetTerminal(m_terminal);
+    }
+
+    inline void set_inputbar_font(const std::string &font) noexcept {
+        m_inputbar->setFontFamily(QString::fromStdString(font));
+    }
+
+    inline std::string get_inputbar_font() noexcept {
+        return m_inputbar->font().family().toStdString();
+    }
+
+    inline void set_inputbar_background(const std::string &bg) noexcept {
+        m_inputbar->setBackground(QString::fromStdString(bg));
+    }
+
+    inline std::string get_inputbar_background() noexcept {
+        return m_inputbar->Get_background_color();
+    }
+
+    inline void set_inputbar_foreground(const std::string &bg) noexcept {
+        m_inputbar->setBackground(QString::fromStdString(bg));
+    }
+
+    inline std::string get_inputbar_foreground() noexcept {
+        return m_inputbar->Get_foreground_color();
+    }
+
+    void set_inputbar_props(const sol::table &table) noexcept;
+
+    inline std::string get_statusbar_font() noexcept {
+        return m_statusbar->get_font_family();
+    }
+
+    inline void set_statusbar_font(const std::string &font) noexcept {
+        m_statusbar->set_font_family(QString::fromStdString(font));
+    }
+
+    inline void set_statusbar_font_size(const int &size) noexcept {
+        m_statusbar->set_font_size(size);
+    }
+
+    inline int get_statusbar_font_size() noexcept {
+        return m_statusbar->get_font_size();
+    }
+
+    inline bool has_marks_local() noexcept {
+        return m_file_panel->model()->hasMarksLocal();
+    }
+
+    inline bool has_marks_global() noexcept {
+        return m_file_panel->model()->hasMarks();
+    }
+
+    inline sol::table global_marks(sol::state &lua) noexcept {
+        auto files = m_file_panel->model()->getMarkedFiles();
+        sol::table table = lua.create_table();
+        if (files.isEmpty())
+            return table;
+        for (int i=0; i < files.size(); i++)
+            table[i + 1] = files.at(i);
+        return table;
+    }
+    inline sol::table local_marks(sol::state &lua) noexcept {
+        auto files = m_file_panel->model()->getMarkedFilesLocal();
+        sol::table table = lua.create_table();
+        if (files.isEmpty())
+            return table;
+        for (int i=0; i < files.size(); i++)
+            table[i + 1] = files.at(i);
+        return table;
+    }
+    inline int local_marks_count() noexcept {
+        return m_file_panel->model()->getMarkedFilesCountLocal();
+    }
+    inline int global_marks_count() noexcept {
+        return m_file_panel->model()->getMarkedFilesCount();
+    }
+    inline bool has_selection() noexcept {
+        return m_file_panel->has_selection();
+    }
+    inline sol::table get_inputbar_props(sol::state &lua) noexcept {
+        sol::table table = lua.create_table();
+        table["font"] = m_inputbar->font().family().toStdString();
+        table["foreground"] = m_inputbar->Get_foreground_color();
+        table["background"] = m_inputbar->Get_background_color();
+        table["font_size"] = m_inputbar->get_font_size();
+        return table;
+    }
+    inline int get_inputbar_font_size() noexcept {
+        return m_inputbar->font().pixelSize();
+    }
+    inline void set_inputbar_font_size(const int &pixel_size) noexcept {
+        m_inputbar->set_font_size(pixel_size);
+    }
+    inline std::string Get_terminal() noexcept { return m_terminal.toStdString(); }
+
+    void Set_auto_save_bookmarks(const bool &state) noexcept;
+    void Set_toolbar_icons_only() noexcept;
+    void Set_toolbar_text_only() noexcept;
+    void Set_toolbar_layout(const sol::table &layout) noexcept;
+    void Error(const QString &reason) noexcept;
+    void update_lua_package_path(sol::state &lua) noexcept;
+
+    inline FilePanel::ItemProperty item_property() noexcept {
+        return m_file_panel->getItemProperty();
+    }
+
+    inline int count_item() noexcept {
+        return m_file_panel->ItemCount();
+    }
+
+    sol::table list_runtime_paths(sol::this_state L) noexcept;
+
+    void update_runtime_paths(const std::string &rtps) noexcept;
+
+    inline std::string current_directory() noexcept {
+        return m_file_panel->getCurrentDir().toStdString();
+    }
+
+    inline std::string current_item_name() noexcept {
+        return m_file_panel->getCurrentItem().toStdString();
+    }
+
+    inline Statusbar* statusbar() noexcept { return m_statusbar; }
+
+
+    inline Statusbar::Module create_statusbar_module(const std::string &name,
+                                                     const sol::table &options) noexcept {
+        return m_statusbar->Lua__CreateModule(name, options);
+    }
+
+    inline void set_statusbar_modules(const sol::table &table) noexcept {
+        m_statusbar->Lua__SetModules(table);
+    }
+
+    inline void set_statusbar_module_text(const std::string &name,
+                                          const std::string &value) noexcept {
+        m_statusbar->Lua__UpdateModuleText(name, value);
+    }
+
+    inline void toggle_toolbar() noexcept {
+        m_toolbar->setVisible(!m_toolbar->isVisible());
+    }
+
+
+    inline void create_toolbar_button(const std::string &name, const sol::table &opts) noexcept {
+        Lua__CreateToolbarButton(name, opts);
+    }
+
+    inline void set_statusbar_visible(const bool &state) noexcept {
+        ToggleStatusBar(state);
+    }
+
+    inline bool get_statusbar_visible() noexcept {
+        return m_statusbar->isVisible();
+    }
+
+    inline void set_menubar_visible(const bool &state) noexcept {
+        ToggleMenuBar(state);
+    }
+
+    inline bool get_menubar_visible() noexcept {
+        return m_menubar->isVisible();
+    }
+
+    inline void set_toolbar_visible(const bool &state) noexcept {
+        m_toolbar->setVisible(state);
+    }
+
+    inline bool get_toolbar_visible() noexcept {
+        return m_toolbar->isVisible();
+    }
+
+    inline void set_pathbar_visible(const bool &state) noexcept {
+        TogglePathWidget(state);
+    }
+
+    inline bool get_pathbar_visible() noexcept {
+        return m_file_path_widget->isVisible();
+    }
+
+    inline void set_preview_panel_visible(const bool &state) noexcept {
+        TogglePreviewPanel(state);
+    }
+
+    inline bool get_preview_panel_visible() noexcept {
+        return m_preview_panel->isVisible();
+    }
+
+    inline bool get_inputbar_visible() noexcept {
+        return m_inputbar->isVisible();
+    }
 
 protected:
     bool event(QEvent *e) override;
 
 private:
+    void init_default_options() noexcept;
     void initDefaults() noexcept;
     void initToolbar() noexcept;
-    void initNaviLuaAPI() noexcept;
     void onQuit() noexcept;
     void initConfiguration() noexcept;
     void chmodHelper() noexcept;
@@ -316,11 +628,9 @@ private:
     void ProcessCommand(const QString &commandtext) noexcept;
     void generateKeybinds() noexcept;
     void initTabBar() noexcept;
-    /*QStringList getLuaFunctionNames() noexcept;*/
     void addCommandToMacroRegister(const QStringList &commandlist) noexcept;
     void addCommandToMacroRegister(const QString &command) noexcept;
     void cacheThumbnails() noexcept;
-    void update_lua_package_path(const QString &baseDir) noexcept;
 
     QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
@@ -565,18 +875,19 @@ private:
     QDir::SortFlags m_sort_flags = QDir::SortFlag::DirsFirst;
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
-    sol::state lua, m_bookmarks_state;
+    sol::state m_bookmarks_state;
     ShortcutsWidget *m_shortcuts_widget = nullptr;
     QList<Keybind> m_keybind_list;
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
-    QStringList m_default_location_list;
+    QString m_default_dir = "~";
+    bool m_set_default_working_dir = true;
     DriveWidget *m_drives_widget = new DriveWidget(this);
     QStringList m_search_history_list = {};
     TaskManager *m_task_manager = new TaskManager(this);
     TasksWidget *m_tasks_widget = nullptr;
     RegisterWidget *m_register_widget = new RegisterWidget(this);
-    QString m_terminal;
+    QString m_terminal = "kitty";
     QStringList m_macro_register = {};
     QHash<QString, QStringList> m_macro_hash;
     bool m_auto_save_bookmarks = false;
@@ -584,18 +895,17 @@ private:
     HookManager *m_hook_manager = nullptr;
     QClipboard *m_clipboard = QGuiApplication::clipboard();
     QString m_copy_path_join_str = "\n";
-
     QFuture<void> m_thumbnail_cache_future;
     QFutureWatcher<void> *m_thumbnail_cache_future_watcher = new QFutureWatcher<void>(this);
-
     QToolBar *m_toolbar = new QToolBar(this);
     QPushButton *m_toolbar__prev_btn = nullptr;
     QPushButton *m_toolbar__next_btn = nullptr;
     QPushButton *m_toolbar__home_btn = nullptr;
     QPushButton *m_toolbar__parent_btn = nullptr;
     QPushButton *m_toolbar__refresh_btn = nullptr;
-
     QHash<std::string, sol::function> m_registered_lua_func_hash;
-
     QSet<QString> m_runtime_path = {};
+    double m_preview_pane_fraction = -1.0f;
+    bool m_menubar_icons_only = true;
+
 };

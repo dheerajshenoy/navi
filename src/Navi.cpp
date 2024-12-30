@@ -6,33 +6,34 @@
 
 Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
+// Run the function if there is any error due to ``reason``.
+void Navi::Error(const QString &reason) noexcept {
+    m_statusbar->Message(reason);
+    initKeybinds();
+}
+
 void Navi::initThings() noexcept {
+
     initLayout();       // init layout
     initBookmarks();
     initMenubar(); // init menubar
     setupCommandMap();
     initSignalsSlots(); // init signals and slots
-    initNaviLuaAPI();
-    if (m_load_config)
-        initConfiguration();
-    else {
-        initDefaults();
-        initKeybinds();
-    }
+    /*init_default_options();*/
 
-    // Get the current working directory
-    QString currentDir = QDir::currentPath();
+    /*if (m_load_config)*/
+    /*    initConfiguration();*/
+    /*else {*/
+    /*    initDefaults();*/
+    /*    initKeybinds();*/
+    /*}*/
 
+    if (m_default_dir.isNull() || m_default_dir.isEmpty())
+        m_default_dir = QDir::homePath();
+    else if (m_default_dir == ".")
+            m_default_dir = QDir::currentPath();
 
-    if (m_default_location_list.isEmpty())
-        m_file_panel->setCurrentDir("~", true);
-    else {
-        QString location = m_default_location_list.at(0);
-        if (location == ".")
-            location = QDir::currentPath();
-        m_file_panel->setCurrentDir(location, true);
-    }
-
+    m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
@@ -40,22 +41,22 @@ void Navi::initThings() noexcept {
 
 void Navi::initConfiguration() noexcept {
 
-    lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,
-                       sol::lib::os, sol::lib::jit, sol::lib::package);
+    /*lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string,*/
+    /*                   sol::lib::os, sol::lib::jit, sol::lib::package);*/
 
     // Lua's package.path modification
 
-    update_lua_package_path(CONFIG_DIR_PATH);
+    /*update_lua_package_path(CONFIG_DIR_PATH);*/
 
-    try {
-        lua.script_file(m_config_location.toStdString(), sol::load_mode::any);
-    } catch (const sol::error &e) {
-        m_statusbar->Message(QString::fromStdString(e.what()));
-        initKeybinds();
+    /*try {*/
+    /*    lua.script_file(m_config_location.toStdString(), sol::load_mode::any);*/
+    /*} catch (const sol::error &e) {*/
+    /*    m_statusbar->Message(QString::fromStdString(e.what()));*/
+    /*    initKeybinds();*/
+    /*    return;*/
+    /*}*/
 
-        return;
-    }
-
+    /*
     auto model = m_file_panel->model();
 
     // Read the SETTINGS table
@@ -65,14 +66,16 @@ void Navi::initConfiguration() noexcept {
         sol::table settings_table = settings_table_opt.value();
 
         auto default_directory = settings_table["default_directory"].get_or<std::string>("~");
-        m_default_location_list.append(QString::fromStdString(default_directory));
+
+        if (m_set_default_working_dir)
+            m_default_dir = QString::fromStdString(default_directory);
 
         // TERMINAL SETTINGS
         auto terminal = settings_table["terminal"].get_or<std::string>("kitty");
-        m_terminal = QString::fromStdString(terminal);
+        Set_terminal(terminal);
 
         auto copy_path_str = settings_table["copy_path_separator"].get_or<std::string>("\n");
-        m_copy_path_join_str = QString::fromStdString(copy_path_str);
+        Set_copy_path_separator(copy_path_str);
 
         // BOOKMARKS SETTINGS
         sol::optional<sol::table> bookmarks_table_opt =
@@ -81,7 +84,7 @@ void Navi::initConfiguration() noexcept {
         if (bookmarks_table_opt.has_value()) {
             auto bookmarks_table = bookmarks_table_opt.value();
             auto auto_save = bookmarks_table["auto_save"].get_or(false);
-            m_auto_save_bookmarks = auto_save;
+            Set_auto_save_bookmarks(auto_save);
         }
 
         // UI TABLE
@@ -101,43 +104,17 @@ void Navi::initConfiguration() noexcept {
 
 
                 if (icons_only) {
-                    auto style = this->style();
-                    m_toolbar__prev_btn = new QPushButton(style->standardIcon(QStyle::SP_ArrowBack), "");
-                    m_toolbar__next_btn = new QPushButton(style->standardIcon(QStyle::SP_ArrowForward), "");
-                    m_toolbar__home_btn = new QPushButton(QIcon::fromTheme(QIcon::ThemeIcon::GoHome), "");
-                    m_toolbar__parent_btn = new QPushButton(QIcon::fromTheme(QIcon::ThemeIcon::GoUp), "");
-                    m_toolbar__refresh_btn = new QPushButton(QIcon::fromTheme(QIcon::ThemeIcon::ViewRefresh), "");
+                    Set_toolbar_icons_only();
                 } else {
-                    m_toolbar__prev_btn = new QPushButton("Previous");
-                    m_toolbar__next_btn = new QPushButton("Next");
-                    m_toolbar__home_btn = new QPushButton("Home");
-                    m_toolbar__parent_btn = new QPushButton("Parent");
-                    m_toolbar__refresh_btn = new QPushButton("Refresh");
+                    Set_toolbar_text_only();
                 }
 
                 sol::optional<sol::table> layout_opt = toolbar_table["layout"];
 
                 if (layout_opt) {
                     sol::table layout = layout_opt.value();
-
-                    for (size_t i=1; i <= layout.size(); i++) {
-
-                        auto item = layout[i].get<std::string>();
-
-                        if (item == "previous_dir")
-                            m_toolbar->addWidget(m_toolbar__prev_btn);
-                        else if (item == "next_dir")
-                            m_toolbar->addWidget(m_toolbar__next_btn);
-                        else if (item == "parent_dir")
-                            m_toolbar->addWidget(m_toolbar__parent_btn);
-                        else if (item == "home")
-                            m_toolbar->addWidget(m_toolbar__home_btn);
-                        else if (item == "refresh")
-                            m_toolbar->addWidget(m_toolbar__refresh_btn);
-
-                    }
+                    Set_toolbar_layout(layout);
                 }
-
 
                 initToolbar();
             }
@@ -151,10 +128,7 @@ void Navi::initConfiguration() noexcept {
                 TogglePreviewPanel(shown);
 
                 auto fraction = preview_pane["fraction"].get_or(0.5);
-                auto totalSize = m_splitter->width();
-                QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
-                    static_cast<int>(totalSize * fraction)};
-                m_splitter->setSizes(sizes);
+                Set_preview_pane_fraction(fraction);
 
                 auto max_file_size = QString::fromStdString(
                     preview_pane["max_size"].get_or<std::string>("10M"));
@@ -186,47 +160,7 @@ void Navi::initConfiguration() noexcept {
                 ToggleMenuBar(shown);
                 auto icons = menu_bar["icons"].get_or(false);
                 if (icons) {
-                    m_filemenu__new_window->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::WindowNew));
-                    m_filemenu__create_new_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::FolderNew));
-                    m_filemenu__create_new_file->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew));
-                    m_filemenu__close_window->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::WindowClose));
-                    m_filemenu__folder_properties->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
-                    m_viewmenu__refresh->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ViewRefresh));
-                    m_viewmenu__fullscreen->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ViewFullscreen));
-                    m_tools_menu__search->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::SystemSearch));
-                    m_tools_menu__find_files->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditFind));
-                    m_edit_menu__open->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen));
-                    m_edit_menu__copy->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCopy));
-                    m_edit_menu__paste->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditPaste));
-                    m_edit_menu__delete->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditDelete));
-                    m_edit_menu__item_property->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
-                    m_edit_menu__cut->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCut));
-                    m_edit_menu__select_all->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditSelectAll));
-                    m_viewmenu__sort_ascending->setIcon(QIcon::fromTheme("view-sort-ascending"));
-                    m_viewmenu__sort_descending->setIcon(QIcon::fromTheme("view-sort-descending"));
-                    m_edit_menu__trash->setIcon(QIcon::fromTheme("user-trash"));
-                    m_bookmarks_menu__bookmarks_list_menu->setIcon(QIcon::fromTheme("user-bookmarks"));
-                    m_bookmarks_menu__add->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
-                    m_bookmarks_menu__remove->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ListRemove));
-                    m_go_menu__connect_to_server->setIcon(QIcon::fromTheme("network-server"));
-                    m_go_menu__home_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoHome));
-                    m_go_menu__parent_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoUp));
-                    m_go_menu__previous_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoPrevious));
-                    m_go_menu__next_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
-                    m_viewmenu__filter->setIcon(QIcon::fromTheme("view-filter"));
-                    m_edit_menu__rename->setIcon(QIcon(":resources/images/pencil-icon.svg"));
-                    m_edit_menu__copy_path->setIcon(QIcon(":resources/images/location.svg"));
-                    m_filemenu__create_new_menu->setIcon(QIcon(":resources/images/plus.svg"));
-                    m_edit_menu__select_inverse->setIcon(QIcon(":resources/images/reverse.svg"));
-                    m_viewmenu__sort_menu->setIcon(QIcon(":resources/images/sort.svg"));
-                    m_viewmenu__messages->setIcon(QIcon(":resources/images/messages.svg"));
-                    m_viewmenu__messages->setIcon(QIcon(":resources/images/messages.svg"));
-                    m_viewmenu__tasks_widget->setIcon(QIcon(":resources/images/clock.svg"));
-                    m_viewmenu__menubar->setIcon(QIcon(":resources/images/menu.svg"));
-                    m_viewmenu__statusbar->setIcon(QIcon(":resources/images/statusbar.svg"));
-                    m_viewmenu__preview_panel->setIcon(
-                        QIcon(":resources/images/preview.svg"));
-                    m_help_menu__about->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
+                    Set_menubar_icons();
                 }
             }
 
@@ -543,45 +477,8 @@ void Navi::initConfiguration() noexcept {
         }
     }
 
-    // Read the KEYBINDINGS table
-    sol::optional<sol::table> keybindings_table_opt = lua["KEYBINDINGS"];
+    */
 
-    if (keybindings_table_opt) {
-
-        sol::table keybindings_table = keybindings_table_opt.value();
-        m_keybind_list.reserve(keybindings_table.size());
-        for (std::size_t i = 1; i <= keybindings_table.size(); i++) {
-            sol::table entry = keybindings_table[i];
-            if (!entry)
-                continue;
-
-            auto key = QString::fromStdString(entry["key"].get_or<std::string>(""));
-
-            if (key.isEmpty() || key.isNull())
-                continue;
-
-            auto command =
-                QString::fromStdString(entry["command"].get_or<std::string>(""));
-            auto desc = QString::fromStdString(entry["desc"].get_or<std::string>(""));
-
-            if (command.isEmpty() || command.isNull())
-                continue;
-
-            Keybind kb;
-            kb.key = key;
-            kb.command = command;
-            kb.desc = desc;
-
-            m_keybind_list.append(kb);
-        }
-        generateKeybinds();
-    }
-
-    /*auto funcs = getLuaFunctionNames();*/
-    /**/
-    /*if (!funcs.isEmpty()) {*/
-    /*    m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::LUA_FUNCTIONS, funcs);*/
-    /*}*/
 }
 
 // Function to get all global Lua function names using Sol2
@@ -1052,7 +949,7 @@ void Navi::setupCommandMap() noexcept {
         SaveBookmarkFile();
     };
 
-    commandMap["search"] = [&](const QStringList &args) { Search(); };
+    commandMap["search"] = [&](const QStringList &args) { Search(QString()); };
 
     commandMap["search-regex"] = [&](const QStringList &args) { SearchRegex(); };
 
@@ -1369,8 +1266,8 @@ void Navi::initLayout() noexcept {
     m_statusbar = new Statusbar(this);
     m_file_panel = new FilePanel(m_inputbar, m_statusbar, m_hook_manager, m_task_manager, this);
 
-    m_preview_panel = new PreviewPanel();
-    m_file_path_widget = new FilePathWidget();
+    m_preview_panel = new PreviewPanel(this);
+    m_file_path_widget = new FilePathWidget(this);
     m_log_buffer = new MessagesBuffer(this);
     m_marks_buffer = new MarksBuffer(this);
 
@@ -1460,7 +1357,7 @@ void Navi::initKeybinds() noexcept {
     connect(kb_delete_items, &QShortcut::activated, this,
             [&]() { DeleteDWIM(); });
 
-    connect(kb_search, &QShortcut::activated, this, [&]() { Search(); });
+    connect(kb_search, &QShortcut::activated, this, [&]() { Search(QString()); });
 
     connect(kb_search_next, &QShortcut::activated, this, [&]() { SearchNext(); });
 
@@ -1495,7 +1392,7 @@ void Navi::ExecuteExtendedCommand() noexcept {
 }
 
 void Navi::initMenubar() noexcept {
-    m_menubar = new Menubar();
+    m_menubar = new Menubar(this);
     this->setMenuBar(m_menubar);
 
     m_filemenu = new QMenu("&File");
@@ -1884,15 +1781,25 @@ void Navi::ToggleStatusBar() noexcept {
     }
 }
 
-void Navi::Filter() noexcept {
-    QString filterString = m_inputbar->getInput("Filter String");
-    if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
-        ResetFilter();
+void Navi::Filter(const QString &filter_string) noexcept {
+    if (filter_string.isEmpty() || filter_string.isNull()) {
+        QString filterString = m_inputbar->getInput("Filter String");
+        if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
+            ResetFilter();
+        } else {
+            m_file_panel->Filters(filterString);
+            m_statusbar->SetFilterMode(true);
+            m_viewmenu__filter->setChecked(true);
+        }
     } else {
-        m_file_panel->Filters(filterString);
+        m_file_panel->Filters(filter_string);
         m_statusbar->SetFilterMode(true);
         m_viewmenu__filter->setChecked(true);
     }
+}
+
+void Navi::filter(const std::string &_filter_string) noexcept {
+    Filter(QString::fromStdString(_filter_string));
 }
 
 void Navi::ResetFilter() noexcept {
@@ -1929,15 +1836,6 @@ Navi::~Navi() {
         SaveBookmarkFile();
     }
 
-    delete m_bookmark_manager;
-    delete m_inputbar;
-    delete m_statusbar;
-    delete m_file_panel;
-    delete m_preview_panel;
-    delete m_file_path_widget;
-    delete m_log_buffer;
-    delete m_marks_buffer;
-    delete m_menubar;
 }
 
 void Navi::chmodHelper() noexcept {
@@ -2058,12 +1956,10 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
         m_load_config = false;
     }
 
-    if (parser.is_used("files")) {
-        auto paths = parser.get<std::vector<std::string>>("files");
-
-        for (const auto &path : paths) {
-            m_default_location_list.append(QString::fromStdString(path));
-        }
+    try {
+        m_set_default_working_dir = false;
+        Set_default_directory(QString::fromStdString(parser.get<std::vector<std::string>>("files").at(0)));
+    } catch (std::logic_error &e) {
     }
 }
 
@@ -2116,7 +2012,6 @@ void Navi::EditMacro() noexcept {}
 
 void Navi::ListMacro() noexcept {
     for (const auto &macro : m_macro_hash.values()) {
-        qDebug() << macro;
     }
 }
 
@@ -2162,6 +2057,43 @@ void Navi::MountDrive(const QString &driveName) noexcept {
     m_hook_manager->triggerHook("drive_mounted");
 }
 
+// Lua api for mounting drive
+bool Navi::mount_drive(const std::string &drive_name) noexcept {
+
+    if (drive_name.empty())
+        return false;
+
+    QProcess process;
+
+    // Assemble the command and arguments
+    QString program = "udisksctl";
+    QStringList arguments;
+    arguments << "mount" << "-b" << QString::fromStdString(drive_name);
+
+    // Start the process
+    process.start(program, arguments);
+
+    // Wait for the process to finish
+    if (!process.waitForFinished()) {
+        return false;
+    }
+
+    // Get the output of the command
+    QString output = process.readAllStandardOutput();
+    QString error = process.readAllStandardError();
+
+    if (!output.isEmpty()) {
+        m_hook_manager->triggerHook("drive_mounted");
+        return true;
+    }
+
+    if (!error.isEmpty()) {
+        return false;
+    }
+
+    return false;
+}
+
 void Navi::UnmountDrive(const QString &driveName) noexcept {
     if (driveName.isEmpty() || driveName.isNull()) {
         m_statusbar->Message("Drive name empty!", MessageType::ERROR);
@@ -2193,6 +2125,7 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
     if (!output.isEmpty()) {
         m_statusbar->Message(
             QString("Unmount Successful (%1)").arg(output.trimmed()));
+        m_hook_manager->triggerHook("drive_unmounted");
         return;
     }
 
@@ -2200,15 +2133,71 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
         m_statusbar->Message(QString("Unmount error (%1)").arg(error.trimmed()),
                              MessageType::ERROR);
     }
-
-    m_hook_manager->triggerHook("drive_unmounted");
 }
 
-void Navi::Search() noexcept {
+
+bool Navi::unmount_drive(const std::string &drive_name) noexcept {
+    if (drive_name.empty())
+        return false;
+
+    QProcess process;
+
+    // Assemble the command and arguments
+    QString program = "udisksctl";
+    QStringList arguments;
+    arguments << "unmount" << "-b" << QString::fromStdString(drive_name);
+
+    // Start the process
+    process.start(program, arguments);
+
+    // Wait for the process to finish
+    if (!process.waitForFinished()) {
+        return false;
+    }
+
+    // Get the output of the command
+    QString output = process.readAllStandardOutput();
+    QString error = process.readAllStandardError();
+
+    if (!output.isEmpty()) {
+        m_hook_manager->triggerHook("drive_unmounted");
+        return true;
+    }
+
+    if (!error.isEmpty()) {
+        m_statusbar->Message(QString("Unmount error (%1)").arg(error.trimmed()),
+                             MessageType::ERROR);
+        return false;
+    }
+
+    return false;
+}
+
+void Navi::Search(const QString &term) noexcept {
     m_inputbar->disableCommandCompletions();
-    QString searchText = m_inputbar->getInput("Search");
-    m_file_panel->Search(searchText);
-    m_search_history_list.append(searchText);
+    if (!(term.isEmpty() || term.isNull())) {
+        m_file_panel->Search(term);
+        m_search_history_list.append(term);
+    } else {
+        QString searchText = m_inputbar->getInput("Search");
+        m_file_panel->Search(searchText);
+        m_search_history_list.append(searchText);
+    }
+    m_inputbar->enableCommandCompletions();
+}
+
+void Navi::Search(const std::string &_term) noexcept {
+    m_inputbar->disableCommandCompletions();
+    QString term = QString::fromStdString(_term);
+    if (!(term.isNull() || term.isEmpty())) {
+        m_file_panel->Search(term);
+        m_search_history_list.append(term);
+    } else {
+        QString searchText = m_inputbar->getInput("Search");
+        m_file_panel->Search(searchText);
+        m_search_history_list.append(searchText);
+    }
+    m_inputbar->enableCommandCompletions();
 }
 
 void Navi::SearchRegex() noexcept {
@@ -2339,8 +2328,38 @@ void Navi::Execute_lua_function(const QStringList &args) noexcept {
         return;
 
     if (m_registered_lua_func_hash.contains(args.at(0).toStdString())) {
-        m_registered_lua_func_hash[args.at(0).toStdString()]();
+        try {
+            m_registered_lua_func_hash[args.at(0).toStdString()]();
+        } catch (sol::error &e) {
+            m_statusbar->Message(e.what(), MessageType::WARNING);
+        }
     }
+}
+
+QString Navi::GetInput(const QString &prompt,
+                       const QString &title,
+                       const QString &default_text) noexcept {
+    bool ok;
+    QString result = QInputDialog::getText(this, title, prompt, QLineEdit::Normal, default_text, &ok);
+    if (ok) {
+        return result;
+    }
+
+    return QString();
+}
+
+QString Navi::GetInput(const QString &prompt,
+                       const QString &title,
+                 const QStringList &choice,
+                 const int &default_choice) noexcept {
+
+    bool ok;
+    QString result = QInputDialog::getItem(this, title, prompt, choice, default_choice, false, &ok);
+
+    if (ok)
+        return result;
+
+    return QString();
 }
 
 void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
@@ -2416,6 +2435,8 @@ void Navi::UnmarkItemsLocal() noexcept { m_file_panel->UnmarkItemsLocal(); }
 
 void Navi::UnmarkItemsGlobal() noexcept { m_file_panel->UnmarkItemsGlobal(); }
 
+void Navi::UnmarkDWIM() noexcept { m_file_panel->UnmarkDWIM(); }
+
 void Navi::ForceUpdate() noexcept { m_file_panel->ForceUpdate(); }
 
 void Navi::ChmodItem() noexcept { m_file_panel->ChmodItem(); }
@@ -2458,20 +2479,28 @@ void Navi::NewFolder(const QStringList &names) noexcept {
     m_file_panel->NewFolder(names);
 }
 
+void Navi::new_folder(const std::vector<std::string> &_folders) noexcept {
+    QStringList folders = utils::stringListFromVector(_folders);
+    m_file_panel->NewFolder(folders);
+}
+
 void Navi::NewFile(const QStringList &names) noexcept {
     m_file_panel->NewFile(names);
+}
+
+void Navi::new_file(const std::vector<std::string> &_files) noexcept {
+    QStringList files = utils::stringListFromVector(_files);
+    m_file_panel->NewFile(files);
 }
 
 void Navi::PasteItems() noexcept { m_file_panel->PasteItems(); }
 
 void Navi::addCommandToMacroRegister(const QStringList &commandlist) noexcept {
     m_macro_register.append(commandlist.join(" "));
-    qDebug() << m_macro_register;
 }
 
 void Navi::addCommandToMacroRegister(const QString &command) noexcept {
     m_macro_register.append(command);
-    qDebug() << m_macro_register;
 }
 
 void Navi::GotoItem(const int &num) noexcept { m_file_panel->GotoItem(num); }
@@ -2491,7 +2520,19 @@ void Navi::PlayMacro() noexcept {
 
 void Navi::MarkRegex() noexcept { m_file_panel->MarkRegex(); }
 
+void Navi::mark_regex(const std::string &regex) noexcept {
+    m_file_panel->MarkRegex(QString::fromStdString(regex));
+}
+
+void Navi::highlight(const std::string &item_name) noexcept {
+    m_file_panel->HighlightItemWithBaseName(QString::fromStdString(item_name));
+}
+
 void Navi::UnmarkRegex() noexcept { m_file_panel->UnmarkRegex(); }
+
+void Navi::unmark_regex(const std::string &term) noexcept {
+    m_file_panel->UnmarkRegex(QString::fromStdString(term));
+}
 
 void Navi::ChangeDirectory(const QString &path) noexcept {
     if (path.isEmpty()) {
@@ -2500,6 +2541,16 @@ void Navi::ChangeDirectory(const QString &path) noexcept {
             m_file_panel->setCurrentDir(path);
     } else {
         m_file_panel->setCurrentDir(path);
+    }
+}
+
+void Navi::change_directory(const std::string &path) noexcept {
+    if (path.empty()) {
+        QString path = m_inputbar->getInput("Enter path to cd");
+        if (!path.isEmpty())
+            m_file_panel->setCurrentDir(path);
+    } else {
+        m_file_panel->setCurrentDir(QString::fromStdString(path));
     }
 }
 
@@ -2541,6 +2592,8 @@ void Navi::CopyPath(const QString &separator) noexcept {
         auto indexes = selectionModel->selectedIndexes();
         QStringList itemPathList =
             m_file_panel->model()->getFilePathsFromIndexList(indexes);
+
+        // TODO: index list returns other columns
 
         if (separator.isEmpty())
             m_clipboard->setText(itemPathList.join(m_copy_path_join_str));
@@ -2798,27 +2851,27 @@ Navi::ToolbarItem Navi::Lua__CreateToolbarButton(const std::string &name,
     return item;
 }
 
-
-sol::table Navi::Lua__list_runtime_paths() noexcept {
+sol::table Navi::list_runtime_paths(sol::this_state L) noexcept {
+    sol::state_view lua(L);
     sol::table table = lua.create_table();
-    QStringList rtps = m_runtime_path.values();
-    for (int i=0; i < m_runtime_path.size(); i++) {
+    auto rtps = m_runtime_path.values();
+
+    for (int i=0; i < rtps.size(); i++)
         table[i + 1] = rtps.at(i).toStdString();
-    }
 
     return table;
 }
 
-void Navi::update_lua_package_path(const QString &baseDir) noexcept {
+void Navi::update_lua_package_path(sol::state &lua) noexcept {
     QStringList visitedDirs;  // To track directories already added to package.path
-    
+
     lua.script(R"(
-        package = package or {}
-        package.path = package.path or ""
-    )");
+               package = package or {}
+               package.path = package.path or ""
+               )");
 
     // Create a QDirIterator to iterate through all subdirectories and files
-    QDirIterator it(baseDir, QStringList() << "*.lua", QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(CONFIG_DIR_PATH, QStringList() << "*.lua", QDir::Files, QDirIterator::Subdirectories);
 
     while (it.hasNext()) {
         QString filePath = it.next();
@@ -2833,7 +2886,7 @@ void Navi::update_lua_package_path(const QString &baseDir) noexcept {
     }
 }
 
-void Navi::Lua__keymap_set(const sol::table &table) noexcept {
+void Navi::Lua__keymap_set_from_table(const sol::table &table) noexcept {
 
     if (!table["key"]) {
         m_statusbar->Message("No key found in the keybinding table", MessageType::WARNING);
@@ -2887,14 +2940,154 @@ void Navi::Lua__unregister_lua_function(const std::string &name) noexcept {
     m_registered_lua_func_hash.remove(name);
 }
 
-sol::table Navi::Lua__registered_lua_functions() noexcept {
-    sol::table table;
+sol::table Navi::Lua__registered_lua_functions(sol::state &lua) noexcept {
+    sol::table table = lua.create_table();
 
-    for (auto it = m_registered_lua_func_hash.begin(); it != m_registered_lua_func_hash.end(); ++it) {
-        std::string key = it.key();
-        sol::function lua_func = it.value();
-        table[key] = lua_func;
-    }
+    for (auto it = m_registered_lua_func_hash.cbegin(); it != m_registered_lua_func_hash.cend(); it++)
+         table[it.key()] = it.value();
 
     return table;
+}
+
+void Navi::Set_default_directory(const QString &dir) noexcept {
+    m_default_dir = dir;
+}
+
+void Navi::Set_default_directory(const std::string &dir) noexcept {
+    m_default_dir = QString::fromStdString(dir);
+}
+
+void Navi::init_default_options() noexcept {
+    Set_terminal("kitty");
+}
+
+void Navi::Set_auto_save_bookmarks(const bool &state) noexcept {
+    m_auto_save_bookmarks = state;
+}
+
+void Navi::Set_toolbar_icons_only() noexcept {
+    auto style = this->style();
+    m_toolbar__prev_btn = new QPushButton(style->standardIcon(QStyle::SP_ArrowBack), "");
+    m_toolbar__next_btn = new QPushButton(style->standardIcon(QStyle::SP_ArrowForward), "");
+    m_toolbar__home_btn = new QPushButton(QIcon::fromTheme(QIcon::ThemeIcon::GoHome), "");
+    m_toolbar__parent_btn = new QPushButton(QIcon::fromTheme(QIcon::ThemeIcon::GoUp), "");
+    m_toolbar__refresh_btn = new QPushButton(QIcon::fromTheme(QIcon::ThemeIcon::ViewRefresh), "");
+}
+
+void Navi::Set_toolbar_text_only() noexcept {
+    m_toolbar__prev_btn = new QPushButton("Previous");
+    m_toolbar__next_btn = new QPushButton("Next");
+    m_toolbar__home_btn = new QPushButton("Home");
+    m_toolbar__parent_btn = new QPushButton("Parent");
+    m_toolbar__refresh_btn = new QPushButton("Refresh");
+}
+
+void Navi::Set_toolbar_layout(const sol::table &layout) noexcept {
+
+    for (size_t i=1; i <= layout.size(); i++) {
+
+        auto item = layout[i].get<std::string>();
+
+        if (item == "previous_dir")
+            m_toolbar->addWidget(m_toolbar__prev_btn);
+        else if (item == "next_dir")
+            m_toolbar->addWidget(m_toolbar__next_btn);
+        else if (item == "parent_dir")
+            m_toolbar->addWidget(m_toolbar__parent_btn);
+        else if (item == "home")
+            m_toolbar->addWidget(m_toolbar__home_btn);
+        else if (item == "refresh")
+            m_toolbar->addWidget(m_toolbar__refresh_btn);
+
+    }
+}
+
+void Navi::Set_menubar_icons() noexcept {
+    m_menubar_icons_only = true;
+    m_filemenu__new_window->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::WindowNew));
+    m_filemenu__create_new_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::FolderNew));
+    m_filemenu__create_new_file->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew));
+    m_filemenu__close_window->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::WindowClose));
+    m_filemenu__folder_properties->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
+    m_viewmenu__refresh->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ViewRefresh));
+    m_viewmenu__fullscreen->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ViewFullscreen));
+    m_tools_menu__search->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::SystemSearch));
+    m_tools_menu__find_files->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditFind));
+    m_edit_menu__open->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen));
+    m_edit_menu__copy->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCopy));
+    m_edit_menu__paste->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditPaste));
+    m_edit_menu__delete->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditDelete));
+    m_edit_menu__item_property->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
+    m_edit_menu__cut->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCut));
+    m_edit_menu__select_all->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditSelectAll));
+    m_viewmenu__sort_ascending->setIcon(QIcon::fromTheme("view-sort-ascending"));
+    m_viewmenu__sort_descending->setIcon(QIcon::fromTheme("view-sort-descending"));
+    m_edit_menu__trash->setIcon(QIcon::fromTheme("user-trash"));
+    m_bookmarks_menu__bookmarks_list_menu->setIcon(QIcon::fromTheme("user-bookmarks"));
+    m_bookmarks_menu__add->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
+    m_bookmarks_menu__remove->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ListRemove));
+    m_go_menu__connect_to_server->setIcon(QIcon::fromTheme("network-server"));
+    m_go_menu__home_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoHome));
+    m_go_menu__parent_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoUp));
+    m_go_menu__previous_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoPrevious));
+    m_go_menu__next_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
+    m_viewmenu__filter->setIcon(QIcon::fromTheme("view-filter"));
+    m_edit_menu__rename->setIcon(QIcon(":resources/images/pencil-icon.svg"));
+    m_edit_menu__copy_path->setIcon(QIcon(":resources/images/location.svg"));
+    m_filemenu__create_new_menu->setIcon(QIcon(":resources/images/plus.svg"));
+    m_edit_menu__select_inverse->setIcon(QIcon(":resources/images/reverse.svg"));
+    m_viewmenu__sort_menu->setIcon(QIcon(":resources/images/sort.svg"));
+    m_viewmenu__messages->setIcon(QIcon(":resources/images/messages.svg"));
+    m_viewmenu__messages->setIcon(QIcon(":resources/images/messages.svg"));
+    m_viewmenu__tasks_widget->setIcon(QIcon(":resources/images/clock.svg"));
+    m_viewmenu__menubar->setIcon(QIcon(":resources/images/menu.svg"));
+    m_viewmenu__statusbar->setIcon(QIcon(":resources/images/statusbar.svg"));
+    m_viewmenu__preview_panel->setIcon(
+        QIcon(":resources/images/preview.svg"));
+    m_help_menu__about->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
+}
+
+void Navi::Set_preview_pane_fraction(const double &fraction) noexcept {
+    auto totalSize = m_splitter->width();
+    m_preview_pane_fraction = fraction;
+    QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
+        static_cast<int>(totalSize * fraction)};
+    m_splitter->setSizes(sizes);
+}
+
+double Navi::Preview_pane_fraction() noexcept {
+    return m_preview_pane_fraction;
+}
+
+void Navi::update_runtime_paths(const std::string &_rtps) noexcept {
+    QString rtps = QString::fromStdString(_rtps);
+    QStringList rtps_list = rtps.split(";");
+    m_runtime_path = QSet<QString>(rtps_list.constBegin(), rtps_list.constEnd());
+}
+
+void Navi::execute_shell_command(const std::string &_command,
+                           std::vector<std::string> &_args) noexcept {
+    QStringList args = utils::stringListFromVector(_args);
+    SpawnProcess(QString::fromStdString(_command), args);
+}
+
+
+void Navi::set_inputbar_props(const sol::table &table) noexcept {
+
+    if (m_inputbar)
+        qDebug() << table["font_size"].get<int>();
+
+    if (m_inputbar) {
+        if (table["font_size"].valid())
+            m_inputbar->set_font_size(table["font_size"].get<int>());
+
+        if (table["foreground"].valid())
+            m_inputbar->setForeground(table["foreground"].get<std::string>());
+
+        if (table["background"].valid())
+            m_inputbar->setBackground(table["background"].get<std::string>());
+
+        if (table["font"].valid())
+            m_inputbar->setFontFamily(table["font"].get<std::string>());
+    }
 }

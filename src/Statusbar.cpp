@@ -360,5 +360,17 @@ void Statusbar::Lua__SetModules(const sol::table &table) noexcept {
                 Lua__AddModule(module.second.as<Statusbar::Module>());
             }
         }
+
+        m_modules = table;
     }
+}
+
+sol::table Statusbar::Lua__Get_modules() noexcept {
+    return m_modules;
+}
+
+void Statusbar::set_font_size(const int &size) noexcept {
+    QFont _font = this->font();
+    _font.setPixelSize(size);
+    setFont(_font);
 }
