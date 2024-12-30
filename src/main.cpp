@@ -3,7 +3,7 @@
 #include "argparse.hpp"
 #include "utils.hpp"
 
-constexpr std::string VERSION = "1.0";
+constexpr std::string VERSION = "1.2";
 // Config related things
 
 #include "API.hpp"
