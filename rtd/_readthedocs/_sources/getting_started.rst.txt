@@ -51,7 +51,6 @@ Inside the ``init.lua`` file you can do something like:
 
    require("keymaps") -- we just include and load keymaps here without using whatever is inside.
 
-
 Using Navi
 ++++++++++
 

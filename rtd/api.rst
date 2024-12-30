@@ -105,9 +105,9 @@ statusbar
        Toggles the visibility state of the menubar.
        :return: ``void``
 
-.. function:: toggle(state: bool)
+.. data :: visible (state: bool)
 
-   Toggles the menubar with the state *state*.
+   Visibility of the menubar
 
    :param bool state: Visibility state of the menubar.
    :return: ``void``
@@ -236,12 +236,12 @@ toolbar
 
     :return: ``void``
 
-.. function:: toggle(state: bool)
+.. data :: visible (state: bool)
 
-    Toggles the menubar with the state *state*.
+   Visibility of the menubar
 
-    :param bool state: Visibility state of the menubar
-    :return: ``void``
+   :param bool state: Visibility state of the menubar.
+   :return: ``void``
 
 .. data:: ToolbarItem
 
@@ -369,13 +369,12 @@ Menubar table
 
     :rtype: ``void``
 
-.. function:: toggle(state: bool)
+.. data :: visible (state: bool)
 
-    Toggles the menubar with the state *state*.
+   Visibility of the menubar
 
-    :param bool state: Visibility state of the menubar
-    :return: ``void``
-
+   :param bool state: Visibility state of the menubar.
+   :return: ``void``
 
 .. function:: add_menu(menu_item: MenuItem)
 
