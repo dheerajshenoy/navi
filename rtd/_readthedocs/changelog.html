@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search &mdash; Navi  documentation</title>
+  <title>Navi Changelogs &mdash; Navi  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -19,10 +19,9 @@
         <script src="_static/doctools.js?v=9bcbadda"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
-    <script src="_static/searchtools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Gallery" href="gallery.html" />
     <link href="_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -42,7 +41,7 @@
                 1.2
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -50,13 +49,18 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lua_scripting.html">Lua scripting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Navi Changelogs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Navi Changelogs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-30-december-2024">v1.2 (30 December 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-1-november-2024">v1.1 (November 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-0-october-2024">v1.0 (October 2024)</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -73,8 +77,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Search</li>
+      <li class="breadcrumb-item active">Navi Changelogs</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="_sources/changelog.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -82,22 +87,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <section id="navi-changelogs">
+<h1>Navi Changelogs<a class="headerlink" href="#navi-changelogs" title="Link to this heading"></a></h1>
+<p>The changelogs for Navi along with their version is mentioned in the reverse chronological order below:</p>
+<section id="v1-2-30-december-2024">
+<h2>v1.2 (30 December 2024)<a class="headerlink" href="#v1-2-30-december-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Re-wrote the entire lua API to support getters and setters for options.</p></li>
+<li><p>API is written in lua and interfaces to C++ rather than the other way around.</p></li>
+<li><p>removed <code class="xref py py-func docutils literal notranslate"><span class="pre">toggle()</span></code> for UI elements</p></li>
+</ul>
+</section>
+<section id="v1-1-november-2024">
+<h2>v1.1 (November 2024)<a class="headerlink" href="#v1-1-november-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added lua api</p></li>
+</ul>
+</section>
+<section id="v1-0-october-2024">
+<h2>v1.0 (October 2024)<a class="headerlink" href="#v1-0-october-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added basic file manager features</p></li>
+</ul>
+<p><strong>Versions before 1.0 isn’t recorded.</strong></p>
+</section>
+</section>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gallery.html" class="btn btn-neutral float-left" title="Gallery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
@@ -119,14 +140,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-  <script>
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script id="searchindexloader"></script>
-   
-
+  </script> 
 
 </body>
 </html>

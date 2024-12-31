@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Navi 0.1 documentation</title>
+  <title>Index &mdash; Navi  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=9bcbadda"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -35,6 +35,9 @@
           <a href="index.html" class="icon icon-home">
             Navi
           </a>
+              <div class="version">
+                1.2
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -50,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="lua_scripting.html">Lua scripting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Navi Changelogs</a></li>
 </ul>
 
         </div>
@@ -287,6 +291,10 @@
 </li>
         <li><a href="api.html#module-navi.ui.menubar">navi.ui.menubar</a>
 </li>
+        <li><a href="api.html#module-navi.ui.pathbar">navi.ui.pathbar</a>
+</li>
+        <li><a href="api.html#module-navi.ui.preview_panel">navi.ui.preview_panel</a>
+</li>
         <li><a href="api.html#module-navi.ui.statusbar">navi.ui.statusbar</a>
 </li>
         <li><a href="api.html#module-navi.ui.toolbar">navi.ui.toolbar</a>
@@ -350,8 +358,6 @@
         <li><a href="api.html#module-navi.shell">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     navi.ui
 
@@ -359,6 +365,8 @@
         <li><a href="api.html#module-navi.ui">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     navi.ui.context_menu
 
@@ -371,6 +379,20 @@
 
       <ul>
         <li><a href="api.html#module-navi.ui.menubar">module</a>
+</li>
+      </ul></li>
+      <li>
+    navi.ui.pathbar
+
+      <ul>
+        <li><a href="api.html#module-navi.ui.pathbar">module</a>
+</li>
+      </ul></li>
+      <li>
+    navi.ui.preview_panel
+
+      <ul>
+        <li><a href="api.html#module-navi.ui.preview_panel">module</a>
 </li>
       </ul></li>
       <li>
@@ -397,13 +419,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#navi.api.parent_dir">parent_dir() (in module navi.api)</a>
 </li>
-      <li><a href="api.html#navi.ui.pathbar">pathbar() (in module navi.ui)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#navi.api.prev_item">prev_item() (in module navi.api)</a>
-</li>
-      <li><a href="api.html#navi.ui.preview_panel">preview_panel() (in module navi.ui)</a>
 </li>
       <li><a href="api.html#navi.api.pwd">pwd() (in module navi.api)</a>
 </li>
@@ -462,15 +480,19 @@
       <li><a href="api.html#navi.ui.menubar.toggle">toggle() (in module navi.ui.menubar)</a>
 
       <ul>
+        <li><a href="api.html#navi.ui.pathbar.toggle">(in module navi.ui.pathbar)</a>
+</li>
+        <li><a href="api.html#navi.ui.preview_panel.toggle">(in module navi.ui.preview_panel)</a>
+</li>
         <li><a href="api.html#navi.ui.statusbar.toggle">(in module navi.ui.statusbar)</a>
 </li>
         <li><a href="api.html#navi.ui.toolbar.toggle">(in module navi.ui.toolbar)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#navi.api.toggle_mark">toggle_mark() (in module navi.api)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#navi.api.toggle_mark">toggle_mark() (in module navi.api)</a>
+</li>
       <li><a href="api.html#navi.api.toggle_mark_dwim">toggle_mark_dwim() (in module navi.api)</a>
 </li>
       <li><a href="api.html#navi.ui.toolbar.ToolbarItem">ToolbarItem (in module navi.ui.toolbar)</a>
@@ -506,6 +528,8 @@
       <li><a href="api.html#navi.ui.menubar.visible">visible (in module navi.ui.menubar)</a>
 
       <ul>
+        <li><a href="api.html#navi.ui.preview_panel.visible">(in module navi.ui.preview_panel)</a>
+</li>
         <li><a href="api.html#navi.ui.statusbar.visible">(in module navi.ui.statusbar)</a>
 </li>
         <li><a href="api.html#navi.ui.toolbar.visible">(in module navi.ui.toolbar)</a>

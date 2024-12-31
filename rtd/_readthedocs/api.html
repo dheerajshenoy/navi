@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Navi Lua API &mdash; Navi 0.1 documentation</title>
+  <title>Navi Lua API &mdash; Navi  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=9bcbadda"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -38,6 +38,9 @@
           <a href="index.html" class="icon icon-home">
             Navi
           </a>
+              <div class="version">
+                1.2
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -58,8 +61,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#navi.ui.marks"><code class="docutils literal notranslate"><span class="pre">marks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.ui.shortcuts"><code class="docutils literal notranslate"><span class="pre">shortcuts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.ui.messages"><code class="docutils literal notranslate"><span class="pre">messages()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#navi.ui.preview_panel"><code class="docutils literal notranslate"><span class="pre">preview_panel()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#navi.ui.pathbar"><code class="docutils literal notranslate"><span class="pre">pathbar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.preview_panel">Preview Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.pathbar">Pathbar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.pathbar.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#context-menu">context_menu</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.context_menu.create"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
 </ul>
@@ -181,6 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Navi Changelogs</a></li>
 </ul>
 
         </div>
@@ -296,9 +307,11 @@
 </dl>
 </dd></dl>
 
+<section id="module-navi.ui.preview_panel">
+<span id="preview-panel"></span><h3>Preview Panel<a class="headerlink" href="#module-navi.ui.preview_panel" title="Link to this heading"></a></h3>
 <dl class="py function">
-<dt class="sig sig-object py" id="navi.ui.preview_panel">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">preview_panel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.preview_panel" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="navi.ui.preview_panel.toggle">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.preview_panel.</span></span><span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.preview_panel.toggle" title="Link to this definition"></a></dt>
 <dd><p>Toggles the preview pane.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -307,9 +320,26 @@
 </dl>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.preview_panel.visible">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.preview_panel.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#navi.ui.preview_panel.visible" title="Link to this definition"></a></dt>
+<dd><p>Visibility of preview panel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>true</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-navi.ui.pathbar">
+<span id="pathbar"></span><h3>Pathbar<a class="headerlink" href="#module-navi.ui.pathbar" title="Link to this heading"></a></h3>
 <dl class="py function">
-<dt class="sig sig-object py" id="navi.ui.pathbar">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">pathbar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.pathbar" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="navi.ui.pathbar.toggle">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.pathbar.</span></span><span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.pathbar.toggle" title="Link to this definition"></a></dt>
 <dd><p>Toggles the path bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -318,6 +348,7 @@
 </dl>
 </dd></dl>
 
+</section>
 <section id="context-menu">
 <h3>context_menu<a class="headerlink" href="#context-menu" title="Link to this heading"></a></h3>
 <blockquote>
@@ -344,14 +375,14 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="navi.ui.statusbar.visible">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.statusbar.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.statusbar.visible" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">navi.ui.statusbar.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#navi.ui.statusbar.visible" title="Link to this definition"></a></dt>
 <dd><p>Visibility of the menubar</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<em>bool</em>) – Visibility state of the menubar.</p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>true</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -402,8 +433,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dd><blockquote>
 <div><p>List of module names to add to the statusbar.</p>
 <p>There are standard modules which can be added to the statusbar. Their names are mentioned below.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
 <p>When defining custom modules be mindful while naming them and do not use the standard module names.</p>
 </div>
 <p><strong>Standard module names</strong></p>
@@ -531,14 +562,14 @@ The module thus created can be used in <a class="reference internal" href="#navi
 
 <dl class="py data">
 <dt class="sig sig-object py" id="navi.ui.toolbar.visible">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.toolbar.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.toolbar.visible" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">navi.ui.toolbar.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#navi.ui.toolbar.visible" title="Link to this definition"></a></dt>
 <dd><p>Visibility of the menubar</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<em>bool</em>) – Visibility state of the menubar.</p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>true</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -631,8 +662,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
 <p>When defining custom modules be mindful while naming them and do not use the standard module names.</p>
 </div>
 <p><strong>Standard module names</strong></p>
@@ -698,14 +729,14 @@ The module thus created can be used in <a class="reference internal" href="#navi
 
 <dl class="py data">
 <dt class="sig sig-object py" id="navi.ui.menubar.visible">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.menubar.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.menubar.visible" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">navi.ui.menubar.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#navi.ui.menubar.visible" title="Link to this definition"></a></dt>
 <dd><p>Visibility of the menubar</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<em>bool</em>) – Visibility state of the menubar.</p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>true</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1403,8 +1434,8 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>Deleting files will get rid of the files permanently. If you want to send the files to trash, use <a class="reference internal" href="#navi.api.trash" title="navi.api.trash"><code class="xref py py-func docutils literal notranslate"><span class="pre">trash()</span></code></a> instead.</p>
 </div>
 </dd></dl>

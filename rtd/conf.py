@@ -10,7 +10,7 @@ import os
 project = 'Navi'
 copyright = '2024, Dheeraj Vittal Shenoy'
 author = 'Dheeraj Vittal Shenoy'
-release = '1.2'
+version = '1.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -28,3 +28,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ['_static']
+
+html_theme_options = {
+}

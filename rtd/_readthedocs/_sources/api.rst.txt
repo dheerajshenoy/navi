@@ -70,13 +70,31 @@ ui
 
    :return: ``void``
 
-.. function:: preview_panel
+
+Preview Panel
+~~~~~~~~~~~~~
+
+.. module:: navi.ui.preview_panel
+
+.. function:: toggle
 
    Toggles the preview pane.
 
    :return: ``void``
 
-.. function:: pathbar
+.. data:: visible
+
+   Visibility of preview panel
+
+   :type: ``bool``
+   :default: **true**
+
+Pathbar
+~~~~~~~
+
+.. module:: navi.ui.pathbar
+
+.. function:: toggle
 
    Toggles the path bar.
 
@@ -105,12 +123,12 @@ statusbar
        Toggles the visibility state of the menubar.
        :return: ``void``
 
-.. data :: visible (state: bool)
+.. data :: visible
 
    Visibility of the menubar
 
-   :param bool state: Visibility state of the menubar.
-   :return: ``void``
+   :type: ``bool``
+   :default: **true**
 
 .. function:: create_module(module_name: str, options: table)
 
@@ -149,7 +167,7 @@ statusbar
 
     There are standard modules which can be added to the statusbar. Their names are mentioned below.
 
-    .. note:: When defining custom modules be mindful while naming them and do not use the standard module names.
+    .. important:: When defining custom modules be mindful while naming them and do not use the standard module names.
 
     **Standard module names**
 
@@ -236,12 +254,12 @@ toolbar
 
     :return: ``void``
 
-.. data :: visible (state: bool)
+.. data :: visible
 
    Visibility of the menubar
 
-   :param bool state: Visibility state of the menubar.
-   :return: ``void``
+   :type: ``bool``
+   :default: **true**
 
 .. data:: ToolbarItem
 
@@ -314,7 +332,7 @@ toolbar
     :param str[] item_names: table of item names
     :return: ``void``
 
-    .. note:: When defining custom modules be mindful while naming them and do not use the standard module names.
+    .. important:: When defining custom modules be mindful while naming them and do not use the standard module names.
 
     **Standard module names**
 
@@ -369,12 +387,12 @@ Menubar table
 
     :rtype: ``void``
 
-.. data :: visible (state: bool)
+.. data:: visible
 
    Visibility of the menubar
 
-   :param bool state: Visibility state of the menubar.
-   :return: ``void``
+   :type: ``bool``
+   :default: **true**
 
 .. function:: add_menu(menu_item: MenuItem)
 
@@ -790,7 +808,7 @@ api
 
    :return: ``void``
 
-   .. note:: Deleting files will get rid of the files permanently. If you want to send the files to trash, use :func:`trash` instead.
+   .. warning:: Deleting files will get rid of the files permanently. If you want to send the files to trash, use :func:`trash` instead.
 
 .. function:: delete_dwim
 

@@ -6,7 +6,8 @@ Navi Documentation
 .. image:: _static/banner.png
    :align: center
 
-Welcome to the documentation for Navi.
+
+Welcome to the documentation for Navi. This documentation is for version |version|.
 
 Navi is a minimalist and efficient file manager designed for users who value speed and simplicity. Developed using the Qt framework in C++, Navi offers a keyboard-driven interface inspired by terminal-based file managers like Ranger and Vifm, while leveraging the enhanced capabilities of a graphical user interface.
 
