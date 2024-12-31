@@ -14,6 +14,7 @@ private:
     QVBoxLayout *m_layout = new QVBoxLayout();
     QPushButton *m_github_btn = new QPushButton("Github");
     QPushButton *m_linkedin_btn = new QPushButton("LinkedIn");
+    QLabel *m_sub_label = new QLabel();
     QLabel *m_main_label = new QLabel("Navi");
 
 };
