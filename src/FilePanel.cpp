@@ -1600,17 +1600,6 @@ void FilePanel::dragRequested() noexcept {
     }
 }
 
-void FilePanel::ToggleHeaders(const bool &state) noexcept {
-    m_table_view->horizontalHeader()->setVisible(state);
-}
-
-void FilePanel::ToggleHeaders() noexcept {
-    m_table_view->horizontalHeader()->setVisible(!m_table_view->horizontalHeader()->isVisible());
-}
-
-void FilePanel::SetCycle(const bool &state) noexcept { m_cycle_item = state; }
-
-void FilePanel::ToggleCycle() noexcept { m_cycle_item = !m_cycle_item; }
 
 void FilePanel::ToggleVisualLine() noexcept {
     m_visual_line_mode = !m_visual_line_mode;

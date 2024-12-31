@@ -95,6 +95,17 @@ public:
         return font().pixelSize();
     }
 
+    inline QString get_visual_line_mode_padding() noexcept { return m_visual_line_mode_label_padding_string; }
+    inline bool get_visual_line_mode_italic() noexcept { return m_visual_line_mode_italic; }
+    inline bool get_visual_line_mode_bold() noexcept { return m_visual_line_mode_bold; }
+    inline QString get_visual_line_mode_background() noexcept {
+        return m_visual_line_mode_label_bg.name();
+    }
+
+    inline QString get_visual_line_mode_foreground() noexcept {
+        return m_visual_line_mode_label_fg.name();
+    }
+
 signals:
     void visibilityChanged(const bool &state);
     void logMessage(const QString &message, const MessageType &type);
@@ -120,6 +131,7 @@ private:
     QColor m_visual_line_mode_label_bg;
     QString m_visual_line_mode_label_padding_string;
     QString m_visual_line_mode_label_text;
+    bool m_visual_line_mode_italic = false, m_visual_line_mode_bold = false;
     QString m_macro_mode_label_text;
     QColor m_macro_mode_label_fg;
     QColor m_macro_mode_label_bg;

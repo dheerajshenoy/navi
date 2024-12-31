@@ -30,6 +30,16 @@ public:
   TableView(QWidget *parent = nullptr);
     ~TableView();
 
+    inline void set_font_size(const int &size) noexcept {
+        QFont _font = this->font();
+        _font.setPixelSize(size);
+        setFont(_font);
+    }
+
+    inline int get_font_size() noexcept {
+        return font().pixelSize();
+    }
+
 signals:
     void dragRequested();
 

@@ -3,7 +3,7 @@
 #include "utils.hpp"
 
 #define UNUSED(x) (void) x
-// #define SOL_ALL_SAFETIES_ON 1
+/*#define SOL_ALL_SAFETIES_ON 1*/
 #include "Globals.hpp"
 
 #include <unistd.h>
@@ -98,7 +98,7 @@ public:
     ~Navi();
 
     inline FilePanel* file_panel() noexcept { return m_file_panel; }
-    inline Inputbar* get_inputbar() noexcept { return m_inputbar; }
+    inline Inputbar* get_inputbar() const noexcept { return m_inputbar; }
     void initThings() noexcept;
     void SelectAllItems() noexcept;
     void SelectInverse() noexcept;
@@ -110,7 +110,7 @@ public:
     void new_file(const std::vector<std::string> &files = {}) noexcept;
     void change_directory(const std::string &path) noexcept;
 
-    std::string working_directory() noexcept {
+    std::string working_directory() const noexcept {
         return m_file_panel->getCurrentDir().toStdString();
     }
 
@@ -128,7 +128,6 @@ public:
     void ToggleMenuBar(const bool &state) noexcept;
     void ToggleMenuBar() noexcept;
 
-
     void Filter(const QString &filter_string = QString()) noexcept;
     void filter(const std::string &filter_string = std::string()) noexcept;
     void ResetFilter() noexcept;
@@ -139,7 +138,7 @@ public:
     void SortDescending(const bool &state) noexcept;
     void SortAscending(const bool &state) noexcept;
 
-    std::map<std::string, std::string> Get_bulk_rename() noexcept {
+    std::map<std::string, std::string> Get_bulk_rename() const noexcept {
         std::map<std::string, std::string> map;
         map["file_threshold"] = m_file_panel->Bulk_rename_threshold();
         map["editor"] = m_file_panel->Bulk_rename_editor();
@@ -151,11 +150,11 @@ public:
         m_file_path_widget->setFont(QString::fromStdString(font));
     }
 
-    inline std::string get_pathbar_font() noexcept {
+    inline std::string get_pathbar_font() const noexcept {
         return m_file_path_widget->font().family().toStdString();
     }
 
-    inline int get_pathbar_font_size() noexcept {
+    inline int get_pathbar_font_size() const noexcept {
         return m_file_path_widget->get_font_size();
     }
 
@@ -196,8 +195,6 @@ public:
         m_file_panel->SetBulkRenameWithTerminal(state);
     }
 
-    inline void sleep_for_seconds(const int &s) noexcept { sleep(s); }
-
     struct MenuItem {
         std::string label;
         std::function<void()> action;
@@ -214,6 +211,7 @@ public:
         std::string name;
         std::string label;
         std::string icon;
+        std::string tooltip;
         int position = -1;
         std::function<void()> action;
 
@@ -351,6 +349,7 @@ public:
     void Lua__AddMenu(const sol::table &menu) noexcept;
     void Lua__AddContextMenu(const sol::table &cmenu) noexcept;
     void Lua__AddToolbarButton(const ToolbarItem &item) noexcept;
+    void Lua__AddToolbarButton(const sol::object &object) noexcept;
     Navi::MenuItem Lua__parseMenuItem(const sol::table &table) noexcept;
     Navi::ToolbarItem Lua__parseToolbarItem(const sol::table &table) noexcept;
     void Lua__SetToolbarItems(const sol::table &table) noexcept;
@@ -367,7 +366,7 @@ public:
     void Set_default_directory(const QString &dir) noexcept;
     void Set_default_directory(const std::string &dir) noexcept;
     inline std::string Get_default_directory() noexcept { return m_default_dir.toStdString(); }
-    void Set_menubar_icons() noexcept;
+    void set_menubar_icons(const bool &state) noexcept;
     double Preview_pane_fraction() noexcept;
     void Set_preview_pane_fraction(const double &fraction) noexcept;
 
@@ -548,6 +547,10 @@ public:
         m_statusbar->Lua__SetModules(table);
     }
 
+    inline void add_statusbar_module(const Statusbar::Module &module) noexcept {
+        m_statusbar->Lua__AddModule(module);
+    }
+
     inline void set_statusbar_module_text(const std::string &name,
                                           const std::string &value) noexcept {
         m_statusbar->Lua__UpdateModuleText(name, value);
@@ -605,6 +608,235 @@ public:
     inline bool get_inputbar_visible() noexcept {
         return m_inputbar->isVisible();
     }
+
+    inline void set_bookmark_auto_save(const bool &state) noexcept {
+        m_auto_save_bookmarks = state;
+    }
+
+    inline bool get_bookmark_auto_save() noexcept {
+        return m_auto_save_bookmarks;
+    }
+
+
+    inline void set_bulk_rename_editor(const std::string &editor) noexcept {
+        m_file_panel->SetBulkRenameEditor(QString::fromStdString(editor));
+    }
+
+    inline void set_bulk_rename_with_terminal(const bool &term) noexcept {
+        m_file_panel->SetBulkRenameWithTerminal(term);
+    }
+
+    inline void set_bulk_rename_file_threshold(const int &n) noexcept {
+        m_file_panel->SetBulkRenameThreshold(n);
+    }
+
+    inline std::string get_bulk_rename_editor() noexcept {
+        return m_file_panel->Bulk_rename_editor();
+    }
+
+    inline bool get_bulk_rename_with_terminal() noexcept {
+        return m_file_panel->Is_bulk_rename_with_terminal();
+    }
+
+    inline int get_bulk_rename_file_threshold() noexcept {
+        return m_file_panel->Bulk_rename_threshold();
+    }
+
+    inline void set_toolbar_icons_only(const bool &state) noexcept {
+        if (state)
+            Set_toolbar_icons_only();
+        else
+            Set_toolbar_text_only();
+    }
+
+    inline bool get_toolbar_icons_only() noexcept {
+        return m_toolbar_icons_only;
+    }
+
+    inline sol::table get_toolbar_layout(sol::this_state L) noexcept {
+        sol::state_view lua(L);
+        sol::table table = lua.create_table();
+
+        for (int i=0; i < m_toolbar_layout.size(); i++)
+            table[i + 1] = m_toolbar_layout.at(i);
+
+        return table;
+    }
+
+
+    inline void set_preview_Panel_max_file_size(const std::string &max_file_size) noexcept {
+        m_preview_panel->set_max_file_size_threshold(utils::parseFileSize(QString::fromStdString(max_file_size)));
+    }
+
+    inline std::string get_preview_Panel_max_file_size() const noexcept {
+        return m_preview_panel->max_preview_threshold();
+    }
+
+    inline void set_preview_panel_image_dimension(const sol::table &table) noexcept {
+        if (table["width"].valid() && table["height"].valid()) {
+            auto width = table["width"].get<int>();
+            auto height = table["height"].get<int>();
+            m_preview_panel->Set_preview_dimension(width, height);
+        }
+    }
+
+    inline sol::table get_preview_panel_image_dimension(sol::this_state L) const noexcept {
+        sol::state_view lua(L);
+        auto [width, height] = m_preview_panel->get_preview_dimension();
+        sol::table table = lua.create_table();
+        table["width"] = width;
+        table["height"] = height;
+        return table;
+    }
+
+    inline bool get_menubar_icons() const noexcept {
+        return m_menubar_icons;
+    }
+
+    inline void set_cycle(const bool &state) noexcept {
+        m_file_panel->SetCycle(state);
+    }
+
+    inline bool get_cycle() const noexcept {
+        return m_file_panel->get_cycle();
+    }
+
+    inline void set_header_visible(const bool &state) noexcept {
+        m_file_panel->ToggleHeaders(state);
+    }
+
+    inline bool get_header_visible() const noexcept {
+        return m_file_panel->get_headers_visible();
+    }
+
+    inline sol::table get_header_columns(sol::this_state L) const noexcept {
+        sol::state_view lua(L);
+        sol::table table;
+        auto cols = m_file_panel->model()->get_columns();
+        for (int i=0; i < cols.size(); i++)
+            table[i + 1] = cols.at(i);
+        return table;
+    }
+
+    inline void set_preview_panel_props(const sol::table &table) noexcept {
+
+        if (table["fraction"].valid())
+            Set_preview_pane_fraction(table["fraction"].get<float>());
+
+        if (table["max_file_size"].valid())
+            set_preview_Panel_max_file_size(table["max_file_size"].get<std::string>());
+
+        if (table["visible"].valid())
+            set_preview_panel_visible(table["visible"].get<bool>());
+
+        if (table["image_dimension"].valid())
+            set_preview_panel_image_dimension(table["image_dimension"].get<sol::table>());
+
+        if (table["read_num_lines"].valid())
+            set_preview_panel_read_num_lines(table["image_dimension"].get<int>());
+
+        if (table["fraction"].valid())
+            Set_preview_pane_fraction(table["fraction"].get<float>());
+
+    }
+
+    inline void set_preview_panel_read_num_lines(const int &num) noexcept {
+        m_preview_panel->set_num_read_lines(num);
+    }
+
+    inline int get_preview_panel_read_num_lines() const noexcept {
+        return m_preview_panel->get_num_read_lines();
+    }
+
+    sol::table get_preview_panel_props(sol::this_state L) const noexcept;
+
+    void set_header_columns(const sol::table &table) noexcept;
+
+    inline void set_visual_line_mode_text(const std::string &text) noexcept {
+        m_statusbar->SetVisualLineModeText(QString::fromStdString(text));
+    }
+
+    inline void set_visual_line_mode_italic(const bool &state) noexcept {
+        m_statusbar->SetVisualLineModeItalic(state);
+    }
+
+    inline void set_visual_line_mode_bold(const bool &state) noexcept {
+        m_statusbar->SetVisualLineModeBold(state);
+    }
+
+    inline void set_visual_line_mode_padding(const std::string &padding) noexcept {
+        m_statusbar->SetVisualLineModePadding(QString::fromStdString(padding));
+    }
+
+    inline std::string get_visual_line_mode_padding() const noexcept {
+        return m_statusbar->get_visual_line_mode_padding().toStdString();
+    }
+
+    inline bool get_visual_line_mode_italic() const noexcept {
+        return m_statusbar->get_visual_line_mode_italic();
+    }
+
+    inline bool get_visual_line_mode_bold() const noexcept {
+        return m_statusbar->get_visual_line_mode_bold();
+    }
+
+    inline void set_visual_line_mode_background(const std::string &bg) noexcept {
+        m_statusbar->SetVisualLineModeBackground(QString::fromStdString(bg));
+    }
+
+    inline void set_visual_line_mode_foreground(const std::string &fg) noexcept {
+        m_statusbar->SetVisualLineModeForeground(QString::fromStdString(fg));
+    }
+
+    inline std::string get_visual_line_mode_foreground() const noexcept {
+        return m_statusbar->get_visual_line_mode_foreground().toStdString();
+    }
+
+    inline std::string get_visual_line_mode_background() const noexcept {
+        return m_statusbar->get_visual_line_mode_background().toStdString();
+    }
+
+    inline void set_file_panel_icons(const bool &state) noexcept {
+        m_file_panel->set_icons(state);
+    }
+
+    inline bool get_file_panel_icons() const noexcept {
+        return m_file_panel->icons_enabled();
+    }
+
+    inline void set_file_panel_font_size(const int &size) noexcept {
+        m_file_panel->set_font_size(size);
+    }
+
+    inline int get_file_panel_font_size() const noexcept {
+        return m_file_panel->get_font_size();
+    }
+
+    inline void set_file_panel_font(const std::string &font) noexcept {
+        m_file_panel->set_font_family(QString::fromStdString(font));
+    }
+
+    inline std::string get_file_panel_font() const noexcept {
+        return m_file_panel->get_font_family().toStdString();
+    }
+
+    inline void set_pathbar_bold(const bool &state) noexcept {
+        m_file_path_widget->setBold(state);
+    }
+
+    inline bool get_pathbar_bold() const noexcept {
+        return m_file_path_widget->bold();
+    }
+
+    inline void set_pathbar_italic(const bool &state) noexcept {
+        m_file_path_widget->setItalic(state);
+    }
+
+    inline bool get_pathbar_italic() const noexcept {
+        return m_file_path_widget->italic();
+    }
+
+    void set_pathbar_props(const sol::table &table) noexcept;
 
 protected:
     bool event(QEvent *e) override;
@@ -890,14 +1122,14 @@ private:
     QString m_terminal = "kitty";
     QStringList m_macro_register = {};
     QHash<QString, QStringList> m_macro_hash;
-    bool m_auto_save_bookmarks = false;
+    bool m_auto_save_bookmarks = true;
     bool m_macro_mode = false;
     HookManager *m_hook_manager = nullptr;
     QClipboard *m_clipboard = QGuiApplication::clipboard();
     QString m_copy_path_join_str = "\n";
     QFuture<void> m_thumbnail_cache_future;
     QFutureWatcher<void> *m_thumbnail_cache_future_watcher = new QFutureWatcher<void>(this);
-    QToolBar *m_toolbar = new QToolBar(this);
+    QToolBar *m_toolbar = nullptr;
     QPushButton *m_toolbar__prev_btn = nullptr;
     QPushButton *m_toolbar__next_btn = nullptr;
     QPushButton *m_toolbar__home_btn = nullptr;
@@ -905,7 +1137,8 @@ private:
     QPushButton *m_toolbar__refresh_btn = nullptr;
     QHash<std::string, sol::function> m_registered_lua_func_hash;
     QSet<QString> m_runtime_path = {};
-    double m_preview_pane_fraction = -1.0f;
-    bool m_menubar_icons_only = true;
-
+    double m_preview_pane_fraction = 0.5f;
+    bool m_menubar_icons = true,
+    m_toolbar_icons_only = true;
+    std::vector<std::string> m_toolbar_layout;
 };

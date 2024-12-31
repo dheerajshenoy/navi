@@ -131,12 +131,14 @@ void Statusbar::SetVisualLineModeForeground(const QString &fg) noexcept {
 }
 
 void Statusbar::SetVisualLineModeItalic(const bool &state) noexcept {
+    m_visual_line_mode_italic = state;
     QFont font = m_visual_line_mode_label->font();
     font.setItalic(state);
     m_visual_line_mode_label->setFont(font);
 }
 
 void Statusbar::SetVisualLineModeBold(const bool &state) noexcept {
+    m_visual_line_mode_bold = state;
     QFont font = m_visual_line_mode_label->font();
     font.setBold(state);
     m_visual_line_mode_label->setFont(font);
@@ -280,8 +282,9 @@ void Statusbar::Lua__AddModule(const Statusbar::Module &module) noexcept {
     auto text = options["text"].get_or<std::string>("");
     auto italic = options["italic"].get_or(false);
     auto bold = options["bold"].get_or(false);
-    auto bg = options["background"].get_or<std::string>("");
-    auto fg = options["color"].get_or<std::string>("");
+    auto bg = options["background"].get_or(QColor().name().toStdString());
+    auto fg = options["foreground"].get_or(QColor().name().toStdString());
+    auto visible = options["visible"].get_or(true);
 
     QLabel *label = new QLabel();
 
@@ -299,6 +302,9 @@ void Statusbar::Lua__AddModule(const Statusbar::Module &module) noexcept {
     m_layout->addWidget(label);
     m_layout->addSpacing(10);
 
+    if (!visible)
+        label->setHidden(true);
+
     m_module_widget_hash.insert(QString::fromStdString(module.name), label);
 }
 
@@ -309,8 +315,8 @@ void Statusbar::Lua__InsertModule(const Statusbar::Module &module,
     auto italic = options["italic"].get_or(false);
     auto bold = options["bold"].get_or(false);
     auto bg = options["background"].get_or<std::string>("");
-    auto fg = options["color"].get_or<std::string>("");
-    auto hidden = options["hidden"].get_or(false);
+    auto fg = options["foreground"].get_or<std::string>("");
+    auto hidden = options["visible"].get_or(false);
 
     QLabel *label = new QLabel();
 
@@ -327,7 +333,7 @@ void Statusbar::Lua__InsertModule(const Statusbar::Module &module,
 
     m_layout->insertWidget(index, label);
     m_layout->addSpacing(10);
-    label->setVisible(hidden);
+    label->setVisible(!hidden);
 
     m_module_widget_hash.insert(QString::fromStdString(module.name), label);
 }

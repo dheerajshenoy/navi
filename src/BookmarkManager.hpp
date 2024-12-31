@@ -10,6 +10,8 @@
 class BookmarkManager : public QObject {
 Q_OBJECT
 public:
+
+    BookmarkManager(QObject *parent) : QObject(parent) {}
     struct Bookmark {
         QString file_path;
         bool highlight_only = false;

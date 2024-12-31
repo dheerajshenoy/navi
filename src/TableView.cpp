@@ -1,6 +1,10 @@
 #include "TableView.hpp"
 
 TableView::TableView(QWidget *parent) : QTableView(parent) {
+
+    QFont font = this->font();
+    font.setPixelSize(20);
+    setFont(font);
     setDragEnabled(true);
     setAcceptDrops(true);
     setDropIndicatorShown(true);

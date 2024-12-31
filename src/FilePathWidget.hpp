@@ -83,6 +83,9 @@ public:
     void setBold(const bool &state) noexcept;
     void set_font_family(const QString &name) noexcept;
 
+    inline bool bold() noexcept { return m_bold; }
+    inline bool italic() noexcept { return m_italic; }
+
     inline int get_font_size() noexcept {
         return font().pixelSize();
     }
@@ -101,4 +104,6 @@ private:
     FilePathLineEdit *m_path_line = new FilePathLineEdit();
     CustomCompleter *m_completer = nullptr;
     QFileSystemModel *m_completer_model = new QFileSystemModel(this);
+
+    bool m_italic = false, m_bold = false;
 };

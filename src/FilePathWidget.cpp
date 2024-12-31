@@ -48,12 +48,14 @@ void FilePathWidget::setForegroundColor(const QString &fg) noexcept {
 }
 
 void FilePathWidget::setItalic(const bool &state) noexcept {
+    m_italic = state;
     QFont font = m_path_line->font();
     font.setItalic(state);
     m_path_line->setFont(font);
 }
 
 void FilePathWidget::setBold(const bool &state) noexcept {
+    m_bold = state;
     QFont font = m_path_line->font();
     font.setBold(state);
     m_path_line->setFont(font);

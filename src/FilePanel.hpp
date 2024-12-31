@@ -76,6 +76,29 @@ public:
     void AsyncShellCommand(const QString &command) noexcept;
     void ShellCommand(const QString &command) noexcept;
 
+    inline void set_icons(const bool &state) noexcept {
+        model()->icons_enabled = state;
+    }
+
+    inline void set_font_family(const QString &font) noexcept {
+        QFont _font = this->font();
+        _font.setFamily(font);
+        setFont(_font);
+    }
+
+    inline QString get_font_family() noexcept {
+        return font().family();
+    }
+
+    inline void set_font_size(const int &size) noexcept {
+        m_table_view->set_font_size(size);
+    }
+
+    inline int get_font_size() noexcept {
+        return m_table_view->get_font_size();
+    }
+    inline bool icons_enabled() noexcept { return model()->icons_enabled; }
+
     void ToggleMarkItem() noexcept;
     void ToggleMarkDWIM() noexcept;
     void MarkItem() noexcept;
@@ -144,10 +167,27 @@ public:
     void DropCutRequested(const QStringList &sourcePaths) noexcept;
     void ShowItemPropertyWidget() noexcept;
     void BulkRename(const QStringList &files) noexcept;
-    void ToggleHeaders(const bool &state) noexcept;
-    void ToggleHeaders() noexcept;
-    void SetCycle(const bool &state) noexcept;
-    void ToggleCycle() noexcept;
+
+    inline void ToggleHeaders(const bool &state) noexcept {
+        m_header_visible = state;
+        m_table_view->horizontalHeader()->setVisible(state);
+    }
+
+    inline QStringList get_header_columns() noexcept {
+        return m_model->get_columns();
+    }
+
+    inline void ToggleHeaders() noexcept {
+        m_header_visible = !m_header_visible;
+        m_table_view->horizontalHeader()->setVisible(m_header_visible);
+    }
+
+    inline void SetCycle(const bool &state) noexcept { m_cycle_item = state; }
+    inline bool get_cycle() noexcept { return m_cycle_item; }
+    inline void ToggleCycle() noexcept { m_cycle_item = !m_cycle_item; }
+
+    inline bool get_headers_visible() noexcept { return m_header_visible; }
+
     void OpenWith() noexcept;
 
     void ToggleVisualLine() noexcept;
@@ -292,4 +332,5 @@ private:
     QHash<QString, QString> m_default_applications_hash;
     bool m_bulk_rename_with_terminal = true;
     QString m_previous_dir_path;
+    bool m_header_visible = true;
 };

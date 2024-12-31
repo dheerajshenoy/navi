@@ -217,6 +217,7 @@ void utils::addTextToFirstLine(QTextEdit *textEdit, const QString &textToAdd) no
 }
 
 
+// If nlines is -1, read the whole file
 QStringList utils::readLinesFromFile(const QString &filename,
                                      const int &nlines) noexcept {
     QStringList lines;
@@ -228,11 +229,21 @@ QStringList utils::readLinesFromFile(const QString &filename,
 
     int count = 0;
 
-    while (!file.atEnd() && count < nlines) {
-        QString line = file.readLine().trimmed();
-        lines.append(line);
-        ++count;
+    if (nlines > -1) {
+
+        while (!file.atEnd() && count < nlines) {
+            QString line = file.readLine().trimmed();
+            lines.append(line);
+            ++count;
+        }
+    } else {
+        while (!file.atEnd() && count < nlines) {
+            QString line = file.readLine().trimmed();
+            lines.append(line);
+            ++count;
+        }
     }
+
 
     file.close();
     return lines;

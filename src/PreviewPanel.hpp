@@ -47,13 +47,22 @@ public:
         QWidget::show();
     }
 
-    inline void Set_max_preview_threshold(const qint64 &thresh) noexcept {
+    inline void set_max_file_size_threshold(const qint64 &thresh) noexcept {
         m_preview_threshold = thresh;
     }
 
-    inline std::string Max_preview_threshold() noexcept {
+    inline std::string max_preview_threshold() noexcept {
         return utils::bytes_to_string(m_preview_threshold).toStdString();
     }
+
+    inline void set_num_read_lines(const int &nlines) noexcept {
+        m_num_read_lines = nlines;
+    }
+
+    inline int get_num_read_lines() noexcept {
+        return m_num_read_lines;
+    }
+
 
     // inline void SetSyntaxHighlighting(const bool &state) noexcept {
     //     m_syntax_highlighting_enabled = state;
@@ -68,13 +77,10 @@ public:
         m_img_widget->setFixedHeight(height);
     }
 
-    inline sol::table Preview_dimension(sol::this_state L) noexcept {
-        sol::state_view lua(L);
-        sol::table table;
-        table["width"] = m_img_widget->width();
-        table["height"] = m_img_widget->height();
-        return table;
+    inline std::tuple<int, int> get_preview_dimension() noexcept {
+        return std::tuple<int, int>(m_img_widget->width(), m_img_widget->height());
     }
+
 
     // inline void ToggleSyntaxHighlight() noexcept {
     //     m_syntax_highlighting_enabled = !m_syntax_highlighting_enabled;
@@ -126,4 +132,6 @@ private:
     };
 
     qint64 m_preview_threshold = utils::parseFileSize("10M");
+
+    int m_num_read_lines = 50;
 };

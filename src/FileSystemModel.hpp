@@ -78,6 +78,7 @@ public:
     void clearMarkedFilesListLocal() noexcept;
     void setNameFilters(const QStringList &filters) noexcept;
     void setColumns(const QList<Column> &col) noexcept;
+    QStringList get_columns() noexcept;
     QString filePath(const QModelIndex &index) noexcept;
     bool isDir(const QModelIndex &index) noexcept;
     QModelIndex index(const QString &path) const noexcept;
@@ -147,6 +148,8 @@ public:
         return _files;
     }
 
+    bool icons_enabled = true;
+
 
     signals:
     void directoryLoaded(const int &rowCount);
@@ -156,6 +159,7 @@ public:
     void dropCutRequested(const QStringList &sourceFilePath);
 
 private:
+    QIcon get_cached_icon(const QFileInfo &finfo) const;
     int indexOfFileNameColumn() const noexcept;
     void initDefaults() noexcept;
     int findRow(const QFileInfo &fileInfo) const noexcept;
@@ -191,4 +195,6 @@ private:
     QColor m_symlink_foreground;
     bool m_show_symlink;
     unsigned int m_file_name_column_index = -1;
+
+    mutable QHash<QString, QIcon> m_icon_cache;
 };

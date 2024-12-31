@@ -184,9 +184,11 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
         break;
 
     case Qt::DecorationRole: {
-        if (index.column() == static_cast<int>(ColumnType::FileName)) {
-            return QIcon(m_fileIconProvider->icon(m_fileInfoList.at(index.row())));
-        }
+            if (icons_enabled) {
+                if (index.column() == static_cast<int>(ColumnType::FileName)) {
+                    return get_cached_icon(m_fileInfoList.at(index.row()));
+                }
+            }
     } break;
 
 
@@ -597,4 +599,26 @@ void FileSystemModel::addDirFilter(const QDir::Filters &filter) noexcept {
 void FileSystemModel::removeDirFilter(const QDir::Filters &filter) noexcept {
     if (m_dir_filters & filter)
         m_dir_filters &= ~filter;
+}
+
+
+QStringList FileSystemModel::get_columns() noexcept {
+    QStringList list;
+    list.reserve(m_column_list.size());
+
+    for (int i=0; i < m_column_list.size(); i++)
+        list[i] = m_column_list.at(i).name;
+
+    return list;
+}
+
+QIcon FileSystemModel::get_cached_icon(const QFileInfo &finfo) const {
+    QString path = finfo.filePath();
+    if (!m_icon_cache.contains(path)) {
+        QFileIconProvider iconProvider;
+        qDebug() << iconProvider.icon(finfo).availableSizes();
+        m_icon_cache[path] = iconProvider.icon(finfo);
+    }
+
+    return m_icon_cache[path];
 }
