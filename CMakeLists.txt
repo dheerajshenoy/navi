@@ -18,13 +18,21 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Build type of Release/Debug
 # set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 
 # Export compile_commands.json for IDE integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # -O2
 # Set flags for compilers
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og")  # Add more flags as necessary
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Building in Debug Mode")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og")  # Add more flags as necessary
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Building in Release Mode")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")  # Add more flags as necessary
+endif()
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
 set(CMAKE_AUTOMOC ON)

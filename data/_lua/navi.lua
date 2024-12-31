@@ -16,6 +16,54 @@ M.ui = {}
 M.opt = {}
 M.hook = {}
 
+M.opt.bookmark = {}
+
+setmetatable(M.opt.bookmark, {
+    __index = function (_, key)
+
+        if key == "auto_save" then
+            return _navi:get_bookmark_auto_save()
+        end
+    end,
+
+    __newindex = function (_, key, value)
+        if key == "auto_save" then
+            _navi:set_bookmark_auto_save(value)
+        end
+    end
+})
+
+M.opt.bulk_rename = {}
+
+setmetatable(M.opt.bulk_rename, {
+    __index = function (_, key)
+        if key == "file_threshold" then
+            return _navi:get_bulk_rename_file_threshold()
+
+        elseif key == "editor" then
+            return _navi:get_bulk_rename_editor()
+
+        elseif key == "with_terminal" then
+            return _navi:get_bulk_rename_with_terminal()
+        end
+    end,
+    __newindex = function (_, key, value)
+        if key == "file_threshold" then
+            return _navi:set_bulk_rename_file_threshold(value)
+
+        elseif key == "editor" then
+            return _navi:set_bulk_rename_editor(value)
+
+        elseif key == "with_terminal" then
+            return _navi:set_bulk_rename_with_terminal(value)
+        end
+    end
+})
+
+M.opt.symlink = {}
+M.opt.highlight = {}
+M.opt.mark = {}
+
 setmetatable(M.opt, {
     __index = function(_, key)
 
@@ -23,11 +71,15 @@ setmetatable(M.opt, {
             return _navi:get_terminal()
 
         elseif key == "default_directory" then
-                return _navi:get_default_dir()
+            return _navi:get_default_dir()
 
         elseif key == "copy_path_separator" then
             return _navi:get_copy_path_separator()
+
+        elseif key == "cycle" then
+            return _navi:get_cycle()
         end
+
     end,
 
     __newindex = function(_, key, value)
@@ -36,12 +88,16 @@ setmetatable(M.opt, {
             _navi:set_terminal(value)
 
         elseif key == "default_directory" then
-                _navi:set_default_dir(value)
+            _navi:set_default_dir(value)
 
         elseif key == "copy_path_separator" then
-                _navi:set_copy_path_separator(value)
-            end
+            _navi:set_copy_path_separator(value)
+
+        elseif key == "cycle" then
+            _navi:set_cycle(value)
+
         end
+    end
 })
 
 ---Set the keymap
@@ -52,9 +108,74 @@ M.keymap.set = function (key, command, desc)
     _navi:set_keymap(key, command, desc)
 end
 
+M.ui.header = {}
+
+---@class HeaderColumn
+---@field name string
+---@field type ColumnType can be one of: { "file_name", "file_permission", "file_size", "file_date" }
+
+---@class HeaderOptions
+---@field visible boolean
+---@field columns HeaderColumn
+
+---Set option for header
+---@param opts HeaderOptions
+M.ui.header.set = function (opts)
+    if opts then
+        _navi:set_header_props(opts)
+    end
+end
+
+---Get options table for header
+---@return HeaderOptions
+M.ui.header.get = function ()
+    return _navi:get_header_props()
+end
+
+setmetatable(M.ui.header, {
+    __index = function (_, key)
+        if key == "visible" then
+            return _navi:get_header_visible()
+
+        elseif key == "columns" then
+            return _navi:get_header_columns()
+        end
+    end,
+    __newindex = function (_, key, value)
+        if key == "visible" then
+            _navi:set_header_visible(value)
+
+        elseif key == "columns" then
+            if type(value) == "table" then
+                return _navi:set_header_columns(value)
+            end
+        end
+    end
+
+})
 
 --[[ Inputbar metatable ]]--
 M.ui.inputbar = {}
+
+---@class InputbarOptions
+---@field font_size integer - font size in pixel
+---@field foreground string - foreground color
+---@field background string - background color
+---@field font string - font family
+
+---Sets the options for inputbar
+---@param opts InputbarOptions
+M.ui.inputbar.set = function (opts)
+    if opts then
+        _navi:set_preview_panel_props(opts)
+    end
+end
+
+---Gets the options table for inputbar
+---@return InputbarOptions
+M.ui.inputbar.get = function ()
+    return _navi:get_inputbar_props()
+end
 
 setmetatable(M.ui.inputbar, {
 
@@ -119,22 +240,43 @@ M.ui.statusbar.toggle = function ()
     _navi:toggle_statusbar()
 end
 
----Set/update text to a statusbar module
+---Set/update text to statusbar module
 ---@param name string
 ---@param value string
 M.ui.statusbar.set_module_text = function (name, value)
     _navi:set_statusbar_module_text(name, value)
 end
 
+---Sets modules to statusbar
+---@param modules string[]
 M.ui.statusbar.set_modules = function (modules)
     _navi:set_statusbar_modules(modules)
 end
 
+---@class StatusbarModuleOptions
+---@field text string
+---@field italic boolean
+---@field bold boolean
+---@field background string
+---@field foreground string
+---@field visible boolean
+
+---@class StatusbarModule
+---@field name string
+---@field options StatusbarModuleOptions
+
 ---Creates module with name and options
 ---@param name string
 ---@param options table
+---@return StatusbarModule
 M.ui.statusbar.create_module = function (name, options)
     return _navi:create_statusbar_module(name, options)
+end
+
+---Adds a module to the statusbar
+---@param module StatusbarModule
+M.ui.statusbar.add_module = function (module)
+    return _navi:add_statusbar_module(module)
 end
 
 M.ui.toolbar = {}
@@ -150,12 +292,22 @@ end
 ---@field icon string - path to valid image or standard theme icon names
 ---@field action function
 ---@field position integer
+---@field tooltip string
 
----Create toolbar button
+---Represents toolbar button options
+---@class ToolbarItemOptions
+---@field label string
+---@field icon string
+---@field action function
+---@field position integer
+---@field tooltip string
+
+---Creates and returns a toolbar button
 ---@param name string
----@param options table
+---@param options ToolbarItemOptions
+---@return ToolbarItem
 M.ui.toolbar.create_button = function (name, options)
-    _navi:create_toolbar_button(name, options)
+    return _navi:create_toolbar_button(name, options)
 end
 
 ---Adds button to toolbar
@@ -167,8 +319,65 @@ end
 ---Sets item for toolbar
 ---@param items string[]
 M.ui.toolbar.set_items = function (items)
-    _navi.set_toolbar_items(items)
+    _navi.set_toolbar_layout(items)
 end
+
+setmetatable(M.ui.toolbar, {
+    __index = function (_, key)
+        if key == "icons_only" then
+            return _navi:get_toolbar_icons_only()
+
+        elseif key == "visible" then
+            return _navi:get_toolbar_visible()
+
+        end
+    end,
+    __newindex = function (_, key, value)
+
+        if key == "icons_only" then
+            _navi:set_toolbar_icons_only()
+
+        elseif key == "visible" then
+            return _navi:set_toolbar_visible(value)
+
+        end
+
+    end
+
+})
+
+M.ui.file_panel = {}
+
+setmetatable(M.ui.file_panel, {
+    __index = function (_, key)
+
+        if key == "icons" then
+            return _navi:get_file_panel_icons()
+
+        elseif key == "font_size" then
+            return _navi:get_file_panel_font_size()
+
+        elseif key == "font" then
+            return _navi:get_file_panel_font()
+
+        end
+
+    end,
+    __newindex = function (_, key, value)
+
+        if key == "icons" then
+            _navi:set_file_panel_icons(value)
+
+        elseif key == "font_size" then
+            _navi:set_file_panel_font_size(value)
+
+        elseif key == "font" then
+            _navi:set_file_panel_font(value)
+
+        end
+    end
+
+})
 
 ---@class MenuItem
 ---@field label string - text to display
@@ -193,6 +402,59 @@ M.ui.preview_panel = {}
 M.ui.preview_panel.toggle = function ()
     _navi:toggle_preview_panel()
 end
+
+---@class PreviewPanelOptions
+---@field max_file_size string (max file size to preview)
+---@field image_dimension table { width (integer), height (integer) }
+---@field visible boolean (visibility of the preview panel)
+---@field fraction number (width fraction of the main window)
+---@field max_lines_to_read integer (number of lines to read from a text file)
+
+---Sets the options for preview panel
+---@param opts PreviewPanelOptions
+M.ui.preview_panel.set = function (opts)
+    if opts then
+        _navi:set_preview_panel_props(opts)
+    end
+end
+
+---Gets options table for preview panel
+---@return PreviewPanelOptions
+M.ui.preview_panel.get = function ()
+    return _navi:get_preview_panel_props()
+end
+
+setmetatable(M.ui.preview_panel, {
+
+    __index = function (_, key)
+        if key == "visible" then
+            return _navi:get_preview_panel_visible()
+
+        elseif key == "fraction" then
+            return _navi:get_preview_panel_fraction()
+
+        elseif key == "image_dimension" then
+            return _navi:get_preview_panel_image_dimension()
+
+        elseif key == "max_file_size" then
+            return _navi:get_preview_panel_max_file_size()
+        end
+    end,
+    __newindex = function (_, key, value)
+        if key == "visible" then
+            return _navi:set_preview_panel_visible(value)
+
+        elseif key == "fraction" then
+            _navi:set_preview_panel_fraction(value)
+
+        elseif key == "image_dimension" then
+            _navi:set_preview_panel_image_dimension(value)
+
+        elseif key == "max_file_size" then
+            _navi:set_preview_panel_max_file_size(value)
+        end
+    end
+})
 
 ---Returns the runtimepaths of Navi
 ---@return table
@@ -430,11 +692,12 @@ M.api.execute = function (command, args)
 end
 
 ---MessageType enum
----@class MessageType
----@field info 0
----@field warning 1
----@field error 2
-M.io.msgtype = _navi_msgtype()
+---@enum MessageType
+M.io.msgtype = {
+    info = 0,
+    warning = 1,
+    error = 2
+}
 
 ---Show a message to user
 ---@param msg string - message to display
@@ -466,35 +729,6 @@ M.io.input_choice = function (prompt, title, items, default_choice)
     return _navi:input_items(prompt, title, items, default_choice)
 end
 
-setmetatable(M.ui, {
-
-    __index = function(_, key)
-
-        if key == "inputbar" then
-            print(_navi:get_inputbar_props())
-            return _navi:get_inputbar_props()
-        end
-
-    end,
-
-    __newindex = function(_, key, value)
-
-        if key == "inputbar" then
-            if type(value) == "table" then
-                if #value ~= 0 then
-                    _navi:set_inputbar_props(value)
-                else
-                    value = {
-                        font = "Rajdhani Semibold",
-                        font_size = 14
-                    }
-                    _navi:set_inputbar_props(value)
-                end
-            end
-        end
-    end
-})
-
 ---Adds a function to the list for hook
 ---@param name string
 ---@param func function
@@ -518,25 +752,18 @@ setmetatable(M.ui.menubar, {
     __index = function (_, key)
         if key == "visible" then
             return _navi:get_menubar_visible()
+
+        elseif key == "icons" then
+            return _navi:get_menubar_icons()
         end
+
     end,
     __newindex = function (_, key, value)
         if key == "visible" then
             return _navi:set_menubar_visible(value)
-        end
-    end
-})
 
-setmetatable(M.ui.preview_panel, {
-
-    __index = function (_, key)
-        if key == "visible" then
-            return _navi:get_preview_panel_visible()
-        end
-    end,
-    __newindex = function (_, key, value)
-        if key == "visible" then
-            return _navi:set_preview_panel_visible(value)
+        elseif key == "icons" then
+            return _navi:set_menubar_icons(value)
         end
     end
 })
@@ -546,11 +773,36 @@ setmetatable(M.ui.pathbar, {
     __index = function (_, key)
         if key == "visible" then
             return _navi:get_pathbar_visible()
+
+        elseif key == "font" then
+            return _navi:get_pathbar_font()
+
+        elseif key == "font_size" then
+            return _navi:get_pathbar_font_size()
+
+        elseif key == "italic" then
+            return _navi:get_pathbar_italic()
+
+        elseif key == "bold" then
+            return _navi:get_pathbar_bold()
+
         end
     end,
     __newindex = function (_, key, value)
         if key == "visible" then
             return _navi:set_pathbar_visible(value)
+
+        elseif key == "font" then
+            return _navi:get_pathbar_font()
+
+        elseif key == "font_size" then
+            return _navi:get_pathbar_font_size()
+
+        elseif key == "italic" then
+            return _navi:get_pathbar_italic()
+
+        elseif key == "bold" then
+            return _navi:get_pathbar_bold()
         end
     end
 })
@@ -572,6 +824,9 @@ setmetatable(M.ui.statusbar, {
         elseif key == "visible" then
             return _navi:get_statusbar_visible()
 
+        elseif key == "modules" then
+            return _navi:get_statusbar_modules()
+
         end
     end,
     __newindex = function (_, key, value)
@@ -588,10 +843,14 @@ setmetatable(M.ui.statusbar, {
         elseif key == "visible" then
             _navi:set_statusbar_visible(value)
 
+        elseif key == "modules" then
+            if type(value) == "table" then
+                _navi:set_statusbar_modules(value)
+            end
+
         end
 
     end
 })
-
 
 return M

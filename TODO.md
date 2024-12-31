@@ -93,3 +93,5 @@
 - ~~[ ] Tabs~~
 - [X] highlight file after pasting
 - [ ] view copy/cut file register
+- [ ] Timer api
+- [ ] Sleep api
