@@ -19,7 +19,7 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
 
     connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
     connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {
-      this->hide();
+        this->hide();
     });
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
@@ -120,7 +120,7 @@ void Inputbar::setFontFamily(const std::string &family) noexcept {
 }
 
 void Inputbar::addCompletionStringList(const CompletionModelType &type,
-                                  const QStringList &list) noexcept {
+                                       const QStringList &list) noexcept {
     m_completion_list_hash.insert(type, list);
 }
 

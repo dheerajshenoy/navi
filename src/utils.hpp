@@ -10,6 +10,8 @@
 #include <QTextEdit>
 #include "StorageDevice.hpp"
 #include <QDirIterator>
+#include <fstream>
+#include "sol/sol.hpp"
 
 class utils {
 
@@ -46,4 +48,13 @@ public:
 
     template <typename... Args>
     static QString joinPaths(const QString& first, const Args&... args) noexcept;
+
+    static std::vector<char> readBinaryFile(const std::string &filePath) noexcept;
+
+
+    static void getTableMembers(sol::table tbl, const std::string& prefix,
+                                std::vector<std::string>& results) noexcept;
+
+    void getTableMembers(sol::table tbl, const std::string& prefix,
+                         const std::vector<std::string> &result) noexcept;
 };

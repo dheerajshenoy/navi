@@ -237,13 +237,12 @@ QStringList utils::readLinesFromFile(const QString &filename,
             ++count;
         }
     } else {
-        while (!file.atEnd() && count < nlines) {
+        while (!file.atEnd()) {
             QString line = file.readLine().trimmed();
             lines.append(line);
             ++count;
         }
     }
-
 
     file.close();
     return lines;
@@ -283,5 +282,44 @@ QString utils::joinPaths(const QString& first, const Args&... args) noexcept {
         return first + "/" + rest; // Add a slash between
     } else {
         return first + rest; // Already properly joined
+    }
+}
+
+// Helper function to read a binary file
+std::vector<char> utils::readBinaryFile(const std::string &filePath) noexcept {
+    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        return {};
+    }
+
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<char> buffer(size);
+    if (!file.read(buffer.data(), size)) {
+        return {};
+    }
+
+    return buffer;
+}
+
+
+// Recursive function to resolve all members of a Lua table
+void utils::getTableMembers(sol::table tbl, const std::string& prefix,
+                            std::vector<std::string>& results) noexcept {
+    for (const auto& pair : tbl) {
+        sol::object key = pair.first;
+        sol::object value = pair.second;
+
+        // Construct the full name
+        std::string fullName = prefix + key.as<std::string>();
+
+        if (value.get_type() == sol::type::table) {
+            // If the value is a table, recurse into it
+            getTableMembers(value.as<sol::table>(), fullName + ".", results);
+        } else {
+            // Add the fully resolved name to results
+            results.push_back(fullName);
+        }
     }
 }

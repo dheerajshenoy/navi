@@ -3,7 +3,6 @@
 #include "utils.hpp"
 
 #define UNUSED(x) (void) x
-/*#define SOL_ALL_SAFETIES_ON 1*/
 #include "Globals.hpp"
 
 #include <unistd.h>
@@ -96,6 +95,10 @@ class Navi : public QMainWindow {
 public:
     Navi(QWidget *parent = nullptr);
     ~Navi();
+
+    inline void set_lua_state(sol::state &lua) noexcept {
+        m_lua = &lua;
+    }
 
     inline FilePanel* file_panel() noexcept { return m_file_panel; }
     inline Inputbar* get_inputbar() const noexcept { return m_inputbar; }
@@ -320,7 +323,7 @@ public:
     void ToggleTasksWidget(const bool &state) noexcept;
     void ToggleRegisterWidget() noexcept;
     void ToggleRegisterWidget(const bool &state) noexcept;
-    void Execute_lua_function(const QStringList &args) noexcept;
+    void execute_lua_code(const std::string &code) noexcept;
     void MountDrive(const QString &driveName) noexcept;
     void UnmountDrive(const QString &driveName) noexcept;
     void readArgumentParser(argparse::ArgumentParser &parser);
@@ -359,10 +362,10 @@ public:
     void Lua__keymap_set(const std::string &key,
                          const std::string &command,
                          const std::string &desc) noexcept;
-    void Lua__register_lua_function(const std::string &name,
+    void Lua__register_user_function(const std::string &name,
                                     const sol::function &func) noexcept;
-    void Lua__unregister_lua_function(const std::string &name) noexcept;
-    sol::table Lua__registered_lua_functions(sol::state &lua) noexcept;
+    void Lua__unregister_user_function(const std::string &name) noexcept;
+    /*sol::table Lua__registered_lua_functions(sol::state &lua) noexcept;*/
     void Set_default_directory(const QString &dir) noexcept;
     void Set_default_directory(const std::string &dir) noexcept;
     inline std::string Get_default_directory() noexcept { return m_default_dir.toStdString(); }
@@ -511,7 +514,7 @@ public:
     void Set_auto_save_bookmarks(const bool &state) noexcept;
     void Set_toolbar_icons_only() noexcept;
     void Set_toolbar_text_only() noexcept;
-    void Set_toolbar_layout(const sol::table &layout) noexcept;
+    void set_toolbar_layout(const sol::table &layout) noexcept;
     void Error(const QString &reason) noexcept;
     void update_lua_package_path(sol::state &lua) noexcept;
 
@@ -580,6 +583,8 @@ public:
     inline bool get_menubar_visible() noexcept {
         return m_menubar->isVisible();
     }
+
+    void set_toolbar_props(const sol::table &table) noexcept;
 
     inline void set_toolbar_visible(const bool &state) noexcept {
         m_toolbar->setVisible(state);
@@ -800,6 +805,7 @@ public:
         m_file_panel->set_icons(state);
     }
 
+
     inline bool get_file_panel_icons() const noexcept {
         return m_file_panel->icons_enabled();
     }
@@ -819,6 +825,32 @@ public:
     inline std::string get_file_panel_font() const noexcept {
         return m_file_panel->get_font_family().toStdString();
     }
+
+    inline void set_file_panel_props(const sol::table &table) noexcept {
+
+        if (table["font"])
+            m_file_panel->set_font_family(QString::fromStdString(table["font"].get<std::string>()));
+
+        if (table["font_size"])
+            m_file_panel->set_font_size(table["font_size"].get<int>());
+
+        if (table["icons"])
+            m_file_panel->set_icons(table["icons"].get<bool>());
+    }
+
+    inline sol::table get_file_panel_props() noexcept {
+
+        sol::table table = m_lua->create_table();
+        table["font"] = m_file_panel->get_font_family().toStdString();
+        table["font_size"] = m_file_panel->get_font_size();
+        table["icons"] = m_file_panel->icons_enabled();
+
+        return table;
+    }
+
+    // This is used to set all of navi api to a stringlist which is
+    // then used to lua completions
+    void set_api_list(const QStringList &list) noexcept;
 
     inline void set_pathbar_bold(const bool &state) noexcept {
         m_file_path_widget->setBold(state);
@@ -843,7 +875,6 @@ protected:
 
 private:
     void init_default_options() noexcept;
-    void initDefaults() noexcept;
     void initToolbar() noexcept;
     void onQuit() noexcept;
     void initConfiguration() noexcept;
@@ -1135,10 +1166,10 @@ private:
     QPushButton *m_toolbar__home_btn = nullptr;
     QPushButton *m_toolbar__parent_btn = nullptr;
     QPushButton *m_toolbar__refresh_btn = nullptr;
-    QHash<std::string, sol::function> m_registered_lua_func_hash;
     QSet<QString> m_runtime_path = {};
     double m_preview_pane_fraction = 0.5f;
-    bool m_menubar_icons = true,
-    m_toolbar_icons_only = true;
+    bool m_menubar_icons = true, m_toolbar_icons_only = true;
     std::vector<std::string> m_toolbar_layout;
+    sol::state *m_lua = nullptr;
+    QStringList m_navi_lua_api_list;
 };

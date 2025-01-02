@@ -47,8 +47,7 @@ void PreviewPanel::showImagePreview(const QImage &image) noexcept {
 void PreviewPanel::showTextPreview() noexcept {
     this->setCurrentIndex(0);
     auto linestrings = utils::readLinesFromFile(m_filepath, m_num_read_lines);
-    if (m_num_read_lines != -1)
-        m_text_preview_widget->setText(linestrings.join("\n") + "\nNAVI: More lines continue........");
+    m_text_preview_widget->setText(linestrings.join("\n"));
 }
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {

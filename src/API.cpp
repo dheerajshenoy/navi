@@ -41,7 +41,6 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_header_columns", &Navi::set_header_columns,
                            "get_header_columns", &Navi::get_header_columns,
 
-
                            // Bulk Rename
                            "set_bulk_rename_editor", &Navi::set_bulk_rename_editor,
                            "get_bulk_rename_editor", &Navi::get_bulk_rename_editor,
@@ -89,13 +88,13 @@ void init_lua_api(sol::state &lua) noexcept {
                            "toggle_toolbar", &Navi::toggle_toolbar,
                            "create_toolbar_button", &Navi::Lua__CreateToolbarButton,
                            "add_toolbar_button", sol::resolve<void(const Navi::ToolbarItem&)>(&Navi::Lua__AddToolbarButton),
-                           /*"set_toolbar_items", &Navi::Lua__SetToolbarItems,*/
                            "set_toolbar_visible", &Navi::set_toolbar_visible,
                            "get_toolbar_visible", &Navi::get_toolbar_visible,
                            "set_toolbar_icons_only", &Navi::set_toolbar_icons_only,
                            "get_toolbar_icons_only", &Navi::get_toolbar_icons_only,
-                           "set_toolbar_layout", &Navi::Set_toolbar_layout,
-                           "get_toolbar_layout", &Navi::get_toolbar_layout,
+                           "set_toolbar_layout", &Navi::set_toolbar_layout,
+                           /*"get_toolbar_layout", &Navi::get_toolbar_layout,*/
+                           "set_toolbar_props", &Navi::set_toolbar_props,
 
                            // Menubar
                            "toggle_menubar", sol::resolve<void(void)>(&Navi::ToggleMenuBar),
@@ -122,9 +121,9 @@ void init_lua_api(sol::state &lua) noexcept {
 
                            // API
                            "list_runtime_paths", &Navi::list_runtime_paths,
-                           "register_function", &Navi::Lua__register_lua_function,
-                           "unregister_function", &Navi::Lua__unregister_lua_function,
-                           "list_registered_functions", &Navi::Lua__registered_lua_functions,
+                           "create_user_command", &Navi::Lua__register_user_function,
+                           "remove_user_command", &Navi::Lua__unregister_user_function,
+                           "execute_lua_code", &Navi::execute_lua_code,
                            "count", &Navi::count_item,
                            "search", sol::resolve<void(const std::string&)>(&Navi::Search),
                            "search_next", &Navi::SearchNext,
@@ -213,14 +212,15 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_bookmark_auto_save", &Navi::set_bookmark_auto_save,
                            "get_bookmark_auto_save", &Navi::get_bookmark_auto_save,
 
+                           // File Panel
                            "set_file_panel_icons", &Navi::set_file_panel_icons,
                            "get_file_panel_icons", &Navi::get_file_panel_icons,
-
                            "set_file_panel_font", &Navi::set_file_panel_font,
                            "get_file_panel_font", &Navi::get_file_panel_font,
-
                            "set_file_panel_font_size", &Navi::set_file_panel_font_size,
-                           "get_file_panel_font_size", &Navi::get_file_panel_font_size
+                           "get_file_panel_font_size", &Navi::get_file_panel_font_size,
+                           "set_file_panel_props", &Navi::set_file_panel_props,
+                           "get_file_panel_props", &Navi::get_file_panel_props
 
                            );
 

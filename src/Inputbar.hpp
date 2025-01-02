@@ -25,9 +25,9 @@ public:
 
 protected:
     QStringList splitPath(const QString &path) const override {
-      QStringList paths = path.split(" ", Qt::SkipEmptyParts);
-      return paths;
-      // return QCompleter::splitPath(path);
+        QStringList paths = path.split(" ", Qt::SkipEmptyParts);
+        return paths;
+        // return QCompleter::splitPath(path);
     }
 
     QString pathFromIndex(const QModelIndex &index) const override {
@@ -42,45 +42,45 @@ class LineEdit : public QLineEdit {
     Q_OBJECT
 
     public:
-      explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) {
+    explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) {
 
-        this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-      }
+    this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+}
 
-    signals:
-    void hideRequested();
-    void tabPressed();
+signals:
+void hideRequested();
+void tabPressed();
 
 protected:
-    void keyPressEvent(QKeyEvent *e) override {
+void keyPressEvent(QKeyEvent *e) override {
 
-        if (e->key() == Qt::Key_Escape) {
-            this->clearFocus();
-            this->clear();
-            emit hideRequested();
+    if (e->key() == Qt::Key_Escape) {
+        this->clearFocus();
+        this->clear();
+        emit hideRequested();
 
-            disconnect(this, &LineEdit::returnPressed, 0, 0);
-        }
-
-        else if (e->type() == QKeyEvent::KeyPress) {
-            switch (e->key()) {
-            case Qt::Key_Tab:
-              emit tabPressed();
-            e->accept();
-                return;
-                break;
-
-            }
-            QLineEdit::keyPressEvent(e);
-        }
-        else
-            QLineEdit::keyPressEvent(e);
+        disconnect(this, &LineEdit::returnPressed, 0, 0);
     }
+
+    else if (e->type() == QKeyEvent::KeyPress) {
+        switch (e->key()) {
+            case Qt::Key_Tab:
+            emit tabPressed();
+            e->accept();
+            return;
+            break;
+
+        }
+        QLineEdit::keyPressEvent(e);
+    }
+    else
+    QLineEdit::keyPressEvent(e);
+}
 };
 
 class Inputbar : public QWidget {
     Q_OBJECT
-public:
+    public:
     Inputbar(QWidget *parent = nullptr);
     ~Inputbar();
 
@@ -88,8 +88,8 @@ public:
                      const QString &selectionString = 0) noexcept;
 
     enum CompletionModelType {
-      COMMAND = 0,
-      LUA_FUNCTIONS
+        COMMAND = 0,
+        LUA_FUNCTIONS
     };
     void enableCommandCompletions() noexcept;
     void disableCommandCompletions() noexcept;
@@ -102,7 +102,7 @@ public:
     void setFontFamily(const QString &family) noexcept;
     void setFontFamily(const std::string &family) noexcept;
     void addCompletionStringList(const CompletionModelType &type,
-                            const QStringList &stringList) noexcept;
+                                 const QStringList &stringList) noexcept;
     void currentCompletionStringList(const CompletionModelType &type) noexcept;
 
     // returns the QLineEdit
@@ -125,7 +125,7 @@ public:
     // return the foreground color
     inline std::string Get_foreground_color() noexcept { return m_foreground_color.toStdString(); }
 
-signals:
+    signals:
     void lineEditTextChanged(const QString &text);
 
 private:
@@ -139,5 +139,5 @@ private:
     OrderlessFilterModel *m_filter_model = nullptr;
     QHash<CompletionModelType, QStringList> m_completion_list_hash;
     QString m_background_color,
-            m_foreground_color;
+    m_foreground_color;
 };

@@ -616,7 +616,6 @@ QIcon FileSystemModel::get_cached_icon(const QFileInfo &finfo) const {
     QString path = finfo.filePath();
     if (!m_icon_cache.contains(path)) {
         QFileIconProvider iconProvider;
-        qDebug() << iconProvider.icon(finfo).availableSizes();
         m_icon_cache[path] = iconProvider.icon(finfo);
     }
 

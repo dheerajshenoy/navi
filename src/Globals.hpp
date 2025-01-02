@@ -28,8 +28,10 @@ static const QString LUA_DIR_NAME = "lua";
 static const QString LUA_DIR_PATH = joinPaths(CONFIG_DIR_PATH, LUA_DIR_NAME);
 static const QString BOOKMARK_FILE_NAME = "bookmark.lua";
 static const QString BOOKMARK_FILE_PATH = joinPaths(CONFIG_DIR_PATH, BOOKMARK_FILE_NAME);
+
+static const QString PRIVATE_API_FILE_NAME = "navi.luac";
 static const QStringList PRIVATE_API_FOLDER_PATH = { joinPaths("/usr/share", APP_NAME),
     joinPaths(QDir::homePath(), ".local/share", APP_NAME) };
-static const QStringList PRIVATE_API_FILE_PATH = { joinPaths( PRIVATE_API_FOLDER_PATH.at(0), "_lua", "navi.lua"),
-    joinPaths(QDir::homePath(), ".local/share", APP_NAME, "_lua", "navi.lua") };
+static const QStringList PRIVATE_API_FILE_PATH = { joinPaths( PRIVATE_API_FOLDER_PATH.at(0), "_lua", PRIVATE_API_FILE_NAME),
+    joinPaths(QDir::homePath(), ".local/share", APP_NAME, "_lua", PRIVATE_API_FILE_NAME) };
 
