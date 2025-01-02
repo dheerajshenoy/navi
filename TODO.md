@@ -95,3 +95,4 @@
 - [ ] view copy/cut file register
 - [ ] Timer api
 - [ ] Sleep api
+- [ ] Inputbar completion like vim/neovim
