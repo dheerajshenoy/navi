@@ -128,7 +128,7 @@ add_custom_target(run
 )
 
 # Install the executable
-install(TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
+# Install the data folder to ${PREFIX_DIR}
 install(DIRECTORY data/ DESTINATION ${SHAREDIR} COMPONENT Runtime)

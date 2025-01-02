@@ -1,5 +1,5 @@
 #include <string>
-constexpr std::string VERSION = "1.2";
+constexpr std::string VERSION = "1.2.1";
 
 #include <QStandardPaths>
 #include "argparse.hpp"

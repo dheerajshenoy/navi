@@ -3,6 +3,13 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.2.1 (2 January 2024)
+-----------------------
+
++ Added set lua API functions for ui elements to set options together in one go.
++ Fixed toolbar lua :func:`set_items` causing navi to crash.
++ Read-in all the members defined in the navi table.
+
 v1.2 (30 December 2024)
 ----------------------
 
