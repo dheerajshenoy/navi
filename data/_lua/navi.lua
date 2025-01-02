@@ -313,13 +313,25 @@ end
 ---Adds button to toolbar
 ---@param button ToolbarItem
 M.ui.toolbar.add_button = function (button)
-    _navi.add_toolbar_button(button)
+    _navi:add_toolbar_button(button)
 end
 
 ---Sets item for toolbar
 ---@param items string[]
 M.ui.toolbar.set_items = function (items)
-    _navi.set_toolbar_layout(items)
+    if type(items) == "table" then
+        _navi:set_toolbar_layout(items)
+    end
+end
+
+---@class ToolbarOptions
+---@field icons_only boolean
+---@field visible boolean
+
+---Sets the options for toolbar
+---@param opts ToolbarOptions
+M.ui.toolbar.set = function (opts)
+    _navi:set_toolbar_props(opts)
 end
 
 setmetatable(M.ui.toolbar, {
@@ -335,7 +347,7 @@ setmetatable(M.ui.toolbar, {
     __newindex = function (_, key, value)
 
         if key == "icons_only" then
-            _navi:set_toolbar_icons_only()
+            _navi:set_toolbar_icons_only(value)
 
         elseif key == "visible" then
             return _navi:set_toolbar_visible(value)
@@ -347,6 +359,24 @@ setmetatable(M.ui.toolbar, {
 })
 
 M.ui.file_panel = {}
+
+---@class FilePanelOptions
+---@field icons boolean whether to show icons or not
+---@field font_size integer
+---@field font string font to use
+
+
+---Sets options for file panel
+---@param props FilePanelOptions
+M.ui.file_panel.set = function (props)
+    _navi:set_file_panel_props(props)
+end
+
+---Gets options for file panel
+---@return FilePanelOptions
+M.ui.file_panel.get = function ()
+    return _navi:get_file_panel_props()
+end
 
 setmetatable(M.ui.file_panel, {
     __index = function (_, key)
@@ -465,20 +495,14 @@ end
 ---Registers a lua function to be used interactively in Navi
 ---@param name string
 ---@param func function
-M.api.register_function = function (name, func)
-    _navi:register_function(name, func)
+M.api.create_user_command = function (name, func)
+    _navi:create_user_command(name, func)
 end
 
 ---Unregister a function from Navi interactive functions
 ---@param name string
-M.api.unregister_function = function (name)
-    _navi:unregister_function(name)
-end
-
----Lists the user registered functions inside Navi
----@return string[]
-M.api.list_registered_functions = function ()
-    return _navi:list_registered_functions()
+M.api.remove_user_command = function (name)
+    _navi:remove_user_command(name)
 end
 
 ---Returns the number of item(s) in the current working directory
