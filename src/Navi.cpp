@@ -22,6 +22,8 @@ void Navi::initThings() noexcept {
     initSignalsSlots(); // init signals and slots
     init_default_options();
 
+    m_file_panel->tableView()->setIconSize(QSize(64, 64));
+
     /*if (m_load_config)*/
     /*    initConfiguration();*/
     /*else {*/
@@ -35,6 +37,9 @@ void Navi::initThings() noexcept {
 
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
+
+    auto table = m_file_panel->tableView();
+    table->setItemDelegateForColumn(0, new FilePanelDelegate(table));
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }

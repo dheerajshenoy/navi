@@ -191,7 +191,7 @@ private:
            m_markHeaderBackgroundColor = Qt::transparent;
 
     QFont m_markHeaderFont, m_markFont;
-    QString m_symlink_separator = "->";
+    QString m_symlink_separator = "⟶";
     QColor m_symlink_foreground;
     bool m_show_symlink;
     unsigned int m_file_name_column_index = -1;

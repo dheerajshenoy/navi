@@ -27,7 +27,6 @@
 #include <QApplication>
 #include <QUrl>
 #include <QCryptographicHash>
-
 #include "FilePropertyWidget.hpp"
 #include "FileSystemModel.hpp"
 #include "FileWorker.hpp"

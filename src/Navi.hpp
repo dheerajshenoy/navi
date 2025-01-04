@@ -69,6 +69,7 @@
 #include "HookManager.hpp"
 #include "FolderPropertyWidget.hpp"
 #include "AboutWidget.hpp"
+#include "FilePanelDelegate.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
