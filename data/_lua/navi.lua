@@ -378,6 +378,17 @@ M.ui.file_panel.get = function ()
     return _navi:get_file_panel_props()
 end
 
+M.ui.file_panel.mark = {}
+
+setmetatable(M.ui.file_panel.mark, {
+    __index = function (_, key)
+
+    end,
+    __newindex = function (_, key, value)
+
+    end
+})
+
 setmetatable(M.ui.file_panel, {
     __index = function (_, key)
 

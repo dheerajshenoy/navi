@@ -97,6 +97,7 @@ qt_add_executable(${PROJECT_NAME}
   src/FilePreviewWorker.hpp
   src/TaskCardTemplate.hpp
   src/OrderlessFilterModel.hpp
+  src/FilePanelDelegate.hpp
 )
 
 
