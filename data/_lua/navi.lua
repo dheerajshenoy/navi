@@ -120,7 +120,7 @@ M.ui.header = {}
 
 ---Set option for header
 ---@param opts HeaderOptions
-M.ui.header.set = function (opts)
+M.ui.header.set_props = function (opts)
     if opts then
         _navi:set_header_props(opts)
     end
@@ -128,7 +128,7 @@ end
 
 ---Get options table for header
 ---@return HeaderOptions
-M.ui.header.get = function ()
+M.ui.header.get_props = function ()
     return _navi:get_header_props()
 end
 
@@ -165,7 +165,7 @@ M.ui.inputbar = {}
 
 ---Sets the options for inputbar
 ---@param opts InputbarOptions
-M.ui.inputbar.set = function (opts)
+M.ui.inputbar.set_props = function (opts)
     if opts then
         _navi:set_preview_panel_props(opts)
     end
@@ -173,7 +173,7 @@ end
 
 ---Gets the options table for inputbar
 ---@return InputbarOptions
-M.ui.inputbar.get = function ()
+M.ui.inputbar.get_props = function ()
     return _navi:get_inputbar_props()
 end
 
@@ -330,7 +330,7 @@ end
 
 ---Sets the options for toolbar
 ---@param opts ToolbarOptions
-M.ui.toolbar.set = function (opts)
+M.ui.toolbar.set_props = function (opts)
     _navi:set_toolbar_props(opts)
 end
 
@@ -368,13 +368,13 @@ M.ui.file_panel = {}
 
 ---Sets options for file panel
 ---@param props FilePanelOptions
-M.ui.file_panel.set = function (props)
+M.ui.file_panel.set_props = function (props)
     _navi:set_file_panel_props(props)
 end
 
 ---Gets options for file panel
 ---@return FilePanelOptions
-M.ui.file_panel.get = function ()
+M.ui.file_panel.get_props = function ()
     return _navi:get_file_panel_props()
 end
 
@@ -387,6 +387,69 @@ setmetatable(M.ui.file_panel.mark, {
     __newindex = function (_, key, value)
 
     end
+})
+
+M.ui.file_panel.symlink = {}
+
+---@class SymlinkOptions
+---@field italic boolean
+---@field bold boolean
+---@field underline boolean
+---@field visible boolean
+---@field font string
+---@field font_size integer
+
+---Sets option for Symlink
+---@param opts SymlinkOptions
+M.ui.file_panel.symlink.set_props = function (opts)
+    if type(opts) == "table" then
+        _navi:set_symlink_props(opts)
+    end
+end
+
+---Gets option for Symlink
+M.ui.file_panel.symlink.get_props = function ()
+    if type(opts) == "table" then
+        _navi:set_symlink_props(opts)
+    end
+end
+
+setmetatable(M.ui.file_panel.symlink, {
+    __index = function (_, key)
+        if key == "foreground" then
+            _navi:get_symlink_foreground()
+
+        elseif key == "background" then
+            _navi:get_symlink_background()
+
+        elseif key == "italic" then
+            _navi:get_symlink_italic()
+
+        elseif key == "bold" then
+            _navi:get_symlink_bold()
+
+        elseif key == "underline" then
+            _navi:get_symlink_underline()
+        end
+    end,
+    __newindex = function (_, key, value)
+        if key == "foreground" then
+            _navi:set_symlink_foreground(value)
+
+        elseif key == "background" then
+            _navi:set_symlink_background(value)
+
+        elseif key == "italic" then
+            _navi:set_symlink_italic(value)
+
+        elseif key == "bold" then
+            _navi:set_symlink_bold(value)
+
+        elseif key == "underline" then
+            _navi:set_symlink_underline(value)
+        end
+    end
+
 })
 
 setmetatable(M.ui.file_panel, {
@@ -453,7 +516,7 @@ end
 
 ---Sets the options for preview panel
 ---@param opts PreviewPanelOptions
-M.ui.preview_panel.set = function (opts)
+M.ui.preview_panel.set_props = function (opts)
     if opts then
         _navi:set_preview_panel_props(opts)
     end
@@ -461,7 +524,7 @@ end
 
 ---Gets options table for preview panel
 ---@return PreviewPanelOptions
-M.ui.preview_panel.get = function ()
+M.ui.preview_panel.get_props = function ()
     return _navi:get_preview_panel_props()
 end
 

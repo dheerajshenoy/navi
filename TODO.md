@@ -74,7 +74,7 @@
 - [X] Add file operation cancel UI
 - [X] action macrosap
 - [ ] Open with menu
-- [ ] Highlight symlink differently
+- [X] Highlight symlink differently
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
 - [X] overwrite copy, paste etc.
@@ -83,7 +83,7 @@
 - [ ] lua API for custom context menu
 - [X] lua API for custom menubar
 - [X] lua API for statusbar
-- [ ] About Menu
+- [X] About Menu
 - [ ] Deletion make task if large size
 - [ ] VisibilityChange signal bug
 - [X] Progressbar for `taskswidget`
@@ -96,3 +96,4 @@
 - [ ] Timer api
 - [ ] Sleep api
 - [ ] Inputbar completion like vim/neovim
+- [ ] IPC

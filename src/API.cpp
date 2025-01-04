@@ -220,7 +220,27 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_file_panel_font_size", &Navi::set_file_panel_font_size,
                            "get_file_panel_font_size", &Navi::get_file_panel_font_size,
                            "set_file_panel_props", &Navi::set_file_panel_props,
-                           "get_file_panel_props", &Navi::get_file_panel_props
+                           "get_file_panel_props", &Navi::get_file_panel_props,
+
+                           // Symlink
+                           "set_symlink_visible", &Navi::set_symlink_visible,
+                           "get_symlink_visible", &Navi::get_symlink_visible,
+                           "set_symlink_foreground", &Navi::set_symlink_foreground,
+                           "get_symlink_foreground", &Navi::get_symlink_foreground,
+                           "set_symlink_background", &Navi::set_symlink_background,
+                           "get_symlink_background", &Navi::get_symlink_background,
+                           "set_symlink_italic", &Navi::set_symlink_italic,
+                           "get_symlink_italic", &Navi::get_symlink_italic,
+                           "set_symlink_bold", &Navi::set_symlink_bold,
+                           "get_symlink_bold", &Navi::get_symlink_bold,
+                           "set_symlink_underline", &Navi::set_symlink_underline,
+                           "get_symlink_underline", &Navi::get_symlink_underline,
+                           "set_symlink_font", &Navi::set_symlink_font,
+                           "get_symlink_font", &Navi::get_symlink_font,
+                           "set_symlink_font_size", &Navi::set_symlink_font_size,
+                           "get_symlink_font_size", &Navi::get_symlink_font_size,
+                           "set_symlink_props", &Navi::set_symlink_props,
+                           "get_symlink_props", &Navi::get_symlink_props
 
                            );
 

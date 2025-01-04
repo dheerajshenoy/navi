@@ -9,6 +9,7 @@ Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 // Run the function if there is any error due to ``reason``.
 void Navi::Error(const QString &reason) noexcept {
     m_statusbar->Message(reason);
+    m_table_delegate->set_symlink_font(font().family());
     initKeybinds();
 }
 
@@ -39,8 +40,8 @@ void Navi::initThings() noexcept {
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
     auto table = m_file_panel->tableView();
-    table->setItemDelegateForColumn(0, new FilePanelDelegate(table));
-
+    m_table_delegate = new FilePanelDelegate(table);
+    table->setItemDelegateForColumn(m_file_panel->model()->fileNameColumnIndex(), m_table_delegate);
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
@@ -745,9 +746,11 @@ void Navi::setupCommandMap() noexcept {
         m_statusbar->Message(args.join(" "), MessageType::ERROR);
     };
 
+    /*
     commandMap["reload-config"] = [this](const QStringList &args) {
         initConfiguration();
     };
+    */
 
     commandMap["sort-name"] = [this](const QStringList &args) { SortByName(); };
 
@@ -2332,6 +2335,7 @@ std::string Navi::Lua__Input(const std::string &prompt,
 /*}*/
 
 void Navi::execute_lua_code(const std::string &code) noexcept {
+    // TODO: Adding literal ""
     (*m_lua).script(code);
 }
 
@@ -3286,4 +3290,46 @@ void Navi::set_toolbar_props(const sol::table &table) noexcept {
     if (table["icons_only"])
         set_toolbar_icons_only(table["icons_only"].get<bool>());
 
+}
+
+
+void Navi::set_symlink_props(const sol::table &table) noexcept {
+    if (table["font"])
+        set_symlink_font(table["font"].get<std::string>());
+
+    if (table["font_size"])
+        set_symlink_font_size(table["font_size"].get<int>());
+
+    if (table["foreground"])
+        set_symlink_foreground(table["foreground"].get<std::string>());
+
+    if (table["background"])
+        set_symlink_background(table["background"].get<std::string>());
+
+    if (table["visible"])
+        set_symlink_visible(table["visible"].get<bool>());
+
+    if (table["bold"])
+        set_symlink_bold(table["bold"].get<bool>());
+
+    if (table["italic"])
+        set_symlink_italic(table["italic"].get<bool>());
+
+    if (table["underline"])
+        set_symlink_underline(table["underline"].get<bool>());
+}
+
+sol::table Navi::get_symlink_props() noexcept {
+    sol::table table = m_lua->create_table();
+
+    table["underline"] = get_symlink_underline();
+    table["italic"] = get_symlink_italic();
+    table["font"] = get_symlink_font();
+    table["font_size"] = get_symlink_font_size();
+    table["bold"] = get_symlink_bold();
+    table["foreground"] = get_symlink_foreground();
+    table["background"] = get_symlink_background();
+    table["visible"] = get_symlink_visible();
+
+    return table;
 }

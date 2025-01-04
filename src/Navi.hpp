@@ -871,6 +871,73 @@ public:
 
     void set_pathbar_props(const sol::table &table) noexcept;
 
+    inline bool get_symlink_visible() noexcept {
+        return m_file_panel->model()->get_symlink_visible();
+    }
+
+    inline void set_symlink_visible(const bool &state) noexcept {
+        return m_file_panel->model()->set_symlink_visible(state);
+    }
+
+    inline std::string get_symlink_foreground() noexcept {
+        return m_table_delegate->get_symlink_foreground();
+    }
+
+    inline void set_symlink_foreground(const std::string &fg) noexcept {
+        return m_table_delegate->set_symlink_foreground(QString::fromStdString(fg));
+    }
+
+    inline void set_symlink_background(const std::string &bg) noexcept {
+        return m_table_delegate->set_symlink_background(QString::fromStdString(bg));
+    }
+
+    inline std::string get_symlink_background() noexcept {
+        return m_table_delegate->get_symlink_background();
+    }
+
+    inline bool get_symlink_bold() noexcept {
+        return m_table_delegate->get_symlink_bold();
+    }
+
+    inline void set_symlink_bold(const bool &state) noexcept {
+        return m_table_delegate->set_symlink_bold(state);
+    }
+
+    inline bool get_symlink_italic() noexcept {
+        return m_table_delegate->get_symlink_italic();
+    }
+
+    inline void set_symlink_italic(const bool &state) noexcept {
+        m_table_delegate->set_symlink_italic(state);
+    }
+
+    inline bool get_symlink_underline() noexcept {
+        return m_table_delegate->get_symlink_underline();
+    }
+
+    inline void set_symlink_underline(const bool &state) noexcept {
+        m_table_delegate->set_symlink_underline(state);
+    }
+
+    inline std::string get_symlink_font() noexcept {
+        return m_table_delegate->get_symlink_font();
+    }
+
+    inline void set_symlink_font(const std::string &name) noexcept {
+        m_table_delegate->set_symlink_font(QString::fromStdString(name));
+    }
+
+    inline int get_symlink_font_size() noexcept {
+        return m_table_delegate->get_symlink_font_size();
+    }
+
+    inline void set_symlink_font_size(const int &size) noexcept {
+        return m_table_delegate->set_symlink_font_size(size);
+    }
+
+    void set_symlink_props(const sol::table &table) noexcept;
+    sol::table get_symlink_props() noexcept;
+
 protected:
     bool event(QEvent *e) override;
 
@@ -1173,4 +1240,6 @@ private:
     std::vector<std::string> m_toolbar_layout;
     sol::state *m_lua = nullptr;
     QStringList m_navi_lua_api_list;
+
+    FilePanelDelegate *m_table_delegate;
 };

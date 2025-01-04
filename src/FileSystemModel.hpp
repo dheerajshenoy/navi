@@ -44,9 +44,10 @@ public:
 
 
     int fileNameColumnIndex() const noexcept { return m_file_name_column_index; }
+
     void setSymlinkSeparator(const QString &separator) noexcept;
-    void setSymlinkForeground(const QString &foreground) noexcept;
-    void setSymlinkVisible(const bool &state) noexcept { m_show_symlink = state; }
+
+    inline void set_symlink_visible(const bool &state) noexcept { m_show_symlink = state; }
 
     void setMarkForegroundColor(const QString &color) noexcept;
     void setMarkBackgroundColor(const QString &color) noexcept;
@@ -136,6 +137,10 @@ public:
         return m_symlink_separator;
     }
 
+    inline bool get_symlink_visible() const noexcept {
+        return m_show_symlink;
+    }
+
     // void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
@@ -192,8 +197,7 @@ private:
 
     QFont m_markHeaderFont, m_markFont;
     QString m_symlink_separator = "⟶";
-    QColor m_symlink_foreground;
-    bool m_show_symlink;
+    bool m_show_symlink = true;
     unsigned int m_file_name_column_index = -1;
 
     mutable QHash<QString, QIcon> m_icon_cache;

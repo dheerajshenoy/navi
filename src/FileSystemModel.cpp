@@ -224,9 +224,10 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
                             .arg(fileInfo.fileName())
                             .arg(m_symlink_separator)
                             .arg(fileInfo.symLinkTarget());
-                        }
+                        } else
+                        return fileInfo.fileName();
                     } else
-                    return QString("%1").arg(fileInfo.fileName());
+                    return fileInfo.fileName();
                 } break;
 
                 case ColumnType::FileSize: // File Size
@@ -580,10 +581,6 @@ void FileSystemModel::setMarkHeaderFontFamily(const QString &family) noexcept {
 
 void FileSystemModel::setSymlinkSeparator(const QString &separator) noexcept {
     m_symlink_separator = separator;
-}
-
-void FileSystemModel::setSymlinkForeground(const QString &foreground) noexcept {
-    m_symlink_foreground = foreground;
 }
 
 void FileSystemModel::setSortBy(const QDir::SortFlags &sortFlags) noexcept {
