@@ -15,6 +15,7 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QFileIconProvider>
+#include <QTableView>
 
 #include "utils.hpp"
 
@@ -155,6 +156,7 @@ public:
 
     bool icons_enabled = true;
 
+    inline QList<QFileInfo> entry_info_list() { return m_fileInfoList; }
 
     signals:
     void directoryLoaded(const int &rowCount);
@@ -189,10 +191,10 @@ private:
         Column { "PERM", ColumnType::FilePermission },
     };
 
-    QColor m_markForegroundColor = Qt::transparent,
+    QColor m_markForegroundColor = Qt::red,
            m_markBackgroundColor = Qt::transparent;
 
-    QColor m_markHeaderForegroundColor = Qt::transparent,
+    QColor m_markHeaderForegroundColor = Qt::red,
            m_markHeaderBackgroundColor = Qt::transparent;
 
     QFont m_markHeaderFont, m_markFont;

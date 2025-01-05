@@ -1,4 +1,5 @@
 #include "FilePanel.hpp"
+#include "Navi.hpp"
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
                      TaskManager *tm, QWidget *parent)
@@ -702,7 +703,6 @@ void FilePanel::RenameItem() noexcept {
     const QString &oldName = getCurrentItem();
     QFileInfo fileInfo(oldName);
     const QString &oldFileName = fileInfo.fileName();
-    QModelIndex currentIndex = m_table_view->currentIndex();
     QString newFileName;
 
     if (fileInfo.isFile())
@@ -819,7 +819,6 @@ void FilePanel::RenameItemsGlobal() noexcept {
             QFileInfo fileInfo(markedFiles.at(0));
             const QString &oldFilePath = fileInfo.filePath();
             const QString &oldName = fileInfo.fileName();
-            QModelIndex currentIndex = m_table_view->currentIndex();
             QString newFileName;
             if (fileInfo.isFile())
                 newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
@@ -858,7 +857,6 @@ void FilePanel::RenameItemsLocal() noexcept {
             QFileInfo fileInfo(localMarkedFiles.at(0));
             const QString &oldFilePath = fileInfo.filePath();
             const QString &oldName = fileInfo.fileName();
-            QModelIndex currentIndex = m_table_view->currentIndex();
             QString newFileName;
 
             if (fileInfo.isFile())
@@ -1433,6 +1431,8 @@ void FilePanel::dropEvent(QDropEvent *event) {
 }
 
 void FilePanel::startDrag(Qt::DropActions supportedActions) {
+    UNUSED(supportedActions);
+
     QModelIndexList selectedIndexes =
         m_table_view->selectionModel()->selectedIndexes();
 
@@ -1637,9 +1637,13 @@ void FilePanel::ToggleVisualLine(const bool &state) noexcept {
     m_statusbar->SetVisualLineMode(state);
 }
 
-void FilePanel::AsyncShellCommand(const QString &command) noexcept {}
+void FilePanel::AsyncShellCommand(const QString &command) noexcept {
+    UNUSED(command);
+}
 
-void FilePanel::ShellCommand(const QString &command) noexcept {}
+void FilePanel::ShellCommand(const QString &command) noexcept {
+    UNUSED(command);
+}
 
 void FilePanel::OpenWith() noexcept {}
 
@@ -1668,5 +1672,16 @@ void FilePanel::SelectFirstItem() noexcept {
     if (m_model->rowCount() > 0) {
         m_highlight_row = 0;
         m_table_view->setCurrentIndex(m_model->index(0, 0));
+    }
+}
+
+void FilePanel::goto_symlink_target() noexcept {
+    auto file_name = m_model->data(m_table_view->currentIndex()).toString();
+    auto separator = m_model->getSymlinkSeparator();
+    if (file_name.contains(separator)) {
+        auto target_path = file_name.split(separator).at(1).trimmed();
+        setCurrentDir(target_path, true);
+    } else {
+        m_statusbar->Message("Item is not a symlink", MessageType::WARNING);
     }
 }

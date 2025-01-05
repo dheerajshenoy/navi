@@ -141,6 +141,7 @@ public:
 
     void ToggleDotDot() noexcept;
     void ToggleHiddenFiles() noexcept;
+    inline bool hidden_files_visible() noexcept { return m_hidden_files_shown; }
     void Search(QString searchText = "", const bool &regex = false) noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
@@ -256,6 +257,8 @@ public:
                                   .arg(m_current_foreground.name()));
     }
 
+    void goto_symlink_target() noexcept;
+
 signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
@@ -272,6 +275,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     // void mousePressEvent(QMouseEvent *event) override;
     // void mouseMoveEvent(QMouseEvent *event) override;
+
 
 private:
     void dragRequested() noexcept;

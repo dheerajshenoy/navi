@@ -133,25 +133,20 @@ int FileSystemModel::columnCount(const QModelIndex &parent) const {
 
 void FileSystemModel::setMarkForegroundColor(const QString &color) noexcept {
     if (color.isEmpty() || color.isNull())
-        m_markForegroundColor = QColor();
+        m_markForegroundColor = QColor(Qt::transparent);
     else
         m_markForegroundColor = QColor(color);
 }
 
 void FileSystemModel::setMarkBackgroundColor(const QString &color) noexcept {
-    if (color.isEmpty() || color.isNull())
-        m_markBackgroundColor = QColor();
-    else
-        m_markBackgroundColor = QColor(color);
+    m_markBackgroundColor = QColor(color);
 }
 
-void FileSystemModel::setMarkHeaderForegroundColor(
-    const QString &color) noexcept {
+void FileSystemModel::setMarkHeaderForegroundColor(const QString &color) noexcept {
     m_markHeaderForegroundColor = QColor(color);
 }
 
-void FileSystemModel::setMarkHeaderBackgroundColor(
-    const QString &color) noexcept {
+void FileSystemModel::setMarkHeaderBackgroundColor(const QString &color) noexcept {
     m_markHeaderBackgroundColor = QColor(color);
 }
 
@@ -205,7 +200,6 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
             if (isMarked) {
                 return m_markBackgroundColor;
             }
-            return QVariant();
         } break;
 
         case Qt::FontRole: {

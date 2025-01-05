@@ -5,6 +5,7 @@
 #include "FileSystemModel.hpp"
 #include <QApplication>
 #include <QFont>
+#include <QTableView>
 
 class FilePanelDelegate : public QStyledItemDelegate {
     Q_OBJECT
@@ -15,6 +16,14 @@ class FilePanelDelegate : public QStyledItemDelegate {
     m_symlink_foreground("red")
     {
         m_symlink_font = QApplication::font();
+}
+
+inline void set_symlink_separator(const QString &sep) noexcept {
+    m_symlink_separator = sep;
+}
+
+inline std::string get_symlink_separator() noexcept {
+    return m_symlink_separator.toStdString();
 }
 
 inline void set_symlink_foreground(const QString &foreground) noexcept {
@@ -85,8 +94,6 @@ void paint(QPainter *painter, const QStyleOptionViewItem &option,
     QString displayText = index.data(Qt::DisplayRole).toString();
     QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
 
-    QString separator = " ⟶ ";
-
     // Draw the background
     QStyle *style = opt.widget ? opt.widget->style() : QApplication::style();
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, opt.widget);
@@ -104,11 +111,11 @@ void paint(QPainter *painter, const QStyleOptionViewItem &option,
     }
 
     // For symlinks, split and color the text
-    int sepIndex = displayText.indexOf(separator);
+    int sepIndex = displayText.indexOf(m_symlink_separator);
     if (sepIndex != -1) {
         // Split the text into filename and target
         QString fileName = displayText.left(sepIndex);
-        QString targetPath = displayText.mid(sepIndex + separator.length());
+        QString targetPath = displayText.mid(sepIndex + m_symlink_separator.length());
 
         // Draw filename
         painter->setPen(opt.palette.color(QPalette::Text));
@@ -117,14 +124,14 @@ void paint(QPainter *painter, const QStyleOptionViewItem &option,
         // Draw separator
         int fileNameWidth = painter->fontMetrics().horizontalAdvance(fileName);
         painter->drawText(textRect.adjusted(fileNameWidth, 0, 0, 0),
-                          Qt::AlignLeft | Qt::AlignVCenter, separator);
+                          Qt::AlignLeft | Qt::AlignVCenter, m_symlink_separator);
 
         painter->save();
 
         // Draw target path in the model's symlink color
         painter->setFont(m_symlink_font);
 
-        int sepWidth = painter->fontMetrics().horizontalAdvance(separator);
+        int sepWidth = painter->fontMetrics().horizontalAdvance(m_symlink_separator);
         int targetTextWidth = painter->fontMetrics().horizontalAdvance(targetPath);
         int targetStartX = textRect.left() + fileNameWidth + sepWidth + 4;
         QRect targetRect(targetStartX, textRect.top(),
@@ -132,7 +139,6 @@ void paint(QPainter *painter, const QStyleOptionViewItem &option,
                          textRect.height());
 
         if (!m_symlink_background.isEmpty()) {
-            qDebug() << m_symlink_background;
             painter->fillRect(targetRect, QColor(m_symlink_background));
         }
 
@@ -156,5 +162,5 @@ QSize sizeHint(const QStyleOptionViewItem &option,
 
 private:
 QFont m_symlink_font;
-QString m_symlink_foreground, m_symlink_background;
+QString m_symlink_foreground, m_symlink_background, m_symlink_separator = "⟶";
 };

@@ -25,6 +25,8 @@ void init_lua_api(sol::state &lua) noexcept {
     // Bind MyClass to Lua
     lua.new_usertype<Navi>("Navi",
                            sol::constructors<Navi>(),
+                           "set_hidden_files_visible", sol::resolve<void(const bool &)>(&Navi::ToggleHiddenFiles),
+                           "get_hidden_files_visible", &Navi::get_hidden_files_visible,
                            "get_terminal", &Navi::Get_terminal,
                            "set_terminal", &Navi::Set_terminal,
                            "set_keymap", &Navi::Lua__keymap_set,
@@ -240,7 +242,9 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_symlink_font_size", &Navi::set_symlink_font_size,
                            "get_symlink_font_size", &Navi::get_symlink_font_size,
                            "set_symlink_props", &Navi::set_symlink_props,
-                           "get_symlink_props", &Navi::get_symlink_props
+                           "get_symlink_props", &Navi::get_symlink_props,
+                           "set_symlink_separator", &Navi::set_symlink_separator,
+                           "get_symlink_separator", &Navi::get_symlink_separator
 
                            );
 

@@ -5,46 +5,7 @@
 #define UNUSED(x) (void) x
 #include "Globals.hpp"
 
-#include <unistd.h>
-#include <QIcon>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QApplication>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QHash>
-#include <QInputDialog>
-#include <QKeySequence>
-#include <QMainWindow>
-#include <QMenu>
-#include <QMenuBar>
-#include <QShortcut>
-#include <QSplitter>
-#include <QStringListModel>
-#include <QTextEdit>
-#include <QVBoxLayout>
-#include <QWidget>
-#include <QRegularExpression>
-#include <QStandardPaths>
-#include <QDebug>
-#include <QStringView>
-#include <QActionGroup>
-#include <QEvent>
-#include <QMessageBox>
-#include <QInputDialog>
-#include "InputDialog.hpp"
-#include <QKeyEvent>
-#include <QtConcurrent/QtConcurrent>
-#include <QPromise>
-#include <QFuture>
-#include <QThread>
-#include <QClipboard>
-#include <QToolBar>
-#include <QSet>
-#include <QHash>
-#include <unordered_map>
+#include "pch.hpp"
 
 // Local includes
 #include "FilePathWidget.hpp"
@@ -70,6 +31,10 @@
 #include "FolderPropertyWidget.hpp"
 #include "AboutWidget.hpp"
 #include "FilePanelDelegate.hpp"
+#include "DriveWidget.hpp"
+#include "Statusbar.hpp"
+#include "argparse.hpp"
+#include "sol/sol.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -871,6 +836,20 @@ public:
 
     void set_pathbar_props(const sol::table &table) noexcept;
 
+    inline std::string get_symlink_separator() noexcept {
+        return m_table_delegate->get_symlink_separator();
+    }
+
+    inline void set_symlink_separator(const std::string &sep) noexcept {
+        auto s = QString::fromStdString(sep);
+        m_table_delegate->set_symlink_separator(s);
+        m_file_panel->model()->setSymlinkSeparator(s);
+    }
+
+    inline bool get_hidden_files_visible() noexcept {
+        return m_file_panel->hidden_files_visible();
+    }
+
     inline bool get_symlink_visible() noexcept {
         return m_file_panel->model()->get_symlink_visible();
     }
@@ -937,6 +916,10 @@ public:
 
     void set_symlink_props(const sol::table &table) noexcept;
     sol::table get_symlink_props() noexcept;
+
+    inline void goto_symlink_target() noexcept {
+        m_file_panel->goto_symlink_target();
+    }
 
 protected:
     bool event(QEvent *e) override;
@@ -1162,6 +1145,7 @@ private:
         "macro-edit",
         "macro-save-to-file",
 
+
         // Echo
         "echo-info",
         "echo-warn",
@@ -1169,6 +1153,7 @@ private:
 
         // misc
         "new-window",
+        "goto-symlink-target",
         "exit",
         "filter",
         "reset-filter",
@@ -1228,17 +1213,17 @@ private:
     QString m_copy_path_join_str = "\n";
     QFuture<void> m_thumbnail_cache_future;
     QFutureWatcher<void> *m_thumbnail_cache_future_watcher = new QFutureWatcher<void>(this);
-    QToolBar *m_toolbar = nullptr;
-    QPushButton *m_toolbar__prev_btn = nullptr;
-    QPushButton *m_toolbar__next_btn = nullptr;
-    QPushButton *m_toolbar__home_btn = nullptr;
-    QPushButton *m_toolbar__parent_btn = nullptr;
-    QPushButton *m_toolbar__refresh_btn = nullptr;
+    QToolBar *m_toolbar;
+    QPushButton *m_toolbar__prev_btn;
+    QPushButton *m_toolbar__next_btn;
+    QPushButton *m_toolbar__home_btn;
+    QPushButton *m_toolbar__parent_btn;
+    QPushButton *m_toolbar__refresh_btn;
     QSet<QString> m_runtime_path = {};
     double m_preview_pane_fraction = 0.5f;
     bool m_menubar_icons = true, m_toolbar_icons_only = true;
     std::vector<std::string> m_toolbar_layout;
-    sol::state *m_lua = nullptr;
+    sol::state *m_lua;
     QStringList m_navi_lua_api_list;
 
     FilePanelDelegate *m_table_delegate;
