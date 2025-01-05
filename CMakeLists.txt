@@ -128,6 +128,8 @@ add_custom_target(run
   WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch.hpp)
+
 # Install the executable
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 

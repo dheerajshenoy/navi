@@ -97,3 +97,4 @@
 - [ ] Sleep api
 - [ ] Inputbar completion like vim/neovim
 - [ ] IPC
+- [X] Precompiled header
