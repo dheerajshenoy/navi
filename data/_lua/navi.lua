@@ -459,7 +459,6 @@ setmetatable(M.ui.file_panel.symlink, {
 
         elseif key == "separator" then
             _navi:set_symlink_separator(value)
-
         end
     end
 
@@ -704,6 +703,12 @@ end
 ---Unmark (DWIM)
 M.api.unmark_dwim = function ()
     return _navi:unmark_dwim()
+end
+
+---Copy path(s) of selected files
+---@param sep string
+M.api.copy_path = function (sep)
+    _navi:copy_path(sep)
 end
 
 ---Marks files using regex expression
