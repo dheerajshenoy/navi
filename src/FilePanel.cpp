@@ -579,6 +579,7 @@ void FilePanel::GotoMiddleItem() noexcept {
 
     QModelIndex index = m_model->index(middleRow, 0);
     m_table_view->setCurrentIndex(index);
+    m_table_view->scrollTo(index, QTableView::ScrollHint::PositionAtCenter);
 
     if (m_visual_line_mode) {
         // Update selection to include the new index
