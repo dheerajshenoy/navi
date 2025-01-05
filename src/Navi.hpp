@@ -339,6 +339,10 @@ public:
     double Preview_pane_fraction() noexcept;
     void Set_preview_pane_fraction(const double &fraction) noexcept;
 
+    inline void copy_path(const std::string &sep) noexcept {
+        CopyPath(QString::fromStdString(sep));
+    }
+
     inline void set_statusbar_background(const std::string &color) noexcept {
         m_statusbar->set_background_color(QString::fromStdString(color));
     }

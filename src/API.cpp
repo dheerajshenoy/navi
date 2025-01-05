@@ -37,6 +37,7 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_cycle", &Navi::get_cycle,
                            "set_cycle", &Navi::set_cycle,
 
+
                            // Headers
                            "set_header_visible", &Navi::set_header_visible,
                            "get_header_visible", &Navi::get_header_visible,
@@ -122,6 +123,7 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_preview_panel_props", &Navi::get_preview_panel_props,
 
                            // API
+                           "copy_path", &Navi::copy_path,
                            "list_runtime_paths", &Navi::list_runtime_paths,
                            "create_user_command", &Navi::Lua__register_user_function,
                            "remove_user_command", &Navi::Lua__unregister_user_function,
