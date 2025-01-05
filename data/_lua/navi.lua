@@ -78,6 +78,10 @@ setmetatable(M.opt, {
 
         elseif key == "cycle" then
             return _navi:get_cycle()
+
+        elseif key == "hidden_files" then
+            return _navi:get_hidden_files_visible()
+
         end
 
     end,
@@ -95,6 +99,9 @@ setmetatable(M.opt, {
 
         elseif key == "cycle" then
             _navi:set_cycle(value)
+
+        elseif key == "hidden_files" then
+            return _navi:set_hidden_files_visible(value)
 
         end
     end
@@ -409,9 +416,7 @@ end
 
 ---Gets option for Symlink
 M.ui.file_panel.symlink.get_props = function ()
-    if type(opts) == "table" then
-        _navi:set_symlink_props(opts)
-    end
+    _navi:get_symlink_props()
 end
 
 setmetatable(M.ui.file_panel.symlink, {
@@ -430,6 +435,10 @@ setmetatable(M.ui.file_panel.symlink, {
 
         elseif key == "underline" then
             _navi:get_symlink_underline()
+
+        elseif key == "separator" then
+            _navi:get_symlink_separator()
+
         end
     end,
     __newindex = function (_, key, value)
@@ -447,6 +456,10 @@ setmetatable(M.ui.file_panel.symlink, {
 
         elseif key == "underline" then
             _navi:set_symlink_underline(value)
+
+        elseif key == "separator" then
+            _navi:set_symlink_separator(value)
+
         end
     end
 

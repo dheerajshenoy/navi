@@ -3,6 +3,13 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.2.2 (5 January 2024)
+-----------------------
+
++ Added symlink styling support (italic, bold, underline, separator selection, background and foreground)
++ Lua API functions for symlink
++ Pre-compiled headers addition in source code for faster code compilation
+
 v1.2.1 (2 January 2024)
 -----------------------
 

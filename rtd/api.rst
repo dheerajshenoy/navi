@@ -39,6 +39,7 @@ Navi Table
 
 Members of the navi table:
 
++ opt
 + ui
 + api
 + keymap
@@ -47,6 +48,59 @@ Members of the navi table:
 + hook
 + bookmark
 
+.. note:: The members defined below are either options/variables or functions. Functions are represented with ``()`` in their names. Variables can be get/set by using their values or setting new values to them. For example, the variable :data:`terminal` inside the opt table inside navi global namespace can be accessed by using the following in the lua config:
+
+    .. code-block:: lua
+
+       print(navi.opt.terminal) -- getting the variable value
+       navi.opt.terminal = "ghostty" -- setting the variable value
+
+    Additionally, the function arguments (options passed to the parenthesis in functions when they are called) can have optional arguments in them and they have been represented by using ``[]`` (brackets).
+
+    For example, ``some_function([optional_argument str])`` suggests that :func:`some_function` is a function with the optional argument ``optional_argument`` of type ``str`` (string).
+
+opt
++++
+
+Contains options and functions related to setting options for Navi.
+
+.. module:: navi.opt
+
+.. data:: terminal
+
+   terminal to use for Navi.
+
+   :type: ``string``
+   :default: ``os.getenv("TERMINAL")``
+
+.. data:: default_directory
+
+   directory to open when navi starts up when no directory argument is provided in the commandline.
+
+   :type: ``string``
+   :default: ``$HOME``
+
+.. data:: copy_path_separator
+
+   the separator string to use in between file names when copying using the :ref:`copy-path` function.
+
+   :type: ``string``
+   :default: ``\n`` (newline character)
+
+.. data:: cycle
+
+   move to the first item if scrolling past the last item or last item if scrolling past the first item.
+
+   :type: ``boolean``
+   :default: ``false``
+
+.. data:: hidden_files
+
+   show the `hidden files <https://en.wikipedia.org/wiki/Hidden_file_and_hidden_directory>`_ by default or no.
+
+   :type: ``boolean``
+   :default: ``false``
+
 ui
 ++
 
@@ -54,21 +108,112 @@ ui
 
 .. function:: marks
 
-   Toggles the marks pane.
+   Toggles the marks panel.
 
    :return: ``void``
 
 .. function:: shortcuts
 
-   Toggles the shortcuts pane.
+   Toggles the shortcuts panel.
 
    :return: ``void``
 
 .. function:: messages
 
-   Toggles the messages pane.
+   Toggles the messages panel.
 
    :return: ``void``
+
+File Panel
+~~~~~~~~~~
+
+    This is the main panel used for navigation.
+
+.. module:: navi.ui.file_panel
+
+.. function:: toggle
+
+   Toggles the file panel.
+
+   :return: ``void``
+
+.. data:: visible
+
+   Visibility of the file panel.
+
+   :type: ``boolean``
+   :default: ``true``
+
+.. data:: icons
+
+   Visibility of the icons.
+
+   :type: ``boolean``
+   :default: ``true``
+
+.. data:: font_size
+
+   Size of the font used when rendering items in the file panel.
+
+   :type: ``integer``
+   :default: ``18``
+
+.. data:: font
+
+   Family of the font used for rendering items in the file panel.
+
+   :type: ``string``
+   :default: ``system font``
+
+Symlink
+#######
+
+.. module:: navi.ui.file_panel.symlink
+
+.. data:: foreground
+
+   Foreground of the symlink text
+
+   :type: ``string``
+   :default: theme foreground
+
+.. data:: background
+
+   Background of the symlink text
+
+   :type: ``string``
+   :default: theme background
+
+.. data:: italic
+
+   Italicises the symlink text
+
+   :type: ``boolean``
+   :default: ``false``
+
+.. data:: bold
+
+   Bolds the symlink text
+
+   :type: ``boolean``
+   :default: ``false``
+
+.. data:: underline
+
+   Underlines the symlink text
+
+   :type: ``boolean``
+   :default: ``false``
+
+.. data:: separator
+
+   Separator that separates the item name and symlink target name.
+
+   :type: ``string``
+   :default: ``⟶``
+
+ .. warning:: Please use unicode characters only as the symlink separtor. This is because navi uses the separator for separating file name and symlink target and for identifying the symlink target. If you use ordinary character the file name splitting logic will go wrong and the :func:`goto_symlink_target` function wouldn't work.
+
 
 
 Preview Panel
@@ -78,7 +223,7 @@ Preview Panel
 
 .. function:: toggle
 
-   Toggles the preview pane.
+   Toggles the preview panel.
 
    :return: ``void``
 
@@ -86,8 +231,8 @@ Preview Panel
 
    Visibility of preview panel
 
-   :type: ``bool``
-   :default: **true**
+   :type: ``boolean``
+   :default: ``true``
 
 Pathbar
 ~~~~~~~
@@ -127,7 +272,7 @@ statusbar
 
    Visibility of the menubar
 
-   :type: ``bool``
+   :type: ``boolean``
    :default: **true**
 
 .. function:: create_module(module_name: str, options: table)
@@ -141,10 +286,10 @@ statusbar
     Options has the following members:
 
     :param str text: text to be displayed
-    :param bool italic: whether the text has to be italic or not
-    :param bool bold: whether the text has to be bold or not
+    :param boolean italic: whether the text has to be italic or not
+    :param boolean bold: whether the text has to be bold or not
     :param str background: background color of the module
-    :param bool hidden: visibility of the module
+    :param boolean hidden: visibility of the module
     :param str color: foreground color of the module
 
 
@@ -258,7 +403,7 @@ toolbar
 
    Visibility of the menubar
 
-   :type: ``bool``
+   :type: ``boolean``
    :default: **true**
 
 .. data:: ToolbarItem
@@ -391,7 +536,7 @@ Menubar table
 
    Visibility of the menubar
 
-   :type: ``bool``
+   :type: ``boolean``
    :default: **true**
 
 .. function:: add_menu(menu_item: MenuItem)
@@ -603,14 +748,14 @@ api
     Check if the filepath provided points to a file.
     Returns ``true`` if it's a valid and existent file or returns ``false``.
 
-    :return: ``bool``
+    :return: ``boolean``
 
 .. function:: is_dir(path str)
 
     Check if the filepath provided points to a directory.
     Returns ``true`` if it's a valid and existent directory or returns ``false``.
 
-    :return: ``bool``
+    :return: ``boolean``
 
 .. function:: create_file(file_name str, [file_name2 str, ...])
 
@@ -666,13 +811,13 @@ api
 
     Check for local marks. Returns ``true`` if there are local marks, else ``false``.
 
-    :return: ``bool``
+    :return: ``boolean``
 
 .. function:: has_marks_global
 
     Check for global marks. Returns ``true`` if there are global marks, else ``false``.
 
-    :return: ``bool``
+    :return: ``boolean``
 
 .. function:: global_marks
 
@@ -832,8 +977,14 @@ api
 
    Returns ``true`` if there is any selection in the current working directory, else ``false``.
 
-   :return: ``bool``
+   :return: ``boolean``
 
+.. function:: copy_path([separator str])
+
+   Copies path(s) of selected files to clipboard separated by separator passed as argument or used the default separator from the config.
+
+   :param str separator: Separator to separate the file paths.
+   :return: ``void``
 
 
 .. data:: ItemProperty
@@ -1029,13 +1180,13 @@ The `bookmark` module in the Lua API allows you to manage bookmarks in the appli
 
 .. module:: navi.bookmark
 
-.. function:: add(bookmark_name str, file_path str, highlight bool)
+.. function:: add(bookmark_name str, file_path str, highlight boolean)
 
    Add a bookmark to the application.
 
    :param str bookmark_name: The name of the bookmark.
    :param str file_path: The file path associated with the bookmark.
-   :param bool highlight: Whether to visually highlight the bookmark in the application.
+   :param boolean highlight: Whether to visually highlight the bookmark in the application.
    :return: None
    :raises: Any exceptions from the internal bookmark manager.
 

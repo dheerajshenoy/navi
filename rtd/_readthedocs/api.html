@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2
+                1.2.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,10 +57,27 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Navi Lua API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#datatypes">Datatypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#navi-table">Navi Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opt">opt</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#navi.opt.terminal"><code class="docutils literal notranslate"><span class="pre">terminal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.opt.default_directory"><code class="docutils literal notranslate"><span class="pre">default_directory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.opt.copy_path_separator"><code class="docutils literal notranslate"><span class="pre">copy_path_separator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.opt.cycle"><code class="docutils literal notranslate"><span class="pre">cycle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.opt.hidden_files"><code class="docutils literal notranslate"><span class="pre">hidden_files</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-navi.ui">ui</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#navi.ui.marks"><code class="docutils literal notranslate"><span class="pre">marks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.ui.shortcuts"><code class="docutils literal notranslate"><span class="pre">shortcuts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.ui.messages"><code class="docutils literal notranslate"><span class="pre">messages()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-panel">File Panel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.icons"><code class="docutils literal notranslate"><span class="pre">icons</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.font_size"><code class="docutils literal notranslate"><span class="pre">font_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.font"><code class="docutils literal notranslate"><span class="pre">font</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-navi.ui.file_panel.symlink">Symlink</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.preview_panel">Preview Panel</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
@@ -157,6 +174,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.chmod"><code class="docutils literal notranslate"><span class="pre">chmod()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.spawn"><code class="docutils literal notranslate"><span class="pre">spawn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.has_selection"><code class="docutils literal notranslate"><span class="pre">has_selection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.api.copy_path"><code class="docutils literal notranslate"><span class="pre">copy_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.ItemProperty"><code class="docutils literal notranslate"><span class="pre">ItemProperty</span></code></a></li>
 </ul>
 </li>
@@ -263,6 +281,7 @@
 <p><strong>navi</strong> is the main <a class="reference external" href="https://www.tutorialspoint.com/lua/lua_tables.htm">table</a>.</p>
 <p>Members of the navi table:</p>
 <ul class="simple">
+<li><p>opt</p></li>
 <li><p>ui</p></li>
 <li><p>api</p></li>
 <li><p>keymap</p></li>
@@ -271,13 +290,97 @@
 <li><p>hook</p></li>
 <li><p>bookmark</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The members defined below are either options/variables or functions. Functions are represented with <code class="docutils literal notranslate"><span class="pre">()</span></code> in their names. Variables can be get/set by using their values or setting new values to them. For example, the variable <code class="xref py py-data docutils literal notranslate"><span class="pre">terminal</span></code> inside the opt table inside navi global namespace can be accessed by using the following in the lua config:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">navi</span><span class="p">.</span><span class="n">opt</span><span class="p">.</span><span class="n">terminal</span><span class="p">)</span> <span class="c1">-- getting the variable value</span>
+<span class="n">navi</span><span class="p">.</span><span class="n">opt</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="s2">&quot;ghostty&quot;</span> <span class="c1">-- setting the variable value</span>
+</pre></div>
+</div>
+<p>Additionally, the function arguments (options passed to the parenthesis in functions when they are called) can have optional arguments in them and they have been represented by using <code class="docutils literal notranslate"><span class="pre">[]</span></code> (brackets).</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">some_function([optional_argument</span> <span class="pre">str])</span></code> suggests that <code class="xref py py-func docutils literal notranslate"><span class="pre">some_function()</span></code> is a function with the optional argument <code class="docutils literal notranslate"><span class="pre">optional_argument</span></code> of type <code class="docutils literal notranslate"><span class="pre">str</span></code> (string).</p>
+</div>
+</section>
+<section id="opt">
+<h2>opt<a class="headerlink" href="#opt" title="Link to this heading"></a></h2>
+<p>Contains options and functions related to setting options for Navi.</p>
+<dl class="py data" id="module-navi.opt">
+<dt class="sig sig-object py" id="navi.opt.terminal">
+<span class="sig-prename descclassname"><span class="pre">navi.opt.</span></span><span class="sig-name descname"><span class="pre">terminal</span></span><a class="headerlink" href="#navi.opt.terminal" title="Link to this definition"></a></dt>
+<dd><p>terminal to use for Navi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">os.getenv(&quot;TERMINAL&quot;)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.opt.default_directory">
+<span class="sig-prename descclassname"><span class="pre">navi.opt.</span></span><span class="sig-name descname"><span class="pre">default_directory</span></span><a class="headerlink" href="#navi.opt.default_directory" title="Link to this definition"></a></dt>
+<dd><p>directory to open when navi starts up when no directory argument is provided in the commandline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">$HOME</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.opt.copy_path_separator">
+<span class="sig-prename descclassname"><span class="pre">navi.opt.</span></span><span class="sig-name descname"><span class="pre">copy_path_separator</span></span><a class="headerlink" href="#navi.opt.copy_path_separator" title="Link to this definition"></a></dt>
+<dd><p>the separator string to use in between file names when copying using the <span class="xref std std-ref">copy-path</span> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">\n</span></code> (newline character)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.opt.cycle">
+<span class="sig-prename descclassname"><span class="pre">navi.opt.</span></span><span class="sig-name descname"><span class="pre">cycle</span></span><a class="headerlink" href="#navi.opt.cycle" title="Link to this definition"></a></dt>
+<dd><p>move to the first item if scrolling past the last item or last item if scrolling past the first item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.opt.hidden_files">
+<span class="sig-prename descclassname"><span class="pre">navi.opt.</span></span><span class="sig-name descname"><span class="pre">hidden_files</span></span><a class="headerlink" href="#navi.opt.hidden_files" title="Link to this definition"></a></dt>
+<dd><p>show the <a class="reference external" href="https://en.wikipedia.org/wiki/Hidden_file_and_hidden_directory">hidden files</a> by default or no.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-navi.ui">
 <span id="ui"></span><h2>ui<a class="headerlink" href="#module-navi.ui" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="navi.ui.marks">
 <span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">marks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.marks" title="Link to this definition"></a></dt>
-<dd><p>Toggles the marks pane.</p>
+<dd><p>Toggles the marks panel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
@@ -288,7 +391,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="navi.ui.shortcuts">
 <span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">shortcuts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.shortcuts" title="Link to this definition"></a></dt>
-<dd><p>Toggles the shortcuts pane.</p>
+<dd><p>Toggles the shortcuts panel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
@@ -299,7 +402,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="navi.ui.messages">
 <span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.messages" title="Link to this definition"></a></dt>
-<dd><p>Toggles the messages pane.</p>
+<dd><p>Toggles the messages panel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
@@ -307,12 +410,178 @@
 </dl>
 </dd></dl>
 
+<section id="file-panel">
+<h3>File Panel<a class="headerlink" href="#file-panel" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This is the main panel used for navigation.</p>
+</div></blockquote>
+<dl class="py function" id="module-navi.ui.file_panel">
+<dt class="sig sig-object py" id="navi.ui.file_panel.toggle">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.file_panel.toggle" title="Link to this definition"></a></dt>
+<dd><p>Toggles the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.visible">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#navi.ui.file_panel.visible" title="Link to this definition"></a></dt>
+<dd><p>Visibility of the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.icons">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">icons</span></span><a class="headerlink" href="#navi.ui.file_panel.icons" title="Link to this definition"></a></dt>
+<dd><p>Visibility of the icons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.font_size">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">font_size</span></span><a class="headerlink" href="#navi.ui.file_panel.font_size" title="Link to this definition"></a></dt>
+<dd><p>Size of the font used when rendering items in the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">integer</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">18</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.font">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">font</span></span><a class="headerlink" href="#navi.ui.file_panel.font" title="Link to this definition"></a></dt>
+<dd><p>Family of the font used for rendering items in the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">system</span> <span class="pre">font</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="module-navi.ui.file_panel.symlink">
+<span id="symlink"></span><h4>Symlink<a class="headerlink" href="#module-navi.ui.file_panel.symlink" title="Link to this heading"></a></h4>
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.symlink.foreground">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.symlink.</span></span><span class="sig-name descname"><span class="pre">foreground</span></span><a class="headerlink" href="#navi.ui.file_panel.symlink.foreground" title="Link to this definition"></a></dt>
+<dd><p>Foreground of the symlink text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p>theme foreground</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.symlink.background">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.symlink.</span></span><span class="sig-name descname"><span class="pre">background</span></span><a class="headerlink" href="#navi.ui.file_panel.symlink.background" title="Link to this definition"></a></dt>
+<dd><p>Background of the symlink text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p>theme background</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.symlink.italic">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.symlink.</span></span><span class="sig-name descname"><span class="pre">italic</span></span><a class="headerlink" href="#navi.ui.file_panel.symlink.italic" title="Link to this definition"></a></dt>
+<dd><p>Italicises the symlink text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.symlink.bold">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.symlink.</span></span><span class="sig-name descname"><span class="pre">bold</span></span><a class="headerlink" href="#navi.ui.file_panel.symlink.bold" title="Link to this definition"></a></dt>
+<dd><p>Bolds the symlink text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.symlink.underline">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.symlink.</span></span><span class="sig-name descname"><span class="pre">underline</span></span><a class="headerlink" href="#navi.ui.file_panel.symlink.underline" title="Link to this definition"></a></dt>
+<dd><p>Underlines the symlink text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.symlink.separator">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.symlink.</span></span><span class="sig-name descname"><span class="pre">separator</span></span><a class="headerlink" href="#navi.ui.file_panel.symlink.separator" title="Link to this definition"></a></dt>
+<dd><blockquote>
+<div><p>Separator that separates the item name and symlink target name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">⟶</span></code></p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please use unicode characters only as the symlink separtor. This is because navi uses the separator for separating file name and symlink target and for identifying the symlink target. If you use ordinary character the file name splitting logic will go wrong and the <code class="xref py py-func docutils literal notranslate"><span class="pre">goto_symlink_target()</span></code> function wouldn’t work.</p>
+</div>
+</dd></dl>
+
+</section>
+</section>
 <section id="module-navi.ui.preview_panel">
 <span id="preview-panel"></span><h3>Preview Panel<a class="headerlink" href="#module-navi.ui.preview_panel" title="Link to this heading"></a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="navi.ui.preview_panel.toggle">
 <span class="sig-prename descclassname"><span class="pre">navi.ui.preview_panel.</span></span><span class="sig-name descname"><span class="pre">toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.preview_panel.toggle" title="Link to this definition"></a></dt>
-<dd><p>Toggles the preview pane.</p>
+<dd><p>Toggles the preview panel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
@@ -326,10 +595,10 @@
 <dd><p>Visibility of preview panel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>true</strong></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -379,7 +648,7 @@
 <dd><p>Visibility of the menubar</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>true</strong></p>
@@ -404,10 +673,10 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<em>str</em>) – text to be displayed</p></li>
-<li><p><strong>italic</strong> (<em>bool</em>) – whether the text has to be italic or not</p></li>
-<li><p><strong>bold</strong> (<em>bool</em>) – whether the text has to be bold or not</p></li>
+<li><p><strong>italic</strong> (<em>boolean</em>) – whether the text has to be italic or not</p></li>
+<li><p><strong>bold</strong> (<em>boolean</em>) – whether the text has to be bold or not</p></li>
 <li><p><strong>background</strong> (<em>str</em>) – background color of the module</p></li>
-<li><p><strong>hidden</strong> (<em>bool</em>) – visibility of the module</p></li>
+<li><p><strong>hidden</strong> (<em>boolean</em>) – visibility of the module</p></li>
 <li><p><strong>color</strong> (<em>str</em>) – foreground color of the module</p></li>
 </ul>
 </dd>
@@ -566,7 +835,7 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dd><p>Visibility of the menubar</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>true</strong></p>
@@ -733,7 +1002,7 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dd><p>Visibility of the menubar</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>true</strong></p>
@@ -1060,7 +1329,7 @@ The module thus created can be used in <a class="reference internal" href="#navi
 Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if it’s a valid and existent file or returns <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1072,7 +1341,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if it’s a valid and existent directory or returns <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1179,7 +1448,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <dd><p>Check for local marks. Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if there are local marks, else <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1190,7 +1459,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <dd><p>Check for global marks. Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if there are global marks, else <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1484,7 +1753,21 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if there is any selection in the current working directory, else <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.api.copy_path">
+<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">copy_path</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">separator</span> <span class="pre">str</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.copy_path" title="Link to this definition"></a></dt>
+<dd><p>Copies path(s) of selected files to clipboard separated by separator passed as argument or used the default separator from the config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>separator</strong> (<em>str</em>) – Separator to separate the file paths.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1751,14 +2034,14 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <p>The <cite>bookmark</cite> module in the Lua API allows you to manage bookmarks in the application. This includes adding, removing, and organizing bookmarks.</p>
 <dl class="py function" id="module-navi.bookmark">
 <dt class="sig sig-object py" id="navi.bookmark.add">
-<span class="sig-prename descclassname"><span class="pre">navi.bookmark.</span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bookmark_name</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span> <span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.bookmark.add" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">navi.bookmark.</span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bookmark_name</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span> <span class="pre">boolean</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.bookmark.add" title="Link to this definition"></a></dt>
 <dd><p>Add a bookmark to the application.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bookmark_name</strong> (<em>str</em>) – The name of the bookmark.</p></li>
 <li><p><strong>file_path</strong> (<em>str</em>) – The file path associated with the bookmark.</p></li>
-<li><p><strong>highlight</strong> (<em>bool</em>) – Whether to visually highlight the bookmark in the application.</p></li>
+<li><p><strong>highlight</strong> (<em>boolean</em>) – Whether to visually highlight the bookmark in the application.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
