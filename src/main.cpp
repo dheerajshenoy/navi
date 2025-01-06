@@ -1,13 +1,13 @@
 #include <string>
-constexpr std::string VERSION = "1.2.2";
+constexpr std::string VERSION = "1.2.3";
 
+#include <QFile>
 #include <QStandardPaths>
 #include "argparse.hpp"
 #include "utils.hpp"
 #include "API.hpp"
 #include "Globals.hpp"
 #include "Navi.hpp"
-#include <QFile>
 
 void read_lua_file(sol::state &lua) {
 

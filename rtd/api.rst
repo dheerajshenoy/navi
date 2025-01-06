@@ -42,6 +42,7 @@ Members of the navi table:
 + opt
 + ui
 + api
++ utils
 + keymap
 + io
 + shell
@@ -1036,6 +1037,18 @@ io
 
         Prints the message using the *info face*
 
+utils
++++++
+
+.. module:: navi.utils
+
+.. function:: split(s string, delimiter string)
+
+   Returns table after splitting the string ``s`` by the delimiter ``d``. If delimiter is not found, returns nil
+
+   :param string s:
+   :param string delimiter: split the input string with the delimiter
+   :returns: ``table``
 
 keymap
 ++++++

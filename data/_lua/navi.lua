@@ -15,6 +15,7 @@ M.api = {}
 M.ui = {}
 M.opt = {}
 M.hook = {}
+M.utils = {}
 
 M.opt.bookmark = {}
 
@@ -968,5 +969,18 @@ setmetatable(M.ui.statusbar, {
 
     end
 })
+
+---Splits a string by a delimiter and returns table of strings
+---split by the delimiter
+---@param str string
+---@param delimiter string
+---@return table
+M.utils.split = function (str, delimiter)
+    local result = {}
+    for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
+        table.insert(result, match)
+    end
+    return result
+end
 
 return M

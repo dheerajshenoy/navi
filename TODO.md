@@ -73,28 +73,29 @@
 - [X] Video file static preview
 - [X] Add file operation cancel UI
 - [X] action macrosap
-- [ ] Open with menu
-- [X] Highlight symlink differently
-- [ ] Undo Operations
-- [ ] Wonky file completion in the file path widget when "~" is present
 - [X] overwrite copy, paste etc.
 - [X] custom copy, delete, rename etc.
 - [X] first startup wierd load behavior
-- [ ] lua API for custom context menu
+- [X] Precompiled header
 - [X] lua API for custom menubar
 - [X] lua API for statusbar
 - [X] About Menu
+- [X] Highlight symlink differently
+- [X] Progressbar for `taskswidget`
+- [X] highlight file after pasting
+- [X] Zoom UI
+- [ ] Open with menu
+- [ ] Undo Operations
+- [ ] Wonky file completion in the file path widget when "~" is present
+- [ ] lua API for custom context menu
 - [ ] Deletion make task if large size
 - [ ] VisibilityChange signal bug
-- [X] Progressbar for `taskswidget`
-- [ ] Zoom UI
 - [ ] Connect to internet server
 - [ ] Selection wierd behaviour
 - ~~[ ] Tabs~~
-- [X] highlight file after pasting
 - [ ] view copy/cut file register
 - [ ] Timer api
 - [ ] Sleep api
 - [ ] Inputbar completion like vim/neovim
 - [ ] IPC
-- [X] Precompiled header
+- [ ] New file re-caching thumbnail

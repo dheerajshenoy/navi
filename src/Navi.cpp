@@ -27,10 +27,12 @@ void Navi::initThings() noexcept {
     /*    initKeybinds();*/
     /*}*/
 
-    if (m_default_dir.isNull() || m_default_dir.isEmpty())
+
+
+    if (m_default_dir == ".")
+        m_default_dir = QDir::currentPath();
+    else if (m_default_dir.isNull() || m_default_dir.isEmpty())
         m_default_dir = QDir::homePath();
-    else if (m_default_dir == ".")
-            m_default_dir = QDir::currentPath();
 
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
@@ -2144,7 +2146,6 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
     }
 
     try {
-        m_set_default_working_dir = false;
         Set_default_directory(QString::fromStdString(parser.get<std::vector<std::string>>("files").at(0)));
     } catch (std::logic_error &e) {
     }

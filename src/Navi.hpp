@@ -42,6 +42,7 @@ class Menubar : public QMenuBar {
 public:
     explicit Menubar(QWidget *parent = nullptr) : QMenuBar(parent) {}
 
+
     void hide() noexcept {
         emit visibilityChanged(false);
         QMenuBar::hide();
@@ -63,6 +64,7 @@ public:
         m_lua = &lua;
     }
 
+    void initKeybinds() noexcept;
     inline FilePanel* file_panel() noexcept { return m_file_panel; }
     inline Inputbar* get_inputbar() const noexcept { return m_inputbar; }
     void initThings() noexcept;
@@ -939,7 +941,6 @@ private:
     void initSignalsSlots() noexcept;
     void setupCommandMap() noexcept;
     bool isValidPath(QString path);
-    void initKeybinds() noexcept;
     bool createEmptyFile(const QString &filename) noexcept;
     QString getCurrentFile() noexcept;
     void ProcessCommand(const QString &commandtext) noexcept;
