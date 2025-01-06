@@ -8,6 +8,7 @@
 #include "pch.hpp"
 
 // Local includes
+#include "InputDialog.hpp"
 #include "FilePathWidget.hpp"
 #include "Inputbar.hpp"
 #include "MessagesBuffer.hpp"
@@ -19,8 +20,6 @@
 #include "BookmarkWidget.hpp"
 #include "ShortcutsWidget.hpp"
 #include "TabBarWidget.hpp"
-#include "sol/sol.hpp"
-#include "argparse.hpp"
 #include "DriveWidget.hpp"
 #include "StorageDevice.hpp"
 #include "Task.hpp"
@@ -33,8 +32,6 @@
 #include "FilePanelDelegate.hpp"
 #include "DriveWidget.hpp"
 #include "Statusbar.hpp"
-#include "argparse.hpp"
-#include "sol/sol.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -209,7 +206,6 @@ public:
     void DeleteMacro() noexcept;
     void EditMacro() noexcept;
     void ListMacro() noexcept;
-    // void ToggleSyntaxHighlight() noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
     void ToggleCycle() noexcept;
@@ -772,12 +768,12 @@ public:
     }
 
     inline void set_file_panel_icons(const bool &state) noexcept {
-        m_file_panel->set_icons(state);
+        m_file_panel->model()->icons_enabled = state;
     }
 
 
     inline bool get_file_panel_icons() const noexcept {
-        return m_file_panel->icons_enabled();
+        return m_file_panel->model()->icons_enabled;
     }
 
     inline void set_file_panel_font_size(const int &size) noexcept {
@@ -805,7 +801,7 @@ public:
             m_file_panel->set_font_size(table["font_size"].get<int>());
 
         if (table["icons"])
-            m_file_panel->set_icons(table["icons"].get<bool>());
+            m_file_panel->model()->icons_enabled = table["icons"].get<bool>();
     }
 
     inline sol::table get_file_panel_props() noexcept {
@@ -813,7 +809,7 @@ public:
         sol::table table = m_lua->create_table();
         table["font"] = m_file_panel->get_font_family().toStdString();
         table["font_size"] = m_file_panel->get_font_size();
-        table["icons"] = m_file_panel->icons_enabled();
+        table["icons"] = m_file_panel->model()->icons_enabled;
 
         return table;
     }
@@ -925,6 +921,9 @@ public:
         m_file_panel->goto_symlink_target();
     }
 
+    void copy_to() noexcept;
+    void move_to() noexcept;
+
 protected:
     bool event(QEvent *e) override;
 
@@ -956,78 +955,81 @@ private:
     Menubar *m_menubar = nullptr;
 
     // Menubar stuff
-    QMenu *m_filemenu = nullptr;
-    QMenu *m_viewmenu = nullptr;
-    QMenu *m_tools_menu = nullptr;
-    QMenu *m_edit_menu = nullptr;
-    QMenu *m_bookmarks_menu = nullptr;
-    QMenu *m_go_menu = nullptr;
-    QMenu *m_help_menu = nullptr;
+    QMenu *m_filemenu;
+    QMenu *m_viewmenu;
+    QMenu *m_tools_menu;
+    QMenu *m_edit_menu;
+    QMenu *m_bookmarks_menu;
+    QMenu *m_go_menu;
+    QMenu *m_help_menu;
 
-    QMenu *m_bookmarks_menu__bookmarks_list_menu = nullptr;
+    QMenu *m_bookmarks_menu__bookmarks_list_menu;
 
-    QMenu *m_filemenu__create_new_menu = nullptr;
-    QAction *m_filemenu__new_window = nullptr;
-    QAction *m_filemenu__create_new_folder = nullptr;
-    QAction *m_filemenu__create_new_file = nullptr;
-    QAction *m_filemenu__close_window = nullptr;
-    QAction *m_filemenu__folder_properties = nullptr;
+    QMenu *m_filemenu__create_new_menu;
+    QAction *m_filemenu__new_window;
+    QAction *m_filemenu__create_new_folder;
+    QAction *m_filemenu__create_new_file;
+    QAction *m_filemenu__close_window;
+    QAction *m_filemenu__folder_properties;
 
 
-    QAction *m_viewmenu__refresh = nullptr;
-    QAction *m_viewmenu__filter = nullptr;
-    QAction *m_viewmenu__preview_panel = nullptr;
-    QAction *m_viewmenu__menubar = nullptr;
-    QAction *m_viewmenu__fullscreen = nullptr;
-    QAction *m_viewmenu__statusbar = nullptr;
-    QAction *m_viewmenu__headers = nullptr;
-    QAction *m_viewmenu__messages = nullptr;
-    QAction *m_viewmenu__marks_buffer = nullptr;
-    QAction *m_viewmenu__bookmarks_buffer = nullptr;
-    QAction *m_viewmenu__shortcuts_widget = nullptr;
-    QAction *m_viewmenu__drives_widget = nullptr;
-    QAction *m_viewmenu__tasks_widget = nullptr;
+    QAction *m_viewmenu__refresh;
+    QAction *m_viewmenu__filter;
+    QAction *m_viewmenu__preview_panel;
+    QAction *m_viewmenu__menubar;
+    QAction *m_viewmenu__fullscreen;
+    QAction *m_viewmenu__statusbar;
+    QAction *m_viewmenu__headers;
+    QAction *m_viewmenu__messages;
+    QAction *m_viewmenu__marks_buffer;
+    QAction *m_viewmenu__bookmarks_buffer;
+    QAction *m_viewmenu__shortcuts_widget;
+    QAction *m_viewmenu__drives_widget;
+    QAction *m_viewmenu__tasks_widget;
 
-    QMenu *m_viewmenu__sort_menu = nullptr;
+    QMenu *m_viewmenu__sort_menu;
 
-    QActionGroup *m_viewmenu__sort_by_group = nullptr;
-    QAction *m_viewmenu__sort_by_name = nullptr;
-    QAction *m_viewmenu__sort_by_size = nullptr;
-    QAction *m_viewmenu__sort_by_date = nullptr;
+    QActionGroup *m_viewmenu__sort_by_group;
+    QAction *m_viewmenu__sort_by_name;
+    QAction *m_viewmenu__sort_by_size;
+    QAction *m_viewmenu__sort_by_date;
 
-    QActionGroup *m_viewmenu__sort_asc_desc_group = nullptr;
-    QAction *m_viewmenu__sort_ascending = nullptr;
-    QAction *m_viewmenu__sort_descending = nullptr;
+    QActionGroup *m_viewmenu__sort_asc_desc_group;
+    QAction *m_viewmenu__sort_ascending;
+    QAction *m_viewmenu__sort_descending;
 
-    QMenu *m_viewmenu__files_menu = nullptr;
-    QAction *m_viewmenu__files_menu__dotdot = nullptr;
-    QAction *m_viewmenu__files_menu__hidden = nullptr;
+    QMenu *m_viewmenu__files_menu;
+    QAction *m_viewmenu__files_menu__dotdot;
+    QAction *m_viewmenu__files_menu__hidden;
 
-    QAction *m_bookmarks_menu__add = nullptr;
-    QAction *m_bookmarks_menu__remove = nullptr;
+    QAction *m_bookmarks_menu__add;
+    QAction *m_bookmarks_menu__remove;
 
-    QAction *m_edit_menu__open = nullptr;
-    QAction *m_edit_menu__copy = nullptr;
-    QAction *m_edit_menu__paste = nullptr;
-    QAction *m_edit_menu__cut = nullptr;
-    QAction *m_edit_menu__rename = nullptr;
-    QAction *m_edit_menu__delete = nullptr;
-    QAction *m_edit_menu__trash = nullptr;
-    QAction *m_edit_menu__copy_path = nullptr;
-    QAction *m_edit_menu__item_property = nullptr;
-    QAction *m_edit_menu__select_all = nullptr;
-    QAction *m_edit_menu__select_inverse = nullptr;
+    QAction *m_edit_menu__open;
+    QAction *m_edit_menu__copy;
+    QAction *m_edit_menu__paste;
+    QAction *m_edit_menu__cut;
+    QAction *m_edit_menu__rename;
+    QAction *m_edit_menu__delete;
+    QAction *m_edit_menu__trash;
+    QAction *m_edit_menu__copy_path;
+    QAction *m_edit_menu__copy_to;
+    QAction *m_edit_menu__move_to;
+    QAction *m_edit_menu__link_to;
+    QAction *m_edit_menu__item_property;
+    QAction *m_edit_menu__select_all;
+    QAction *m_edit_menu__select_inverse;
 
-    QAction *m_tools_menu__search = nullptr;
-    QAction *m_tools_menu__find_files = nullptr;
+    QAction *m_tools_menu__search;
+    QAction *m_tools_menu__find_files;
 
-    QAction *m_go_menu__previous_folder = nullptr;
-    QAction *m_go_menu__next_folder = nullptr;
-    QAction *m_go_menu__parent_folder = nullptr;
-    QAction *m_go_menu__home_folder = nullptr;
-    QAction *m_go_menu__connect_to_server = nullptr;
+    QAction *m_go_menu__previous_folder;
+    QAction *m_go_menu__next_folder;
+    QAction *m_go_menu__parent_folder;
+    QAction *m_go_menu__home_folder;
+    QAction *m_go_menu__connect_to_server;
 
-    QAction *m_help_menu__about = nullptr;
+    QAction *m_help_menu__about;
 
     Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;
@@ -1072,12 +1074,14 @@ private:
 
         // Cut
         "cut",
+        "move-to",
         "cut-local",
         "cut-global",
         "cut-dwim",
 
         // Copy
         "copy",
+        "copy-to",
         "copy-local",
         "copy-global",
         "copy-dwim",
@@ -1196,7 +1200,7 @@ private:
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
     sol::state m_bookmarks_state;
-    ShortcutsWidget *m_shortcuts_widget = nullptr;
+    ShortcutsWidget *m_shortcuts_widget;
     QList<Keybind> m_keybind_list;
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;

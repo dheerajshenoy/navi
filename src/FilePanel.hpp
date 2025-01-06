@@ -96,7 +96,10 @@ public:
     inline int get_font_size() noexcept {
         return m_table_view->get_font_size();
     }
-    inline bool icons_enabled() noexcept { return model()->icons_enabled; }
+
+    inline void set_icons_enabled(const bool &state) noexcept {
+        model()->icons_enabled = state;
+    }
 
     void ToggleMarkItem() noexcept;
     void ToggleMarkDWIM() noexcept;
@@ -125,7 +128,7 @@ public:
     void RenameItemsLocal() noexcept;
     void RenameDWIM() noexcept;
 
-    void PasteItems() noexcept;
+    void PasteItems(const QString &destDir = QString()) noexcept;
 
     void DeleteItem() noexcept;
     void DeleteItems(const QStringList &files) noexcept;
@@ -142,7 +145,7 @@ public:
     void ToggleDotDot() noexcept;
     void ToggleHiddenFiles() noexcept;
     inline bool hidden_files_visible() noexcept { return m_hidden_files_shown; }
-    void Search(QString searchText = "", const bool &regex = false) noexcept;
+    void Search(QString searchText = QString(), const bool &regex = false) noexcept;
     void SearchNext() noexcept;
     void SearchPrev() noexcept;
     void Filters(const QString &filterString) noexcept;
@@ -257,6 +260,9 @@ public:
                                   .arg(m_current_foreground.name()));
     }
 
+
+    void copy_to() noexcept;
+    void move_to() noexcept;
     void goto_symlink_target() noexcept;
 
 signals:

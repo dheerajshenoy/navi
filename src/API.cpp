@@ -3,8 +3,13 @@
 
 void init_lua_api(sol::state &lua) noexcept {
 
-    lua.open_libraries(sol::lib::base, sol::lib::jit,
-                       sol::lib::package, sol::lib::package,
+    lua.open_libraries(sol::lib::base,
+                       sol::lib::jit,
+                       sol::lib::package,
+                       sol::lib::package,
+                       sol::lib::string,
+                       sol::lib::table,
+                       sol::lib::coroutine,
                        sol::lib::io,
                        sol::lib::os);
 

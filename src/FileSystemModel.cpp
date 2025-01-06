@@ -25,12 +25,14 @@ int FileSystemModel::indexOfFileNameColumn() const noexcept {
 }
 
 void FileSystemModel::clearMarkedFilesListLocal() noexcept {
+    /*this->beginResetModel();*/
     auto marksHere = getMarkedFilesLocal();
     for (const auto &file : marksHere) {
         QModelIndex index = getIndexFromString(file);
         setData(index, false, static_cast<int>(Role::Marked));
         m_markedFiles.remove(file);
     }
+    /*this->endResetModel();*/
     emit marksListChanged();
 }
 
@@ -286,12 +288,9 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
 
 bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
                               int role) {
-    const QFileInfo &fileInfo = m_fileInfoList[index.row()];
-
     if (role == static_cast<int>(Role::Marked)) {
         if (value.toBool() == true) {
             m_markedFiles.insert(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
-            emit marksListChanged();
         }
         emit dataChanged(index, index, {role});
         emit headerDataChanged(Qt::Vertical, index.row(), index.row());

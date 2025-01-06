@@ -29,7 +29,6 @@
 #include <QEvent>
 #include <QMessageBox>
 #include <QInputDialog>
-#include "InputDialog.hpp"
 #include <QKeyEvent>
 #include <QtConcurrent/QtConcurrent>
 #include <QPromise>
@@ -40,3 +39,6 @@
 #include <QSet>
 #include <QHash>
 #include <unordered_map>
+#include "sol/sol.hpp"
+#include "argparse.hpp"
+#include <QFileDialog>

@@ -492,16 +492,7 @@ void FilePanel::UnmarkItemsGlobal() noexcept {
 
 void FilePanel::UnmarkItemsLocal() noexcept {
     if (m_model->hasMarksLocal()) {
-        // auto nMarks = m_model->getMarkedFilesCountLocal();
-        // QString confirm =
-        //     m_inputbar
-        //         ->getInput(QString("Do you want to clear %1 local marks ? (y/N)")
-        //                        .arg(nMarks))
-        //         .toLower();
-        // if (confirm == "y")
         m_model->clearMarkedFilesListLocal();
-        // else
-        //   m_statusbar->Message("Unmark cancelled", MessageType::WARNING);
     } else
     m_statusbar->Message("No local marks found", MessageType::WARNING);
 }
@@ -1310,14 +1301,15 @@ void FilePanel::ChmodItemsGlobal() noexcept {
     }
 }
 
-void FilePanel::PasteItems() noexcept {
-
+void FilePanel::PasteItems(const QString &_destDir) noexcept {
+    QString destDir = _destDir;
     if (m_register_files_list.isEmpty()) {
         m_statusbar->Message("No files in the register!", MessageType::INFO);
         return;
     }
 
-    QString destDir = m_current_dir;
+    if (destDir.isEmpty() || destDir.isNull())
+        destDir = m_current_dir;
 
     const QStringList filesList =
         QStringList(m_register_files_list.cbegin(), m_register_files_list.cend());
@@ -1685,4 +1677,30 @@ void FilePanel::goto_symlink_target() noexcept {
     } else {
         m_statusbar->Message("Item is not a symlink", MessageType::WARNING);
     }
+}
+
+
+void FilePanel::copy_to() noexcept {
+    QFileDialog fd;
+    fd.setFileMode(QFileDialog::FileMode::Directory);
+    fd.setOptions(QFileDialog::Option::ShowDirsOnly);
+    if (fd.exec()) {
+        QString path = fd.selectedFiles().last();
+        if (!(path.isEmpty() || path.isNull())) {
+            CopyDWIM();
+            PasteItems(path);
+        }
+    }
+}
+
+void FilePanel::move_to() noexcept {
+    QFileDialog fd;
+    fd.setFileMode(QFileDialog::FileMode::Directory);
+    fd.setOptions(QFileDialog::Option::ShowDirsOnly);
+    if (fd.exec()) {
+        QString path = fd.selectedFiles().last();
+        CutDWIM();
+        PasteItems(path);
+    }
+
 }

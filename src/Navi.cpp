@@ -632,6 +632,11 @@ void Navi::setupCommandMap() noexcept {
         ExecuteExtendedCommand();
     };
 
+    commandMap["about"] = [this](const QStringList &args) {
+        UNUSED(args);
+        ShowAbout();
+    };
+
     commandMap["goto-symlink-target"] = [this](const QStringList &args) {
         UNUSED(args);
         m_file_panel->goto_symlink_target();
@@ -640,6 +645,16 @@ void Navi::setupCommandMap() noexcept {
     commandMap["fullscreen"] = [this](const QStringList &args) {
         UNUSED(args);
         FullScreen();
+    };
+
+    commandMap["copy-to"] = [this](const QStringList &args) {
+        UNUSED(args);
+        copy_to();
+    };
+
+    commandMap["move-to"] = [this](const QStringList &args) {
+        UNUSED(args);
+        move_to();
     };
 
     commandMap["copy-path"] = [this](const QStringList &args) {
@@ -697,10 +712,6 @@ void Navi::setupCommandMap() noexcept {
         UNUSED(args);
         ShellCommandAsync();
     };
-
-    // commandMap["syntax-highlight"] = [this](const QStringList &args) {
-    //     ToggleSyntaxHighlight();
-    // };
 
     commandMap["drives"] = [this](const QStringList &args) {
         UNUSED(args);
@@ -1128,10 +1139,6 @@ void Navi::setupCommandMap() noexcept {
     m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::COMMAND,
                                         m_valid_command_list);
 }
-
-// void Navi::ToggleSyntaxHighlight() noexcept {
-//     m_preview_panel->ToggleSyntaxHighlight();
-// }
 
 void Navi::EditBookmarkName(const QStringList &args) noexcept {
 
@@ -1740,6 +1747,9 @@ void Navi::initMenubar() noexcept {
     m_edit_menu__delete = new QAction("Delete");
     m_edit_menu__trash = new QAction("Trash");
     m_edit_menu__copy_path = new QAction("Copy Path(s)");
+    m_edit_menu__copy_to = new QAction("Copy to");
+    m_edit_menu__move_to = new QAction("Move to");
+    m_edit_menu__link_to = new QAction("Create Link...");
     m_edit_menu__item_property = new QAction("Properties");
     m_edit_menu__cut = new QAction("Cut");
     m_edit_menu__select_all = new QAction("Select All");
@@ -1752,6 +1762,9 @@ void Navi::initMenubar() noexcept {
     m_edit_menu->addAction(m_edit_menu__cut);
     m_edit_menu->addAction(m_edit_menu__copy);
     m_edit_menu->addAction(m_edit_menu__paste);
+    m_edit_menu->addAction(m_edit_menu__copy_to);
+    m_edit_menu->addAction(m_edit_menu__move_to);
+    m_edit_menu->addAction(m_edit_menu__link_to);
     m_edit_menu->addAction(m_edit_menu__rename);
     m_edit_menu->addAction(m_edit_menu__trash);
     m_edit_menu->addAction(m_edit_menu__delete);
@@ -1773,6 +1786,8 @@ void Navi::initMenubar() noexcept {
     connect(m_edit_menu__select_all, &QAction::triggered, this, &Navi::SelectAllItems);
     connect(m_edit_menu__select_inverse, &QAction::triggered, this,
             &Navi::SelectInverse);
+    connect(m_edit_menu__copy_to, &QAction::triggered, this, &Navi::copy_to);
+    connect(m_edit_menu__move_to, &QAction::triggered, this, &Navi::move_to);
 
     m_go_menu = new QMenu("&Go");
 
@@ -3142,9 +3157,15 @@ void Navi::Lua__keymap_set(const std::string &key,
 }
 
 
-void Navi::Lua__register_user_function(const std::string &name,
-                                      const sol::function &func) noexcept {
-    commandMap[QString::fromStdString(name)] = func;
+void Navi::Lua__register_user_function(const std::string &name, const sol::function &func) noexcept {
+    commandMap[QString::fromStdString(name)] = [func](const QStringList &args) {
+        if (!args.isEmpty()) {
+            auto lua_args = utils::convertToStdVector(args);
+            func(sol::as_args(lua_args));
+        }
+        else
+            func();
+    };
 }
 
 void Navi::Lua__unregister_user_function(const std::string &name) noexcept {
@@ -3495,4 +3516,12 @@ sol::table Navi::get_symlink_props() noexcept {
     table["visible"] = get_symlink_visible();
 
     return table;
+}
+
+void Navi::copy_to() noexcept {
+    m_file_panel->copy_to();
+}
+
+void Navi::move_to() noexcept {
+    m_file_panel->move_to();
 }
