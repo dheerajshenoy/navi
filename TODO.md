@@ -99,3 +99,7 @@
 - [ ] Inputbar completion like vim/neovim
 - [ ] IPC
 - [ ] New file re-caching thumbnail
+- [ ] Deleting symlinks
+- [ ] Properties of symlink bug
+- [ ] Deleting symlinks
+- [ ] Tabs for different panes

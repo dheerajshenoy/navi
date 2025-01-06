@@ -220,8 +220,10 @@ void FilePanel::DropCutRequested(const QStringList &sourcePaths) noexcept {
 }
 
 QString FilePanel::getCurrentItem() noexcept {
-    return m_current_dir + QDir::separator() +
-    m_model->data(m_table_view->currentIndex()).toString();
+    return m_current_dir + QDir::separator() + m_model->data(m_table_view->currentIndex())
+    .toString()
+    .split(m_model->getSymlinkSeparator())
+    .at(0);
 }
 
 QString FilePanel::getCurrentItemFileName() noexcept {
@@ -435,7 +437,7 @@ void FilePanel::MarkDWIM() noexcept {
 
 void FilePanel::MarkRegex(const QString &regex) noexcept {
     if (regex.isEmpty() || regex.isNull()) {
-        QString searchExpression = m_inputbar->getInput("Mark items with regex");
+        QString searchExpression = QInputDialog::getText(this, "Mark Regex", "Regex pattern to mark items with");
         m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
                                              searchExpression, -1,
                                              Qt::MatchRegularExpression);
@@ -476,13 +478,10 @@ void FilePanel::UnmarkItem() noexcept {
 
 void FilePanel::UnmarkItemsGlobal() noexcept {
     if (m_model->hasMarks()) {
-        QString confirm =
-            m_inputbar
-            ->getInput(QString("Do you want to clear %1 global marks ? (y/N)")
-                       .arg(m_model->getMarkedFilesCount()))
-            .toLower();
+        auto confirm = QMessageBox::question(this, "Unmark Items Global",
+                                                QString("Do you want to unmark %1 global items").arg(m_model->getMarkedFilesCount()));
 
-        if (confirm == "y")
+        if (confirm == QMessageBox::StandardButton::Yes)
             m_model->removeMarkedFiles();
         else
             m_statusbar->Message("Unmark cancelled");
@@ -499,7 +498,7 @@ void FilePanel::UnmarkItemsLocal() noexcept {
 
 void FilePanel::UnmarkRegex(const QString &regex) noexcept {
     if (regex.isEmpty() || regex.isNull()) {
-        QString searchExpression = m_inputbar->getInput("Unmark items with regex");
+        QString searchExpression = QInputDialog::getText(this, "Unmark Regex", "Regex pattern to unmark items");
         m_search_index_list = m_model->match(m_model->index(0, 0), Qt::DisplayRole,
                                              searchExpression, -1,
                                              Qt::MatchRegularExpression);
@@ -600,13 +599,20 @@ void FilePanel::TrashItems(const QStringList &files) noexcept {
     bool check = true;
     for (const auto &filePath : files) {
         if (check) {
-            QString inputConfirm =
-                m_inputbar
-                ->getInput(QString("Do you want to delete %1 and all of it's "
-                                   "subitems ? (y, N, y!, n!)")
-                           .arg(filePath))
-                .toLower();
-            if (inputConfirm == "y") {
+            QMessageBox msgBox(this);
+            msgBox.setWindowTitle("Trash Items");
+            msgBox.setText(QString("Do you want to delete %1 and all of it's subitems ?").arg(filePath));
+            auto yes_btn = msgBox.addButton("Yes", QMessageBox::ButtonRole::YesRole);
+            auto no_btn = msgBox.addButton("No", QMessageBox::ButtonRole::NoRole);
+            auto yes_to_all_btn = msgBox.addButton("Yes to All", QMessageBox::ButtonRole::ApplyRole);
+            auto no_to_all_btn = msgBox.addButton("No to All", QMessageBox::ButtonRole::RejectRole);
+            msgBox.setDefaultButton(no_btn);
+
+            msgBox.exec();
+
+            auto inputConfirm = msgBox.clickedButton();
+
+            if (inputConfirm == yes_btn) {
                 if (QFile::moveToTrash(filePath)) {
                     m_model->removeMarkedFile(filePath);
                     m_statusbar->Message(QString("Trashed item %1 successfully!")
@@ -614,7 +620,7 @@ void FilePanel::TrashItems(const QStringList &files) noexcept {
                 } else
                 m_statusbar->Message(QString("Error trashing item %1 successfully!")
                                      .arg(QFileInfo(filePath).fileName()));
-            } else if (inputConfirm == "y!") {
+            } else if (inputConfirm == yes_to_all_btn) {
                 check = false;
                 if (QFile::moveToTrash(filePath)) {
                     m_model->removeMarkedFile(filePath);
@@ -623,10 +629,12 @@ void FilePanel::TrashItems(const QStringList &files) noexcept {
                 } else
                 m_statusbar->Message(QString("Error trashing item %1 successfully!")
                                      .arg(QFileInfo(filePath).fileName()));
-            } else if (inputConfirm == "n!") {
+            } else if (inputConfirm == no_to_all_btn) {
                 m_statusbar->Message("Trash operation cancelled");
                 return;
-            }
+            } else
+            continue;
+
         } else {
             if (QFile::moveToTrash(filePath)) {
                 m_model->removeMarkedFile(filePath);
@@ -697,9 +705,12 @@ void FilePanel::RenameItem() noexcept {
     const QString &oldFileName = fileInfo.fileName();
     QString newFileName;
 
-    if (fileInfo.isFile())
-        newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldFileName),
-                                           oldFileName, fileInfo.baseName());
+    if (fileInfo.isFile()) {
+        /*newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldFileName),*/
+        /*                                   oldFileName, fileInfo.baseName());*/
+        newFileName = utils::getInput(this, "Rename Item", QString("Rename (%1)").arg(oldFileName),
+                                      oldFileName, fileInfo.baseName());
+    }
     else if (fileInfo.isDir())
         newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldFileName),
                                            oldFileName, oldFileName);
@@ -976,9 +987,8 @@ void FilePanel::DeleteItem() noexcept {
     QModelIndex currentIndex = m_table_view->currentIndex();
     if (m_model->isDir(m_table_view->currentIndex())) {
         QDir dir(itemPath);
-        QString inputConfirm =
-            m_inputbar->getInput(QString("Do you want to delete %1 and all of it's subitems ? (y, N)").arg(itemPath)).toLower();
-        if (inputConfirm == "y") {
+        auto inputConfirm = QMessageBox::question(this, "Delete Item", QString("Do you want to delete %1?").arg(itemPath));
+        if (inputConfirm == QMessageBox::StandardButton::Yes) {
             dir.removeRecursively();
             m_statusbar->Message(QString("Deleted %1 successfully").arg(itemPath));
             m_model->removeMarkedFile(itemPath);
@@ -987,11 +997,9 @@ void FilePanel::DeleteItem() noexcept {
             return;
         }
     } else {
-        QString inputConfirm =
-            m_inputbar->getInput(QString("Do you want to delete %1 ? (y, N)").arg(itemPath))
-            .toLower();
-        if (inputConfirm == "y") {
-            if (QFile::remove(itemPath)) {
+        auto inputConfirm = QMessageBox::question(this, "Delete Item", QString("Do you want to delete %1?").arg(itemPath));
+        if (inputConfirm == QMessageBox::StandardButton::Yes) {
+            if (std::filesystem::remove(itemPath.toStdString())) {
                 m_statusbar->Message(QString("Deleted %1 successfully").arg(itemPath));
                 m_model->removeMarkedFile(itemPath);
             }

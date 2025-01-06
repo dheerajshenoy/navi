@@ -16,10 +16,6 @@ set(SHAREDIR "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 # Enable verbose output during build
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-# Build type of Release/Debug
-# set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_BUILD_TYPE "Debug")
-
 # Export compile_commands.json for IDE integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -32,6 +28,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Building in Release Mode")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")  # Add more flags as necessary
+else()
+    message(STATUS "Building in Debug Mode since no build mode was specified")
+    set(CMAKE_BUILD_TYPE "Debug")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og")  # Add more flags as necessary
 endif()
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
@@ -129,6 +129,24 @@ add_custom_target(run
 )
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepanel.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_inputbar.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_statusbar.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_utils.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepathwidget.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_previewpanel.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_shortcutswidget.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_tableview.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_taskcardtemplate.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_task.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_taskswidget.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_thumbnailer.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_folderpropertywidget.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_fileworker.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filesystemmodel.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepropertywidget.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepreviewworker.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_drivewidget.hpp)
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

@@ -1,17 +1,6 @@
 #pragma once
 
-#include <QString>
-#include <QFileInfo>
-#include <tuple>
-#include <QRegularExpression>
-#include <QList>
-#include <QProcess>
-#include <QDir>
-#include <QTextEdit>
-#include "StorageDevice.hpp"
-#include <QDirIterator>
-#include <fstream>
-#include "sol/sol.hpp"
+#include "pch_utils.hpp"
 
 class utils {
 
@@ -55,6 +44,13 @@ public:
     static void getTableMembers(sol::table tbl, const std::string& prefix,
                                 std::vector<std::string>& results) noexcept;
 
-    void getTableMembers(sol::table tbl, const std::string& prefix,
+    static void getTableMembers(sol::table tbl, const std::string& prefix,
                          const std::vector<std::string> &result) noexcept;
+
+    static QString getInput(QWidget *parent,
+                         const QString &title,
+                         const QString &text,
+                         const QString &default_text,
+                         const QString &selection_text) noexcept;
+
 };

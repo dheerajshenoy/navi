@@ -9,6 +9,7 @@ v1.2.3 (6 January 2024)
 + Added copy-to, move-to command to copy and move marked files to a location using a file choosing dialog.
 + Fixed enabled disable icon in file_panel bug.
 + Utils table to navi global namespace.
++ Fixed default directory bug.
 
 v1.2.2 (5 January 2024)
 -----------------------

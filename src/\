@@ -27,13 +27,15 @@ void Navi::initThings() noexcept {
     /*    initKeybinds();*/
     /*}*/
 
-    if (m_default_dir == ".")
-        m_default_dir = QDir::currentPath();
-    else if (m_default_dir.isNull() || m_default_dir.isEmpty())
-        m_default_dir = QDir::homePath();
 
-    qDebug() << m_default_dir;
-    m_default_dir = QFileInfo(m_default_dir).absoluteFilePath();
+
+    if (m_default_dir == ".")
+            m_default_dir = QDir::currentPath();
+    if (m_default_dir.isNull() || m_default_dir.isEmpty())
+        m_default_dir = QDir::homePath();
+    else
+        m_default_dir = "~";
+
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
@@ -601,8 +603,7 @@ void Navi::initSignalsSlots() noexcept {
             m_file_path_widget->setCurrentDir(path);
             m_hook_manager->triggerHook("directory_changed");
             m_preview_panel->clearImageCache();
-            // TODO: Fix thumbnail caching
-            /*cacheThumbnails();*/
+            cacheThumbnails();
             });
 
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
@@ -2147,6 +2148,7 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
     }
 
     try {
+        m_set_default_working_dir = false;
         Set_default_directory(QString::fromStdString(parser.get<std::vector<std::string>>("files").at(0)));
     } catch (std::logic_error &e) {
     }

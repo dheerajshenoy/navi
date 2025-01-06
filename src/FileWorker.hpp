@@ -1,21 +1,12 @@
 #pragma once
 
+#include "pch_fileworker.hpp"
+
 #include "Result.hpp"
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QObject>
-#include <QStringList>
-#include <filesystem>
-#include <fstream>
 #include "Task.hpp"
 #include "TaskManager.hpp"
 #include "Statusbar.hpp"
 #include "Inputbar.hpp"
-#include <QtConcurrent/QtConcurrent>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QAtomicInt>
 
 class FileWorker : public QObject {
     Q_OBJECT

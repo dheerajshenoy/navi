@@ -977,10 +977,12 @@ setmetatable(M.ui.statusbar, {
 ---@return table
 M.utils.split = function (str, delimiter)
     local result = {}
-    for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
-        table.insert(result, match)
+    if type(str) == "string" then
+        for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
+            table.insert(result, match)
+        end
+        return result
     end
-    return result
 end
 
 return M

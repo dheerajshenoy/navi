@@ -323,3 +323,21 @@ void utils::getTableMembers(sol::table tbl, const std::string& prefix,
         }
     }
 }
+
+
+QString utils::getInput(QWidget *parent,
+                        const QString &title,
+                        const QString &text,
+                        const QString &default_text,
+                        const QString &selection_text) noexcept {
+
+    QInputDialog dialog(parent);
+    dialog.setTextValue(default_text);
+    dialog.show();
+
+    if (!selection_text.isEmpty())
+        dialog.findChild<QLineEdit*>()->setSelection(0, default_text.indexOf(selection_text) + selection_text.size());
+
+    if (dialog.exec() == QDialog::Accepted)
+        return dialog.textValue();
+}

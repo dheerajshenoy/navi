@@ -1,16 +1,8 @@
 #pragma once
 
-#include <QVBoxLayout>
-#include <QWidget>
-#include <QProgressBar>
-#include <QPushButton>
-#include <QLabel>
+#include "pch_taskswidget.hpp"
+
 #include "Task.hpp"
-#include <QHash>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QTextEdit>
-#include <QScrollArea>
 #include "TaskManager.hpp"
 #include "TaskCardTemplate.hpp"
 

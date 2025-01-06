@@ -1,18 +1,8 @@
 #pragma once
 
-#include <QFile>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLocale>
-#include <QPalette>
-#include <QSizePolicy>
-#include <QTimer>
-#include <QVBoxLayout>
-#include <QWidget>
+#include "pch_statusbar.hpp"
 #include "utils.hpp"
 #include "sol/sol.hpp"
-#include <QHash>
 
 enum class MessageType { INFO = 0, WARNING, ERROR };
 

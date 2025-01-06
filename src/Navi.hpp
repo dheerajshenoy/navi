@@ -4,9 +4,7 @@
 
 #define UNUSED(x) (void) x
 #include "Globals.hpp"
-
 #include "pch.hpp"
-
 // Local includes
 #include "InputDialog.hpp"
 #include "FilePathWidget.hpp"
@@ -1205,7 +1203,7 @@ private:
     QList<Keybind> m_keybind_list;
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
-    QString m_default_dir = "~";
+    QString m_default_dir = QDir::homePath();
     bool m_set_default_working_dir = true;
     DriveWidget *m_drives_widget = new DriveWidget(this);
     QStringList m_search_history_list = {};

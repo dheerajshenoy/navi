@@ -1,12 +1,6 @@
 #pragma once
 
-#include <QObject>
-#include <QString>
-#include <QUuid>
-#include <QProcess>
-#include <QTemporaryFile>
-#include <QFileSystemWatcher>
-#include <QDebug>
+#include "pch_task.hpp"
 
 class Task : public QObject {
     Q_OBJECT

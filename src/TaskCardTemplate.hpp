@@ -1,15 +1,7 @@
 // Task card template for COMMAND command type for viewing the task in the TasksWidget
 #pragma once
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QFormLayout>
-#include <QProgressBar>
+#include "pch_taskcardtemplate.hpp"
 
 #include "Task.hpp"
 

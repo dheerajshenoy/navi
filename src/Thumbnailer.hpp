@@ -1,25 +1,6 @@
 #pragma once
 
-#include <QObject>
-#include <QCryptographicHash>
-#include <QHash>
-#include <QUrl>
-#include <QByteArray>
-#include <qcryptographichash.h>
-#include <QStandardPaths>
-#include <QDir>
-#include <QImage>
-#include <QMimeDatabase>
-#include <QMimeType>
-#include <QMimeData>
-#include <Magick++.h>
-#include <poppler/qt6/poppler-qt6.h>
-#include <QProcess>
-#include <QtConcurrent/QtConcurrent>
-#include <QPromise>
-#include <QFuture>
-#include <QThread>
-
+#include "pch_thumbnailer.hpp"
 
 static const QString THUMBNAIL_DIR = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + QDir::separator() + "thumbnails" + QDir::separator() + "large";
 

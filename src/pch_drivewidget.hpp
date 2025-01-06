@@ -1,0 +1,13 @@
+#pragma once
+#include <QDialog>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QStorageInfo>
+#include <QTableWidget>
+#include <QHeaderView>
+#include <QLocale>
+#include <QList>
+#include <QFileSystemWatcher>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QLabel>
