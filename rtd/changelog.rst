@@ -3,6 +3,11 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.2.4 (8 January 2024)
+-----------------------
+
++ Symlink item property
+
 v1.2.3 (6 January 2024)
 -----------------------
 
