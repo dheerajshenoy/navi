@@ -102,7 +102,7 @@ void FileWorker::offloadOperation(const QString &src,
 
         // emit progress(src, dest,
         //               static_cast<float>(bytes_copied) / total_size * 100);
-        
+
         task->setProgress(_progress);
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils.hpp"
 #include "pch_filepanel.hpp"
 #include "FilePropertyWidget.hpp"
 #include "FileSystemModel.hpp"
@@ -237,7 +238,11 @@ public:
 
     void copy_to() noexcept;
     void move_to() noexcept;
+    void link_to() noexcept;
     void goto_symlink_target() noexcept;
+    void LinkItems(const QStringList &files,
+                   const QString &target_path,
+                   const bool &hard_link = false) noexcept;
 
 signals:
     void afterDirChange(QString path);

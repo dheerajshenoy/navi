@@ -223,14 +223,16 @@ QString FilePanel::getCurrentItem() noexcept {
     return m_current_dir + QDir::separator() + m_model->data(m_table_view->currentIndex())
     .toString()
     .split(m_model->getSymlinkSeparator())
-    .at(0);
+    .at(0)
+    .trimmed();
 }
 
 QString FilePanel::getCurrentItemFileName() noexcept {
     return m_model->data(m_table_view->currentIndex())
     .toString()
     .split(m_model->getSymlinkSeparator())
-    .at(0);
+    .at(0)
+    .trimmed();
 }
 
 void FilePanel::handleItemDoubleClicked(const QModelIndex &index) noexcept {
@@ -1461,6 +1463,7 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
 }
 
 void FilePanel::ShowItemPropertyWidget() noexcept {
+    qDebug() << getCurrentItem();
     FilePropertyWidget prop_widget(getCurrentItem());
     prop_widget.exec();
 }
@@ -1711,4 +1714,39 @@ void FilePanel::move_to() noexcept {
         PasteItems(path);
     }
 
+}
+
+void FilePanel::link_to() noexcept {
+    QFileDialog fd;
+    fd.setFileMode(QFileDialog::FileMode::Directory);
+    fd.setOptions(QFileDialog::Option::ShowDirsOnly);
+    if (fd.exec()) {
+        QString path = fd.selectedFiles().last();
+        QStringList files;
+        if (m_model->getMarkedFilesCountLocal() != 0)
+            files = m_model->getMarkedFilesLocal();
+        else
+            files << getCurrentItem();
+
+        LinkItems(files, path);
+    }
+}
+
+void FilePanel::LinkItems(const QStringList &files, const QString &target_path,
+                          const bool &hard_link) noexcept {
+
+    if (hard_link) {
+        // TODO: Hard Link
+    } else {
+        // Soft links
+        for (const auto &path : files) {
+            auto fileName = QFileInfo(path).fileName();
+            auto newFileName = joinPaths(target_path, fileName);
+            qDebug() << path << " -> " << newFileName;
+            if (!QFile::link(path, newFileName)) {
+                m_statusbar->Message(QString("Could not link file %1").arg(path),
+                                     MessageType::ERROR);
+            }
+        }
+    }
 }

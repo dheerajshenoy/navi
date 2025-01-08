@@ -635,11 +635,13 @@ public:
     }
 
 
-    inline void set_preview_Panel_max_file_size(const std::string &max_file_size) noexcept {
-        m_preview_panel->set_max_file_size_threshold(utils::parseFileSize(QString::fromStdString(max_file_size)));
+    inline void set_preview_panel_max_file_size(const std::string &max_file_size) noexcept {
+        auto bytes = utils::parseFileSize(QString::fromStdString(max_file_size));
+        m_preview_panel->set_max_file_size_threshold(bytes);
+        m_preview_panel->thumbnailer()->set_max_thumbnail_threshold(bytes);
     }
 
-    inline std::string get_preview_Panel_max_file_size() const noexcept {
+    inline std::string get_preview_panel_max_file_size() const noexcept {
         return m_preview_panel->max_preview_threshold();
     }
 
@@ -695,7 +697,7 @@ public:
             Set_preview_pane_fraction(table["fraction"].get<float>());
 
         if (table["max_file_size"].valid())
-            set_preview_Panel_max_file_size(table["max_file_size"].get<std::string>());
+            set_preview_panel_max_file_size(table["max_file_size"].get<std::string>());
 
         if (table["visible"].valid())
             set_preview_panel_visible(table["visible"].get<bool>());
@@ -921,8 +923,17 @@ public:
         m_file_panel->goto_symlink_target();
     }
 
-    void copy_to() noexcept;
-    void move_to() noexcept;
+    inline void copy_to() noexcept {
+        m_file_panel->copy_to();
+    }
+
+    inline void move_to() noexcept {
+        m_file_panel->move_to();
+    }
+
+    inline void link_to() noexcept {
+        m_file_panel->link_to();
+    }
 
 protected:
     bool event(QEvent *e) override;

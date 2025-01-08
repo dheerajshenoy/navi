@@ -1774,6 +1774,8 @@ void Navi::initMenubar() noexcept {
     m_edit_menu->addAction(m_edit_menu__select_all);
     m_edit_menu->addAction(m_edit_menu__select_inverse);
 
+
+    connect(m_edit_menu__link_to, &QAction::triggered, this, &Navi::link_to);
     connect(m_edit_menu__open, &QAction::triggered, this, &Navi::SelectItem);
     connect(m_edit_menu__copy_path, &QAction::triggered, this, [&]() {
         CopyPath();
@@ -3518,12 +3520,4 @@ sol::table Navi::get_symlink_props() noexcept {
     table["visible"] = get_symlink_visible();
 
     return table;
-}
-
-void Navi::copy_to() noexcept {
-    m_file_panel->copy_to();
-}
-
-void Navi::move_to() noexcept {
-    m_file_panel->move_to();
 }

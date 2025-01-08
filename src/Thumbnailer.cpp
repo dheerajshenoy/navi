@@ -63,12 +63,13 @@ QImage Thumbnailer::get_image_from_cache(const QString &file_name) noexcept {
 
 void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const QString &path_uri) noexcept {
     if (!QFile::exists(path_uri)) {
+
+
         //Do not preview if file size is greater than ‘max_preview_threshold’
-        // QFileInfo file(file_name);
-        // TODO
-        // if (file.size() > m_max_preview_threshold) {
-        //     return;
-        // }
+        QFileInfo file(file_name);
+        if (file.size() > m_thumbnail_threshold) {
+            return;
+        }
 
         try {
             Magick::Image image(file_name.toStdString());
@@ -76,7 +77,8 @@ void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const Q
             if (!image.isValid())
                 return;
 
-            image.resize(Magick::Geometry(256, 256));
+            image.scale(Magick::Geometry("256x256>"));
+            image.quality(85);
             image.write(path_uri.toStdString());
         } catch (const Magick::Error &e) {
             qDebug() << e.what();
@@ -100,6 +102,9 @@ void Thumbnailer::generate_thumbnail_for_pdf(const QString &file_name,
 
         QImage qimage = page->renderToImage(600, 600).scaled(256, 256, Qt::KeepAspectRatio,
                                                  Qt::SmoothTransformation);
+        if (qimage.isNull())
+            return;
+
         qimage.save(path_uri);
     }
 }
