@@ -29,11 +29,14 @@ public:
 
 
     int fileNameColumnIndex() const noexcept { return m_file_name_column_index; }
-
     void setSymlinkSeparator(const QString &separator) noexcept;
-
     inline void set_symlink_visible(const bool &state) noexcept { m_show_symlink = state; }
+    inline QFileInfo file_at(const int &i) noexcept {
+        if (m_fileInfoList.empty() || i >= m_fileInfoList.size() || i < 0)
+            return QFileInfo();
 
+        return m_fileInfoList.at(i);
+    }
     void setMarkForegroundColor(const QString &color) noexcept;
     void setMarkBackgroundColor(const QString &color) noexcept;
 
@@ -98,16 +101,11 @@ public:
         return this->data(index, Qt::DisplayRole).toString();
     }
 
-    inline QStringList getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept {
-        QStringList stringList;
-        stringList.reserve(indexList.size());
-        for (const auto &index : indexList)
-            stringList.append(m_root_path + QDir::separator() + getStringFromIndex(index));
-        return stringList;
-    }
+    QStringList getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept;
+    QStringList get_file_paths_from_rows(const QList<int> &rowList) const noexcept;
 
     inline QString getStringFromRow(const int &row, const int &col = 0) const noexcept {
-        return index(row, col).data().toString();
+        return index(row, m_file_name_column_index).data().toString();
     }
 
     inline QString getPathFromIndex(const QModelIndex &index) const noexcept {

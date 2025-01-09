@@ -1,17 +1,14 @@
 #include "Inputbar.hpp"
 #include "FilePathWidget.hpp"
-#include <qnamespace.h>
 
 Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     this->setLayout(m_layout);
 
-    m_filter_model = new OrderlessFilterModel(this);
-    m_line_edit_completer = new InputbarCompleter(m_filter_model, this);
+    m_line_edit_completer = new InputbarCompleter(this);
     m_line_edit_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_line_edit_completer->setFilterMode(Qt::MatchFlag::MatchContains);
     m_line_edit_completer->setCompletionPrefix(" ");
     m_line_edit_completer->setCompletionColumn(0);
-    m_filter_model->setSourceModel(m_completer_model);
     m_line_edit->setCompleter(m_line_edit_completer);
     m_layout->addWidget(m_prompt_label);
     m_layout->addWidget(m_line_edit);

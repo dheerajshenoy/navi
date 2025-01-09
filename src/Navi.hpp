@@ -942,7 +942,6 @@ private:
     void init_default_options() noexcept;
     void initToolbar() noexcept;
     void onQuit() noexcept;
-    void initConfiguration() noexcept;
     void chmodHelper() noexcept;
     void initBookmarks() noexcept;
     void initLayout() noexcept;

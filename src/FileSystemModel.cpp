@@ -611,3 +611,22 @@ QIcon FileSystemModel::get_cached_icon(const QFileInfo &finfo) const {
 
     return m_icon_cache[path];
 }
+
+QStringList FileSystemModel::getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept {
+    QStringList stringList;
+    stringList.reserve(indexList.size());
+    for (const auto &index : indexList) {
+        stringList.append(getPathFromIndex(index));
+    }
+    return stringList;
+}
+
+
+QStringList FileSystemModel::get_file_paths_from_rows(const QList<int> &rowList) const noexcept {
+    QStringList stringList;
+    stringList.reserve(rowList.size());
+    for (const auto &row : rowList) {
+        stringList.append(getPathFromRow(row));
+    }
+    return stringList;
+}

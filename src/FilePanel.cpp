@@ -1451,8 +1451,8 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
     // Collect file paths
     QList<QUrl> urls;
     for (const QModelIndex &index : selectedIndexes) {
-        QString filePath = m_model->rootPath() + QDir::separator() +
-            m_model->data(index, Qt::DisplayRole).toString();
+        /*QString filePath = m_model->rootPath() + QDir::separator() + m_model->file_at(index.row()).filePath();*/
+        QString filePath = m_model->file_at(index.row()).filePath();
         urls << QUrl::fromLocalFile(filePath);
     }
 
@@ -1463,7 +1463,6 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
 }
 
 void FilePanel::ShowItemPropertyWidget() noexcept {
-    qDebug() << getCurrentItem();
     FilePropertyWidget prop_widget(getCurrentItem());
     prop_widget.exec();
 }
@@ -1580,13 +1579,13 @@ void FilePanel::dragRequested() noexcept {
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
-    auto indexes = m_table_view->selectionModel()->selectedIndexes();
-    auto filePathList = m_model->getFilePathsFromIndexList(indexes);
+    auto rows = m_table_view->selectionModel()->selectedRows(m_file_name_column_index);
+    auto filePathList = m_model->getFilePathsFromIndexList(rows);
     QList<QUrl> urls;
     urls.reserve(filePathList.size());
 
     for (const auto &filePath : filePathList)
-    urls.append(QUrl::fromLocalFile(filePath));
+        urls.append(QUrl::fromLocalFile(filePath));
 
     mimeData->setUrls(urls);
     drag->setMimeData(mimeData);

@@ -2,12 +2,23 @@
 
 #include "pch_inputbar.hpp"
 #include "FilePathWidget.hpp"
-#include "OrderlessFilterModel.hpp"
 
 class InputbarCompleter : public QCompleter {
 
 public:
-    InputbarCompleter(QSortFilterProxyModel *model, QWidget *parent = nullptr) : QCompleter(model, parent){}
+    InputbarCompleter(QWidget *parent = nullptr) : QCompleter(parent) {
+        this->setModel(m_model);
+    }
+
+    void showSuggestions(const QString &text) noexcept {
+
+        auto cmd = text.split(" ", Qt::SkipEmptyParts).at(0);
+
+        if (cmd == "fruit") {
+            m_model = new QStringListModel({ "banana", "apple" });
+        }
+    }
+
 
 protected:
     QStringList splitPath(const QString &path) const override {
@@ -22,16 +33,16 @@ protected:
         return dd;
     }
 
+private:
+    QStringListModel *m_model = new QStringListModel({ "color", "fruit" });
+
 };
 
 class LineEdit : public QLineEdit {
     Q_OBJECT
 
     public:
-    explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) {
-
-    this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-}
+    explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) { setFocusPolicy(Qt::FocusPolicy::ClickFocus); }
 
 signals:
 void hideRequested();
@@ -46,6 +57,10 @@ void keyPressEvent(QKeyEvent *e) override {
         emit hideRequested();
 
         disconnect(this, &LineEdit::returnPressed, 0, 0);
+    }
+
+    else if (e->key() == Qt::Key_Tab) {
+        dynamic_cast<InputbarCompleter*>(completer())->showSuggestions(this->text());
     }
 
     else if (e->type() == QKeyEvent::KeyPress) {
@@ -122,7 +137,6 @@ private:
     InputbarCompleter *m_line_edit_completer = nullptr;
     QStringListModel *m_completer_model = new QStringListModel(this);
     QStringList m_lua_function_stringlist = {};
-    OrderlessFilterModel *m_filter_model = nullptr;
     QHash<CompletionModelType, QStringList> m_completion_list_hash;
     QString m_background_color,
     m_foreground_color;

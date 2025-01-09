@@ -7,6 +7,7 @@ v1.2.4 (8 January 2024)
 -----------------------
 
 + Symlink item property
++ Fixed bug: Dragging file from navi when file_panel contained more than one column resulted in dragging files equal to the number of columns which is incorrect.
 
 v1.2.3 (6 January 2024)
 -----------------------

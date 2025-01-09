@@ -15,3 +15,4 @@
 #include <qsortfilterproxymodel.h>
 #include <QStringListModel>
 #include <qtmetamacros.h>
+#include <QStringListModel>

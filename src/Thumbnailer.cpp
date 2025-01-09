@@ -56,14 +56,19 @@ QString Thumbnailer::file_uri_from_path(const QString &path) noexcept {
 
 QImage Thumbnailer::get_image_from_cache(const QString &file_name) noexcept {
     QString path_uri = file_uri_from_path(file_name);
-    if (QFile::exists(path_uri))
+    QFileInfo f(path_uri);
+    if (f.exists()) {
+        if (QFileInfo(file_name).lastModified() > f.lastModified()) {
+            generate_thumbnail_for_image(file_name, path_uri);
+        }
         return QImage(path_uri);
+    }
+
     return QImage();
 }
 
 void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const QString &path_uri) noexcept {
     if (!QFile::exists(path_uri)) {
-
 
         //Do not preview if file size is greater than ‘max_preview_threshold’
         QFileInfo file(file_name);
