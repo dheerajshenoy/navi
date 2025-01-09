@@ -84,6 +84,11 @@
 - [X] Progressbar for `taskswidget`
 - [X] highlight file after pasting
 - [X] Zoom UI
+- [X] Properties of symlink bug
+- [X] Symlink properties
+- [X] Deleting symlinks
+- [X] Drag drop multiple column bug
+- [X] File preview bug after dir change
 - [ ] Open with menu
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present
@@ -99,8 +104,4 @@
 - [ ] Inputbar completion like vim/neovim
 - [ ] IPC
 - [ ] New file re-caching thumbnail
-- [X] Properties of symlink bug
-- [X] Symlink properties
-- [X] Deleting symlinks
 - [ ] Tabs for different panes
-- [X] Drag drop multiple column bug

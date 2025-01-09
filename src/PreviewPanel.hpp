@@ -10,7 +10,7 @@
 #include "Thumbnailer.hpp"
 #include "utils.hpp"
 
-class PreviewPanel : public QStackedWidget {
+class PreviewPanel : public QDockWidget {
     Q_OBJECT
 
 signals:
@@ -84,6 +84,7 @@ private:
         return QMimeDatabase().mimeTypeForFile( filePath ).name();
     }
 
+    QStackedWidget *m_stack_widget = new QStackedWidget(this);
     ImageWidget *m_img_widget = new ImageWidget();
     TextEdit *m_text_preview_widget = new TextEdit();
     QWidget *m_empty_widget = new QWidget();
@@ -118,4 +119,5 @@ private:
     qint64 m_preview_threshold = utils::parseFileSize("10M");
 
     int m_num_read_lines = 50;
+
 };

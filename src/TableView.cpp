@@ -20,6 +20,12 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setSelectionMode(QAbstractItemView::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
+    connect(this->selectionModel(), &QItemSelectionModel::currentChanged, [] (const QModelIndex &current, const QModelIndex &previous) {
+        qDebug() << "DD";
+        qDebug() << current.row();
+    });
+
 }
 
 TableView::~TableView() {}
@@ -46,4 +52,44 @@ void TableView::mouseMoveEvent(QMouseEvent *event) {
 
 void TableView::wheelEvent(QWheelEvent *event) {
     event->ignore();
+}
+
+
+QModelIndex TableView::scroll_to_middle() noexcept {
+    if (this->model()->rowCount() == 0)
+        return QModelIndex();
+
+    // Get the vertical scrollbar
+    QScrollBar *verticalScrollBar = this->verticalScrollBar();
+
+    // Get the range of visible rows
+    int firstVisibleRow = this->rowAt(0);
+    int lastVisibleRow = this->rowAt(this->viewport()->height() - 1);
+
+    // If the last row is -1, adjust it to the maximum row index
+    if (lastVisibleRow == -1) {
+        lastVisibleRow = this->model()->rowCount() - 1;
+    }
+
+    if (firstVisibleRow <= lastVisibleRow) {
+        // Calculate the middle row index
+        int middleRow = firstVisibleRow + (lastVisibleRow - firstVisibleRow) / 2;
+
+        // Select the middle row
+        QItemSelectionModel *selectionModel = this->selectionModel();
+        if (selectionModel) {
+            QModelIndex middleIndex = this->model()->index(middleRow, 0); // Assuming column 0
+            selectionModel->select(
+                middleIndex,
+                QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows
+            );
+
+            // Optionally ensure the middle row is fully visible
+            this->scrollTo(middleIndex);
+            this->setCurrentIndex(middleIndex);
+            return middleIndex;
+        }
+    }
+
+    return QModelIndex();
 }

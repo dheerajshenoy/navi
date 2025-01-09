@@ -15,6 +15,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
     m_file_name_column_index = m_model->fileNameColumnIndex();
 
     m_table_view->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+
     setAcceptDrops(true);
     this->show();
 }
@@ -94,8 +95,10 @@ void FilePanel::initSignalsSlots() noexcept {
             this, [&](const QModelIndex &current, const QModelIndex &previous) {
             QModelIndex fileNameIndex =
             current.siblingAtColumn(m_file_name_column_index);
-            emit currentItemChanged(m_current_dir + QDir::separator() +
-                                    m_model->data(fileNameIndex, Qt::DisplayRole).toString());
+            emit currentItemChanged(m_model->data(fileNameIndex,
+                                                  static_cast<int>(FileSystemModel::Role::FilePath))
+                                    .toString()
+                                    );
             });
 
     connect(this, &FilePanel::dropCopyRequested, this,
@@ -149,8 +152,10 @@ void FilePanel::initSignalsSlots() noexcept {
             QModelIndex current = m_table_view->selectionModel()->currentIndex();
             if (current.isValid()) {
             QModelIndex fileNameIndex = current.siblingAtColumn(m_file_name_column_index);
-            emit currentItemChanged(m_current_dir + QDir::separator() +
-                                    m_model->data(fileNameIndex, Qt::DisplayRole).toString());
+            emit currentItemChanged(m_model->data(fileNameIndex,
+                                                  static_cast<int>(FileSystemModel::Role::FilePath))
+                                    .toString()
+                                    );
             }
             m_hook_manager->triggerHook("directory_loaded");
             });
@@ -220,19 +225,14 @@ void FilePanel::DropCutRequested(const QStringList &sourcePaths) noexcept {
 }
 
 QString FilePanel::getCurrentItem() noexcept {
-    return m_current_dir + QDir::separator() + m_model->data(m_table_view->currentIndex())
-    .toString()
-    .split(m_model->getSymlinkSeparator())
-    .at(0)
-    .trimmed();
+    return m_model->data(m_table_view->currentIndex(),
+                         static_cast<int>(FileSystemModel::Role::FilePath))
+    .toString();
 }
 
 QString FilePanel::getCurrentItemFileName() noexcept {
-    return m_model->data(m_table_view->currentIndex())
-    .toString()
-    .split(m_model->getSymlinkSeparator())
-    .at(0)
-    .trimmed();
+    return m_model->data(m_table_view->currentIndex(),
+                         static_cast<int>(FileSystemModel::Role::FileName)).toString();
 }
 
 void FilePanel::handleItemDoubleClicked(const QModelIndex &index) noexcept {
@@ -262,6 +262,11 @@ void FilePanel::setCurrentDir(QString path, const bool &SelectFirstItem) noexcep
 
         m_search_new_directory = true;
 
+
+        if (m_model->rowCount() > 0) {
+            emit currentItemChanged(m_model->data(m_table_view->currentIndex(),
+                                                  static_cast<int>(FileSystemModel::Role::FilePath)).toString());
+        }
         emit afterDirChange(m_current_dir);
     }
 }
@@ -331,7 +336,7 @@ void FilePanel::PrevItem() noexcept {
 
 void FilePanel::selectHelper(const QModelIndex &index,
                              const bool selectFirst) noexcept {
-    QString filepath = m_model->filePath(index);
+    QString filepath = index.data(static_cast<int>(FileSystemModel::Role::FilePath)).toString();
     if (m_model->isDir(index)) {
         setCurrentDir(filepath, selectFirst);
 
@@ -418,7 +423,8 @@ void FilePanel::ToggleMarkDWIM() noexcept {
 }
 
 void FilePanel::MarkItem() noexcept {
-    m_model->setData(m_table_view->currentIndex(), true,
+    m_model->setData(m_table_view->currentIndex(),
+                     true,
                      static_cast<int>(FileSystemModel::Role::Marked));
 }
 
@@ -521,6 +527,7 @@ void FilePanel::GotoFirstItem() noexcept {
     QModelIndex index = m_model->index(0, 0);
     m_table_view->setCurrentIndex(index);
 
+
     if (m_visual_line_mode) {
         // Update selection to include the new index
         QItemSelection selection(m_visual_start_index, index);
@@ -540,11 +547,10 @@ void FilePanel::GotoLastItem() noexcept {
     if (m_visual_line_mode) {
         // Update selection to include the new index
         QItemSelection selection(m_visual_start_index, index);
-        m_table_view->selectionModel()->select(
-            selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
-            QItemSelectionModel::SelectionFlag::Rows);
-        m_table_view->selectionModel()->setCurrentIndex(
-            index, QItemSelectionModel::NoUpdate);
+        m_table_view->selectionModel()->select(selection,
+                                               QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        m_table_view->selectionModel()->setCurrentIndex(index,
+                                                        QItemSelectionModel::NoUpdate);
     }
 }
 
@@ -567,20 +573,15 @@ void FilePanel::GotoItem(const uint &itemNum) noexcept {
 }
 
 void FilePanel::GotoMiddleItem() noexcept {
-    unsigned int middleRow = m_model->rowCount() / 2;
-
-    QModelIndex index = m_model->index(middleRow, 0);
-    m_table_view->setCurrentIndex(index);
-    m_table_view->scrollTo(index, QTableView::ScrollHint::PositionAtCenter);
+    auto index = m_table_view->scroll_to_middle();
 
     if (m_visual_line_mode) {
         // Update selection to include the new index
         QItemSelection selection(m_visual_start_index, index);
-        m_table_view->selectionModel()->select(
-            selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
-            QItemSelectionModel::SelectionFlag::Rows);
-        m_table_view->selectionModel()->setCurrentIndex(
-            index, QItemSelectionModel::NoUpdate);
+        m_table_view->selectionModel()->select(selection,
+                                               QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        m_table_view->selectionModel()->setCurrentIndex(index,
+                                                        QItemSelectionModel::NoUpdate);
     }
 }
 
@@ -1126,13 +1127,17 @@ void FilePanel::Search(QString searchExpression, const bool &regex) noexcept {
             m_inputbar->getInput("Search", m_search_text, m_search_text);
 
     if (regex)
-        m_search_index_list =
-            m_model->match(m_model->index(0, 0), Qt::DisplayRole,
-                           searchExpression, -1, Qt::MatchRegularExpression);
+        m_search_index_list = m_model->match(m_model->index(0, 0),
+                           Qt::DisplayRole,
+                           searchExpression,
+                           -1,
+                           Qt::MatchRegularExpression);
     else
-        m_search_index_list =
-            m_model->match(m_model->index(0, 0), Qt::DisplayRole,
-                           searchExpression, -1, Qt::MatchContains);
+        m_search_index_list = m_model->match(m_model->index(0, 0),
+                           Qt::DisplayRole,
+                           searchExpression,
+                           -1,
+                           Qt::MatchContains);
     if (m_search_index_list.isEmpty())
         return;
     m_table_view->setCurrentIndex(m_search_index_list.at(0));
@@ -1451,7 +1456,6 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
     // Collect file paths
     QList<QUrl> urls;
     for (const QModelIndex &index : selectedIndexes) {
-        /*QString filePath = m_model->rootPath() + QDir::separator() + m_model->file_at(index.row()).filePath();*/
         QString filePath = m_model->file_at(index.row()).filePath();
         urls << QUrl::fromLocalFile(filePath);
     }
@@ -1741,7 +1745,6 @@ void FilePanel::LinkItems(const QStringList &files, const QString &target_path,
         for (const auto &path : files) {
             auto fileName = QFileInfo(path).fileName();
             auto newFileName = joinPaths(target_path, fileName);
-            qDebug() << path << " -> " << newFileName;
             if (!QFile::link(path, newFileName)) {
                 m_statusbar->Message(QString("Could not link file %1").arg(path),
                                      MessageType::ERROR);

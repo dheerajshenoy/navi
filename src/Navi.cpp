@@ -106,6 +106,9 @@ void Navi::initBookmarks() noexcept {
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
+
+
+
     connect(m_hook_manager, &HookManager::triggerError, this,
             [&](const QString &error) {
             m_statusbar->Message(error, MessageType::ERROR);
@@ -159,7 +162,6 @@ void Navi::initSignalsSlots() noexcept {
             m_file_path_widget->setCurrentDir(path);
             m_hook_manager->triggerHook("directory_changed");
             m_preview_panel->clearImageCache();
-            emit m_file_panel->currentItemChanged(path);
             // TODO: Fix thumbnail caching
             cacheThumbnails();
             });

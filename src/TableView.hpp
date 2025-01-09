@@ -22,6 +22,8 @@ public:
         return font().pixelSize();
     }
 
+    QModelIndex scroll_to_middle() noexcept;
+
 signals:
     void dragRequested();
 
@@ -35,4 +37,5 @@ protected:
     QPoint m_drag_start_position;
     TableHeaderView *m_header_view = nullptr;
     VerticalHeaderView *m_vertical_header_view = nullptr;
+    int m_cursor_row = -1;
 };

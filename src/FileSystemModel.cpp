@@ -56,10 +56,8 @@ QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
         return QString();
 
     return m_root_path + QDir::separator() +
-    index.data()
-    .toString()
-    .split(QString(" %1 ").arg(m_symlink_separator))
-    .at(0);
+    index.data(static_cast<int>(FileSystemModel::Role::FilePath))
+    .toString();
 }
 
 bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
@@ -67,12 +65,7 @@ bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
         return false;
 
     // Assuming `fileInfoList` holds QFileInfo objects or a similar structure
-    return QFileInfo(m_root_path + QDir::separator() +
-                     index.data()
-                     .toString()
-                     .split(QString(" %1 ").arg(m_symlink_separator))
-                     .at(0))
-    .isDir();
+    return QFileInfo(index.data(static_cast<int>(FileSystemModel::Role::FilePath)).toString()).isDir();
 }
 
 int FileSystemModel::findRow(const QFileInfo &fileInfo) const noexcept {
@@ -211,6 +204,18 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
             }
         } break;
 
+        case static_cast<int>(FileSystemModel::Role::FilePath):
+            return fileInfo.filePath();
+            break;
+
+        case static_cast<int>(FileSystemModel::Role::FileName):
+            return fileInfo.fileName();
+            break;
+
+        case static_cast<int>(FileSystemModel::Role::Symlink):
+            return fileInfo.symLinkTarget();
+            break;
+
         case Qt::DisplayRole: {
             switch (m_column_list.at(index.column()).type) {
                 case ColumnType::FileName: {
@@ -290,7 +295,7 @@ bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
                               int role) {
     if (role == static_cast<int>(Role::Marked)) {
         if (value.toBool() == true) {
-            m_markedFiles.insert(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
+            m_markedFiles.insert(index.data(static_cast<int>(Role::FilePath)).toString());
         }
         emit dataChanged(index, index, {role});
         emit headerDataChanged(Qt::Vertical, index.row(), index.row());

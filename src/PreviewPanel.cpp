@@ -1,8 +1,10 @@
 #include "PreviewPanel.hpp"
 #include <archive.h>
 
-PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
+PreviewPanel::PreviewPanel(QWidget *parent) : QDockWidget(parent) {
 
+    this->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    this->setWidget(m_stack_widget);
     // this->setContentsMargins(0, 0, 0, 0);
 
     m_img_widget->setHidden(true);
@@ -32,27 +34,33 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QStackedWidget(parent) {
 
     connect(m_text_file_preview_timer, &QTimer::timeout, this, &PreviewPanel::showTextPreview);
 
-    this->addWidget(m_text_preview_widget);
-    this->addWidget(m_img_widget);
-    this->addWidget(m_empty_widget);
+    m_stack_widget->addWidget(m_text_preview_widget);
+    m_stack_widget->addWidget(m_img_widget);
+    m_stack_widget->addWidget(m_empty_widget);
 }
 
 PreviewPanel::~PreviewPanel() {}
 
 void PreviewPanel::showImagePreview(const QImage &image) noexcept {
-    this->setCurrentIndex(1);
+    m_stack_widget->setCurrentIndex(1);
     m_img_widget->setImage(image);
 }
 
 void PreviewPanel::showTextPreview() noexcept {
-    this->setCurrentIndex(0);
+    m_stack_widget->setCurrentIndex(0);
     auto linestrings = utils::readLinesFromFile(m_filepath, m_num_read_lines);
     m_text_preview_widget->setText(linestrings.join("\n"));
 }
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
     m_img_widget->clear();
-    auto mimetype = getMimeType(filePath);
+    QString resolvedPath = filePath;
+
+    if (QFile::exists(filePath) && QFile::symLinkTarget(filePath).isEmpty() == false) {
+        resolvedPath = QFile::symLinkTarget(filePath);
+    }
+
+    auto mimetype = getMimeType(resolvedPath);
     m_filepath = filePath;
     if (mimetype.startsWith("text")) {
         m_text_file_preview_timer->start(150);
@@ -109,5 +117,5 @@ void PreviewPanel::previewArchive() noexcept {
     archive_read_close(m_archive);
     archive_read_free(m_archive);
 
-    this->setCurrentIndex(0);
+    m_stack_widget->setCurrentIndex(0);
 }

@@ -25,6 +25,8 @@ public:
     enum class Role {
         Marked = Qt::UserRole + 1,
         Symlink,
+        FilePath,
+        FileName,
     };
 
 

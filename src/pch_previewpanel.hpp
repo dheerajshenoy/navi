@@ -17,3 +17,4 @@
 #include <archive_entry.h>
 #include <qtypes.h>
 #include "sol/sol.hpp"
+#include <QDockWidget>

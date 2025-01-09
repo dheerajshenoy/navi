@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <filesystem>
 
 QString utils::getPermString(const QFileInfo& fileInfo) noexcept {
     QString permStr;
@@ -222,6 +223,7 @@ QStringList utils::readLinesFromFile(const QString &filename,
                                      const int &nlines) noexcept {
     QStringList lines;
     QFile file(filename);
+
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qCritical() << "Error opening file:" << file.errorString();
         return QStringList();
