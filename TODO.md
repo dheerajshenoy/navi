@@ -103,3 +103,4 @@
 - [X] Symlink properties
 - [X] Deleting symlinks
 - [ ] Tabs for different panes
+- [X] Drag drop multiple column bug
