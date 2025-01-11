@@ -1,5 +1,4 @@
 #include "FileSystemModel.hpp"
-#include <qnamespace.h>
 
 FileSystemModel::FileSystemModel(QObject *parent)
 : QAbstractTableModel(parent) {
@@ -170,7 +169,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     switch (role) {
 
         case static_cast<int>(Role::Marked):
-            return m_markedFiles.contains(getPathFromIndex(index));
+            return m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
             break;
 
         case Qt::DecorationRole: {
@@ -181,7 +180,6 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
             }
         } break;
 
-
         case Qt::ForegroundRole: {
             bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
             if (isMarked) {
@@ -191,14 +189,19 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
         } break;
 
         case Qt::BackgroundRole: {
-            bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
+            bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
             if (isMarked) {
                 return m_markBackgroundColor;
+            } else {
+                if (index.row() == m_cursor_row)
+                    return QColor(Qt::yellow);
             }
+
+
         } break;
 
         case Qt::FontRole: {
-            bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
+            bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
             if (isMarked) {
                 return m_markFont;
             }
@@ -294,11 +297,15 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
 bool FileSystemModel::setData(const QModelIndex &index, const QVariant &value,
                               int role) {
     if (role == static_cast<int>(Role::Marked)) {
-        if (value.toBool() == true) {
+        auto v = value.toBool();
+        if (v == true) {
             m_markedFiles.insert(index.data(static_cast<int>(Role::FilePath)).toString());
+        } else if (v == false) {
+            m_markedFiles.remove(index.data(static_cast<int>(Role::FilePath)).toString());
         }
         emit dataChanged(index, index, {role});
         emit headerDataChanged(Qt::Vertical, index.row(), index.row());
+        emit marksListChanged();
         return true;
     }
 

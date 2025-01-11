@@ -11,12 +11,12 @@ void Navi::Error(const QString &reason) noexcept {
 
 void Navi::initThings() noexcept {
 
-    initLayout();       // init layout
+    initLayout();
     initBookmarks();
-    initMenubar(); // init menubar
+    initMenubar();
     initToolbar();
     setupCommandMap();
-    initSignalsSlots(); // init signals and slots
+    initSignalsSlots();
     init_default_options();
 
     m_file_panel->tableView()->setIconSize(QSize(64, 64));
@@ -32,14 +32,10 @@ void Navi::initThings() noexcept {
     else if (m_default_dir.isNull() || m_default_dir.isEmpty())
         m_default_dir = QDir::homePath();
 
-    qDebug() << m_default_dir;
     m_default_dir = QFileInfo(m_default_dir).absoluteFilePath();
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
-    auto table = m_file_panel->tableView();
-    m_table_delegate = new FilePanelDelegate(table);
-    table->setItemDelegateForColumn(m_file_panel->model()->fileNameColumnIndex(), m_table_delegate);
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
@@ -106,9 +102,6 @@ void Navi::initBookmarks() noexcept {
 // Handle signals and slots
 void Navi::initSignalsSlots() noexcept {
 
-
-
-
     connect(m_hook_manager, &HookManager::triggerError, this,
             [&](const QString &error) {
             m_statusbar->Message(error, MessageType::ERROR);
@@ -137,18 +130,18 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
             [&](const QString &driveName) {
-                QString confirm = m_inputbar->getInput(QString("Do you want to mount %1 ? (y, N)").arg(driveName));
-                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-                    return;
-                MountDrive(driveName);
+            QString confirm = m_inputbar->getInput(QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+            if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+            return;
+            MountDrive(driveName);
             });
 
     connect(m_drives_widget, &DriveWidget::driveUnmountRequested, this,
             [&](const QString &driveName) {
-                QString confirm = m_inputbar->getInput(QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
-                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-                    return;
-                UnmountDrive(driveName);
+            QString confirm = m_inputbar->getInput(QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
+            if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+            return;
+            UnmountDrive(driveName);
             });
 
     connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
@@ -184,6 +177,8 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_file_panel->model(), &FileSystemModel::marksListChanged,
             m_marks_buffer, &MarksBuffer::refreshMarksList);
+
+
 }
 
 // Help for HELP interactive function
@@ -871,26 +866,19 @@ void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
 }
 
 void Navi::ToggleShortcutsBuffer() noexcept {
-    if (m_shortcuts_widget && m_shortcuts_widget->isVisible()) {
-        m_shortcuts_widget->close();
-        delete m_shortcuts_widget;
-        m_shortcuts_widget = nullptr;
-        disconnect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, 0, 0);
+    if (m_widget_hash.contains(Widget::Shortcuts)) {
+        auto widget = m_widget_hash[Widget::Shortcuts];
+        if (widget->isVisible()) {
+            widget->close();
+            m_widget_hash.remove(Widget::Shortcuts);
+            delete widget;
+        }
     } else {
-        m_shortcuts_widget = new ShortcutsWidget(m_keybind_list, this);
-        connect(m_shortcuts_widget, &ShortcutsWidget::visibilityChanged, this,
-                [&](const bool &state) {
-                m_viewmenu__shortcuts_widget->setChecked(state);
-                });
-        m_shortcuts_widget->show();
-    }
-}
+        auto widget = new ShortcutsWidget(m_keybind_list, this);
+        m_widget_hash.insert(Widget::Shortcuts, widget);
+        widget->show();
 
-void Navi::ToggleShortcutsBuffer(const bool &state) noexcept {
-    if (state)
-        m_log_buffer->show();
-    else
-        m_log_buffer->hide();
+    }
 }
 
 void Navi::ToggleMessagesBuffer() noexcept {
@@ -1006,6 +994,14 @@ void Navi::initLayout() noexcept {
     m_inputbar = new Inputbar(this);
     m_statusbar = new Statusbar(this);
     m_file_panel = new FilePanel(m_inputbar, m_statusbar, m_hook_manager, m_task_manager, this);
+
+
+    auto table = m_file_panel->tableView();
+    m_table_delegate = new FilePanelDelegate(table);
+    table->setItemDelegate(m_table_delegate);
+
+
+
 
     m_preview_panel = new PreviewPanel(this);
     m_file_path_widget = new FilePathWidget(this);
@@ -1166,7 +1162,6 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__filter->setCheckable(true);
 
     m_viewmenu__fullscreen = new QAction("Fullscreen");
-    m_viewmenu__fullscreen->setCheckable(true);
 
     m_viewmenu__menubar = new QAction("Menubar");
     m_viewmenu__menubar->setCheckable(true);
@@ -1177,31 +1172,14 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__headers = new QAction("Headers");
     m_viewmenu__headers->setCheckable(true);
 
-
     m_viewmenu__preview_panel = new QAction("Preview Panel");
-    m_viewmenu__preview_panel->setCheckable(true);
-    m_viewmenu__preview_panel->setChecked(true);
-
     m_viewmenu__messages = new QAction("Messages");
-    m_viewmenu__messages->setCheckable(true);
-
     m_viewmenu__marks_buffer = new QAction("Marks List");
-    m_viewmenu__marks_buffer->setCheckable(true);
-
     m_viewmenu__bookmarks_buffer = new QAction("Bookmarks");
-    m_viewmenu__bookmarks_buffer->setCheckable(true);
-
     m_viewmenu__shortcuts_widget = new QAction("Shortcuts");
-    m_viewmenu__shortcuts_widget->setCheckable(true);
-
     m_viewmenu__drives_widget = new QAction("Drives");
-    m_viewmenu__drives_widget->setCheckable(true);
-
     m_viewmenu__tasks_widget = new QAction("Tasks");
-    m_viewmenu__tasks_widget->setCheckable(true);
-
     m_viewmenu__sort_menu = new QMenu("Sort by");
-
     m_viewmenu__sort_by_name = new QAction("Name");
     m_viewmenu__sort_by_name->setCheckable(true);
     m_viewmenu__sort_by_name->setChecked(true);
@@ -1467,33 +1445,6 @@ void Navi::initMenubar() noexcept {
     // Handle visibility state change to reflect in the checkbox of the menu
     // item
 
-    connect(m_bookmarks_buffer, &BookmarkWidget::visibilityChanged, this,
-            [&](const bool &state) {
-            m_viewmenu__bookmarks_buffer->setChecked(state);
-            });
-
-    connect(m_tasks_widget, &TasksWidget::visibilityChanged, this,
-            [&](const bool &state) {
-            m_viewmenu__tasks_widget->setChecked(state);
-            });
-
-    connect(m_drives_widget, &DriveWidget::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__drives_widget->setChecked(state); });
-
-    connect(m_menubar, &Menubar::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__menubar->setChecked(state); });
-
-    connect(m_statusbar, &Statusbar::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__statusbar->setChecked(state); });
-
-    connect(m_preview_panel, &PreviewPanel::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__preview_panel->setChecked(state); });
-
-    connect(m_log_buffer, &MessagesBuffer::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__messages->setChecked(state); });
-
-    connect(m_marks_buffer, &MarksBuffer::visibilityChanged, this,
-            [&](const bool &state) { m_viewmenu__marks_buffer->setChecked(state); });
 }
 
 bool Navi::createEmptyFile(const QString &filePath) noexcept {}
@@ -2094,8 +2045,8 @@ QString Navi::GetInput(const QString &prompt,
 
 QString Navi::GetInput(const QString &prompt,
                        const QString &title,
-                 const QStringList &choice,
-                 const int &default_choice) noexcept {
+                       const QStringList &choice,
+                       const int &default_choice) noexcept {
 
     bool ok;
     QString result = QInputDialog::getItem(this, title, prompt, choice, default_choice, false, &ok);
@@ -2330,7 +2281,9 @@ void Navi::ShowFolderProperty() noexcept {
 void Navi::Exit() noexcept { QApplication::quit(); }
 
 void Navi::CopyPath(const QString &separator) noexcept {
+
     auto selectionModel = m_file_panel->tableView()->selectionModel();
+
     if (selectionModel->hasSelection()) {
         auto current_dir = m_file_panel->getCurrentDir();
         auto indexes = selectionModel->selectedIndexes();
@@ -2729,7 +2682,7 @@ void Navi::Lua__register_user_function(const std::string &name, const sol::funct
             func(sol::as_args(lua_args));
         }
         else
-            func();
+        func();
     };
 }
 
@@ -2933,7 +2886,7 @@ void Navi::update_runtime_paths(const std::string &_rtps) noexcept {
 }
 
 void Navi::execute_shell_command(const std::string &_command,
-                           std::vector<std::string> &_args) noexcept {
+                                 std::vector<std::string> &_args) noexcept {
     QStringList args = utils::stringListFromVector(_args);
     SpawnProcess(QString::fromStdString(_command), args);
 }
@@ -3020,7 +2973,7 @@ sol::table Navi::get_preview_panel_props(sol::this_state L) const noexcept {
 }
 
 void Navi::set_pathbar_props(const sol::table &table) noexcept {
-// TODO:
+    // TODO:
 }
 
 void Navi::set_api_list(const QStringList &list) noexcept {
@@ -3070,7 +3023,6 @@ void Navi::set_symlink_props(const sol::table &table) noexcept {
 
 sol::table Navi::get_symlink_props() noexcept {
     sol::table table = m_lua->create_table();
-
     table["underline"] = get_symlink_underline();
     table["italic"] = get_symlink_italic();
     table["font"] = get_symlink_font();
@@ -3079,6 +3031,37 @@ sol::table Navi::get_symlink_props() noexcept {
     table["foreground"] = get_symlink_foreground();
     table["background"] = get_symlink_background();
     table["visible"] = get_symlink_visible();
+    return table;
+}
 
+void Navi::set_cursor_props(const sol::table &table) noexcept {
+
+    if (table["font"])
+        set_cursor_font(table["font"].get<std::string>());
+
+    if (table["foreground"])
+        set_cursor_foreground(table["foreground"].get<std::string>());
+
+    if (table["background"])
+        set_cursor_background(table["background"].get<std::string>());
+
+    if (table["bold"])
+        set_cursor_bold(table["bold"].get<bool>());
+
+    if (table["italic"])
+        set_cursor_italic(table["italic"].get<bool>());
+
+    if (table["underline"])
+        set_cursor_underline(table["underline"].get<bool>());
+}
+
+sol::table Navi::get_cursor_props() noexcept {
+    sol::table table = m_lua->create_table();
+    table["underline"] = get_cursor_underline();
+    table["italic"] = get_cursor_italic();
+    table["font"] = get_cursor_font();
+    table["bold"] = get_cursor_bold();
+    table["foreground"] = get_cursor_foreground();
+    table["background"] = get_cursor_background();
     return table;
 }

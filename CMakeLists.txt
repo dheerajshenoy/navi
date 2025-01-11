@@ -147,6 +147,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filesystemmodel.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepropertywidget.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepreviewworker.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_drivewidget.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepaneldelegate.hpp)
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

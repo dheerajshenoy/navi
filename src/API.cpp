@@ -251,7 +251,24 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_symlink_props", &Navi::set_symlink_props,
                            "get_symlink_props", &Navi::get_symlink_props,
                            "set_symlink_separator", &Navi::set_symlink_separator,
-                           "get_symlink_separator", &Navi::get_symlink_separator
+                           "get_symlink_separator", &Navi::get_symlink_separator,
+
+                           // cursor
+
+                           "get_cursor_foreground", &Navi::get_cursor_foreground,
+                           "set_cursor_foreground", &Navi::set_cursor_foreground,
+                           "get_cursor_background", &Navi::get_cursor_background,
+                           "set_cursor_background", &Navi::set_cursor_background,
+                           "get_cursor_italic", &Navi::get_cursor_italic,
+                           "set_cursor_italic", &Navi::set_cursor_italic,
+                           "get_cursor_bold", &Navi::get_cursor_bold,
+                           "set_cursor_bold", &Navi::set_cursor_bold,
+                           "get_cursor_underline", &Navi::get_cursor_underline,
+                           "set_cursor_underline", &Navi::set_cursor_underline,
+                           "get_cursor_font", &Navi::get_cursor_font,
+                           "set_cursor_font", &Navi::set_cursor_font,
+                           "get_cursor_props", &Navi::get_cursor_props,
+                           "set_cursor_props", &Navi::set_cursor_props
 
                            );
 

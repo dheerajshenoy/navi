@@ -21,11 +21,6 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    connect(this->selectionModel(), &QItemSelectionModel::currentChanged, [] (const QModelIndex &current, const QModelIndex &previous) {
-        qDebug() << "DD";
-        qDebug() << current.row();
-    });
-
 }
 
 TableView::~TableView() {}
@@ -92,4 +87,11 @@ QModelIndex TableView::scroll_to_middle() noexcept {
     }
 
     return QModelIndex();
+}
+
+void TableView::setCurrentIndex(const QModelIndex &index) noexcept {
+    if (index.isValid()) {
+        emit cursorPositionChanged(index.row());
+    }
+    QTableView::setCurrentIndex(index);
 }

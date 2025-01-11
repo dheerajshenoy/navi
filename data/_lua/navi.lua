@@ -970,6 +970,75 @@ setmetatable(M.ui.statusbar, {
     end
 })
 
+M.ui.cursor = {}
+
+---@class CursorOptions
+---@field italic boolean
+---@field bold boolean
+---@field underline boolean
+---@field font string
+---@field foreground string
+---@field background string
+
+---Set options for the cursor
+---@param opts CursorOptions
+M.ui.cursor.set_props = function (opts)
+    if type(opts) == "table" then
+        _navi:set_cursor_props(opts)
+    end
+end
+
+---Get options for the cursor
+---@returns CursorOptions
+M.ui.cursor.get_props = function ()
+    return _navi:get_cursor_props()
+end
+
+setmetatable(M.ui.cursor, {
+    __index = function (_, key)
+        if key == "font" then
+            return _navi:get_cursor_font()
+
+        elseif key == "foreground" then
+            return _navi:get_cursor_foreground()
+
+        elseif key == "background" then
+            return _navi:get_cursor_background()
+
+        elseif key == "underline" then
+            return _navi:get_cursor_underline()
+
+        elseif key == "bold" then
+            return _navi:get_cursor_bold()
+
+        elseif key == "italic" then
+            return _navi:get_cursor_italic()
+        end
+    end,
+    __newindex = function (_, key, value)
+
+        if key == "font" then
+            return _navi:set_cursor_font(value)
+
+        elseif key == "foreground" then
+            return _navi:set_cursor_foreground(value)
+
+        elseif key == "background" then
+            return _navi:set_cursor_background(value)
+
+        elseif key == "underline" then
+            return _navi:set_cursor_underline(value)
+
+        elseif key == "bold" then
+            return _navi:set_cursor_bold(value)
+
+        elseif key == "italic" then
+            return _navi:set_cursor_italic(value)
+        end
+    end
+
+})
+
 ---Splits a string by a delimiter and returns table of strings
 ---split by the delimiter
 ---@param str string

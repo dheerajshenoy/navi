@@ -23,7 +23,7 @@ public:
         std::string mimeName;
     };
 
-    QTableView* tableView() { return m_table_view; }
+    TableView* tableView() { return m_table_view; }
     void setCurrentDir(QString path, const bool &selectFirstItem = false) noexcept;
 
     QString getCurrentDir() noexcept;
@@ -261,7 +261,6 @@ protected:
     // void mousePressEvent(QMouseEvent *event) override;
     // void mouseMoveEvent(QMouseEvent *event) override;
 
-
 private:
     void dragRequested() noexcept;
     void selectHelper(const QModelIndex &index, const bool selectFirst) noexcept;
@@ -321,4 +320,5 @@ private:
     bool m_bulk_rename_with_terminal = true;
     QString m_previous_dir_path;
     bool m_header_visible = true;
+    QItemSelectionModel *m_selection_model;
 };

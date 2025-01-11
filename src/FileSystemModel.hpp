@@ -10,6 +10,7 @@ public:
   FileSystemModel(const QString &path, QObject *parent = nullptr);
     FileSystemModel(QObject *parent = nullptr);
 
+    inline void set_cursor_row(const int &row) noexcept { m_cursor_row = row; }
     enum class ColumnType {
       FileName = 0,
       FileSize,
@@ -100,7 +101,7 @@ public:
     void removeMarkedFiles(const QStringList &paths) noexcept;
     bool removeMarkedFile(const QModelIndex &index) noexcept;
     inline QString getStringFromIndex(const QModelIndex &index) const noexcept {
-        return this->data(index, Qt::DisplayRole).toString();
+        return data(index, static_cast<int>(Role::FileName)).toString();
     }
 
     QStringList getFilePathsFromIndexList(const QModelIndexList &indexList) const noexcept;
@@ -111,11 +112,11 @@ public:
     }
 
     inline QString getPathFromIndex(const QModelIndex &index) const noexcept {
-        return rootPath() + QDir::separator() + getStringFromIndex(index);
+        return data(index, static_cast<int>(Role::FilePath)).toString();
     }
 
     inline QString getPathFromRow(const int &row) const noexcept {
-        return rootPath() + QDir::separator() + getStringFromRow(row);
+        return index(row, m_file_name_column_index).data(static_cast<int>(Role::FilePath)).toString();
     }
 
     inline QString getSymlinkSeparator() const noexcept {
@@ -141,6 +142,7 @@ public:
     bool icons_enabled = true;
 
     inline QList<QFileInfo> entry_info_list() { return m_fileInfoList; }
+
 
     signals:
     void directoryLoaded(const int &rowCount);
@@ -187,4 +189,5 @@ private:
     unsigned int m_file_name_column_index = -1;
 
     mutable QHash<QString, QIcon> m_icon_cache;
+    int m_cursor_row = -1;
 };

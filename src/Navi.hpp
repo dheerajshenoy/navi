@@ -62,6 +62,12 @@ public:
         m_lua = &lua;
     }
 
+    enum class Widget {
+        Shortcuts = 0,
+        Marks,
+        Messages,
+    };
+
     void initKeybinds() noexcept;
     inline FilePanel* file_panel() noexcept { return m_file_panel; }
     inline Inputbar* get_inputbar() const noexcept { return m_inputbar; }
@@ -935,6 +941,57 @@ public:
         m_file_panel->link_to();
     }
 
+    inline void set_cursor_font(const std::string &family) noexcept {
+        m_table_delegate->set_cursor_font(QString::fromStdString(family));
+    }
+
+    void set_cursor_props(const sol::table &table) noexcept;
+    sol::table get_cursor_props() noexcept;
+
+    inline std::string get_cursor_font() noexcept {
+        return m_table_delegate->get_cursor_font().toStdString();
+    }
+
+    inline void set_cursor_foreground(const std::string &fg) noexcept {
+        m_table_delegate->set_cursor_foreground(QString::fromStdString(fg));
+    }
+
+    inline std::string get_cursor_foreground() noexcept {
+        return m_table_delegate->get_cursor_foreground().toStdString();
+    }
+
+    inline void set_cursor_background(const std::string &bg) noexcept {
+        m_table_delegate->set_cursor_background(QString::fromStdString(bg));
+    }
+
+    inline std::string get_cursor_background() noexcept {
+        return m_table_delegate->get_cursor_background().toStdString();
+    }
+
+    inline void set_cursor_italic(const bool &state) noexcept {
+        m_table_delegate->set_cursor_italic(state);
+    }
+
+    inline bool get_cursor_italic() noexcept {
+        return m_table_delegate->get_cursor_italic();
+    }
+
+    inline void set_cursor_bold(const bool &state) noexcept {
+        m_table_delegate->set_cursor_bold(state);
+    }
+
+    inline bool get_cursor_bold() noexcept {
+        return m_table_delegate->get_cursor_bold();
+    }
+
+    inline void set_cursor_underline(const bool &state) noexcept {
+        m_table_delegate->set_cursor_underline(state);
+    }
+
+    inline bool get_cursor_underline() noexcept {
+        return m_table_delegate->get_cursor_underline();
+    }
+
 protected:
     bool event(QEvent *e) override;
 
@@ -1209,7 +1266,6 @@ private:
     enum class SortBy { Name = 0, Date, Size };
     SortBy m_sort_by = SortBy::Name;
     sol::state m_bookmarks_state;
-    ShortcutsWidget *m_shortcuts_widget;
     QList<Keybind> m_keybind_list;
     QString m_config_location = CONFIG_FILE_PATH;
     bool m_load_config = true;
@@ -1242,6 +1298,6 @@ private:
     std::vector<std::string> m_toolbar_layout;
     sol::state *m_lua;
     QStringList m_navi_lua_api_list;
-
     FilePanelDelegate *m_table_delegate;
+    QHash<Widget, QWidget *> m_widget_hash;
 };

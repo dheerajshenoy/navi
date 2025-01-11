@@ -24,8 +24,12 @@ public:
 
     QModelIndex scroll_to_middle() noexcept;
 
+
+    void setCurrentIndex(const QModelIndex &index) noexcept;
+
 signals:
     void dragRequested();
+    void cursorPositionChanged(int row);
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
@@ -37,5 +41,4 @@ protected:
     QPoint m_drag_start_position;
     TableHeaderView *m_header_view = nullptr;
     VerticalHeaderView *m_vertical_header_view = nullptr;
-    int m_cursor_row = -1;
 };
