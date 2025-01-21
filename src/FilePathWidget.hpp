@@ -12,11 +12,31 @@ protected:
     QStringList splitPath(const QString &path) const override {
         QString modifiedPath = path;
 
-        if (path.startsWith("~"))
+        if (path.startsWith("~")) {
             modifiedPath.replace(0, 1, QDir::homePath());
+        }
 
         return QCompleter::splitPath(modifiedPath);
     }
+
+    QString pathFromIndex(const QModelIndex& index) const override
+    {
+        if (!index.isValid()) { return QString(); }
+
+        QModelIndex idx = index;
+        QStringList list;
+        do {
+            QString t = model()->data(idx, Qt::EditRole).toString();
+            list.prepend(t);
+            QModelIndex parent = idx.parent();
+            idx = parent.sibling(parent.row(), index.column());
+        } while (idx.isValid());
+
+        list[0].clear() ; // the join below will provide the separator
+
+        return list.join("/");
+    }
+
 };
 
 class FilePathLineEdit : public QLineEdit {

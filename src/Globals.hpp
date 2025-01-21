@@ -35,3 +35,5 @@ static const QStringList PRIVATE_API_FOLDER_PATH = { joinPaths("/usr/share", APP
 static const QStringList PRIVATE_API_FILE_PATH = { joinPaths( PRIVATE_API_FOLDER_PATH.at(0), "_lua", PRIVATE_API_FILE_NAME),
     joinPaths(QDir::homePath(), ".local/share", APP_NAME, "_lua", PRIVATE_API_FILE_NAME) };
 
+
+static const QString MIME_CACHE_FILE_PATH = joinPaths(CONFIG_DIR_PATH, "mime.cache");

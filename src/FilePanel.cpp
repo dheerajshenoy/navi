@@ -8,7 +8,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
     this->setLayout(m_layout);
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
-
+    m_mime_utils->loadDefaults();
     m_selection_model = m_table_view->selectionModel();
 
     initSignalsSlots();
@@ -20,6 +20,24 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
 
     setAcceptDrops(true);
 
+    m_context_menu_folder->addAction(m_context_action_open);
+    m_context_menu_folder->addAction(m_context_action_cut);
+    m_context_menu_folder->addAction(m_context_action_copy);
+    m_context_menu_folder->addAction(m_context_action_paste);
+    m_context_menu_folder->addAction(m_context_action_delete);
+    m_context_menu_folder->addAction(m_context_action_rename);
+    m_context_menu_folder->addAction(m_context_action_trash);
+    m_context_menu_folder->addAction(m_context_action_properties);
+
+    m_context_menu_file->addAction(m_context_action_open);
+    m_context_menu_file->addAction(m_context_action_open_with);
+    m_context_menu_file->addAction(m_context_action_cut);
+    m_context_menu_file->addAction(m_context_action_copy);
+    m_context_menu_file->addAction(m_context_action_paste);
+    m_context_menu_file->addAction(m_context_action_delete);
+    m_context_menu_file->addAction(m_context_action_rename);
+    m_context_menu_file->addAction(m_context_action_trash);
+    m_context_menu_file->addAction(m_context_action_properties);
 
     this->show();
 }
@@ -50,9 +68,6 @@ void FilePanel::initContextMenu() noexcept {
 
     connect(m_context_action_open, &QAction::triggered, this,
             [&]() { SelectItem(); });
-
-    connect(m_context_action_open_with, &QAction::triggered, this,
-            [&]() { OpenWith(); });
 
     connect(m_context_action_copy, &QAction::triggered, this,
             [&]() { CopyDWIM(); });
@@ -1208,22 +1223,16 @@ void FilePanel::SearchPrev() noexcept {
 }
 
 void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
-    QMenu menu(this);
-    if (m_model->hasMarks() || m_selection_model->hasSelection()) {
-        menu.addAction(m_context_action_open);
-        menu.addAction(m_context_action_open_with);
-        menu.addAction(m_context_action_cut);
-        menu.addAction(m_context_action_copy);
-        menu.addAction(m_context_action_paste);
-        menu.addAction(m_context_action_delete);
-        menu.addAction(m_context_action_rename);
-        menu.addAction(m_context_action_trash);
-        menu.addAction(m_context_action_properties);
+    auto sel_size = m_selection_model->selectedRows().count();
+    if (sel_size > 1) {
+
     } else {
-        menu.addAction(m_context_action_paste);
-        menu.addAction(m_context_action_properties);
+        if (is_current_item_a_file()) {
+            m_context_menu_file->exec(event->globalPos());
+        } else {
+            m_context_menu_folder->exec(event->globalPos());
+        }
     }
-    menu.exec(event->globalPos());
 }
 
 void FilePanel::ForceUpdate() noexcept { setCurrentDir(m_current_dir, true); }
@@ -1677,8 +1686,6 @@ void FilePanel::ShellCommand(const QString &command) noexcept {
     UNUSED(command);
 }
 
-void FilePanel::OpenWith() noexcept {}
-
 const FilePanel::ItemProperty FilePanel::getItemProperty() noexcept {
     ItemProperty property;
     QLocale locale;
@@ -1776,4 +1783,8 @@ void FilePanel::LinkItems(const QStringList &files, const QString &target_path,
             }
         }
     }
+}
+
+bool FilePanel::is_current_item_a_file() noexcept {
+    return QFileInfo(getCurrentItem()).isFile();
 }

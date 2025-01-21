@@ -9,6 +9,7 @@
 #include "Inputbar.hpp"
 #include "Statusbar.hpp"
 #include "HookManager.hpp"
+#include "Mimeutils.hpp"
 
 class FilePanel : public QWidget {
     Q_OBJECT
@@ -36,6 +37,7 @@ public:
     void NewFolder(const QStringList &folderName = {}) noexcept;
     void NewFile(const QStringList &fileName = {}) noexcept;
     QString getCurrentItem() noexcept;
+    bool is_current_item_a_file() noexcept;
     QString getCurrentItemFileName() noexcept;
     void UpDirectory() noexcept;
     void HomeDirectory() noexcept;
@@ -165,8 +167,6 @@ public:
     inline void ToggleCycle() noexcept { m_cycle_item = !m_cycle_item; }
 
     inline bool get_headers_visible() noexcept { return m_header_visible; }
-
-    void OpenWith() noexcept;
 
     void ToggleVisualLine() noexcept;
     void ToggleVisualLine(const bool &state) noexcept;
@@ -321,4 +321,7 @@ private:
     QString m_previous_dir_path;
     bool m_header_visible = true;
     QItemSelectionModel *m_selection_model;
+    MimeUtils *m_mime_utils = new MimeUtils();
+    QMenu *m_context_menu_folder = new QMenu(this),
+          *m_context_menu_file = new QMenu(this);
 };

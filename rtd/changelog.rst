@@ -3,6 +3,13 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.2.6 (21 January 2024)
+----------------------
+
++ Added context menu support different for file and folder.
+
+
+
 v1.2.5 (11 January 2024)
 -----------------------
 

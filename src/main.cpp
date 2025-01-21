@@ -1,5 +1,5 @@
 #include <string>
-constexpr std::string VERSION = "1.2.5";
+constexpr std::string VERSION = "1.2.6";
 
 #include <QFile>
 #include <QStandardPaths>

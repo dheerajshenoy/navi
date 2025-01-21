@@ -82,6 +82,7 @@ qt_add_executable(${PROJECT_NAME}
   src/FolderPropertyWidget.cpp
   src/AboutWidget.cpp
   src/API.cpp
+  src/Mimeutils.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp
@@ -148,6 +149,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepropertywidget.hpp
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepreviewworker.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_drivewidget.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_filepaneldelegate.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch_mimeutils.hpp)
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
