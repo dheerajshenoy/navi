@@ -1,9 +1,0 @@
-#pragma once
-#include <QFileInfo>
-#include <QProcess>
-#include <QDebug>
-#include <QMessageBox>
-#include <QMimeDatabase>
-#include <QMimeType>
-#include <QDir>
-#include <QApplication>
