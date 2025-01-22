@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_previewpanel.hpp"
+#include "pch/pch_previewpanel.hpp"
 
 #include "FilePreviewWorker.hpp"
 // #include "TreeSitterTextEdit.hpp"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_filepreviewworker.hpp"
+#include "pch/pch_filepreviewworker.hpp"
 #include "SyntaxHighlighterTS.hpp"
 
 class FilePreviewWorker : public QObject {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_shortcutswidget.hpp"
+#include "pch/pch_shortcutswidget.hpp"
 
 struct Keybind {
     QString key;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_thumbnailer.hpp"
+#include "pch/pch_thumbnailer.hpp"
 #include "utils.hpp"
 
 static const QString THUMBNAIL_DIR = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + QDir::separator() + "thumbnails" + QDir::separator() + "large";

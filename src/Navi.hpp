@@ -4,7 +4,7 @@
 
 #define UNUSED(x) (void) x
 #include "Globals.hpp"
-#include "pch.hpp"
+#include "pch/pch.hpp"
 // Local includes
 #include "InputDialog.hpp"
 #include "FilePathWidget.hpp"

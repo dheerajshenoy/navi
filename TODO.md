@@ -89,6 +89,7 @@
 - [X] Deleting symlinks
 - [X] Drag drop multiple column bug
 - [X] File preview bug after dir change
+- [X] Ctrl+click support
 - [ ] Open with menu
 - [ ] Undo Operations
 - [ ] Wonky file completion in the file path widget when "~" is present

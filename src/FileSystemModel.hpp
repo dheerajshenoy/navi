@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_filesystemmodel.hpp"
+#include "pch/pch_filesystemmodel.hpp"
 #include "utils.hpp"
 
 class FileSystemModel : public QAbstractTableModel {

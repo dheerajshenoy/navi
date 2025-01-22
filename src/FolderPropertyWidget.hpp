@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_folderpropertywidget.hpp"
+#include "pch/pch_folderpropertywidget.hpp"
 #include "utils.hpp"
 
 class FolderPropertyWidget : public QDialog {

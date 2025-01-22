@@ -1,7 +1,7 @@
 // Task card template for COMMAND command type for viewing the task in the TasksWidget
 #pragma once
 
-#include "pch_taskcardtemplate.hpp"
+#include "pch/pch_taskcardtemplate.hpp"
 
 #include "Task.hpp"
 

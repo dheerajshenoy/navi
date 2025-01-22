@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_mimeutils.hpp"
+#include "pch/pch_mimeutils.hpp"
 #include "Globals.hpp"
 
 class MimeUtils : public QObject {

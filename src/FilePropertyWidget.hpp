@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_filepropertywidget.hpp"
+#include "pch/pch_filepropertywidget.hpp"
 #include "utils.hpp"
 
 class FilePropertyWidget : public QDialog {

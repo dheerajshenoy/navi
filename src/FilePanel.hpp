@@ -1,7 +1,7 @@
 #pragma once
 
 #include "utils.hpp"
-#include "pch_filepanel.hpp"
+#include "pch/pch_filepanel.hpp"
 #include "FilePropertyWidget.hpp"
 #include "FileSystemModel.hpp"
 #include "FileWorker.hpp"

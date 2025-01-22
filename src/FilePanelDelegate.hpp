@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_filepaneldelegate.hpp"
+#include "pch/pch_filepaneldelegate.hpp"
 #include "FileSystemModel.hpp"
 #include "TableView.hpp"
 
@@ -67,7 +67,7 @@ class FilePanelDelegate : public QStyledItemDelegate {
 
                 // Draw separator
                 int fileNameWidth = painter->fontMetrics().horizontalAdvance(fileName);
-                painter->drawText(textRect.adjusted(fileNameWidth, 0, 0, 0),
+                painter->drawText(textRect.adjusted(fileNameWidth + 5, 0, 0, 0),
                                   Qt::AlignLeft | Qt::AlignVCenter, m_symlink_separator);
 
                 painter->save();
@@ -87,7 +87,7 @@ class FilePanelDelegate : public QStyledItemDelegate {
                 }
 
                 painter->setPen(QPen(QColor(m_symlink_foreground)));
-                painter->drawText(textRect.adjusted(fileNameWidth + sepWidth + 4, 0, 0, 0),
+                painter->drawText(textRect.adjusted(fileNameWidth + sepWidth + 10, 0, 0, 0),
                                   Qt::AlignLeft | Qt::AlignVCenter, symlinkTargetName);
 
                 painter->restore();

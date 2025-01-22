@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_statusbar.hpp"
+#include "pch/pch_statusbar.hpp"
 #include "utils.hpp"
 #include "sol/sol.hpp"
 

@@ -23,27 +23,27 @@ void read_lua_file(sol::state &lua) {
         /*lua.script_file(PRIVATE_API_FILE_PATH.at(0).toStdString(), sol::load_mode::any);*/
         lua.script("navi = require('navi')");
         lua.script(R"(
-function getTableMembers(tbl, prefix)
-   prefix = prefix or "" -- Initialize prefix if not provided
-   results = {} -- Initialize results if not provided
+            function getTableMembers(tbl, prefix)
+            prefix = prefix or "" -- Initialize prefix if not provided
+            results = {} -- Initialize results if not provided
 
-   for key, value in pairs(tbl) do
-       local fullName = prefix .. key
+            for key, value in pairs(tbl) do
+            local fullName = prefix .. key
 
-       if type(value) == "table" then
-       -- If the value is a table, recurse into it with updated prefix
-       getTableMembers(value, fullName .. ".", results)
-       else
-       -- Add the fully resolved name to the results
-       results[#results + 1] = fullName
-       end
-   end
+            if type(value) == "table" then
+            -- If the value is a table, recurse into it with updated prefix
+            getTableMembers(value, fullName .. ".", results)
+            else
+            -- Add the fully resolved name to the results
+            results[#results + 1] = fullName
+            end
+            end
 
-   return results
-end
+            return results
+            end
 
-_navi_api_list = getTableMembers(navi, "navi.")
-               )");
+            _navi_api_list = getTableMembers(navi, "navi.")
+            )");
     };
 
     if (QFile::exists(PRIVATE_API_FILE_PATH.at(0))) {
@@ -135,4 +135,3 @@ int main(int argc, char *argv[]) {
 
     app.exec();
 }
-

@@ -465,14 +465,17 @@ void FilePanel::MarkItem() noexcept {
 }
 
 void FilePanel::MarkItems(const QModelIndexList &list) noexcept {
-    for (auto index : list)
-    m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
+    for (auto index : list) {
+        m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
+    }
     ToggleVisualLine(false);
 }
 
 void FilePanel::MarkDWIM() noexcept {
     if (m_selection_model->hasSelection()) {
-        MarkItems(m_selection_model->selectedIndexes());
+        auto selected_rows = m_selection_model->selectedRows();
+        selected_rows.remove(selected_rows.indexOf(m_table_view->currentIndex()));
+        MarkItems(selected_rows);
     } else {
         MarkItem();
     }
@@ -500,7 +503,7 @@ void FilePanel::MarkRegex(const QString &regex) noexcept {
 
 void FilePanel::UnmarkDWIM() noexcept {
     if (m_selection_model->hasSelection()) {
-        UnmarkItems(m_selection_model->selectedIndexes());
+        UnmarkItems(m_selection_model->selectedRows());
     } else {
         MarkItem();
     }
@@ -1476,8 +1479,7 @@ void FilePanel::dropEvent(QDropEvent *event) {
 void FilePanel::startDrag(Qt::DropActions supportedActions) {
     UNUSED(supportedActions);
 
-    QModelIndexList selectedIndexes =
-        m_selection_model->selectedIndexes();
+    QModelIndexList selectedIndexes = m_selection_model->selectedRows();
 
     if (selectedIndexes.isEmpty())
         return;

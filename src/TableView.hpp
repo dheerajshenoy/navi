@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_tableview.hpp"
+#include "pch/pch_tableview.hpp"
 #include "FileSystemModel.hpp"
 #include "TableHeaderView.hpp"
 #include "VerticalHeaderView.hpp"

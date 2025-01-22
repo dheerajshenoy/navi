@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_filepathwidget.hpp"
+#include "pch/pch_filepathwidget.hpp"
 
 class CustomCompleter : public QCompleter {
 public:

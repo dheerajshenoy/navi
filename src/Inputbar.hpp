@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch_inputbar.hpp"
+#include "pch/pch_inputbar.hpp"
 #include "FilePathWidget.hpp"
 
 class InputbarCompleter : public QCompleter {
