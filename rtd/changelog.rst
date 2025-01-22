@@ -7,8 +7,7 @@ v1.2.6 (21 January 2024)
 ----------------------
 
 + Added context menu support different for file and folder.
-
-
++ Added ctrl+click support for multiple selection
 
 v1.2.5 (11 January 2024)
 -----------------------

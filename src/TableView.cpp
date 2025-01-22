@@ -17,7 +17,7 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     this->setVerticalHeader(m_vertical_header_view);
     //setFrameShadow(QTableView::Shadow::Plain);
     //setFrameStyle(0);
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
@@ -29,9 +29,27 @@ void TableView::keyPressEvent(QKeyEvent *e) { e->ignore(); }
 
 void TableView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton) {
         m_drag_start_position = event->pos();
-    QTableView::mousePressEvent(event);
+    }
+
+    QModelIndex index = indexAt(event->pos());
+    if (!index.isValid()) {
+        QTableView::mousePressEvent(event);
+        return;
+    }
+
+    QItemSelectionModel *selectionModel = this->selectionModel();
+
+    if (event->modifiers() & Qt::ControlModifier) {  // Ctrl + Click handling
+        if (selectionModel->isSelected(index)) {
+            selectionModel->select(index, QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
+        } else {
+            selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        }
+    } else {
+        QTableView::mousePressEvent(event);  // Default behavior
+    }
 }
 
 void TableView::mouseMoveEvent(QMouseEvent *event) {
