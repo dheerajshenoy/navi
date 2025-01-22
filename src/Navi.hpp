@@ -95,6 +95,14 @@ public:
                      const QStringList &choice,
                      const int &default_choice) noexcept;
 
+    inline void NextPage() noexcept {
+        m_file_panel->NextPage();
+    }
+
+    inline void PrevPage() noexcept {
+        m_file_panel->PrevPage();
+    }
+
     void PasteItems() noexcept;
     void ShowHelp() noexcept;
     void ToggleMenuBar(const bool &state) noexcept;
@@ -1218,6 +1226,9 @@ private:
         "macro-list",
         "macro-edit",
         "macro-save-to-file",
+
+        "scroll-down",
+        "scroll-up",
 
 
         // Echo

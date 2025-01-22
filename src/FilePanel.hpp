@@ -243,6 +243,8 @@ public:
     void LinkItems(const QStringList &files,
                    const QString &target_path,
                    const bool &hard_link = false) noexcept;
+    void NextPage() noexcept;
+    void PrevPage() noexcept;
 
 signals:
     void afterDirChange(QString path);
@@ -276,7 +278,7 @@ private:
     bool m_hidden_files_just_toggled = false;
     bool m_dot_dot_shown = false;
     QAction *m_context_action_open = nullptr;
-    QAction *m_context_action_open_with = nullptr;
+    QMenu *m_context_action_open_with = nullptr;
     QAction *m_context_action_cut = nullptr;
     QAction *m_context_action_copy = nullptr;
     QAction *m_context_action_paste = nullptr;

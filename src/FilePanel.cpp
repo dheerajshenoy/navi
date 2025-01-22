@@ -13,11 +13,8 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
 
     initSignalsSlots();
     initContextMenu();
-
     m_file_name_column_index = m_model->fileNameColumnIndex();
-
     m_table_view->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-
     setAcceptDrops(true);
 
     m_context_menu_folder->addAction(m_context_action_open);
@@ -30,7 +27,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
     m_context_menu_folder->addAction(m_context_action_properties);
 
     m_context_menu_file->addAction(m_context_action_open);
-    m_context_menu_file->addAction(m_context_action_open_with);
+    m_context_menu_file->addMenu(m_context_action_open_with);
     m_context_menu_file->addAction(m_context_action_cut);
     m_context_menu_file->addAction(m_context_action_copy);
     m_context_menu_file->addAction(m_context_action_paste);
@@ -51,7 +48,7 @@ void FilePanel::ResetFilter() noexcept {
 void FilePanel::initContextMenu() noexcept {
 
     m_context_action_open = new QAction("Open");
-    m_context_action_open_with = new QAction("Open With");
+    m_context_action_open_with = new QMenu("Open With");
     m_context_action_cut = new QAction("Cut");
     m_context_action_copy = new QAction("Copy");
     m_context_action_paste = new QAction("Paste");
@@ -1231,6 +1228,8 @@ void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
 
     } else {
         if (is_current_item_a_file()) {
+            m_context_action_open_with->clear();
+            m_context_action_open_with->addActions(m_mime_utils->app_actions_for_file(getCurrentItem()));
             m_context_menu_file->exec(event->globalPos());
         } else {
             m_context_menu_folder->exec(event->globalPos());
@@ -1789,4 +1788,45 @@ void FilePanel::LinkItems(const QStringList &files, const QString &target_path,
 
 bool FilePanel::is_current_item_a_file() noexcept {
     return QFileInfo(getCurrentItem()).isFile();
+}
+
+void FilePanel::NextPage() noexcept {
+    auto currentIndex = m_table_view->currentIndex();
+    QModelIndex index = m_table_view->model()->index(currentIndex.row() + 10, 0);
+    if (!index.isValid()) {
+        return;
+    }
+    m_table_view->scrollTo(index, QAbstractItemView::PositionAtCenter);
+    m_table_view->setCurrentIndex(index);
+
+    if (m_visual_line_mode) {
+        // Update selection to include the new index
+        QItemSelection selection(m_visual_start_index, index);
+        m_selection_model->select(selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                                  QItemSelectionModel::SelectionFlag::Rows);
+        m_selection_model->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
+        m_table_view->viewport()->update();
+        /*m_table_view->viewport()->update();*/
+    }
+}
+
+void FilePanel::PrevPage() noexcept {
+    auto currentIndex = m_table_view->currentIndex();
+    QModelIndex index = m_table_view->model()->index(currentIndex.row() - 10, 0);
+    if (!index.isValid()) {
+        return;
+    }
+    m_table_view->scrollTo(index, QAbstractItemView::PositionAtCenter);
+    m_table_view->setCurrentIndex(index);
+
+    if (m_visual_line_mode) {
+        // Update selection to include the new index
+        QItemSelection selection(m_visual_start_index, index);
+        m_selection_model->select(selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                                  QItemSelectionModel::SelectionFlag::Rows);
+        m_selection_model->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
+        m_table_view->viewport()->update();
+        /*m_table_view->viewport()->update();*/
+    }
+
 }

@@ -89,8 +89,8 @@ QStringList MimeUtils::getMimeTypes() const {
     return m_association_hash.keys();
 }
 
-void MimeUtils::open_in_app(const QString &file, const QString &app) noexcept {
-
+void MimeUtils::open_in_app() noexcept {
+    QAction *action = dynamic_cast<QAction*>(sender());
 }
 
 void MimeUtils::open_files_in_app(const QStringList &files, const QString &app) noexcept {
@@ -127,4 +127,35 @@ QStringList MimeUtils::getDefault(const QString &mime) const {
 
 void MimeUtils::saveDefaults() {
     m_defaultsChanged = false;
+}
+
+QStringList MimeUtils::apps_for_file(const QString &path) noexcept {
+    auto mime = getMimeType(path);
+    return m_association_hash[mime];
+}
+
+QList<QAction*> MimeUtils::app_actions_for_file(const QString &path) noexcept {
+    QList<QAction*> actions_list;
+
+    QStringList apps = apps_for_file(path);
+
+    if (apps.isEmpty())
+        return {};
+
+    DesktopFile d(apps.at(0));
+    actions_list.reserve(apps.size());
+
+    for (const auto &app : apps) {
+        QAction *action;
+        if (d.getIcon().isEmpty()) {
+            action = new QAction(d.getName(), this);
+        } else {
+            action = new QAction(QIcon(d.getIcon()), d.getName(), this);
+        }
+
+        connect(action, &QAction::triggered, this, &MimeUtils::open_in_app);
+        actions_list.append(action);
+    }
+
+    return actions_list;
 }

@@ -191,6 +191,16 @@ void Navi::setupCommandMap() noexcept {
         ExecuteExtendedCommand();
     };
 
+    commandMap["scroll-down"] = [this](const QStringList &args) noexcept {
+        UNUSED(args);
+        m_file_panel->NextPage();
+    };
+
+    commandMap["scroll-up"] = [this](const QStringList &args) noexcept {
+        UNUSED(args);
+        m_file_panel->PrevPage();
+    };
+
     commandMap["about"] = [this](const QStringList &args) {
         UNUSED(args);
         ShowAbout();
@@ -3065,3 +3075,4 @@ sol::table Navi::get_cursor_props() noexcept {
     table["background"] = get_cursor_background();
     return table;
 }
+

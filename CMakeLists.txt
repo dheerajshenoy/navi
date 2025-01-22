@@ -83,6 +83,7 @@ qt_add_executable(${PROJECT_NAME}
   src/AboutWidget.cpp
   src/API.cpp
   src/Mimeutils.cpp
+  src/DesktopFile.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp

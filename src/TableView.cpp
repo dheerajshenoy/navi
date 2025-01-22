@@ -27,28 +27,32 @@ TableView::~TableView() {}
 
 void TableView::keyPressEvent(QKeyEvent *e) { e->ignore(); }
 
-void TableView::mousePressEvent(QMouseEvent *event)
+void TableView::mousePressEvent(QMouseEvent *e)
 {
-    if (event->button() == Qt::LeftButton) {
-        m_drag_start_position = event->pos();
+    if (e->button() == Qt::LeftButton) {
+        m_drag_start_position = e->pos();
     }
 
-    QModelIndex index = indexAt(event->pos());
+    if (e->button() == Qt::RightButton) {
+        setCurrentIndex(indexAt(e->pos()));
+    }
+
+    QModelIndex index = indexAt(e->pos());
     if (!index.isValid()) {
-        QTableView::mousePressEvent(event);
+        QTableView::mousePressEvent(e);
         return;
     }
 
     QItemSelectionModel *selectionModel = this->selectionModel();
 
-    if (event->modifiers() & Qt::ControlModifier) {  // Ctrl + Click handling
+    if (e->modifiers() & Qt::ControlModifier) {  // Ctrl + Click handling
         if (selectionModel->isSelected(index)) {
             selectionModel->select(index, QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
         } else {
             selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
         }
     } else {
-        QTableView::mousePressEvent(event);  // Default behavior
+        QTableView::mousePressEvent(e);  // Default behavior
     }
 }
 
