@@ -2,25 +2,37 @@
 
 Thumbnailer::Thumbnailer() {
     Magick::InitializeMagick(nullptr);
+
 }
 
 void Thumbnailer::generate_thumbnails(const QStringList &files) noexcept {
     QMimeDatabase mimeDB;
+    auto *watcher = new QFutureWatcher<void>(this);
     for (const auto &file : files) {
-      auto mimeType = mimeDB.mimeTypeForFile(file);
-      QString mimeName = mimeType.name();
-      QString URI = file_uri_from_path(file);
-      if (mimeName.startsWith("image/")) {
-          QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_image,
-                                                   this, file, URI);
-      } else if (mimeName == "application/pdf") {
-          QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_pdf,
-                                                   this, file, URI);
-      } else if (mimeName.startsWith("video/")) {
-          QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_video,
-                                                   this, file, URI);
-      }
+        auto mimeType = mimeDB.mimeTypeForFile(file);
+        QString mimeName = mimeType.name();
+        QString URI = file_uri_from_path(file);
+        QFuture<void> future;
+        if (mimeName.startsWith("image/")) {
+            future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_image,
+                                                     this, file, URI);
+        } else if (mimeName == "application/pdf") {
+            future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_pdf,
+                                                     this, file, URI);
+        } else if (mimeName.startsWith("video/")) {
+            future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_video,
+                                                     this, file, URI);
+        }
+
+        if (future.isValid()) {
+            watcher->setFuture(future);
+        }
     }
+
+    connect(watcher, &QFutureWatcher<void>::finished, this, [watcher]() {
+        qDebug() << "All thumbnails generated";
+        watcher->deleteLater();
+    });
 }
 
 void Thumbnailer::generate_thumbnail(const QString &file) noexcept {
@@ -29,8 +41,8 @@ void Thumbnailer::generate_thumbnail(const QString &file) noexcept {
     QString mimeName = mimeType.name();
     QString URI = file_uri_from_path(file);
     if (mimeName.startsWith("image/")) {
-      QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_image,
-                            this, file, URI);
+        QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_image,
+                                                 this, file, URI);
     } else if (mimeName == "application/pdf") {
         QFuture<void> future = QtConcurrent::run(&Thumbnailer::generate_thumbnail_for_pdf,
                                                  this, file, URI);
@@ -106,7 +118,7 @@ void Thumbnailer::generate_thumbnail_for_pdf(const QString &file_name,
         }
 
         QImage qimage = page->renderToImage(600, 600).scaled(256, 256, Qt::KeepAspectRatio,
-                                                 Qt::SmoothTransformation);
+                                                             Qt::SmoothTransformation);
         if (qimage.isNull())
             return;
 
@@ -120,8 +132,8 @@ void Thumbnailer::generate_thumbnail_for_video(const QString &file_name, const Q
         QString command = "ffmpegthumbnailer";
         QStringList arguments;
         arguments << "-i" << file_name
-        << "-o" << path_uri
-        << "-s" << "256";  // Thumbnail size 128x128
+            << "-o" << path_uri
+            << "-s" << "256";  // Thumbnail size 128x128
 
         // Execute the command
         QProcess process;

@@ -99,7 +99,7 @@ void DriveWidget::loadDrives() noexcept {
 
     for (const auto &drive : driveList) {
 
-        auto name = new QTableWidgetItem(drive.name);
+        auto name = new QTableWidgetItem(QIcon::fromTheme("drive"), drive.name);
         auto fstype = new QTableWidgetItem(drive.fstype);
         auto size = new QTableWidgetItem(drive.size);
         auto mountPoint = new QTableWidgetItem(drive.mountPoint);

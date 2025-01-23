@@ -2263,19 +2263,9 @@ void Navi::SpawnProcess(const QString &command,
                         const QStringList &args) noexcept {}
 
 void Navi::cacheThumbnails() noexcept {
-    if (m_thumbnailer_thread->isRunning()) {
-        m_thumbnailer_thread->quit();
-        m_thumbnailer_thread->wait();
-    }
 
     QStringList files = m_file_panel->model()->files();
-    m_thumbnailer->moveToThread(m_thumbnailer_thread);
-    /**/
-    connect(m_thumbnailer_thread, &QThread::finished, m_thumbnailer, &QObject::deleteLater);
-    connect(m_thumbnailer_thread, &QThread::started, m_thumbnailer, [this, files]() {
-        /*m_thumbnailer->generate_thumbnails(files);*/
-    });
-    m_thumbnailer_thread->start();
+    m_thumbnailer->generate_thumbnails(files);
     /*m_thumbnail_cache_future = QtConcurrent::run(&Thumbnailer::generate_thumbnails, m_preview_panel->thumbnailer(), files);*/
 }
 

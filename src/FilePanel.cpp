@@ -1208,8 +1208,10 @@ void FilePanel::SearchNext() noexcept {
         Search(m_search_text);
     }
 
-    if (m_search_index_list.isEmpty())
+    if (m_search_index_list.isEmpty()) {
+        m_statusbar->Message("No search match found");
         return;
+    }
 
     m_search_index_list_index++;
     if (m_search_index_list_index > m_search_index_list.size() - 1) {
@@ -1228,8 +1230,10 @@ void FilePanel::SearchPrev() noexcept {
         Search(m_search_text);
     }
 
-    if (m_search_index_list.isEmpty())
+    if (m_search_index_list.isEmpty()) {
+        m_statusbar->Message("No search match found");
         return;
+    }
 
     m_search_index_list_index--;
     if (m_search_index_list_index < 0) {

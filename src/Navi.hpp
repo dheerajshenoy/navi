@@ -1311,6 +1311,5 @@ private:
     QStringList m_navi_lua_api_list;
     FilePanelDelegate *m_table_delegate;
     QHash<Widget, QWidget *> m_widget_hash;
-    QThread *m_thumbnailer_thread = new QThread();
     Thumbnailer *m_thumbnailer = new Thumbnailer();
 };
