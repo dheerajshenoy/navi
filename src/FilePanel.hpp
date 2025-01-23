@@ -121,6 +121,7 @@ public:
 
     void ToggleDotDot() noexcept;
     void ToggleHiddenFiles() noexcept;
+    void ToggleHiddenFiles(const bool &state) noexcept;
     inline bool hidden_files_visible() noexcept { return m_hidden_files_shown; }
     void Search(QString searchText = QString(), const bool &regex = false) noexcept;
     void SearchNext() noexcept;
@@ -316,7 +317,7 @@ private:
     QModelIndex m_visual_start_index;
     int m_file_name_column_index = -1;
     QColor m_current_background, m_current_foreground;
-    int m_highlight_row;
+    QModelIndex m_highlight_index;
     QString m_highlight_text;
     QHash<QString, QString> m_default_applications_hash;
     bool m_bulk_rename_with_terminal = true;

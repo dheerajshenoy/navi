@@ -1633,7 +1633,7 @@ void Navi::SortByDate(const bool &reverse) noexcept {
 
 void Navi::ToggleHiddenFiles(const bool &state) noexcept {
     m_viewmenu__files_menu__hidden->setChecked(state);
-    m_file_panel->ToggleHiddenFiles();
+    m_file_panel->ToggleHiddenFiles(state);
 }
 
 void Navi::ToggleHiddenFiles() noexcept {
@@ -2262,18 +2262,21 @@ void Navi::change_directory(const std::string &path) noexcept {
 void Navi::SpawnProcess(const QString &command,
                         const QStringList &args) noexcept {}
 
-
 void Navi::cacheThumbnails() noexcept {
-    if (m_thumbnail_cache_future_watcher->isRunning()) {
-        m_thumbnail_cache_future_watcher->cancel();
-        m_thumbnail_cache_future_watcher->waitForFinished();
+    if (m_thumbnailer_thread->isRunning()) {
+        m_thumbnailer_thread->quit();
+        m_thumbnailer_thread->wait();
     }
 
     QStringList files = m_file_panel->model()->files();
-    m_thumbnail_cache_future =
-        QtConcurrent::run(&Thumbnailer::generate_thumbnails,
-                          m_preview_panel->thumbnailer(), files);
-
+    m_thumbnailer->moveToThread(m_thumbnailer_thread);
+    /**/
+    connect(m_thumbnailer_thread, &QThread::finished, m_thumbnailer, &QObject::deleteLater);
+    connect(m_thumbnailer_thread, &QThread::started, m_thumbnailer, [this, files]() {
+        /*m_thumbnailer->generate_thumbnails(files);*/
+    });
+    m_thumbnailer_thread->start();
+    /*m_thumbnail_cache_future = QtConcurrent::run(&Thumbnailer::generate_thumbnails, m_preview_panel->thumbnailer(), files);*/
 }
 
 void Navi::LaunchNewInstance() noexcept {

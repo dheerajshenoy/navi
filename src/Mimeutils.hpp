@@ -10,8 +10,8 @@ class MimeUtils : public QObject {
     explicit MimeUtils(QObject* parent = Q_NULLPTR);
     virtual ~MimeUtils();
     void readAssociationFile() noexcept;
-    void open_in_app() noexcept;
-    void open_files_in_app(const QStringList &files, const QString &app) noexcept;
+    void open_file_in_app(const QString &file) noexcept;
+    void open_files_in_app(const QStringList &files) noexcept;
     void setDefault(const QString &mime, const QStringList &apps);
     QStringList getDefault(const QString &mime) const;
     QStringList getMimeTypes() const;
@@ -19,6 +19,7 @@ class MimeUtils : public QObject {
     QString getAppForMimeType(const QString &mime) const;
     QStringList apps_for_file(const QString &path) noexcept;
     QList<QAction*> app_actions_for_file(const QString &path) noexcept;
+    QList<QAction*> app_actions_for_files(const QStringList &paths) noexcept;
 
     struct Application {
         QString exec;
@@ -38,4 +39,5 @@ private:
     };
 
     QHash<QString, QStringList> m_association_hash;
+    DesktopFile m_desktopFile;
 };

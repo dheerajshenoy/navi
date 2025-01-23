@@ -163,17 +163,23 @@ void FilePanel::initSignalsSlots() noexcept {
             if (m_model->rowCount() > 0)
             row = 0;
             }
-            m_table_view->selectRow(row);
+            QModelIndex index = m_model->index(row, 0);
+            m_table_view->setCurrentIndex(index);
             m_highlight_text.clear();
             return;
             }
 
-            if (m_highlight_row < rowCount) {
-            m_table_view->selectRow(m_highlight_row);
-            } else if (m_highlight_row > 0) {
-            m_table_view->selectRow(m_highlight_row - 1);
-            } else if (m_highlight_row == -1) {
-            m_table_view->selectRow(0);
+            auto highlight_row = m_highlight_index.row();
+
+            if (highlight_row < rowCount) {
+            QModelIndex index = m_highlight_index;
+            m_table_view->setCurrentIndex(index);
+            } else if (highlight_row > 0) {
+            QModelIndex index = m_model->index(m_highlight_index.row() - 1, 0);
+            m_table_view->setCurrentIndex(index);
+            } else if (highlight_row == -1) {
+            QModelIndex index = m_model->index(0, 0);
+            m_table_view->setCurrentIndex(index);
             }
             else
             m_table_view->clearSelection();
@@ -193,7 +199,7 @@ void FilePanel::initSignalsSlots() noexcept {
     connect(m_model->getFileSystemWatcher(),
             &QFileSystemWatcher::directoryChanged, m_model,
             [&](const QString &path) {
-            m_highlight_row = m_table_view->currentIndex().row();
+            m_highlight_index = m_table_view->currentIndex();
             m_model->loadDirectory(path);
             });
 }
@@ -1049,7 +1055,7 @@ void FilePanel::DeleteItem() noexcept {
         }
     }
 
-    m_highlight_row = currentIndex.row();
+    m_highlight_index = currentIndex;
     m_hidden_files_just_toggled = false;
     m_highlight_text.clear();
 }
@@ -1134,7 +1140,7 @@ void FilePanel::ToggleHiddenFiles() noexcept {
     m_hidden_files_shown = !m_hidden_files_shown;
     m_hidden_files_just_toggled = m_hidden_files_shown;
     if (m_hidden_files_shown) {
-        m_highlight_row = m_table_view->currentIndex().row();
+        m_highlight_index = m_table_view->currentIndex();
         m_model->addDirFilter(QDir::Hidden);
         m_highlight_text = getCurrentItemFileName();
     }
@@ -1145,6 +1151,19 @@ void FilePanel::ToggleHiddenFiles() noexcept {
     m_model->loadDirectory(m_current_dir);
 }
 
+void FilePanel::ToggleHiddenFiles(const bool &state) noexcept {
+    m_hidden_files_shown = m_hidden_files_just_toggled = state;
+    if (m_hidden_files_shown) {
+        m_highlight_index = m_table_view->currentIndex();
+        m_model->addDirFilter(QDir::Hidden);
+    }
+    else {
+        m_model->removeDirFilter(QDir::Hidden);
+    }
+    m_highlight_text = getCurrentItemFileName();
+    m_model->loadDirectory(m_current_dir);
+}
+
 void FilePanel::ToggleDotDot() noexcept {
     m_dot_dot_shown = !m_dot_dot_shown;
     if (m_dot_dot_shown)
@@ -1152,7 +1171,7 @@ void FilePanel::ToggleDotDot() noexcept {
     else
         m_model->addDirFilter(QDir::NoDotDot);
 
-    m_highlight_row = m_table_view->currentIndex().row();
+    m_highlight_index = m_table_view->currentIndex();
     m_model->loadDirectory(m_current_dir);
 }
 
@@ -1224,11 +1243,16 @@ void FilePanel::SearchPrev() noexcept {
 
 void FilePanel::contextMenuEvent(QContextMenuEvent *event) {
     auto sel_size = m_selection_model->selectedRows().count();
+    m_context_action_open_with->clear();
     if (sel_size > 1) {
-
+        if (is_current_item_a_file()) {
+            m_context_action_open_with->addActions(m_mime_utils->app_actions_for_file(getCurrentItem()));
+            m_context_menu_file->exec(event->globalPos());
+        } else {
+            m_context_menu_folder->exec(event->globalPos());
+        }
     } else {
         if (is_current_item_a_file()) {
-            m_context_action_open_with->clear();
             m_context_action_open_with->addActions(m_mime_utils->app_actions_for_file(getCurrentItem()));
             m_context_menu_file->exec(event->globalPos());
         } else {
@@ -1710,7 +1734,7 @@ void FilePanel::PreviousDirectory() noexcept {
 
 void FilePanel::SelectFirstItem() noexcept {
     if (m_model->rowCount() > 0) {
-        m_highlight_row = 0;
+        m_highlight_index = m_model->index(0, 0);
         m_table_view->setCurrentIndex(m_model->index(0, 0));
     }
 }

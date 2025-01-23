@@ -80,7 +80,6 @@ MimeUtils::~MimeUtils() {
 QString MimeUtils::getMimeType(const QString &path) {
     QMimeDatabase db;
     QMimeType type = db.mimeTypeForFile(path);
-    //qDebug() << "mime type" << type.name() << path;
     return type.name();
 }
 //---------------------------------------------------------------------------
@@ -89,12 +88,28 @@ QStringList MimeUtils::getMimeTypes() const {
     return m_association_hash.keys();
 }
 
-void MimeUtils::open_in_app() noexcept {
-    QAction *action = dynamic_cast<QAction*>(sender());
+void MimeUtils::open_file_in_app(const QString &file) noexcept {
+    auto exec = m_desktopFile.getExec();
+    auto split = exec.split(" ", Qt::SkipEmptyParts);
+    auto cmd = split.mid(0).first();
+    auto args = split.mid(0).last().split(" ", Qt::SkipEmptyParts);
+
+    args.replaceInStrings("%F", file);
+
+    QProcess process;
+    process.startDetached(cmd, args);
 }
 
-void MimeUtils::open_files_in_app(const QStringList &files, const QString &app) noexcept {
+void MimeUtils::open_files_in_app(const QStringList &files) noexcept {
+    auto exec = m_desktopFile.getExec();
+    auto split = exec.split(" ", Qt::SkipEmptyParts);
+    auto cmd = split.mid(0).first();
+    auto args = split.mid(0).last().split(" ", Qt::SkipEmptyParts);
 
+    args.replaceInStrings("%F", files.join(" "));
+
+    QProcess process;
+    process.startDetached(cmd, args);
 }
 
 QString MimeUtils::getAppForMimeType(const QString &mime) const
@@ -134,6 +149,38 @@ QStringList MimeUtils::apps_for_file(const QString &path) noexcept {
     return m_association_hash[mime];
 }
 
+QList<QAction*> MimeUtils::app_actions_for_files(const QStringList &paths) noexcept {
+    QList<QAction*> actions_list;
+
+    QStringList apps = apps_for_file(paths.at(0));
+
+    if (apps.isEmpty())
+        return {};
+
+    actions_list.reserve(apps.size());
+    m_desktopFile = DesktopFile(apps.at(0));
+
+    for (const auto &app : apps) {
+        QAction *action;
+        if (m_desktopFile.getIcon().isEmpty()) {
+            action = new QAction(m_desktopFile.getName(), this);
+        } else {
+            action = new QAction(QIcon::fromTheme(m_desktopFile.getIcon()),
+                                 m_desktopFile.getName(),
+                                 this);
+        }
+
+        connect(action, &QAction::triggered, this, [&, paths]() {
+            open_files_in_app(paths);
+        });
+
+        actions_list.append(action);
+    }
+
+    return actions_list;
+}
+
+
 QList<QAction*> MimeUtils::app_actions_for_file(const QString &path) noexcept {
     QList<QAction*> actions_list;
 
@@ -142,18 +189,23 @@ QList<QAction*> MimeUtils::app_actions_for_file(const QString &path) noexcept {
     if (apps.isEmpty())
         return {};
 
-    DesktopFile d(apps.at(0));
     actions_list.reserve(apps.size());
+    m_desktopFile = DesktopFile(apps.at(0));
 
     for (const auto &app : apps) {
         QAction *action;
-        if (d.getIcon().isEmpty()) {
-            action = new QAction(d.getName(), this);
+        if (m_desktopFile.getIcon().isEmpty()) {
+            action = new QAction(m_desktopFile.getName(), this);
         } else {
-            action = new QAction(QIcon(d.getIcon()), d.getName(), this);
+            action = new QAction(QIcon::fromTheme(m_desktopFile.getIcon()),
+                                 m_desktopFile.getName(),
+                                 this);
         }
 
-        connect(action, &QAction::triggered, this, &MimeUtils::open_in_app);
+        connect(action, &QAction::triggered, this, [&, path]() {
+            open_file_in_app(path);
+        });
+
         actions_list.append(action);
     }
 

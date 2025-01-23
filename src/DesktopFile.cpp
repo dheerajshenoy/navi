@@ -8,8 +8,6 @@ DesktopFile::DesktopFile(const QString &fileName) {
     // Store file name
     this->fileName = joinPaths(DESKTOP_FILE_DIR, fileName);
 
-    qDebug() << this->fileName;
-
     // File validity
     if (!QFile::exists(this->fileName)) {
         return;
@@ -111,10 +109,8 @@ void DesktopFile::read_desktop_file() noexcept {
             QString key = line.mid(0, index);
             QString val = line.mid(index+1);
             m_desktop_hash[key] = val;
-            qDebug() << key << " " << val;
         }
     }
 
-    qDebug() << "DD";
     file.close();
 }

@@ -10,6 +10,7 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDropIndicatorShown(true);
     setDefaultDropAction(Qt::CopyAction);
     setDragDropMode(QAbstractItemView::InternalMove);
+    setMouseTracking(true);
 
     m_header_view = new TableHeaderView(Qt::Orientation::Horizontal, this);
     m_vertical_header_view = new VerticalHeaderView(Qt::Orientation::Vertical, this);
@@ -57,7 +58,6 @@ void TableView::mousePressEvent(QMouseEvent *e)
 }
 
 void TableView::mouseMoveEvent(QMouseEvent *event) {
-
     if (!(event->buttons() & Qt::LeftButton))
         return;
     if ((event->pos() - m_drag_start_position).manhattanLength()
