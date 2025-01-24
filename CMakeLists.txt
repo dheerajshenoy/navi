@@ -64,14 +64,12 @@ qt_add_executable(${PROJECT_NAME}
   src/FilePathWidget.cpp
   src/Statusbar.cpp
   src/Inputbar.cpp
-  # src/TreeSitterTextEdit.cpp
   src/FilePropertyWidget.cpp
   src/BookmarkManager.cpp
   src/BookmarkWidget.cpp
   src/ShortcutsWidget.cpp
   src/NaviWindow.cpp
   src/DriveWidget.cpp
-  # src/SyntaxHighlighterTS.cpp
   src/TasksWidget.cpp
   src/Task.cpp
   src/TaskManager.cpp

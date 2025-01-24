@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pch/pch_filepreviewworker.hpp"
-#include "SyntaxHighlighterTS.hpp"
 
 class FilePreviewWorker : public QObject {
     Q_OBJECT
@@ -19,8 +18,7 @@ void setPreviewDimension(const int &width, const int &height) noexcept {
 
 signals:
     void errorOccurred(const QString &errorMessage);
-    void textPreviewReady(const QString &textContent,
-                        const SyntaxHighlighterTS::Language &language);
+    void textPreviewReady(const QString &textContent);
     void clearPreview();
 
 private:

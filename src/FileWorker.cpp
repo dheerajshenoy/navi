@@ -2,9 +2,8 @@
 #include <qmessagebox.h>
 
 FileWorker::FileWorker(const QStringList &files, const QString &destDir,
-                       const FileOPType &type, TaskManager *taskManager,
-                       Statusbar *sb, Inputbar *ib) : m_srcFiles(files), m_destDir(destDir),
-m_type(type), m_task_manager(taskManager), m_statusbar(sb), m_inputbar(ib) {
+                       const FileOPType &type, TaskManager *taskManager) : m_srcFiles(files), m_destDir(destDir),
+m_type(type), m_task_manager(taskManager) {
 
     connect(this, &FileWorker::finished, this, [&]() {
         m_overwrite_confirm_all = false;
@@ -73,7 +72,6 @@ void FileWorker::offloadOperation(const QString &src,
         emit error("Unable to open destination file!");
         return;
     }
-
 
     // Read and write in chunks
     constexpr qint64 bufferSize = 4096;
@@ -154,11 +152,13 @@ void FileWorker::cutFile(const QString &src, QString dest) noexcept {
 void FileWorker::copyFiles() noexcept {
     m_activeOperations = m_srcFiles.size();
     for (const auto &file : m_srcFiles) {
+        qDebug() << "COPY";
         copyFile(file, m_destDir);
     }
 }
 
 void FileWorker::cutFiles() noexcept {
+    m_activeOperations = m_srcFiles.size();
     for (const auto &file : m_srcFiles) {
         cutFile(file, m_destDir);
     }

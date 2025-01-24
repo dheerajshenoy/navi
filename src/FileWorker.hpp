@@ -18,8 +18,7 @@ class FileWorker : public QObject {
     };
 
     explicit FileWorker(const QStringList &files, const QString &destDir,
-                        const FileOPType &type, TaskManager *task_manager,
-                        Statusbar *sb, Inputbar *ib);
+                        const FileOPType &type, TaskManager *task_manager);
 
 public slots:
     void performOperation() {
@@ -57,8 +56,6 @@ private:
     QString m_destDir;   // Destination directory
     FileOPType m_type;   // The type of file operation (CUT, COPY)
     TaskManager *m_task_manager = nullptr;
-    Statusbar *m_statusbar = nullptr;
-    Inputbar *m_inputbar = nullptr;
     QAtomicInt m_activeOperations;
     bool m_overwrite_confirm_all = false;
 };

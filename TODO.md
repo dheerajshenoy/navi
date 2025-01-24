@@ -106,3 +106,5 @@
 - [ ] IPC
 - [ ] New file re-caching thumbnail
 - [ ] Tabs for different panes
+- [ ] Drag and drop across multiple panes
+- [ ] Add fits previewing

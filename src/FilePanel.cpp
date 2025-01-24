@@ -207,8 +207,8 @@ void FilePanel::initSignalsSlots() noexcept {
 void FilePanel::DropCopyRequested(const QStringList &sourcePaths) noexcept {
     QString destDir = m_current_dir;
 
-    QThread *thread = new QThread();
-    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileWorker::FileOPType::COPY, m_task_manager, m_statusbar, m_inputbar);
+    QThread *thread = new QThread(this);
+    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileWorker::FileOPType::COPY, m_task_manager);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker, &FileWorker::performOperation);
@@ -237,8 +237,8 @@ void FilePanel::DropCutRequested(const QStringList &sourcePaths) noexcept {
 
     QString destDir = m_current_dir;
 
-    QThread *thread = new QThread();
-    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileWorker::FileOPType::CUT, m_task_manager, m_statusbar, m_inputbar);
+    QThread *thread = new QThread(this);
+    FileWorker *worker = new FileWorker(sourcePaths, destDir, FileWorker::FileOPType::CUT, m_task_manager);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker, &FileWorker::performOperation);
@@ -1388,7 +1388,7 @@ void FilePanel::PasteItems(const QString &_destDir) noexcept {
     const QStringList filesList =
         QStringList(m_register_files_list.cbegin(), m_register_files_list.cend());
 
-    FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type, m_task_manager, m_statusbar, m_inputbar);
+    FileWorker *worker = new FileWorker(filesList, destDir, m_file_op_type, m_task_manager);
     worker->performOperation();
 
     connect(worker, &FileWorker::finished, this, [&, filesList]() {
@@ -1474,10 +1474,9 @@ void FilePanel::dragMoveEvent(QDragMoveEvent *event) {
 
 void FilePanel::dropEvent(QDropEvent *event) {
     const QMimeData *mimeData = event->mimeData();
+    QString srcPath = event->mimeData()->urls().at(0).toString();
 
-    QString destPath = QFileInfo(m_model->rootPath()).absoluteFilePath();
-    if (m_current_dir == destPath) {
-
+    if (m_current_dir == srcPath) {
         qDebug() << "Dropped to the same location, ignoring drop event";
         event->ignore();
         return;
@@ -1491,7 +1490,6 @@ void FilePanel::dropEvent(QDropEvent *event) {
             QString sourcePath = url.toLocalFile();
             files.append(sourcePath);
         }
-
 
         // Move or copy the file
         if (event->proposedAction() == Qt::MoveAction) {
