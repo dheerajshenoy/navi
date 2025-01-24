@@ -1,0 +1,38 @@
+local navi = require("navi")
+
+navi.keymap.set( "h", "up-directory", "Go to the parent directory" )
+navi.keymap.set( "j", "next-item", "Go to the next item" )
+navi.keymap.set( "k", "prev-item", "Go to the previous item" )
+navi.keymap.set( "l", "select-item", "Select item" )
+navi.keymap.set( "f", "filter", "Filter item visibility" )
+navi.keymap.set( "g,g", "first-item", "Go to the first item" )
+navi.keymap.set( "z,z", "middle-item", "Go to middle item" )
+navi.keymap.set( "Shift+g", "last-item", "Go to the last item" )
+navi.keymap.set( "Shift+r", "rename-dwim", "Rename item(s)" )
+navi.keymap.set( "Shift+d", "delete-dwim", "Delete item(s)" )
+navi.keymap.set( "Space", "toggle-mark-dwim", "Mark item(s)" )
+navi.keymap.set( "F5", "refresh", "Refresh current directory" )
+navi.keymap.set( "Shift+Space", "mark-inverse", "Mark inverse item(s)" )
+navi.keymap.set( "Shift+v", "visual-select", "Visual selection mode" )
+navi.keymap.set( ":", "execute-extended-command", "Execute extended command" )
+navi.keymap.set( "y,y", "copy-dwim", "Copy item(s)" )
+navi.keymap.set( "p", "paste", "Paste item(s)" )
+navi.keymap.set( "Shift+u", "unmark-local", "Unmark all item(s)" )
+navi.keymap.set( "/", "search", "Search (regex)" )
+navi.keymap.set( "n", "search-next", "Search next" )
+navi.keymap.set( "Shift+n", "search-prev", "Search previous" )
+navi.keymap.set( "Ctrl+m", "menu-bar", "Toggle menu bar" )
+navi.keymap.set( "Ctrl+p", "preview-pane", "Toggle preview pane" )
+navi.keymap.set( "Ctrl+l", "focus-path", "Focus path bar" )
+navi.keymap.set( "Shift+t", "trash-dwim", "Trash item(s)" )
+navi.keymap.set( ".", "hidden-files", "Toggle hidden items" )
+navi.keymap.set( "q", "macro-record", "Record or Finish recording macro" )
+navi.keymap.set( "Shift+c", "copy-path", "Copy path(s)" )
+navi.keymap.set( "Ctrl+u", "scroll-up", "Scroll up a page" )
+navi.keymap.set( "Ctrl+d", "scroll-down", "Scroll down a page" )
+
+navi.keymap.set({
+    key = "g,z",
+    command = "next-item",
+    desc = "say hello"
+})

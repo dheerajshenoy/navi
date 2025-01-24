@@ -1,1 +1,5 @@
-/home/neo/.config/navi/bookmark.lua
+BOOKMARKS = {
+	emacs = { path = "~/.config/emacs",
+	highlight_only = true,
+	},
+}
