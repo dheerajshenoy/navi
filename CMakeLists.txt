@@ -47,8 +47,9 @@ add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(POPPLER REQUIRED poppler poppler-cpp)
 pkg_check_modules(LIBARCHIVE REQUIRED libarchive)
-find_package(Qt6 COMPONENTS Core REQUIRED)
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Network)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 find_package(Lua REQUIRED)
 
@@ -82,6 +83,8 @@ qt_add_executable(${PROJECT_NAME}
   src/API.cpp
   src/Mimeutils.cpp
   src/DesktopFile.cpp
+  src/UpdateDialog.cpp
+  src/WaitingSpinnerWidget.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp
@@ -102,7 +105,7 @@ qt_add_executable(${PROJECT_NAME}
 
 
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES})
 
 qt_add_resources(${PROJECT_NAME}
   PREFIX "resources"
@@ -149,6 +152,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_filepreviewworker.
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_drivewidget.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_filepaneldelegate.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_mimeutils.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_updatedialog.hpp)
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

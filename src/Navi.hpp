@@ -30,6 +30,7 @@
 #include "FilePanelDelegate.hpp"
 #include "DriveWidget.hpp"
 #include "Statusbar.hpp"
+#include "UpdateDialog.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -57,6 +58,10 @@ class Navi : public QMainWindow {
 public:
     Navi(QWidget *parent = nullptr);
     ~Navi();
+
+    inline void set_version(const QString &version) noexcept {
+        m_version = version;
+    }
 
     inline void set_lua_state(sol::state &lua) noexcept {
         m_lua = &lua;
@@ -312,6 +317,7 @@ public:
     void FullScreen() noexcept;
     void FullScreen(const bool &state) noexcept;
     void ShowAbout() noexcept;
+    void CheckForUpdates() noexcept;
 
     void execute_shell_command(const std::string &command,
                                std::vector<std::string> &args) noexcept;
@@ -1104,6 +1110,7 @@ private:
     QAction *m_go_menu__connect_to_server;
 
     QAction *m_help_menu__about;
+    QAction *m_help_menu__check_for_updates;
 
     Inputbar *m_inputbar = nullptr;
     FilePanel *m_file_panel = nullptr;
@@ -1237,6 +1244,7 @@ private:
         "echo-error",
 
         // misc
+        "update",
         "new-window",
         "goto-symlink-target",
         "exit",
@@ -1312,4 +1320,5 @@ private:
     FilePanelDelegate *m_table_delegate;
     QHash<Widget, QWidget *> m_widget_hash;
     Thumbnailer *m_thumbnailer = new Thumbnailer();
+    QString m_version;
 };

@@ -1,6 +1,7 @@
 
 # Table of Contents
 
+- [X] Check for Updates
 - [X] List contents of directory
 - [X] Vim bindings for navigation
 - [X] Menubar
@@ -90,9 +91,10 @@
 - [X] Drag drop multiple column bug
 - [X] File preview bug after dir change
 - [X] Ctrl+click support
+- [X] Drag and drop across multiple panes
+- [X] Wonky file completion in the file path widget when "~" is present
 - [ ] Open with menu
 - [ ] Undo Operations
-- [ ] Wonky file completion in the file path widget when "~" is present
 - [ ] lua API for custom context menu
 - [ ] Deletion make task if large size
 - [ ] VisibilityChange signal bug
@@ -106,5 +108,6 @@
 - [ ] IPC
 - [ ] New file re-caching thumbnail
 - [ ] Tabs for different panes
-- [ ] Drag and drop across multiple panes
 - [ ] Add fits previewing
+- [ ] Preview image size change
+

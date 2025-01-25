@@ -40,5 +40,6 @@
 #include <QHash>
 #include <unordered_map>
 #include <QFileDialog>
+#include <QUrl>
 #include "../sol/sol.hpp"
 #include "../argparse.hpp"

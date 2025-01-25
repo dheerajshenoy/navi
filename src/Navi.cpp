@@ -186,6 +186,11 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
+    commandMap["update"] = [this](const QStringList &args) {
+        UNUSED(args);
+        CheckForUpdates();
+    };
+
     commandMap["execute-extended-command"] = [this](const QStringList &args) {
         UNUSED(args);
         ExecuteExtendedCommand();
@@ -1368,6 +1373,11 @@ void Navi::initMenubar() noexcept {
 
     m_help_menu__about = new QAction("About");
     m_help_menu->addAction(m_help_menu__about);
+
+    m_help_menu__check_for_updates = new QAction("Check for Updates");
+    m_help_menu->addAction(m_help_menu__check_for_updates);
+
+    connect(m_help_menu__check_for_updates, &QAction::triggered, this, &Navi::CheckForUpdates);
 
     connect(m_help_menu__about, &QAction::triggered, this, [&]() {
         ShowAbout();
@@ -3069,3 +3079,8 @@ sol::table Navi::get_cursor_props() noexcept {
     return table;
 }
 
+
+void Navi::CheckForUpdates() noexcept {
+    UpdateDialog *dialog = new UpdateDialog(m_version, this);
+    dialog->exec();
+}

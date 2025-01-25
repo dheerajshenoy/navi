@@ -3,8 +3,14 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.2.7 (25 January 2024)
+------------------------
+
++ Ability to check for updates
++ Scrolling up and down unusual visual highlight bug fixed.
+
 v1.2.6 (21 January 2024)
-----------------------
+------------------------
 
 + Added context menu support different for file and folder.
 + Added ctrl+click support for multiple selection

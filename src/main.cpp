@@ -1,5 +1,6 @@
 #include <string>
-constexpr std::string VERSION = "1.2.6";
+
+static const QString VERSION = "v1.2.7";
 
 #include <QFile>
 #include <QStandardPaths>
@@ -20,7 +21,6 @@ void read_lua_file(sol::state &lua) {
 
         sol::protected_function_result result = script();
 
-        /*lua.script_file(PRIVATE_API_FILE_PATH.at(0).toStdString(), sol::load_mode::any);*/
         lua.script("navi = require('navi')");
         lua.script(R"(
             function getTableMembers(tbl, prefix)
@@ -65,7 +65,7 @@ void read_lua_file(sol::state &lua) {
 }
 
 int main(int argc, char *argv[]) {
-    argparse::ArgumentParser parser("navi", VERSION);
+    argparse::ArgumentParser parser("navi", VERSION.toStdString());
     QApplication app(argc, argv);
 
     //////////////////////
@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
 
     lua.set_function("_store_instance", [&navi](Navi *instance) {
         navi = instance;
+        navi->set_version(VERSION);
     });
 
     read_lua_file(lua);
