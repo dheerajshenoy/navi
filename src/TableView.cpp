@@ -18,7 +18,7 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     this->setVerticalHeader(m_vertical_header_view);
     //setFrameShadow(QTableView::Shadow::Plain);
     //setFrameStyle(0);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setSelectionMode(QAbstractItemView::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 

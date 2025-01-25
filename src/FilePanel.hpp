@@ -13,9 +13,9 @@
 
 class FilePanel : public QWidget {
     Q_OBJECT
-public:
-  FilePanel(Inputbar *inputWidget, Statusbar *statusBar,
-            HookManager *hm, TaskManager *tm, QWidget *parent = nullptr);
+        public:
+        FilePanel(Inputbar *inputWidget, Statusbar *statusBar,
+                  HookManager *hm, TaskManager *tm, QWidget *parent = nullptr);
     ~FilePanel();
 
     struct ItemProperty {
@@ -216,24 +216,24 @@ public:
         m_current_foreground = color;
 
         m_table_view->setStyleSheet(QString("QTableView::item:selected"
-                                            "{"
-                                            "background-color : %1;"
-                                            "selection-color : %2;"
-                                            "}")
-                                  .arg(m_current_background.name())
-                                  .arg(m_current_foreground.name()));
+            "{"
+            "background-color : %1;"
+            "selection-color : %2;"
+            "}")
+            .arg(m_current_background.name())
+            .arg(m_current_foreground.name()));
     }
 
     inline void setCurrentBackground(const QString &color) noexcept {
         m_current_background = color;
 
         m_table_view->setStyleSheet(QString("QTableView::item:selected"
-                                            "{"
-                                            "background-color : %1;"
-                                            "selection-color : %2;"
-                                            "}")
-                                  .arg(m_current_background.name())
-                                  .arg(m_current_foreground.name()));
+            "{"
+            "background-color : %1;"
+            "selection-color : %2;"
+            "}")
+            .arg(m_current_background.name())
+            .arg(m_current_foreground.name()));
     }
 
 
@@ -247,7 +247,7 @@ public:
     void NextPage() noexcept;
     void PrevPage() noexcept;
 
-signals:
+    signals:
     void afterDirChange(QString path);
     void currentItemChanged(const QString &path);
     void fileOperationDone(const bool &result, const QString &reason = 0);
@@ -326,5 +326,5 @@ private:
     QItemSelectionModel *m_selection_model;
     MimeUtils *m_mime_utils = new MimeUtils();
     QMenu *m_context_menu_folder = new QMenu(this),
-          *m_context_menu_file = new QMenu(this);
+        *m_context_menu_file = new QMenu(this);
 };

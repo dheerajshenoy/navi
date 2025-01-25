@@ -15,7 +15,7 @@ class ImageWidget : public QWidget {
         m_image = image;
 
         // Resize the widget to fit the new image dimensions
-        setFixedSize(256, 256);
+        setFixedSize(this->width(), this->height());
 
         // Request a repaint with the new data
         update();
