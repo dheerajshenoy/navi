@@ -62,7 +62,7 @@ FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
             m_layout->addRow("Type", new QLabel("Directory"));
         }
         m_layout->addRow("Size", m_total_size_label);
-        m_layout->addRow("Total count of files", m_files_count_label);
+        m_layout->addRow("Total files", m_files_count_label);
         m_layout->addRow("Last modified", new QLabel(fileInfo.lastModified().toString()));
         if (!m_symbolic)
             m_layout->addRow("Path", new QLabel(filePath));

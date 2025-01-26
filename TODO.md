@@ -110,4 +110,3 @@
 - [ ] Tabs for different panes
 - [ ] Add fits previewing
 - [ ] Preview image size change
-
