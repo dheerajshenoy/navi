@@ -101,7 +101,7 @@ private:
     QHash<QString, QImage> m_image_cache_hash;
     Thumbnailer *m_thumbnailer = new Thumbnailer();
 
-    struct archive *m_archive = nullptr;
+    struct archive *m_archive;
     struct archive_entry *m_archive_entry;
 
     QStringList m_archive_mimetypes = {

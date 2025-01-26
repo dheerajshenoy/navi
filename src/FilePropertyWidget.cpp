@@ -2,7 +2,7 @@
 
 FilePropertyWidget::FilePropertyWidget(const QString &itemPath, QWidget *parent)
 : QDialog(parent) {
-    m_layout = new QFormLayout();
+    m_layout = new QFormLayout(this);
     this->setLayout(m_layout);
     this->setWindowTitle(QString("%1 - Properties").arg(itemPath));
 

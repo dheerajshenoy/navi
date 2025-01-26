@@ -1529,7 +1529,7 @@ void FilePanel::startDrag(Qt::DropActions supportedActions) {
 }
 
 void FilePanel::ShowItemPropertyWidget() noexcept {
-    FilePropertyWidget prop_widget(getCurrentItem());
+    FilePropertyWidget prop_widget(getCurrentItem(), this);
     prop_widget.exec();
 }
 
