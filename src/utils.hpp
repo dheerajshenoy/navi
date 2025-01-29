@@ -2,6 +2,7 @@
 
 #include "pch/pch_utils.hpp"
 
+
 class utils {
 
 public:
@@ -45,12 +46,19 @@ public:
                                 std::vector<std::string>& results) noexcept;
 
     static void getTableMembers(sol::table tbl, const std::string& prefix,
-                         const std::vector<std::string> &result) noexcept;
+                                const std::vector<std::string> &result) noexcept;
 
     static QString getInput(QWidget *parent,
-                         const QString &title,
-                         const QString &text,
-                         const QString &default_text,
-                         const QString &selection_text) noexcept;
+                            const QString &title,
+                            const QString &text,
+                            bool &ok,
+                            const QString &default_text = QString(),
+                            const QString &selection_text = QString()) noexcept;
+
+    static QString getInput(QWidget *parent,
+                            const QString &title,
+                            const QString &text,
+                            const QString &default_text = QString(),
+                            const QString &selection_text = QString()) noexcept;
 
 };
