@@ -111,6 +111,8 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_menubar_visible", &Navi::get_menubar_visible,
                            "set_menubar_icons", &Navi::set_menubar_icons,
                            "get_menubar_icons", &Navi::get_menubar_icons,
+                           "set_menubar_props", &Navi::set_menubar_props,
+                           "get_menubar_props", &Navi::get_menubar_props,
 
                            // Preview Panel
                            "toggle_preview_panel", sol::resolve<void(void)>(&Navi::TogglePreviewPanel),
@@ -230,6 +232,10 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_file_panel_font_size", &Navi::get_file_panel_font_size,
                            "set_file_panel_props", &Navi::set_file_panel_props,
                            "get_file_panel_props", &Navi::get_file_panel_props,
+                           "set_file_panel_grid", &Navi::set_file_panel_grid,
+                           "get_file_panel_grid", &Navi::get_file_panel_grid,
+                           "set_file_panel_grid_style", &Navi::set_file_panel_grid_style,
+                           "get_file_panel_grid_style", &Navi::get_file_panel_grid_style,
 
                            // Symlink
                            "set_symlink_visible", &Navi::set_symlink_visible,

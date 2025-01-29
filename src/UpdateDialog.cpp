@@ -20,6 +20,7 @@ UpdateDialog::UpdateDialog(QString version, QWidget *parent) : m_version(version
     m_label->setOpenExternalLinks(true);
     m_label->setWordWrap(true);
     m_label->setAlignment(Qt::AlignmentFlag::AlignVCenter);
+    connect(m_close_btn, &QPushButton::clicked, [&]() { this->close(); });
 }
 
 void UpdateDialog::fetch_version_from_repo() noexcept {

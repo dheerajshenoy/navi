@@ -1177,6 +1177,7 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__filter->setCheckable(true);
 
     m_viewmenu__fullscreen = new QAction("Fullscreen");
+    m_viewmenu__fullscreen->setCheckable(true);
 
     m_viewmenu__menubar = new QAction("Menubar");
     m_viewmenu__menubar->setCheckable(true);
@@ -1399,10 +1400,12 @@ void Navi::initMenubar() noexcept {
 
     connect(m_viewmenu__filter, &QAction::triggered, this,
             [&](const bool &state) {
-            if (state)
+            if (state) {
             Filter();
-            else
+            }
+            else {
             ResetFilter();
+            }
             });
 
     connect(m_viewmenu__tasks_widget, &QAction::triggered, this,
@@ -1424,19 +1427,19 @@ void Navi::initMenubar() noexcept {
             &Navi::SortBySize);
 
     connect(m_viewmenu__marks_buffer, &QAction::triggered, this,
-            [&](const bool &state) { ToggleMarksBuffer(state); });
+            [&]() { ToggleMarksBuffer(); });
 
     connect(m_viewmenu__bookmarks_buffer, &QAction::triggered, this,
-            [&](const bool &state) { ToggleBookmarksBuffer(state); });
+            [&]() { ToggleBookmarksBuffer(); });
 
     connect(m_viewmenu__files_menu__dotdot, &QAction::triggered, this,
             [&](const bool &state) { ToggleDotDot(state); });
 
     connect(m_viewmenu__preview_panel, &QAction::triggered, this,
-            [&](const bool &state) { TogglePreviewPanel(state); });
+            [&]() { TogglePreviewPanel(); });
 
     connect(m_viewmenu__messages, &QAction::triggered, this,
-            [&](const bool &state) { ToggleMessagesBuffer(state); });
+            [&]() { ToggleMessagesBuffer(); });
 
     connect(m_filemenu__new_window, &QAction::triggered, this, &Navi::LaunchNewInstance);
 
@@ -1505,19 +1508,24 @@ void Navi::ToggleStatusBar() noexcept {
 
 void Navi::Filter(const QString &filter_string) noexcept {
     if (filter_string.isEmpty() || filter_string.isNull()) {
-        QString filterString = m_inputbar->getInput("Filter String");
+        bool ok;
+        QString filterString = utils::getInput(this, "Filter", "Enter filter string", ok);
+
+        if (!ok) {
+            return;
+        }
+
+        qDebug() << "DD";
+
         if (filterString.isEmpty() || filterString.isNull() || filterString == "*") {
             ResetFilter();
+            m_viewmenu__filter->setChecked(false);
+            return;
         } else {
             m_file_panel->Filters(filterString);
-            m_statusbar->SetFilterMode(true);
-            m_viewmenu__filter->setChecked(true);
         }
-    } else {
-        m_file_panel->Filters(filter_string);
-        m_statusbar->SetFilterMode(true);
-        m_viewmenu__filter->setChecked(true);
     }
+    m_statusbar->SetFilterMode(true);
 }
 
 void Navi::filter(const std::string &_filter_string) noexcept {
@@ -2836,6 +2844,7 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
         m_viewmenu__preview_panel->setIcon(
             QIcon(":resources/images/preview.svg"));
         m_help_menu__about->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
+        m_help_menu__check_for_updates->setIcon(QIcon(":resources/images/update.svg"));
     } else {
         m_filemenu__new_window->setIconVisibleInMenu(false);
         m_filemenu__create_new_folder->setIconVisibleInMenu(false);
@@ -2877,6 +2886,7 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
         m_viewmenu__statusbar->setIconVisibleInMenu(false);
         m_viewmenu__preview_panel->setIconVisibleInMenu(false);
         m_help_menu__about->setIconVisibleInMenu(false);
+        m_help_menu__check_for_updates->setIconVisibleInMenu(false);
     }
 }
 
@@ -3083,4 +3093,49 @@ sol::table Navi::get_cursor_props() noexcept {
 void Navi::CheckForUpdates() noexcept {
     UpdateDialog *dialog = new UpdateDialog(m_version, this);
     dialog->exec();
+}
+
+void Navi::set_menubar_props(const sol::table &table) noexcept {
+    if (table["icons"])
+        set_menubar_icons(table["icons"].get<bool>());
+
+    if (table["visible"])
+        m_menubar->setVisible(table["visible"].get<bool>());
+}
+
+sol::table Navi::get_menubar_props() noexcept {
+    sol::table table = m_lua->create_table();
+    table["icons"] = m_menubar_icons;
+    table["visible"] = m_menubar->isVisible();
+    return table;
+}
+
+void Navi::set_file_panel_props(const sol::table &table) noexcept {
+    if (table["font"].valid())
+        m_file_panel->set_font_family(QString::fromStdString(table["font"].get<std::string>()));
+
+    if (table["font_size"].valid())
+        m_file_panel->set_font_size(table["font_size"].get<int>());
+
+    if (table["icons"].valid())
+        m_file_panel->model()->icons_enabled = table["icons"].get<bool>();
+
+    if (table["grid"].valid()) {
+        set_file_panel_grid(table["grid"].get<bool>());
+    }
+
+    if (table["gridstyle"].valid())
+        set_file_panel_grid_style(table["gridstyle"].get<std::string>());
+}
+
+sol::table Navi::get_file_panel_props() noexcept {
+
+    sol::table table = m_lua->create_table();
+    table["font"] = m_file_panel->get_font_family().toStdString();
+    table["font_size"] = m_file_panel->get_font_size();
+    table["icons"] = m_file_panel->model()->icons_enabled;
+    table["grid"] = get_file_panel_grid();
+    table["gridstyle"] = get_file_panel_grid_style();
+
+    return table;
 }

@@ -14,4 +14,5 @@ private:
     QLabel *m_label = new QLabel("Checking for update...");
     QLabel *m_version_label = new QLabel();
     QString m_version;
+    QPushButton *m_close_btn = new QPushButton("Close");
 };

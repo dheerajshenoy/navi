@@ -50,12 +50,15 @@ class FilePanelDelegate : public QStyledItemDelegate {
             iconRect.setWidth(opt.decorationSize.width());
 
             QRect textRect = opt.rect;
-            textRect.setLeft(iconRect.right() + 4); // Add some padding after icon
 
             // Draw the icon if enabled in model
             if (!icon.isNull()) {
                 icon.paint(painter, iconRect, Qt::AlignCenter, QIcon::Normal, QIcon::Off);
+                textRect.setLeft(iconRect.right() + 4); // Add some padding after icon
+            } else {
+                textRect.setLeft(4);
             }
+
 
             QString symlinkTargetName = index.data(static_cast<int>(FileSystemModel::Role::Symlink)).toString();
 

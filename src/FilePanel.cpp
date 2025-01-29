@@ -750,14 +750,14 @@ void FilePanel::RenameItem() noexcept {
     QString newFileName;
 
     if (fileInfo.isFile()) {
-        /*newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldFileName),*/
-        /*                                   oldFileName, fileInfo.baseName());*/
-        newFileName = utils::getInput(this, "Rename Item", QString("Rename (%1)").arg(oldFileName),
+        newFileName = utils::getInput(this, "Rename Item",
+                                      QString("Rename (%1)").arg(oldFileName),
                                       oldFileName, fileInfo.baseName());
     }
     else if (fileInfo.isDir())
-        newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldFileName),
-                                           oldFileName, oldFileName);
+        newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldFileName),
+                                      oldFileName,
+                                      oldFileName);
 
     // If user cancels or the new file name is empty
     if (newFileName.isEmpty() || newFileName.isNull()) {
@@ -1593,12 +1593,18 @@ void FilePanel::NewFolder(const QStringList &folderNames) noexcept {
 void FilePanel::NewFile(const QStringList &fileNames) noexcept {
     QFile file;
     if (fileNames.isEmpty()) {
-        QString fileName = m_inputbar->getInput("Enter filename");
+        bool ok;
+        QString fileName = utils::getInput(this, "Create new file", "Enter filename", ok);
+
+        if (!ok)
+            return;
+
         if (fileName.isEmpty() || fileName.isNull()) {
             m_statusbar->Message(QString("Filename cannot be empty"),
                                  MessageType::WARNING);
             return;
         }
+
         file.setFileName(m_current_dir + QDir::separator() + fileName);
         if (file.open(QIODevice::WriteOnly)) {
             file.close();

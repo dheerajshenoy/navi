@@ -11,4 +11,5 @@
 #include "../StorageDevice.hpp"
 #include <QDirIterator>
 #include <fstream>
+#include "../CustomInputDialog.hpp"
 #include "../sol/sol.hpp"

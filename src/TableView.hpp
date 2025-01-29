@@ -22,8 +22,11 @@ public:
         return font().pixelSize();
     }
 
-    QModelIndex scroll_to_middle() noexcept;
+    inline std::string get_grid_style() noexcept { return m_grid_style; }
 
+    void set_grid_style(const std::string &style) noexcept;
+
+    QModelIndex scroll_to_middle() noexcept;
 
     void setCurrentIndex(const QModelIndex &index) noexcept;
 
@@ -41,4 +44,5 @@ protected:
     QPoint m_drag_start_position;
     TableHeaderView *m_header_view = nullptr;
     VerticalHeaderView *m_vertical_header_view = nullptr;
+    std::string m_grid_style = "solid";
 };

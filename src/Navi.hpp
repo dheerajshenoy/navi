@@ -6,7 +6,7 @@
 #include "Globals.hpp"
 #include "pch/pch.hpp"
 // Local includes
-#include "InputDialog.hpp"
+#include "CustomInputDialog.hpp"
 #include "FilePathWidget.hpp"
 #include "Inputbar.hpp"
 #include "MessagesBuffer.hpp"
@@ -62,6 +62,8 @@ public:
     inline void set_version(const QString &version) noexcept {
         m_version = version;
     }
+
+    inline QString version() noexcept { return m_version; }
 
     inline void set_lua_state(sol::state &lua) noexcept {
         m_lua = &lua;
@@ -354,6 +356,9 @@ public:
     void set_menubar_icons(const bool &state) noexcept;
     double Preview_pane_fraction() noexcept;
     void Set_preview_pane_fraction(const double &fraction) noexcept;
+
+    void set_menubar_props(const sol::table &table) noexcept;
+    sol::table get_menubar_props() noexcept;
 
     inline void copy_path(const std::string &sep) noexcept {
         CopyPath(QString::fromStdString(sep));
@@ -814,27 +819,8 @@ public:
         return m_file_panel->get_font_family().toStdString();
     }
 
-    inline void set_file_panel_props(const sol::table &table) noexcept {
-
-        if (table["font"])
-            m_file_panel->set_font_family(QString::fromStdString(table["font"].get<std::string>()));
-
-        if (table["font_size"])
-            m_file_panel->set_font_size(table["font_size"].get<int>());
-
-        if (table["icons"])
-            m_file_panel->model()->icons_enabled = table["icons"].get<bool>();
-    }
-
-    inline sol::table get_file_panel_props() noexcept {
-
-        sol::table table = m_lua->create_table();
-        table["font"] = m_file_panel->get_font_family().toStdString();
-        table["font_size"] = m_file_panel->get_font_size();
-        table["icons"] = m_file_panel->model()->icons_enabled;
-
-        return table;
-    }
+    void set_file_panel_props(const sol::table &table) noexcept;
+    sol::table get_file_panel_props() noexcept;
 
     // This is used to set all of navi api to a stringlist which is
     // then used to lua completions
@@ -1004,6 +990,20 @@ public:
 
     inline bool get_cursor_underline() noexcept {
         return m_table_delegate->get_cursor_underline();
+    }
+
+    inline void set_file_panel_grid(const bool &state) noexcept {
+        m_file_panel->tableView()->setShowGrid(state);
+    }
+
+    inline bool get_file_panel_grid() noexcept { return m_file_panel->tableView()->showGrid(); }
+
+    inline void set_file_panel_grid_style(const std::string &style) noexcept {
+        m_file_panel->tableView()->set_grid_style(style);
+    }
+
+    inline std::string get_file_panel_grid_style() noexcept {
+        return m_file_panel->tableView()->get_grid_style();
     }
 
 protected:

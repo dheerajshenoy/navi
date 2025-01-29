@@ -11,6 +11,7 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setDefaultDropAction(Qt::CopyAction);
     setDragDropMode(QAbstractItemView::InternalMove);
     setMouseTracking(true);
+    setShowGrid(true);
 
     m_header_view = new TableHeaderView(Qt::Orientation::Horizontal, this);
     m_vertical_header_view = new VerticalHeaderView(Qt::Orientation::Vertical, this);
@@ -116,4 +117,28 @@ void TableView::setCurrentIndex(const QModelIndex &index) noexcept {
         emit cursorPositionChanged(index.row());
     }
     QTableView::setCurrentIndex(index);
+}
+
+
+void TableView::set_grid_style(const std::string &style) noexcept {
+    m_grid_style = style;
+
+    if (style == "solid") {
+        setGridStyle(Qt::PenStyle::SolidLine);
+    } else if (style == "dotline") {
+        setGridStyle(Qt::PenStyle::DotLine);
+    } else if (style == "dashline") {
+        setGridStyle(Qt::PenStyle::DashLine);
+    } else if (style == "none") {
+        setGridStyle(Qt::PenStyle::DashLine);
+    } else if (style == "dashdotline") {
+        setGridStyle(Qt::PenStyle::DashDotLine);
+    } else if (style == "dashdotdotline") {
+        setGridStyle(Qt::PenStyle::DashDotDotLine);
+    } else {
+        setGridStyle(Qt::PenStyle::CustomDashLine);
+        // Custom Line
+        // TODO: Handle custom line
+    }
+
 }
