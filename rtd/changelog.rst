@@ -9,6 +9,8 @@ v1.2.8 (29 January 2024)
 + Enable disable icons text rendering gap fix
 + Added feature to enable/disable file panel grid
 + File panel grid styles
++ Vertical header cursor color support
++ Added vertical header lua customizing options
 
 v1.2.7 (25 January 2024)
 ------------------------
