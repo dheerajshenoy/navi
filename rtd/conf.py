@@ -10,7 +10,7 @@ import os
 project = 'Navi'
 copyright = '2024, Dheeraj Vittal Shenoy'
 author = 'Dheeraj Vittal Shenoy'
-version = '1.2.7'
+version = '1.2.8'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

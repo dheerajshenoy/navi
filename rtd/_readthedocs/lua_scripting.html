@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lua scripting &mdash; Navi  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.1
+                1.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -112,8 +112,8 @@
 <section id="custom-function">
 <h2>Custom Function<a class="headerlink" href="#custom-function" title="Link to this heading"></a></h2>
 <p>You can write custom functions in lua with arguments.</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">someFunction</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">dirName</span><span class="p">)</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;WOW! Navi is currently on the file &quot;</span> <span class="o">..</span> <span class="n">fileName</span> <span class="o">..</span> <span class="s2">&quot; and inside the &quot;</span> <span class="o">..</span> <span class="n">dirName</span> <span class="o">..</span> <span class="s2">&quot; directory!&quot;</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span><span class="w"> </span><span class="nf">someFunction</span><span class="p">(</span><span class="nv">fileName</span><span class="p">,</span><span class="w"> </span><span class="nv">dirName</span><span class="p">)</span>
+<span class="w">    </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;WOW! Navi is currently on the file &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">fileName</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot; and inside the &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">dirName</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot; directory!&quot;</span><span class="p">)</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
@@ -139,8 +139,8 @@
 <li><p>Filter mode <code class="docutils literal notranslate"><span class="pre">filter_mode_on</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">filter_mode_off</span></code></p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;item_select&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;You selected an item...YAY!&quot;</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">hook</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="s2">&quot;item_select&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">    </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;You selected an item...YAY!&quot;</span><span class="p">)</span>
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -152,18 +152,18 @@
 <h2>What can you do with scripting ?<a class="headerlink" href="#what-can-you-do-with-scripting" title="Link to this heading"></a></h2>
 <section id="setting-wallpaper">
 <h3>Setting wallpaper<a class="headerlink" href="#setting-wallpaper" title="Link to this heading"></a></h3>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">setWallpaper</span><span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">shell</span><span class="p">(</span><span class="s2">&quot;xwallpaper --stretch&quot;</span> <span class="o">..</span> <span class="n">filename</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span><span class="w"> </span><span class="nf">setWallpaper</span><span class="p">()</span>
+<span class="w">    </span><span class="nv">navi</span><span class="p">.</span><span class="nf">shell</span><span class="p">(</span><span class="s2">&quot;xwallpaper --stretch&quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">filename</span><span class="p">)</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
 </section>
 <section id="open-a-terminal-at-the-current-directory">
 <h3>Open a terminal at the current directory<a class="headerlink" href="#open-a-terminal-at-the-current-directory" title="Link to this heading"></a></h3>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">terminalAtPoint</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">terminal</span> <span class="o">=</span> <span class="nb">os.getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL&quot;</span><span class="p">)</span>
-    <span class="kd">local</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">pwd</span><span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">terminal</span><span class="p">,</span> <span class="p">{</span> <span class="n">dir</span> <span class="p">})</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span><span class="w"> </span><span class="nf">terminalAtPoint</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">terminal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">os.getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">pwd</span><span class="p">()</span>
+<span class="w">    </span><span class="nv">navi</span><span class="p">.</span><span class="nf">spawn</span><span class="p">(</span><span class="nv">terminal</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">dir</span><span class="w"> </span><span class="p">})</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
@@ -177,12 +177,12 @@
 <p>Use the following helper function if you want the <cite>fd</cite> and <cite>rg</cite> code to run correctly</p>
 </div>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Helper function that returns the STDOUT of a command `commandString`</span>
-<span class="kr">function</span> <span class="nf">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
-    <span class="kd">local</span> <span class="n">command</span> <span class="o">=</span> <span class="n">commandString</span>
-    <span class="kd">local</span> <span class="n">handle</span> <span class="o">=</span> <span class="nb">io.popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-    <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;*a&quot;</span><span class="p">)</span>
-    <span class="n">handle</span><span class="p">:</span><span class="n">close</span><span class="p">()</span>
-    <span class="kr">return</span> <span class="n">result</span><span class="p">:</span><span class="n">gsub</span><span class="p">(</span><span class="s1">&#39;[</span><span class="se">\n\r</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="kr">function</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="nv">commandString</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">commandString</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">io.popen</span><span class="p">(</span><span class="nv">command</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">handle</span><span class="p">:</span><span class="nf">read</span><span class="p">(</span><span class="s2">&quot;*a&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nv">handle</span><span class="p">:</span><span class="nf">close</span><span class="p">()</span>
+<span class="w">    </span><span class="kr">return</span><span class="w"> </span><span class="nv">result</span><span class="p">:</span><span class="nf">gsub</span><span class="p">(</span><span class="s1">&#39;[</span><span class="se">\n\r</span><span class="s1">]&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
@@ -190,18 +190,18 @@
 <section id="fd-and-rg-for-file-searching">
 <h4>FD and RG for file searching<a class="headerlink" href="#fd-and-rg-for-file-searching" title="Link to this heading"></a></h4>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Use `fd` to go to the best file match having the name given as the input</span>
-<span class="kr">function</span> <span class="nf">fd</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">input</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;Search (FD)&quot;</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="n">input</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-        <span class="kd">local</span> <span class="n">pwd</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">pwd</span><span class="p">()</span>
-        <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;fd %s %s --type=directory | head -n 1&quot;</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
-        <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
-        <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="kr">else</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">messagetype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
-        <span class="kr">end</span>
-    <span class="kr">end</span>
+<span class="kr">function</span><span class="w"> </span><span class="nf">fd</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">input</span><span class="p">(</span><span class="s2">&quot;Search (FD)&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">input</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">pwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">pwd</span><span class="p">()</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">commandString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;fd %s %s --type=directory | head -n 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">input</span><span class="p">,</span><span class="w"> </span><span class="nv">pwd</span><span class="p">)</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="nv">commandString</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">cd</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">else</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">messagetype</span><span class="p">.</span><span class="py">warn</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">end</span>
+<span class="w">    </span><span class="kr">end</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
@@ -210,61 +210,61 @@
 <section id="use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content">
 <h3>Use <cite>rg</cite> (ripgrep) command to navigate to a directory with the matching content<a class="headerlink" href="#use-rg-ripgrep-command-to-navigate-to-a-directory-with-the-matching-content" title="Link to this heading"></a></h3>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Use `ripgrep` to go to the file content with the name given as the input</span>
-<span class="kr">function</span> <span class="nf">rg</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">input</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;Search (RG)&quot;</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="n">input</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-        <span class="kd">local</span> <span class="n">pwd</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">pwd</span><span class="p">()</span>
-        <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;rg %s %s -l --sort-files | head -n 1&quot;</span><span class="p">,</span> <span class="n">input</span><span class="p">,</span> <span class="n">pwd</span><span class="p">)</span>
-        <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
-        <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="kr">else</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">messagetype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
-        <span class="kr">end</span>
-    <span class="kr">end</span>
+<span class="kr">function</span><span class="w"> </span><span class="nf">rg</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">input</span><span class="p">(</span><span class="s2">&quot;Search (RG)&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">input</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">pwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">pwd</span><span class="p">()</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">commandString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;rg %s %s -l --sort-files | head -n 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">input</span><span class="p">,</span><span class="w"> </span><span class="nv">pwd</span><span class="p">)</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="nv">commandString</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">cd</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">highlight</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">else</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">messagetype</span><span class="p">.</span><span class="py">warn</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">end</span>
+<span class="w">    </span><span class="kr">end</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
 </section>
 <section id="use-zoxide-for-faster-navigation">
 <h3>Use <cite>zoxide</cite> for faster navigation<a class="headerlink" href="#use-zoxide-for-faster-navigation" title="Link to this heading"></a></h3>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">zoxide</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">input</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;Zoxide CD&quot;</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="n">input</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-        <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;zoxide %s&quot;</span><span class="p">,</span> <span class="n">input</span><span class="p">)</span>
-        <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
-        <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="kr">else</span>
-            <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">messagetype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
-        <span class="kr">end</span>
-    <span class="kr">end</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span><span class="w"> </span><span class="nf">zoxide</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">input</span><span class="p">(</span><span class="s2">&quot;Zoxide CD&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">input</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">commandString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">string.format</span><span class="p">(</span><span class="s2">&quot;zoxide %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">input</span><span class="p">)</span>
+<span class="w">        </span><span class="kd">local</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="nv">commandString</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">cd</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">else</span>
+<span class="w">            </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">messagetype</span><span class="p">.</span><span class="py">warn</span><span class="p">)</span>
+<span class="w">        </span><span class="kr">end</span>
+<span class="w">    </span><span class="kr">end</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
 </section>
 <section id="go-to-a-random-directory-inside-your-home-directory">
 <h3>Go to a random directory inside your home directory<a class="headerlink" href="#go-to-a-random-directory-inside-your-home-directory" title="Link to this heading"></a></h3>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">randomDirectory</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="s2">&quot;fd . ~ -t d | shuf -n 1&quot;</span>
-    <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-    <span class="kr">end</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span><span class="w"> </span><span class="nf">randomDirectory</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">commandString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;fd . ~ -t d | shuf -n 1&quot;</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="nv">commandString</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">cd</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
 </section>
 <section id="highlight-a-random-file-inside-your-home-directory">
 <h3>Highlight a random file inside your home directory<a class="headerlink" href="#highlight-a-random-file-inside-your-home-directory" title="Link to this heading"></a></h3>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">randomFile</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">commandString</span> <span class="o">=</span> <span class="s2">&quot;fd . ~ | shuf -n 1&quot;</span>
-    <span class="kd">local</span> <span class="n">result</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="n">commandString</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="n">result</span> <span class="o">~=</span> <span class="s2">&quot;&quot;</span> <span class="kr">then</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">cd</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-    <span class="kr">end</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span><span class="w"> </span><span class="nf">randomFile</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">commandString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;fd . ~ | shuf -n 1&quot;</span>
+<span class="w">    </span><span class="kd">local</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="nv">commandString</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">~=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="kr">then</span>
+<span class="w">        </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">cd</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">highlight</span><span class="p">(</span><span class="nv">result</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span>
 <span class="kr">end</span>
 </pre></div>
 </div>

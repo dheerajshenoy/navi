@@ -369,10 +369,11 @@ setmetatable(M.ui.toolbar, {
 M.ui.file_panel = {}
 
 ---@class FilePanelOptions
----@field icons boolean whether to show icons or not
+---@field icons boolean show icons or not
 ---@field font_size integer
 ---@field font string font to use
-
+---@field grid boolean draw row grid
+---@field gridstyle string style of the grid to draw
 
 ---Sets options for file panel
 ---@param props FilePanelOptions
@@ -460,6 +461,7 @@ setmetatable(M.ui.file_panel.symlink, {
 
         elseif key == "separator" then
             _navi:set_symlink_separator(value)
+
         end
     end
 
@@ -477,6 +479,12 @@ setmetatable(M.ui.file_panel, {
         elseif key == "font" then
             return _navi:get_file_panel_font()
 
+        elseif key == "grid" then
+            return _navi:get_file_panel_grid()
+
+        elseif key == "gridstyle" then
+            return _navi:get_file_panel_grid_style()
+
         end
 
     end,
@@ -490,6 +498,12 @@ setmetatable(M.ui.file_panel, {
 
         elseif key == "font" then
             _navi:set_file_panel_font(value)
+
+        elseif key == "grid" then
+            _navi:set_file_panel_grid(value)
+
+        elseif key == "gridstyle" then
+            _navi:set_file_panel_grid_style(value)
 
         end
     end
@@ -505,6 +519,22 @@ M.ui.menubar = {}
 
 M.ui.menubar.toggle = function ()
     _navi:toggle_menubar()
+end
+
+---@class MenubarOptions
+---@field visible boolean - set visibility for menubar
+---@field icons boolean - show icons
+
+---Set options for menubar
+---@param table MenubarOptions
+M.ui.menubar.set_props = function (table)
+    _navi:set_menubar_props(table)
+end
+
+---Get options for menubar
+---@return MenubarOptions
+M.ui.menubar.get_props = function ()
+    return _navi:get_menubar_props()
 end
 
 ---Add menu to menubar
@@ -877,10 +907,10 @@ setmetatable(M.ui.menubar, {
     end,
     __newindex = function (_, key, value)
         if key == "visible" then
-            return _navi:set_menubar_visible(value)
+            _navi:set_menubar_visible(value)
 
         elseif key == "icons" then
-            return _navi:set_menubar_icons(value)
+            _navi:set_menubar_icons(value)
         end
     end
 })

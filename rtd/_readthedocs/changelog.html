@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navi Changelogs &mdash; Navi  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -38,7 +38,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.1
+                1.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,6 +56,12 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Navi Changelogs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-8-29-january-2024">v1.2.8 (29 January 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-7-25-january-2024">v1.2.7 (25 January 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-6-21-january-2024">v1.2.6 (21 January 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-5-11-january-2024">v1.2.5 (11 January 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-4-8-january-2024">v1.2.4 (8 January 2024)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-3-6-january-2024">v1.2.3 (6 January 2024)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-2-2-5-january-2024">v1.2.2 (5 January 2024)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-2-1-2-january-2024">v1.2.1 (2 January 2024)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-2-30-december-2024">v1.2 (30 December 2024)</a></li>
@@ -92,6 +98,54 @@
   <section id="navi-changelogs">
 <h1>Navi Changelogs<a class="headerlink" href="#navi-changelogs" title="Link to this heading"></a></h1>
 <p>The changelogs for Navi along with their version is mentioned in the reverse chronological order below:</p>
+<section id="v1-2-8-29-january-2024">
+<h2>v1.2.8 (29 January 2024)<a class="headerlink" href="#v1-2-8-29-january-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Enable disable icons text rendering gap fix</p></li>
+<li><p>Added feature to enable/disable file panel grid</p></li>
+<li><p>File panel grid styles</p></li>
+</ul>
+</section>
+<section id="v1-2-7-25-january-2024">
+<h2>v1.2.7 (25 January 2024)<a class="headerlink" href="#v1-2-7-25-january-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ability to check for updates</p></li>
+<li><p>Scrolling up and down unusual visual highlight bug fixed.</p></li>
+</ul>
+</section>
+<section id="v1-2-6-21-january-2024">
+<h2>v1.2.6 (21 January 2024)<a class="headerlink" href="#v1-2-6-21-january-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added context menu support different for file and folder.</p></li>
+<li><p>Added ctrl+click support for multiple selection</p></li>
+<li><p>Scroll up and down like C+u and C+d</p></li>
+<li><p>Fixed thumbnail caching parellization</p></li>
+</ul>
+</section>
+<section id="v1-2-5-11-january-2024">
+<h2>v1.2.5 (11 January 2024)<a class="headerlink" href="#v1-2-5-11-january-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added cursor. Cursor shows the current row in a different color (if you choose to) than the rest of the items. This is important during visual selection of files since previously the last item in the selection was assumed to be the position of the cursor in the file panel.</p></li>
+<li><p>Optimized data calls from the model and view using separate roles for filename, filepath and symlink names.</p></li>
+</ul>
+</section>
+<section id="v1-2-4-8-january-2024">
+<h2>v1.2.4 (8 January 2024)<a class="headerlink" href="#v1-2-4-8-january-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Symlink item property</p></li>
+<li><p><strong>Fixed</strong>: dragging file from navi when file_panel contained more than one column resulted in dragging files equal to the number of columns.</p></li>
+<li><p><strong>Fixed</strong>: File preview doesn’t work after directory change.</p></li>
+</ul>
+</section>
+<section id="v1-2-3-6-january-2024">
+<h2>v1.2.3 (6 January 2024)<a class="headerlink" href="#v1-2-3-6-january-2024" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added copy-to, move-to command to copy and move marked files to a location using a file choosing dialog.</p></li>
+<li><p>Fixed enabled disable icon in file_panel bug.</p></li>
+<li><p>Utils table to navi global namespace.</p></li>
+<li><p>Fixed default directory bug.</p></li>
+</ul>
+</section>
 <section id="v1-2-2-5-january-2024">
 <h2>v1.2.2 (5 January 2024)<a class="headerlink" href="#v1-2-2-5-january-2024" title="Link to this heading"></a></h2>
 <ul class="simple">

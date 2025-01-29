@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Navi Lua API &mdash; Navi  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.1
+                1.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -66,32 +66,36 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-navi.ui">ui</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#navi.ui.marks"><code class="docutils literal notranslate"><span class="pre">marks()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#navi.ui.shortcuts"><code class="docutils literal notranslate"><span class="pre">shortcuts()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#navi.ui.messages"><code class="docutils literal notranslate"><span class="pre">messages()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#file-panel">File Panel</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.FilePanelOptions"><code class="docutils literal notranslate"><span class="pre">FilePanelOptions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.set_props"><code class="docutils literal notranslate"><span class="pre">set_props()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.icons"><code class="docutils literal notranslate"><span class="pre">icons</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.font_size"><code class="docutils literal notranslate"><span class="pre">font_size</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.font"><code class="docutils literal notranslate"><span class="pre">font</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.grid"><code class="docutils literal notranslate"><span class="pre">grid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.file_panel.gridstyle"><code class="docutils literal notranslate"><span class="pre">gridstyle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-navi.ui.file_panel.symlink">Symlink</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.preview_panel">Preview Panel</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.image_dimension"><code class="docutils literal notranslate"><span class="pre">image_dimension</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.set_props"><code class="docutils literal notranslate"><span class="pre">set_props()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.preview_panel.get_props"><code class="docutils literal notranslate"><span class="pre">get_props()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.pathbar">Pathbar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.pathbar.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#context-menu">context_menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#context-menu">Context Menu</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.context_menu.create"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#statusbar">statusbar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#statusbar">Statusbar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.statusbar.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.statusbar.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.statusbar.create_module"><code class="docutils literal notranslate"><span class="pre">create_module()</span></code></a></li>
@@ -100,7 +104,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">set_module_text()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.toolbar">toolbar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.toolbar">Toolbar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.toolbar.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.toolbar.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.toolbar.ToolbarItem"><code class="docutils literal notranslate"><span class="pre">ToolbarItem</span></code></a></li>
@@ -109,10 +113,26 @@
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.toolbar.set_items"><code class="docutils literal notranslate"><span class="pre">set_items()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.menubar">menubar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-navi.ui.menubar">Menubar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.menubar.toggle"><code class="docutils literal notranslate"><span class="pre">toggle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.menubar.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#navi.ui.menubar.add_menu"><code class="docutils literal notranslate"><span class="pre">add_menu()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cursor">Cursor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.foreground"><code class="docutils literal notranslate"><span class="pre">foreground</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.background"><code class="docutils literal notranslate"><span class="pre">background</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.italic"><code class="docutils literal notranslate"><span class="pre">italic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.bold"><code class="docutils literal notranslate"><span class="pre">bold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.underline"><code class="docutils literal notranslate"><span class="pre">underline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.font"><code class="docutils literal notranslate"><span class="pre">font</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.cursor.set_props"><code class="docutils literal notranslate"><span class="pre">set_props()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#header">Header</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.header.visible"><code class="docutils literal notranslate"><span class="pre">visible</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.header.HeaderColumn"><code class="docutils literal notranslate"><span class="pre">HeaderColumn</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#navi.ui.header.columns"><code class="docutils literal notranslate"><span class="pre">columns</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -182,6 +202,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#navi.io.msg"><code class="docutils literal notranslate"><span class="pre">msg()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.io.input"><code class="docutils literal notranslate"><span class="pre">input()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.io.MsgType"><code class="docutils literal notranslate"><span class="pre">MsgType</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-navi.utils">utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#navi.utils.split"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-navi.keymap">keymap</a><ul>
@@ -284,6 +308,7 @@
 <li><p>opt</p></li>
 <li><p>ui</p></li>
 <li><p>api</p></li>
+<li><p>utils</p></li>
 <li><p>keymap</p></li>
 <li><p>io</p></li>
 <li><p>shell</p></li>
@@ -293,8 +318,8 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The members defined below are either options/variables or functions. Functions are represented with <code class="docutils literal notranslate"><span class="pre">()</span></code> in their names. Variables can be get/set by using their values or setting new values to them. For example, the variable <code class="xref py py-data docutils literal notranslate"><span class="pre">terminal</span></code> inside the opt table inside navi global namespace can be accessed by using the following in the lua config:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">navi</span><span class="p">.</span><span class="n">opt</span><span class="p">.</span><span class="n">terminal</span><span class="p">)</span> <span class="c1">-- getting the variable value</span>
-<span class="n">navi</span><span class="p">.</span><span class="n">opt</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="s2">&quot;ghostty&quot;</span> <span class="c1">-- setting the variable value</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nv">navi</span><span class="p">.</span><span class="py">opt</span><span class="p">.</span><span class="py">terminal</span><span class="p">)</span><span class="w"> </span><span class="c1">-- getting the variable value</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">opt</span><span class="p">.</span><span class="py">terminal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ghostty&quot;</span><span class="w"> </span><span class="c1">-- setting the variable value</span>
 </pre></div>
 </div>
 <p>Additionally, the function arguments (options passed to the parenthesis in functions when they are called) can have optional arguments in them and they have been represented by using <code class="docutils literal notranslate"><span class="pre">[]</span></code> (brackets).</p>
@@ -377,39 +402,56 @@
 </section>
 <section id="module-navi.ui">
 <span id="ui"></span><h2>ui<a class="headerlink" href="#module-navi.ui" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="navi.ui.marks">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">marks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.marks" title="Link to this definition"></a></dt>
-<dd><p>Toggles the marks panel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI component</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>file_panel</p></td>
+<td><p>Panel that lists all the entries of a directory</p></td>
+</tr>
+<tr class="row-odd"><td><p>statusbar</p></td>
+<td><p>Bar that shows the status of the currently highlighted item</p></td>
+</tr>
+<tr class="row-even"><td><p>menubar</p></td>
+<td><p>Bar that shows the menu items</p></td>
+</tr>
+<tr class="row-odd"><td><p>toolbar</p></td>
+<td><p>Bar that shows tool buttons</p></td>
+</tr>
+<tr class="row-even"><td><p>PathbarWidget</p></td>
+<td><p>Bar that shows the current directory</p></td>
+</tr>
+<tr class="row-odd"><td><p>cursor</p></td>
+<td><p>Current highlighted item component</p></td>
+</tr>
+<tr class="row-even"><td><p>header</p></td>
+<td><p>Header displayed for the file panel table</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All of the UI tables have a convenient function called <code class="xref py py-func docutils literal notranslate"><span class="pre">set_props()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">get_props()</span></code> to set and get properties to the UI element all together. This is useful when you are setting multiple options for the same UI element. You can use the <code class="xref py py-func docutils literal notranslate"><span class="pre">set_props()</span></code> function with the options and values as arguments to the function and it will all be set all at once. This is <strong>efficient</strong> and is to be <strong>preferred</strong> over setting the options individually.</p>
+<p>For example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">icons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">gridstyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;solid&quot;</span>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="navi.ui.shortcuts">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">shortcuts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.shortcuts" title="Link to this definition"></a></dt>
-<dd><p>Toggles the shortcuts panel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<span class="c1">-- Using set_props()</span>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="navi.ui.messages">
-<span class="sig-prename descclassname"><span class="pre">navi.ui.</span></span><span class="sig-name descname"><span class="pre">messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.messages" title="Link to this definition"></a></dt>
-<dd><p>Toggles the messages panel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="nf">set_props</span><span class="p">({</span>
+<span class="w">    </span><span class="nv">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">icons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">gridstyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;solid&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
 <section id="file-panel">
 <h3>File Panel<a class="headerlink" href="#file-panel" title="Link to this heading"></a></h3>
 <blockquote>
@@ -424,6 +466,77 @@
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">void</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.FilePanelOptions">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">FilePanelOptions</span></span><a class="headerlink" href="#navi.ui.file_panel.FilePanelOptions" title="Link to this definition"></a></dt>
+<dd><p>Enumeration of options to set for file panel.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is to be used with the <a class="reference internal" href="#navi.ui.file_panel.set_props" title="navi.ui.file_panel.set_props"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_props()</span></code></a> function.</p>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>option</p></th>
+<th class="head"><p>datatype</p></th>
+<th class="head"><p>comment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>visible</p></td>
+<td><p>bool</p></td>
+<td><p>visibility of the file panel.</p></td>
+</tr>
+<tr class="row-odd"><td><p>icons</p></td>
+<td><p>bool</p></td>
+<td><p>visibility of the icons in the file panel.</p></td>
+</tr>
+<tr class="row-even"><td><p>grid</p></td>
+<td><p>bool</p></td>
+<td><p>visibility of the rows of the table in the file panel.</p></td>
+</tr>
+<tr class="row-odd"><td><p>gridstyle</p></td>
+<td><p>string</p></td>
+<td><p>style of the grid.</p></td>
+</tr>
+<tr class="row-even"><td><p>font</p></td>
+<td><p>string</p></td>
+<td><p>Font name of the entries in the file panel.</p></td>
+</tr>
+<tr class="row-odd"><td><p>font_size</p></td>
+<td><p>int</p></td>
+<td><p>Size of the font of the entries in the file panel.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.ui.file_panel.set_props">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">set_props</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.file_panel.set_props" title="Link to this definition"></a></dt>
+<dd><p>Sets the properties to the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">FilePanelOptions</span></code></p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">icons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="py">gridstyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;solid&quot;</span>
+
+<span class="c1">-- Using set_props()</span>
+
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">file_panel</span><span class="p">.</span><span class="nf">set_props</span><span class="p">({</span>
+<span class="w">    </span><span class="nv">visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">icons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">gridstyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;solid&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py data">
@@ -478,6 +591,34 @@
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">system</span> <span class="pre">font</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.grid">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">grid</span></span><a class="headerlink" href="#navi.ui.file_panel.grid" title="Link to this definition"></a></dt>
+<dd><p>Enable/disable grids for the rows in the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.file_panel.gridstyle">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.file_panel.</span></span><span class="sig-name descname"><span class="pre">gridstyle</span></span><a class="headerlink" href="#navi.ui.file_panel.gridstyle" title="Link to this definition"></a></dt>
+<dd><p>Style for the grid. It can be one of “solid”, “dashline”, “dotline”, “dashdotline”, “dashdotdotline”, “custom”, “none”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">solid</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -603,6 +744,40 @@
 </dl>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.preview_panel.image_dimension">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.preview_panel.</span></span><span class="sig-name descname"><span class="pre">image_dimension</span></span><a class="headerlink" href="#navi.ui.preview_panel.image_dimension" title="Link to this definition"></a></dt>
+<dd><p>Image dimension of the preview in the preview_panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>width</strong> (<em>int</em>) – Width of the image</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – Height of the image</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.ui.preview_panel.set_props">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.preview_panel.</span></span><span class="sig-name descname"><span class="pre">set_props</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.preview_panel.set_props" title="Link to this definition"></a></dt>
+<dd><p>Sets the options for the preview_panel.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.ui.preview_panel.get_props">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.preview_panel.</span></span><span class="sig-name descname"><span class="pre">get_props</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.preview_panel.get_props" title="Link to this definition"></a></dt>
+<dd><p>Gets the options for the preview_panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">PreviewPanelOptions</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-navi.ui.pathbar">
 <span id="pathbar"></span><h3>Pathbar<a class="headerlink" href="#module-navi.ui.pathbar" title="Link to this heading"></a></h3>
@@ -619,7 +794,7 @@
 
 </section>
 <section id="context-menu">
-<h3>context_menu<a class="headerlink" href="#context-menu" title="Link to this heading"></a></h3>
+<h3>Context Menu<a class="headerlink" href="#context-menu" title="Link to this heading"></a></h3>
 <blockquote>
 <div><span class="target" id="module-navi.ui.context_menu"></span></div></blockquote>
 <dl class="py function">
@@ -631,7 +806,7 @@
 
 </section>
 <section id="statusbar">
-<h3>statusbar<a class="headerlink" href="#statusbar" title="Link to this heading"></a></h3>
+<h3>Statusbar<a class="headerlink" href="#statusbar" title="Link to this heading"></a></h3>
 <blockquote>
 <div><p>Statusbar table.</p>
 <span class="target" id="module-navi.ui.statusbar"></span></div></blockquote>
@@ -686,13 +861,13 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dd></dl>
 
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">custom</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">statusbar</span><span class="p">.</span><span class="n">create_module</span><span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;HELLO&quot;</span><span class="p">,</span>
-    <span class="n">italic</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="n">bold</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="n">background</span> <span class="o">=</span> <span class="s2">&quot;#FF5000&quot;</span><span class="p">,</span>
-    <span class="n">hidden</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;#000000&quot;</span><span class="p">,</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">custom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">statusbar</span><span class="p">.</span><span class="nf">create_module</span><span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;HELLO&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">italic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">bold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;#FF5000&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;#000000&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 </pre></div>
 </div>
@@ -747,17 +922,17 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </div></blockquote>
 </div></blockquote>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">statusbar</span><span class="p">.</span><span class="n">set_modules</span><span class="p">({</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;macro&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;visual_mode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;stretch&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;filter&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="c1">-- custom module name goes here</span>
-    <span class="s2">&quot;size&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;modified_date&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;permission&quot;</span><span class="p">,</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">statusbar</span><span class="p">.</span><span class="nf">set_modules</span><span class="p">({</span>
+<span class="w">    </span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;macro&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;visual_mode&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;stretch&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;filter&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;count&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;custom&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">-- custom module name goes here</span>
+<span class="w">    </span><span class="s2">&quot;size&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;modified_date&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;permission&quot;</span><span class="p">,</span>
 <span class="p">});</span>
 </pre></div>
 </div>
@@ -779,7 +954,7 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dl>
 <p><strong>Example</strong></p>
 <blockquote>
-<div><div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">statusbar</span><span class="p">.</span><span class="n">set_module_text</span><span class="p">(</span><span class="s2">&quot;mod1&quot;</span><span class="p">,</span> <span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">)</span>
+<div><div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">statusbar</span><span class="p">.</span><span class="nf">set_module_text</span><span class="p">(</span><span class="s2">&quot;mod1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -801,8 +976,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dl>
 <p><strong>Example</strong></p>
 <blockquote>
-<div><div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">statusbar</span><span class="p">.</span><span class="n">set_module_text</span><span class="p">(</span><span class="s2">&quot;mod1&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">()</span>
-    <span class="kr">return</span> <span class="s2">&quot;HELLO WORLD&quot;</span>
+<div><div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">statusbar</span><span class="p">.</span><span class="nf">set_module_text</span><span class="p">(</span><span class="s2">&quot;mod1&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">    </span><span class="kr">return</span><span class="w"> </span><span class="s2">&quot;HELLO WORLD&quot;</span>
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -811,7 +986,7 @@ The module thus created can be used in <a class="reference internal" href="#navi
 
 </section>
 <section id="module-navi.ui.toolbar">
-<span id="toolbar"></span><h3>toolbar<a class="headerlink" href="#module-navi.ui.toolbar" title="Link to this heading"></a></h3>
+<span id="toolbar"></span><h3>Toolbar<a class="headerlink" href="#module-navi.ui.toolbar" title="Link to this heading"></a></h3>
 <p>Toolbar table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">type<span class="colon">:</span></dt>
@@ -847,20 +1022,20 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dt class="sig sig-object py" id="navi.ui.toolbar.ToolbarItem">
 <span class="sig-prename descclassname"><span class="pre">navi.ui.toolbar.</span></span><span class="sig-name descname"><span class="pre">ToolbarItem</span></span><a class="headerlink" href="#navi.ui.toolbar.ToolbarItem" title="Link to this definition"></a></dt>
 <dd><p>ToolbarItem has the following structure:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">ToolbarItem</span> <span class="p">{</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
-    <span class="c1">-- path to supported image for icon or xdg-standard icons</span>
-    <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;&lt;path-to-image-file&gt;&quot;</span><span class="p">,</span> <span class="c1">-- or icon = &quot;&lt;xdg-standard-icons&gt;&quot;,</span>
-    <span class="c1">-- action to execute on user click</span>
-    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
-    <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msgtype</span><span class="p">.</span><span class="n">info</span><span class="p">)</span>
-    <span class="kr">end</span><span class="p">,</span>
-    <span class="cm">--[[</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">ToolbarItem</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">-- path to supported image for icon or xdg-standard icons</span>
+<span class="w">    </span><span class="nv">icon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&lt;path-to-image-file&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">-- or icon = &quot;&lt;xdg-standard-icons&gt;&quot;,</span>
+<span class="w">    </span><span class="c1">-- action to execute on user click</span>
+<span class="w">    </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">    </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">msgtype</span><span class="p">.</span><span class="py">info</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">    </span><span class="cm">--[[</span>
 <span class="cm">    position of the button in the toolbar.</span>
 <span class="cm">    Not zero index based.</span>
 <span class="cm">    If not mentioned, widget will be inserted at the end.</span>
 <span class="cm">    --]]</span>
-    <span class="n">position</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -882,12 +1057,12 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dl>
 <p>Creates a button with provided options. This is used to add button to the toolbar.</p>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">btn</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">toolbar</span><span class="p">.</span><span class="n">create_button</span><span class="p">(</span><span class="s2">&quot;btn&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;BTN&quot;</span><span class="p">,</span>
-    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msgtype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
-    <span class="kr">end</span><span class="p">,</span>
-    <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;printer&quot;</span><span class="p">,</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">btn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">toolbar</span><span class="p">.</span><span class="nf">create_button</span><span class="p">(</span><span class="s2">&quot;btn&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;BTN&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">        </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">msgtype</span><span class="p">.</span><span class="py">warn</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">icon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;printer&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 </pre></div>
 </div>
@@ -906,15 +1081,15 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dl>
 <p>Adds the toolbar_item provided as argument to the menubar.</p>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">btn</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">toolbar</span><span class="p">.</span><span class="n">create_button</span><span class="p">(</span><span class="s2">&quot;btn&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;BTN&quot;</span><span class="p">,</span>
-    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msgtype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
-    <span class="kr">end</span><span class="p">,</span>
-    <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;printer&quot;</span><span class="p">,</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">btn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">toolbar</span><span class="p">.</span><span class="nf">create_button</span><span class="p">(</span><span class="s2">&quot;btn&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;BTN&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">        </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">msgtype</span><span class="p">.</span><span class="py">warn</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">icon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;printer&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 
-<span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">toolbar</span><span class="p">.</span><span class="n">add_button</span><span class="p">(</span><span class="n">btn</span><span class="p">)</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">toolbar</span><span class="p">.</span><span class="nf">add_button</span><span class="p">(</span><span class="nv">btn</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -961,21 +1136,21 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </tbody>
 </table>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">btn</span> <span class="o">=</span> <span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">toolbar</span><span class="p">.</span><span class="n">create_button</span><span class="p">(</span><span class="s2">&quot;btn&quot;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;BTN&quot;</span><span class="p">,</span>
-    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
-        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span> <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msgtype</span><span class="p">.</span><span class="n">warn</span><span class="p">)</span>
-    <span class="kr">end</span><span class="p">,</span>
-    <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;printer&quot;</span><span class="p">,</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">btn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">toolbar</span><span class="p">.</span><span class="nf">create_button</span><span class="p">(</span><span class="s2">&quot;btn&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;BTN&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">        </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">msgtype</span><span class="p">.</span><span class="py">warn</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">icon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;printer&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 
-<span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">toolbar</span><span class="p">.</span><span class="n">set_items</span><span class="p">({</span>
-    <span class="s2">&quot;home&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;previous_dir&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;next_dir&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;parent_dir&quot;</span><span class="p">,</span>
-    <span class="n">btn</span><span class="p">,</span>
-    <span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">toolbar</span><span class="p">.</span><span class="nf">set_items</span><span class="p">({</span>
+<span class="w">    </span><span class="s2">&quot;home&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;previous_dir&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;next_dir&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;parent_dir&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">btn</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
 <span class="p">})</span>
 </pre></div>
 </div>
@@ -983,7 +1158,7 @@ The module thus created can be used in <a class="reference internal" href="#navi
 
 </section>
 <section id="module-navi.ui.menubar">
-<span id="menubar"></span><h3>menubar<a class="headerlink" href="#module-navi.ui.menubar" title="Link to this heading"></a></h3>
+<span id="menubar"></span><h3>Menubar<a class="headerlink" href="#module-navi.ui.menubar" title="Link to this heading"></a></h3>
 <p>Menubar table</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="navi.ui.menubar.toggle">
@@ -1023,49 +1198,179 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dd>
 </dl>
 <p>MenuItem has the following structure:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">MenuItem</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;menu label&quot;</span><span class="p">,</span>  <span class="c1">-- The label of the menu item.</span>
-    <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>            <span class="c1">-- A nested submenu (optional).</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;submenu&quot;</span><span class="p">,</span> <span class="c1">-- The label of the submenu.</span>
-    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span> <span class="c1">-- Action associated with the submenu.</span>
-    <span class="c1">-- Function implementation here</span>
-    <span class="kr">end</span><span class="p">,</span>
-    <span class="c1">-- Additional submenu items can be added here.</span>
-    <span class="p">}</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">MenuItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;menu label&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">-- The label of the menu item.</span>
+<span class="w">    </span><span class="nv">submenu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">            </span><span class="c1">-- A nested submenu (optional).</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;submenu&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">-- The label of the submenu.</span>
+<span class="w">    </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="c1">-- Action associated with the submenu.</span>
+<span class="w">    </span><span class="c1">-- Function implementation here</span>
+<span class="w">    </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">-- Additional submenu items can be added here.</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">custom_menu</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Custom Menu&quot;</span><span class="p">,</span>
-    <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="p">{</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Open&quot;</span><span class="p">,</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
-                <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">);</span>
-            <span class="kr">end</span><span class="p">,</span>
-        <span class="p">},</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">custom_menu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Custom Menu&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nv">submenu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Open&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<span class="w">                </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;HELLO WORLD&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
 
-        <span class="p">{</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;sub&quot;</span><span class="p">,</span>
-            <span class="n">submenu</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="p">{</span>
-                    <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;item 1&quot;</span><span class="p">,</span>
-                    <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">()</span>
-                        <span class="n">navi</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">msg</span><span class="p">(</span><span class="s2">&quot;SUB HELLO&quot;</span><span class="p">);</span>
-                    <span class="kr">end</span>
-                <span class="p">}</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sub&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nv">submenu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;item 1&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="p">()</span>
+<span class="w">                        </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;SUB HELLO&quot;</span><span class="p">);</span>
+<span class="w">                    </span><span class="kr">end</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
 
-        <span class="p">{</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Save&quot;</span><span class="p">,</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save clicked&quot;</span><span class="p">)</span> <span class="kr">end</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nv">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Save&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nv">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save clicked&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">end</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">navi</span><span class="p">.</span><span class="n">ui</span><span class="p">.</span><span class="n">menubar</span><span class="p">.</span><span class="n">add_menu</span><span class="p">(</span><span class="n">custom_menu</span><span class="p">)</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">menubar</span><span class="p">.</span><span class="nf">add_menu</span><span class="p">(</span><span class="nv">custom_menu</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="cursor">
+<h3>Cursor<a class="headerlink" href="#cursor" title="Link to this heading"></a></h3>
+<p>Cursor that shows the currently highlighted entry in the file panel.</p>
+<dl class="py data" id="module-navi.ui.cursor">
+<dt class="sig sig-object py" id="navi.ui.cursor.foreground">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">foreground</span></span><a class="headerlink" href="#navi.ui.cursor.foreground" title="Link to this definition"></a></dt>
+<dd><p>Sets the foreground color of the cursor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.cursor.background">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">background</span></span><a class="headerlink" href="#navi.ui.cursor.background" title="Link to this definition"></a></dt>
+<dd><p>Sets the background color of the cursor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.cursor.italic">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">italic</span></span><a class="headerlink" href="#navi.ui.cursor.italic" title="Link to this definition"></a></dt>
+<dd><p>Italicize the text at the cursor location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.cursor.bold">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">bold</span></span><a class="headerlink" href="#navi.ui.cursor.bold" title="Link to this definition"></a></dt>
+<dd><p>Bolds the text at the cursor location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.cursor.underline">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">underline</span></span><a class="headerlink" href="#navi.ui.cursor.underline" title="Link to this definition"></a></dt>
+<dd><p>Underlines the text at the cursor location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.cursor.font">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">font</span></span><a class="headerlink" href="#navi.ui.cursor.font" title="Link to this definition"></a></dt>
+<dd><p>Font of the text at the cursor location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.ui.cursor.set_props">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.cursor.</span></span><span class="sig-name descname"><span class="pre">set_props</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.ui.cursor.set_props" title="Link to this definition"></a></dt>
+<dd><p>Sets the properties to the cursor.</p>
+</dd></dl>
+
+</section>
+<section id="header">
+<h3>Header<a class="headerlink" href="#header" title="Link to this heading"></a></h3>
+<p>Header displayed at the top of the file panel table.</p>
+<dl class="py data" id="module-navi.ui.header">
+<dt class="sig sig-object py" id="navi.ui.header.visible">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.header.</span></span><span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#navi.ui.header.visible" title="Link to this definition"></a></dt>
+<dd><p>Visibility of the header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.header.HeaderColumn">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.header.</span></span><span class="sig-name descname"><span class="pre">HeaderColumn</span></span><a class="headerlink" href="#navi.ui.header.HeaderColumn" title="Link to this definition"></a></dt>
+<dd><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>Display name for the column</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>Pre-defined type for the column</p></td>
+</tr>
+</tbody>
+</table>
+<p>Here type refers to one among the following: <code class="docutils literal notranslate"><span class="pre">file_name</span></code>, <code class="docutils literal notranslate"><span class="pre">file_size</span></code>, <code class="docutils literal notranslate"><span class="pre">file_permission</span></code>, <code class="docutils literal notranslate"><span class="pre">file_date</span></code></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="navi.ui.header.columns">
+<span class="sig-prename descclassname"><span class="pre">navi.ui.header.</span></span><span class="sig-name descname"><span class="pre">columns</span></span><a class="headerlink" href="#navi.ui.header.columns" title="Link to this definition"></a></dt>
+<dd><p>Columns to be displayed for the file panel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">HeaderColumn</span></code></p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">header</span><span class="p">.</span><span class="py">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file_name&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Size&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file_size&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1275,8 +1580,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <p>Under the hood navi uses <code class="docutils literal notranslate"><span class="pre">udisks2</span></code> utility for mounting disks.</p>
 </div>
 <p><strong>Example:</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;/dev/nvme0n1p1/&quot;</span>
-<span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">mount_drive</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/dev/nvme0n1p1/&quot;</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">mount_drive</span><span class="p">(</span><span class="nv">name</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1294,8 +1599,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dd>
 </dl>
 <p><strong>Example:</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;/dev/nvme0n1p1&quot;</span>
-<span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">unmount_drive</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/dev/nvme0n1p1&quot;</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">unmount_drive</span><span class="p">(</span><span class="nv">name</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1554,7 +1859,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </dd>
 </dl>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;*.csv&quot;</span><span class="p">)</span> <span class="c1">-- this would filter the directory to show only csv files.</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">api</span><span class="p">.</span><span class="nf">filter</span><span class="p">(</span><span class="s2">&quot;*.csv&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">-- this would filter the directory to show only csv files.</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1851,6 +2156,26 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </dd></dl>
 
 </section>
+<section id="module-navi.utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-navi.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.utils.split">
+<span class="sig-prename descclassname"><span class="pre">navi.utils.</span></span><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span> <span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span> <span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.utils.split" title="Link to this definition"></a></dt>
+<dd><p>Returns table after splitting the string <code class="docutils literal notranslate"><span class="pre">s</span></code> by the delimiter <code class="docutils literal notranslate"><span class="pre">d</span></code>. If delimiter is not found, returns nil</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>string</em>)</p></li>
+<li><p><strong>delimiter</strong> (<em>string</em>) – split the input string with the delimiter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">table</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-navi.keymap">
 <span id="keymap"></span><h2>keymap<a class="headerlink" href="#module-navi.keymap" title="Link to this heading"></a></h2>
 <dl class="py function">
@@ -1880,7 +2205,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <p><strong>Example</strong>: g,g ; this is activated when you press g followed by another g.</p>
 </div>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">keymap</span><span class="p">.</span><span class="n">set</span><span class="p">({</span> <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;g,z&quot;</span><span class="p">,</span> <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;next-item&quot;</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;say hello&quot;</span> <span class="p">})</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">keymap</span><span class="p">.</span><span class="nf">set</span><span class="p">({</span><span class="w"> </span><span class="nv">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;g,z&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;next-item&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;say hello&quot;</span><span class="w"> </span><span class="p">})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1908,7 +2233,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <p><strong>Example</strong>: g,g ; this is activated when you press g followed by another g.</p>
 </div>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">keymap</span><span class="p">.</span><span class="n">set</span><span class="p">(</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;up-directory&quot;</span><span class="p">,</span> <span class="s2">&quot;Go to the parent directory&quot;</span> <span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">keymap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="w"> </span><span class="s2">&quot;h&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;up-directory&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Go to the parent directory&quot;</span><span class="w"> </span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1960,8 +2285,8 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </dl>
 </div></blockquote>
 <p><strong>Example:</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;on_file_open&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File opened!&quot;</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">hook</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="s2">&quot;on_file_open&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File opened!&quot;</span><span class="p">)</span>
 <span class="kr">end</span><span class="p">)</span>
 
 <span class="c1">-- Output:</span>
@@ -1983,7 +2308,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </dd>
 </dl>
 <p><strong>Example:</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">trigger</span><span class="p">(</span><span class="s2">&quot;on_file_open&quot;</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">hook</span><span class="p">.</span><span class="nf">trigger</span><span class="p">(</span><span class="s2">&quot;on_file_open&quot;</span><span class="p">)</span>
 
 <span class="c1">-- Output:</span>
 <span class="c1">-- Executes all functions added to the &quot;on_file_open&quot; hook.</span>
@@ -2004,7 +2329,7 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </dd>
 </dl>
 <p><strong>Example:</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">navi</span><span class="p">.</span><span class="n">hook</span><span class="p">.</span><span class="n">clear_functions</span><span class="p">(</span><span class="s2">&quot;on_file_open&quot;</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">hook</span><span class="p">.</span><span class="nf">clear_functions</span><span class="p">(</span><span class="s2">&quot;on_file_open&quot;</span><span class="p">)</span>
 
 <span class="c1">-- Output:</span>
 <span class="c1">-- Removes all functions from the &quot;on_file_open&quot; hook.</span>

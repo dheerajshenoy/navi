@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started &mdash; Navi  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.1
+                1.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -171,10 +171,10 @@
 </pre></div>
 </div>
 <p>Inside the <code class="docutils literal notranslate"><span class="pre">init.lua</span></code> file you can do something like:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">functions</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;functions&quot;</span><span class="p">)</span>
-<span class="n">functions</span><span class="p">.</span><span class="n">hello</span><span class="p">()</span> <span class="c1">-- assuming that hello function exists in the functions.lua file</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span><span class="w"> </span><span class="nv">functions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">require</span><span class="p">(</span><span class="s2">&quot;functions&quot;</span><span class="p">)</span>
+<span class="nv">functions</span><span class="p">.</span><span class="nf">hello</span><span class="p">()</span><span class="w"> </span><span class="c1">-- assuming that hello function exists in the functions.lua file</span>
 
-<span class="nb">require</span><span class="p">(</span><span class="s2">&quot;keymaps&quot;</span><span class="p">)</span> <span class="c1">-- we just include and load keymaps here without using whatever is inside.</span>
+<span class="nb">require</span><span class="p">(</span><span class="s2">&quot;keymaps&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">-- we just include and load keymaps here without using whatever is inside.</span>
 </pre></div>
 </div>
 </section>
@@ -197,15 +197,15 @@
 <section id="bookmarks">
 <h2>Bookmarks<a class="headerlink" href="#bookmarks" title="Link to this heading"></a></h2>
 <p>Bookmarks allows you to instantly go to your favourite or frequently visited directories. You can add, edit, remove and load bookmarks from a special bookmarks file <cite>bookmark.lua</cite> which should be stored in config directory where the <cite>config.lua</cite> file exists. Bookmark file has the following structure:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">BOOKMARKS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">bookmarkName1</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;bookmarkPath1&quot;</span><span class="p">,</span>
-    <span class="p">},</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">BOOKMARKS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">bookmarkName1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bookmarkPath1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
 
-    <span class="n">bookmarkName2</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;bookmarkPath2&quot;</span><span class="p">,</span>
-        <span class="n">highlight_only</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="nv">bookmarkName2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bookmarkPath2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nv">highlight_only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

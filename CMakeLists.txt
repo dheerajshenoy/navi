@@ -85,6 +85,7 @@ qt_add_executable(${PROJECT_NAME}
   src/DesktopFile.cpp
   src/UpdateDialog.cpp
   src/WaitingSpinnerWidget.cpp
+  src/CustomInputDialog.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp
@@ -119,6 +120,7 @@ qt_add_resources(${PROJECT_NAME}
   resources/images/sort.svg
   resources/images/menu.svg
   resources/images/preview.svg
+  resources/images/update.svg
 )
 
 

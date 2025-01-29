@@ -107,23 +107,44 @@ ui
 
 .. module:: navi.ui
 
-.. function:: marks
+    +---------------+-------------------------------------------------------------+
+    | UI component  | Description                                                 |
+    +===============+=============================================================+
+    | file_panel    | Panel that lists all the entries of a directory             |
+    +---------------+-------------------------------------------------------------+
+    | statusbar     | Bar that shows the status of the currently highlighted item |
+    +---------------+-------------------------------------------------------------+
+    | menubar       | Bar that shows the menu items                               |
+    +---------------+-------------------------------------------------------------+
+    | toolbar       | Bar that shows tool buttons                                 |
+    +---------------+-------------------------------------------------------------+
+    | PathbarWidget | Bar that shows the current directory                        |
+    +---------------+-------------------------------------------------------------+
+    | cursor        | Current highlighted item component                          |
+    +---------------+-------------------------------------------------------------+
+    | header        | Header displayed for the file panel table                   |
+    +---------------+-------------------------------------------------------------+
 
-   Toggles the marks panel.
+.. note:: All of the UI tables have a convenient function called :func:`set_props` and :func:`get_props` to set and get properties to the UI element all together. This is useful when you are setting multiple options for the same UI element. You can use the :func:`set_props` function with the options and values as arguments to the function and it will all be set all at once. This is **efficient** and is to be **preferred** over setting the options individually.
 
-   :return: ``void``
+   For example:
 
-.. function:: shortcuts
+   .. code-block:: lua
 
-   Toggles the shortcuts panel.
+    navi.ui.file_panel.visible = true
+    navi.ui.file_panel.icons = true
+    navi.ui.file_panel.grid = false
+    navi.ui.file_panel.gridstyle = "solid"
 
-   :return: ``void``
+    -- Using set_props()
 
-.. function:: messages
+    navi.ui.file_panel.set_props({
+        visible = true,
+        icons = true,
+        grid = false,
+        gridstyle = "solid",
+    })
 
-   Toggles the messages panel.
-
-   :return: ``void``
 
 File Panel
 ~~~~~~~~~~
@@ -137,6 +158,52 @@ File Panel
    Toggles the file panel.
 
    :return: ``void``
+
+.. data:: FilePanelOptions
+
+   Enumeration of options to set for file panel.
+
+   .. note:: This is to be used with the :func:`set_props` function.
+
+   +-----------+----------+--------------------------------------------------------+
+   |  option   | datatype |                        comment                         |
+   +===========+==========+========================================================+
+   |  visible  |   bool   |             visibility of the file panel.              |
+   +-----------+----------+--------------------------------------------------------+
+   |   icons   |   bool   |       visibility of the icons in the file panel.       |
+   +-----------+----------+--------------------------------------------------------+
+   |   grid    |   bool   | visibility of the rows of the table in the file panel. |
+   +-----------+----------+--------------------------------------------------------+
+   | gridstyle |  string  |                   style of the grid.                   |
+   +-----------+----------+--------------------------------------------------------+
+   | font      |  string  |        Font name of the entries in the file panel.     |
+   +-----------+----------+--------------------------------------------------------+
+   | font_size |  int     |     Size of the font of the entries in the file panel. |
+   +-----------+----------+--------------------------------------------------------+
+
+.. function:: set_props
+
+   Sets the properties to the file panel.
+
+   :type: ``FilePanelOptions``
+
+   Example:
+
+   .. code-block:: lua
+
+    navi.ui.file_panel.visible = true
+    navi.ui.file_panel.icons = true
+    navi.ui.file_panel.grid = false
+    navi.ui.file_panel.gridstyle = "solid"
+
+    -- Using set_props()
+
+    navi.ui.file_panel.set_props({
+        visible = true,
+        icons = true,
+        grid = false,
+        gridstyle = "solid",
+    })
 
 .. data:: visible
 
@@ -165,6 +232,20 @@ File Panel
 
    :type: ``string``
    :default: ``system font``
+
+.. data:: grid
+
+    Enable/disable grids for the rows in the file panel.
+
+    :type: ``bool``
+    :default: ``true``
+
+.. data:: gridstyle
+
+   Style for the grid. It can be one of "solid", "dashline", "dotline", "dashdotline", "dashdotdotline", "custom", "none".
+
+   :type: ``string``
+   :default: ``solid``
 
 Symlink
 #######
@@ -215,8 +296,6 @@ Symlink
 
  .. warning:: Please use unicode characters only as the symlink separtor. This is because navi uses the separator for separating file name and symlink target and for identifying the symlink target. If you use ordinary character the file name splitting logic will go wrong and the :func:`goto_symlink_target` function wouldn't work.
 
-
-
 Preview Panel
 ~~~~~~~~~~~~~
 
@@ -235,6 +314,24 @@ Preview Panel
    :type: ``boolean``
    :default: ``true``
 
+.. data:: image_dimension
+
+   Image dimension of the preview in the preview_panel.
+
+   :type: ``table``
+   :param int width: Width of the image
+   :param int height: Height of the image
+
+.. function:: set_props
+
+   Sets the options for the preview_panel.
+
+.. function:: get_props
+
+   Gets the options for the preview_panel.
+
+   :returns: ``PreviewPanelOptions``
+
 Pathbar
 ~~~~~~~
 
@@ -246,7 +343,7 @@ Pathbar
 
    :return: ``void``
 
-context_menu
+Context Menu
 ~~~~~~~~~~~~
 
     .. module:: navi.ui.context_menu
@@ -257,7 +354,7 @@ context_menu
 
    TODO
 
-statusbar
+Statusbar
 ~~~~~~~~~
 
     Statusbar table.
@@ -384,8 +481,7 @@ statusbar
             return "HELLO WORLD"
         end)
 
-
-toolbar
+Toolbar
 ~~~~~~~
 
 .. module:: navi.ui.toolbar
@@ -518,10 +614,8 @@ toolbar
             "refresh",
         })
 
-
-menubar
+Menubar
 ~~~~~~~
-
 
 .. module:: navi.ui.menubar
 
@@ -596,6 +690,95 @@ Menubar table
         }
 
         navi.ui.menubar.add_menu(custom_menu)
+
+Cursor
+~~~~~~
+
+Cursor that shows the currently highlighted entry in the file panel.
+
+.. module:: navi.ui.cursor
+
+.. data:: foreground
+
+   Sets the foreground color of the cursor.
+
+   :type: ``string``
+   
+.. data:: background
+
+   Sets the background color of the cursor.
+
+   :type: ``string``
+
+
+.. data:: italic
+
+   Italicize the text at the cursor location.
+
+   :type: ``boolean``
+
+.. data:: bold
+
+   Bolds the text at the cursor location.
+
+   :type: ``boolean``
+
+.. data:: underline
+
+   Underlines the text at the cursor location.
+
+   :type: ``boolean``
+
+.. data:: font
+
+   Font of the text at the cursor location.
+
+   :type: ``boolean``
+
+.. function:: set_props
+
+   Sets the properties to the cursor.
+   
+
+Header
+~~~~~~
+
+Header displayed at the top of the file panel table.
+
+.. module:: navi.ui.header
+
+.. data:: visible
+
+   Visibility of the header.
+
+   :type: ``boolean``
+
+.. data:: HeaderColumn
+
+   +--------+---------------------------------+
+   | Option | Description                     |
+   +========+=================================+
+   | name   | Display name for the column     |
+   +--------+---------------------------------+
+   | type   | Pre-defined type for the column |
+   +--------+---------------------------------+
+
+   Here type refers to one among the following: ``file_name``, ``file_size``, ``file_permission``, ``file_date``
+
+.. data:: columns
+
+   Columns to be displayed for the file panel.
+
+   :type: ``HeaderColumn``
+
+   Example:
+
+   .. code-block:: lua
+
+    navi.ui.header.columns = {
+        { name = "File", type = "file_name" },
+        { name = "Size", type = "file_size" },
+    }
 
 api
 +++
