@@ -192,9 +192,6 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
             bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
             if (isMarked) {
                 return m_markBackgroundColor;
-            } else {
-                if (index.row() == m_cursor_row)
-                    return QColor(Qt::yellow);
             }
 
 
@@ -249,6 +246,9 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
                     return QVariant();
             }
         }
+
+        case static_cast<int>(Role::Cursor):
+            return m_cursor_row;
     }
 
     return QVariant();

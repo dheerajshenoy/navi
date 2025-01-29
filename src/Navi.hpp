@@ -953,7 +953,9 @@ public:
     }
 
     inline void set_cursor_foreground(const std::string &fg) noexcept {
-        m_table_delegate->set_cursor_foreground(QString::fromStdString(fg));
+        auto _fg = QString::fromStdString(fg);
+        m_table_delegate->set_cursor_foreground(_fg);
+        m_file_panel->tableView()->vheader()->set_cursor_foreground(_fg);
     }
 
     inline std::string get_cursor_foreground() noexcept {
@@ -961,7 +963,23 @@ public:
     }
 
     inline void set_cursor_background(const std::string &bg) noexcept {
-        m_table_delegate->set_cursor_background(QString::fromStdString(bg));
+        auto _bg = QString::fromStdString(bg);
+        m_table_delegate->set_cursor_background(_bg);
+        m_file_panel->tableView()->vheader()->set_cursor_background(_bg);
+    }
+
+    inline void set_vheader_visible(const bool &state) noexcept {
+        m_file_panel->tableView()->vheader()->setVisible(state);
+    }
+
+    inline bool get_vheader_visible() noexcept { return m_file_panel->tableView()->vheader()->isVisible(); }
+
+    inline bool get_vheader_border() noexcept {
+        return m_file_panel->tableView()->vheader()->hasBorder();
+    }
+
+    inline void set_vheader_border(const bool &state) noexcept {
+        m_file_panel->tableView()->vheader()->setBorder(state);
     }
 
     inline std::string get_cursor_background() noexcept {
@@ -1005,6 +1023,9 @@ public:
     inline std::string get_file_panel_grid_style() noexcept {
         return m_file_panel->tableView()->get_grid_style();
     }
+
+    void set_vheader_props(const sol::table &table) noexcept;
+    sol::table get_vheader_props() noexcept;
 
 protected:
     bool event(QEvent *e) override;

@@ -49,6 +49,14 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_header_columns", &Navi::set_header_columns,
                            "get_header_columns", &Navi::get_header_columns,
 
+                           // Vertical header
+                           "set_vheader_visible", &Navi::set_vheader_visible,
+                           "get_vheader_visible", &Navi::get_vheader_visible,
+                           "set_vheader_border", &Navi::set_vheader_border,
+                           "get_vheader_border", &Navi::get_vheader_border,
+                           "set_vheader_props", &Navi::set_vheader_props,
+                           "get_vheader_props", &Navi::get_vheader_props,
+
                            // Bulk Rename
                            "set_bulk_rename_editor", &Navi::set_bulk_rename_editor,
                            "get_bulk_rename_editor", &Navi::get_bulk_rename_editor,

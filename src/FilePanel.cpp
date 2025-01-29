@@ -11,6 +11,12 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
     m_mime_utils->loadDefaults();
     m_selection_model = m_table_view->selectionModel();
 
+    connect(m_table_view, &TableView::cursorPositionChanged, this,
+            [&](const int &row) {
+            m_model->set_cursor_row(row);
+            });
+
+
     initSignalsSlots();
     initContextMenu();
     m_file_name_column_index = m_model->fileNameColumnIndex();

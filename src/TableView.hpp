@@ -24,6 +24,8 @@ public:
 
     inline std::string get_grid_style() noexcept { return m_grid_style; }
 
+    inline VerticalHeaderView* vheader() noexcept { return m_vertical_header_view; }
+
     void set_grid_style(const std::string &style) noexcept;
 
     QModelIndex scroll_to_middle() noexcept;
@@ -42,7 +44,7 @@ protected:
 
  private:
     QPoint m_drag_start_position;
-    TableHeaderView *m_header_view = nullptr;
-    VerticalHeaderView *m_vertical_header_view = nullptr;
+    TableHeaderView *m_header_view;
+    VerticalHeaderView *m_vertical_header_view;
     std::string m_grid_style = "solid";
 };

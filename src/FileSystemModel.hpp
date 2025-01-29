@@ -6,16 +6,18 @@
 class FileSystemModel : public QAbstractTableModel {
     Q_OBJECT
 
-public:
-  FileSystemModel(const QString &path, QObject *parent = nullptr);
+    public:
+    FileSystemModel(const QString &path, QObject *parent = nullptr);
     FileSystemModel(QObject *parent = nullptr);
 
     inline void set_cursor_row(const int &row) noexcept { m_cursor_row = row; }
+    inline int get_cursor_row() noexcept { return m_cursor_row; }
+
     enum class ColumnType {
-      FileName = 0,
-      FileSize,
-      FileModifiedDate,
-      FilePermission,
+        FileName = 0,
+        FileSize,
+        FileModifiedDate,
+        FilePermission,
     };
 
     struct Column {
@@ -28,8 +30,8 @@ public:
         Symlink,
         FilePath,
         FileName,
+        Cursor,
     };
-
 
     int fileNameColumnIndex() const noexcept { return m_file_name_column_index; }
     void setSymlinkSeparator(const QString &separator) noexcept;
@@ -143,7 +145,6 @@ public:
 
     inline QList<QFileInfo> entry_info_list() { return m_fileInfoList; }
 
-
     signals:
     void directoryLoaded(const int &rowCount);
     void directoryLoadProgress(const int &progress);
@@ -162,7 +163,7 @@ private:
     QHash<QString, int> m_path_row_hash;
 
     QDir::Filters m_dir_filters = QDir::Filter::NoDotAndDotDot |
-                                  QDir::Filter::AllEntries;
+    QDir::Filter::AllEntries;
 
     QDir::SortFlags m_dir_sort_flags = QDir::SortFlag::DirsFirst;
     QLocale m_locale;
@@ -178,10 +179,10 @@ private:
     };
 
     QColor m_markForegroundColor = Qt::red,
-           m_markBackgroundColor = Qt::transparent;
+    m_markBackgroundColor = Qt::transparent;
 
     QColor m_markHeaderForegroundColor = Qt::red,
-           m_markHeaderBackgroundColor = Qt::transparent;
+    m_markHeaderBackgroundColor = Qt::transparent;
 
     QFont m_markHeaderFont, m_markFont;
     QString m_symlink_separator = "⟶";

@@ -3139,3 +3139,25 @@ sol::table Navi::get_file_panel_props() noexcept {
 
     return table;
 }
+
+
+void Navi::set_vheader_props(const sol::table &table) noexcept {
+    auto vheader = m_file_panel->tableView()->vheader();
+
+    if (table["visible"].valid())
+        vheader->setVisible(table["visible"].get<bool>());
+
+    if (table["border"].valid())
+        vheader->set_border(table["border"].get<bool>());
+}
+
+sol::table Navi::get_vheader_props() noexcept {
+    sol::table table = m_lua->create_table();
+
+    auto vheader = m_file_panel->tableView()->vheader();
+
+    table["visible"] = vheader->isVisible();
+    table["border"] = vheader->hasBorder();
+
+    return table;
+}

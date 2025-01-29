@@ -162,6 +162,44 @@ setmetatable(M.ui.header, {
 
 })
 
+
+---Vertical Header
+M.ui.vheader = {}
+
+---Toggle the vertical header
+M.ui.vheader.toggle = function ()
+    _navi:vheader_toggle()
+end
+
+---@class VheaderOptions
+---@field visible boolean - visibility of the vertical header
+---@field border boolean - borders for vertical header cells
+
+---Sets options for the vertical header
+---@param opts VheaderOptions
+M.ui.vheader.set_props = function (opts)
+    _navi:set_vheader_props(opts)
+end
+
+setmetatable(M.ui.vheader, {
+    __index = function (_, key)
+        if key == "visible" then
+            return _navi:get_vheader_visible()
+
+        elseif key == "border" then
+            return _navi:get_vheader_border()
+        end
+    end,
+    __newindex = function (_, key, value)
+        if key == "visible" then
+            _navi:set_vheader_visible(value)
+
+        elseif key == "border" then
+            _navi:set_vheader_border(value)
+        end
+    end
+})
+
 --[[ Inputbar metatable ]]--
 M.ui.inputbar = {}
 

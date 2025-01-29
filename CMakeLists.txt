@@ -108,21 +108,22 @@ qt_add_executable(${PROJECT_NAME}
 # tell cmake to link the executable to the Qt 6 core and test modules
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES})
 
-qt_add_resources(${PROJECT_NAME}
-  PREFIX "resources"
-  FILES
-  resources/images/clock.svg
-  resources/images/location.svg
-  resources/images/messages.svg
-  resources/images/pencil-icon.svg
-  resources/images/plus.svg
-  resources/images/reverse.svg
-  resources/images/sort.svg
-  resources/images/menu.svg
-  resources/images/preview.svg
-  resources/images/update.svg
+set(RESOURCE_FILES
+    resources/images/clock.svg
+    resources/images/location.svg
+    resources/images/messages.svg
+    resources/images/pencil-icon.svg
+    resources/images/plus.svg
+    resources/images/reverse.svg
+    resources/images/sort.svg
+    resources/images/menu.svg
+    resources/images/preview.svg
+    resources/images/update.svg
 )
 
+qt_add_resources(${PROJECT_NAME}
+ PREFIX "resources"
+ FILES ${RESOURCE_FILES})
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LIBARCHIVE_INCLUDE_DIRS})

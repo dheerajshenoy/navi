@@ -12,15 +12,7 @@ class FilePanelDelegate : public QStyledItemDelegate {
     QStyledItemDelegate(parent),
     m_symlink_font(QApplication::font()),
     m_cursor_font(QApplication::font()),
-    m_symlink_foreground("red")
-    {
-        if (parent) {
-            connect(qobject_cast<TableView*>(parent), &TableView::cursorPositionChanged, this,
-                    [&](const int &row) {
-                    m_cursor_row = row;
-                    });
-        }
-    }
+    m_symlink_foreground("red"){}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override {
@@ -38,7 +30,7 @@ class FilePanelDelegate : public QStyledItemDelegate {
         QStyle *style = opt.widget ? opt.widget->style() : QApplication::style();
         style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, opt.widget);
 
-        if (index.row() == m_cursor_row) {
+        if (index.row() == index.data(static_cast<int>(FileSystemModel::Role::Cursor))) {
             painter->fillRect(opt.rect, m_cursor_background);
         } else if (option.state & QStyle::State_Selected) {
             painter->fillRect(opt.rect, opt.palette.color(QPalette::Highlight));
@@ -101,9 +93,6 @@ class FilePanelDelegate : public QStyledItemDelegate {
             }
         }
     }
-
-
-    inline void set_cursor_row(const int &row) noexcept { m_cursor_row = row; }
 
     inline void set_symlink_separator(const QString &sep) noexcept {
         m_symlink_separator = sep;
@@ -227,5 +216,4 @@ private:
     QFont m_symlink_font, m_cursor_font;
     QString m_symlink_foreground, m_symlink_background, m_symlink_separator = " ⟶ ",
     m_cursor_foreground, m_cursor_background = "#444444";
-    int m_cursor_row = -1;
 };
