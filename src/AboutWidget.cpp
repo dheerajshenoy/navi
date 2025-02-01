@@ -29,7 +29,21 @@ AboutWidget::AboutWidget(QWidget *parent) : QDialog(parent) {
 
     m_sub_label->setText("Modern fast file manager for the impatient");
 
+    m_layout->addWidget(m_advanced_section);
+
     m_layout->addLayout(m_link_layout);
+
+    // Advanced Section
+
+    QVBoxLayout *advanced_layout = new QVBoxLayout();
+
+    QLabel *version_label = new QLabel(QString("Qt version: %2")
+                                       .arg(qVersion())
+                                       );
+
+    advanced_layout->addWidget(version_label);
+
+    m_advanced_section->setContentLayout(advanced_layout);
 
     this->exec();
 }

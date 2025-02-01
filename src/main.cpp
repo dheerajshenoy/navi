@@ -137,6 +137,7 @@ int main(int argc, char *argv[]) {
         navi->initKeybinds();
     }
 
+    KDDockWidgets::Config::self().setFlags(KDDockWidgets::Config::Flag_AutoHideSupport);
     qApp->setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
     app.exec();

@@ -52,6 +52,18 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Network)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 find_package(Lua REQUIRED)
+
+execute_process(
+    COMMAND git submodule update --init --recursive
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+set(KDDockWidgets_QT6 "ON" CACHE STRING "Use qt6 with KDDockWidgets")
+set(KDDockWidgets_FRONTENDS "qtwidgets" CACHE STRING "Use KDDockWidgets for QtWidgets only")
+set(CMAKE_INSTALL_PREFIX "/usr/share/include" CACHE STRING "KDDockWidgets install prefix")
+
+add_subdirectory(KDDockWidgets)
+
 find_package(KDDockWidgets-qt6 REQUIRED)
 
 qt_standard_project_setup()

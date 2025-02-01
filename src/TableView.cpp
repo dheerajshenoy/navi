@@ -13,6 +13,7 @@ TableView::TableView(QWidget *parent) : QTableView(parent) {
     setMouseTracking(true);
     setShowGrid(true);
 
+
     m_header_view = new TableHeaderView(Qt::Orientation::Horizontal, this);
     m_vertical_header_view = new VerticalHeaderView(Qt::Orientation::Vertical, this);
     this->setHorizontalHeader(m_header_view);

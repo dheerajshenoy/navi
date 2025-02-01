@@ -1,10 +1,7 @@
 #pragma once
 
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QLabel>
 #include "Navi.hpp"
+#include "CollapsibleWidget.hpp"
 
 class AboutWidget : public QDialog {
 
@@ -21,4 +18,5 @@ private:
     QLabel *m_version_label = new QLabel();
     QPushButton *m_close_btn = new QPushButton("Close");
     QLabel *m_docs_label = new QLabel();
+    CollapsibleWidget *m_advanced_section = new CollapsibleWidget("Advanced");
 };

@@ -58,7 +58,8 @@ public:
 class Navi : public KDDockWidget::MainWindow {
 
 public:
-    Navi(QWidget *parent = nullptr) : KDDockWidget::MainWindow(QStringLiteral("MyMainWindow")) {}
+    Navi(QWidget *parent = nullptr) : KDDockWidget::MainWindow(QStringLiteral("MyMainWindow"))
+    {}
     ~Navi();
 
     inline void set_version(const QString &version) noexcept {
@@ -599,7 +600,7 @@ public:
     }
 
     inline bool get_preview_panel_visible() noexcept {
-        return m_preview_panel->isVisible();
+        return m_preview_panel_dock->isVisible();
     }
 
     inline bool get_inputbar_visible() noexcept {
@@ -1051,6 +1052,7 @@ private:
     void addCommandToMacroRegister(const QString &command) noexcept;
     void cacheThumbnails() noexcept;
 
+    QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
     Menubar *m_menubar = nullptr;
 
@@ -1341,4 +1343,6 @@ private:
     Thumbnailer *m_thumbnailer = new Thumbnailer();
     QString m_version;
     QHash<Widget, QWidget*> m_widget_hash;
+    KDDockWidget::DockWidget *m_file_panel_dock;
+    KDDockWidget::DockWidget *m_preview_panel_dock;
 };

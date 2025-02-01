@@ -4,6 +4,8 @@
 Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     this->setLayout(m_layout);
 
+    this->setContentsMargins(0, 0, 0, 0);
+
     m_line_edit_completer = new InputbarCompleter(this);
     m_line_edit_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_line_edit_completer->setFilterMode(Qt::MatchFlag::MatchContains);

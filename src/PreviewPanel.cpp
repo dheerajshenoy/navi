@@ -3,15 +3,13 @@
 
 PreviewPanel::PreviewPanel(QWidget *parent) : QWidget(parent) {
 
-    // this->setContentsMargins(0, 0, 0, 0);
-    //
     setLayout(m_layout);
     m_layout->addWidget(m_stack_widget);
 
     m_img_widget->setHidden(true);
     m_text_preview_widget->setHidden(true);
 
-    // m_img_widget->setAlignment(Qt::AlignmentFlag::AlignTop);
+    /*m_img_widget->setAlignment(Qt::AlignmentFlag::AlignTop);*/
 
     m_text_preview_widget->setAcceptRichText(true);
     m_text_preview_widget->setReadOnly(true);

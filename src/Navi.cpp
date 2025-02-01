@@ -957,25 +957,24 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
 
 void Navi::TogglePreviewPanel(const bool &state) noexcept {
     if (state) {
-        m_preview_panel->show();
         connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                 &PreviewPanel::onFileSelected);
         m_preview_panel->onFileSelected(getCurrentFile());
     } else {
-        m_preview_panel->hide();
         disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                    &PreviewPanel::onFileSelected);
     }
+    m_preview_panel_dock->setVisible(state);
 }
 
 void Navi::TogglePreviewPanel() noexcept {
-    bool visible = m_preview_panel->isVisible();
+    bool visible = m_preview_panel_dock->isVisible();
     if (visible) {
-        m_preview_panel->hide();
+        m_preview_panel_dock->setVisible(false);
         disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                    &PreviewPanel::onFileSelected);
     } else {
-        m_preview_panel->show();
+        m_preview_panel_dock->setVisible(true);
         connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                 &PreviewPanel::onFileSelected);
         m_preview_panel->onFileSelected(getCurrentFile());
@@ -987,6 +986,7 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
+
     m_toolbar = new QToolBar();
     addToolBar(m_toolbar);
     m_tasks_widget = new TasksWidget(m_task_manager);
@@ -1004,21 +1004,25 @@ void Navi::initLayout() noexcept {
     m_log_buffer = new MessagesBuffer();
     m_marks_buffer = new MarksBuffer();
 
-    KDDockWidget::DockWidget *filePanelDock = new KDDockWidget::DockWidget("File Panel");
-    filePanelDock->setWidget(m_file_panel);
+    m_file_panel_dock = new KDDockWidget::DockWidget("File Panel",
+                                                     KDDockWidgets::DockWidgetOption::DockWidgetOption_NotClosable);
+    m_file_panel_dock->setWidget(m_widget);
 
-    KDDockWidget::DockWidget *previewDock = new KDDockWidget::DockWidget("Preview Panel");
-    previewDock->setWidget(m_preview_panel);
+    m_preview_panel_dock = new KDDockWidget::DockWidget("Preview Panel");
+    m_preview_panel_dock->setWidget(m_preview_panel);
 
     m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
-    /*m_file_panel->setFocus();*/
+    m_file_panel->setFocus();
     m_inputbar->hide();
 
+    m_layout->setContentsMargins(0, 0, 0, 0);
+
     m_layout->addWidget(m_file_path_widget);
+    m_layout->addWidget(m_file_panel);
     m_layout->addWidget(m_inputbar);
     m_layout->addWidget(m_statusbar);
-    previewDock->open();
+    m_widget->setLayout(m_layout);
 
     this->addDockWidget("File Panel", KDDockWidgets::Location::Location_OnLeft);
     this->addDockWidget("Preview Panel", KDDockWidgets::Location::Location_OnRight);
@@ -2804,8 +2808,7 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
         m_viewmenu__tasks_widget->setIcon(QIcon(":resources/images/clock.svg"));
         m_viewmenu__menubar->setIcon(QIcon(":resources/images/menu.svg"));
         m_viewmenu__statusbar->setIcon(QIcon(":resources/images/statusbar.svg"));
-        m_viewmenu__preview_panel->setIcon(
-            QIcon(":resources/images/preview.svg"));
+        m_viewmenu__preview_panel->setIcon(QIcon(":resources/images/preview.svg"));
         m_help_menu__about->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
         m_help_menu__check_for_updates->setIcon(QIcon(":resources/images/update.svg"));
     } else {
