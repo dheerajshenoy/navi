@@ -173,9 +173,6 @@ private:
 
     QList<Column> m_column_list = {
         Column { "Name", ColumnType::FileName },
-        Column { "Size", ColumnType::FileSize },
-        Column { "DATE", ColumnType::FileModifiedDate },
-        Column { "PERM", ColumnType::FilePermission },
     };
 
     QColor m_markForegroundColor = Qt::red,

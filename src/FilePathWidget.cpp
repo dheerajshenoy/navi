@@ -3,7 +3,6 @@
 FilePathWidget::FilePathWidget(QWidget *parent)
 : QWidget(parent) {
     this->setLayout(m_layout);
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
     m_path_line->setReadOnly(true);
     m_layout->addWidget(m_path_line);
     m_path_line->setFrame(false);

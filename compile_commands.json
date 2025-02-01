@@ -1,0 +1,206 @@
+[
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -x c++-header -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/cmake_pch.hxx.gch -c /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx.cxx",
+  "file": "/home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx.cxx",
+  "output": "CMakeFiles/navi.dir/cmake_pch.hxx.gch"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/navi_autogen/mocs_compilation.cpp.o -c /home/neo/Gits/navi/navi_autogen/mocs_compilation.cpp",
+  "file": "/home/neo/Gits/navi/navi_autogen/mocs_compilation.cpp",
+  "output": "CMakeFiles/navi.dir/navi_autogen/mocs_compilation.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/main.cpp.o -c /home/neo/Gits/navi/src/main.cpp",
+  "file": "/home/neo/Gits/navi/src/main.cpp",
+  "output": "CMakeFiles/navi.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/Navi.cpp.o -c /home/neo/Gits/navi/src/Navi.cpp",
+  "file": "/home/neo/Gits/navi/src/Navi.cpp",
+  "output": "CMakeFiles/navi.dir/src/Navi.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/utils.cpp.o -c /home/neo/Gits/navi/src/utils.cpp",
+  "file": "/home/neo/Gits/navi/src/utils.cpp",
+  "output": "CMakeFiles/navi.dir/src/utils.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/FilePanel.cpp.o -c /home/neo/Gits/navi/src/FilePanel.cpp",
+  "file": "/home/neo/Gits/navi/src/FilePanel.cpp",
+  "output": "CMakeFiles/navi.dir/src/FilePanel.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/PreviewPanel.cpp.o -c /home/neo/Gits/navi/src/PreviewPanel.cpp",
+  "file": "/home/neo/Gits/navi/src/PreviewPanel.cpp",
+  "output": "CMakeFiles/navi.dir/src/PreviewPanel.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/TableView.cpp.o -c /home/neo/Gits/navi/src/TableView.cpp",
+  "file": "/home/neo/Gits/navi/src/TableView.cpp",
+  "output": "CMakeFiles/navi.dir/src/TableView.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/FilePathWidget.cpp.o -c /home/neo/Gits/navi/src/FilePathWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/FilePathWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/FilePathWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/Statusbar.cpp.o -c /home/neo/Gits/navi/src/Statusbar.cpp",
+  "file": "/home/neo/Gits/navi/src/Statusbar.cpp",
+  "output": "CMakeFiles/navi.dir/src/Statusbar.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/Inputbar.cpp.o -c /home/neo/Gits/navi/src/Inputbar.cpp",
+  "file": "/home/neo/Gits/navi/src/Inputbar.cpp",
+  "output": "CMakeFiles/navi.dir/src/Inputbar.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/FilePropertyWidget.cpp.o -c /home/neo/Gits/navi/src/FilePropertyWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/FilePropertyWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/FilePropertyWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/BookmarkManager.cpp.o -c /home/neo/Gits/navi/src/BookmarkManager.cpp",
+  "file": "/home/neo/Gits/navi/src/BookmarkManager.cpp",
+  "output": "CMakeFiles/navi.dir/src/BookmarkManager.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/BookmarkWidget.cpp.o -c /home/neo/Gits/navi/src/BookmarkWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/BookmarkWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/BookmarkWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/ShortcutsWidget.cpp.o -c /home/neo/Gits/navi/src/ShortcutsWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/ShortcutsWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/ShortcutsWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/NaviWindow.cpp.o -c /home/neo/Gits/navi/src/NaviWindow.cpp",
+  "file": "/home/neo/Gits/navi/src/NaviWindow.cpp",
+  "output": "CMakeFiles/navi.dir/src/NaviWindow.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/DriveWidget.cpp.o -c /home/neo/Gits/navi/src/DriveWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/DriveWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/DriveWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/TasksWidget.cpp.o -c /home/neo/Gits/navi/src/TasksWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/TasksWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/TasksWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/Task.cpp.o -c /home/neo/Gits/navi/src/Task.cpp",
+  "file": "/home/neo/Gits/navi/src/Task.cpp",
+  "output": "CMakeFiles/navi.dir/src/Task.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/TaskManager.cpp.o -c /home/neo/Gits/navi/src/TaskManager.cpp",
+  "file": "/home/neo/Gits/navi/src/TaskManager.cpp",
+  "output": "CMakeFiles/navi.dir/src/TaskManager.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/RegisterWidget.cpp.o -c /home/neo/Gits/navi/src/RegisterWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/RegisterWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/RegisterWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/HookManager.cpp.o -c /home/neo/Gits/navi/src/HookManager.cpp",
+  "file": "/home/neo/Gits/navi/src/HookManager.cpp",
+  "output": "CMakeFiles/navi.dir/src/HookManager.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/FileWorker.cpp.o -c /home/neo/Gits/navi/src/FileWorker.cpp",
+  "file": "/home/neo/Gits/navi/src/FileWorker.cpp",
+  "output": "CMakeFiles/navi.dir/src/FileWorker.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/Thumbnailer.cpp.o -c /home/neo/Gits/navi/src/Thumbnailer.cpp",
+  "file": "/home/neo/Gits/navi/src/Thumbnailer.cpp",
+  "output": "CMakeFiles/navi.dir/src/Thumbnailer.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/FolderPropertyWidget.cpp.o -c /home/neo/Gits/navi/src/FolderPropertyWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/FolderPropertyWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/FolderPropertyWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/AboutWidget.cpp.o -c /home/neo/Gits/navi/src/AboutWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/AboutWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/AboutWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/API.cpp.o -c /home/neo/Gits/navi/src/API.cpp",
+  "file": "/home/neo/Gits/navi/src/API.cpp",
+  "output": "CMakeFiles/navi.dir/src/API.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/Mimeutils.cpp.o -c /home/neo/Gits/navi/src/Mimeutils.cpp",
+  "file": "/home/neo/Gits/navi/src/Mimeutils.cpp",
+  "output": "CMakeFiles/navi.dir/src/Mimeutils.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/DesktopFile.cpp.o -c /home/neo/Gits/navi/src/DesktopFile.cpp",
+  "file": "/home/neo/Gits/navi/src/DesktopFile.cpp",
+  "output": "CMakeFiles/navi.dir/src/DesktopFile.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/UpdateDialog.cpp.o -c /home/neo/Gits/navi/src/UpdateDialog.cpp",
+  "file": "/home/neo/Gits/navi/src/UpdateDialog.cpp",
+  "output": "CMakeFiles/navi.dir/src/UpdateDialog.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/WaitingSpinnerWidget.cpp.o -c /home/neo/Gits/navi/src/WaitingSpinnerWidget.cpp",
+  "file": "/home/neo/Gits/navi/src/WaitingSpinnerWidget.cpp",
+  "output": "CMakeFiles/navi.dir/src/WaitingSpinnerWidget.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/CustomInputDialog.cpp.o -c /home/neo/Gits/navi/src/CustomInputDialog.cpp",
+  "file": "/home/neo/Gits/navi/src/CustomInputDialog.cpp",
+  "output": "CMakeFiles/navi.dir/src/CustomInputDialog.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -Winvalid-pch -include /home/neo/Gits/navi/CMakeFiles/navi.dir/cmake_pch.hxx -o CMakeFiles/navi.dir/src/FileSystemModel.cpp.o -c /home/neo/Gits/navi/src/FileSystemModel.cpp",
+  "file": "/home/neo/Gits/navi/src/FileSystemModel.cpp",
+  "output": "CMakeFiles/navi.dir/src/FileSystemModel.cpp.o"
+},
+{
+  "directory": "/home/neo/Gits/navi",
+  "command": "/usr/bin/c++ -DKDDW_FRONTEND_QT -DKDDW_FRONTEND_QTWIDGETS -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -I/home/neo/Gits/navi/navi_autogen/include -I/usr/include/ImageMagick-7 -isystem /usr/include/qt6/QtCore -isystem /usr/include/qt6 -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtWidgets -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtNetwork -isystem /usr/share/include/include/kddockwidgets-qt6  -Wall -Wextra -g -Og -g -std=gnu++20 -mno-direct-extern-access -o CMakeFiles/navi.dir/.qt/rcc/qrc_PREFIX.cpp.o -c /home/neo/Gits/navi/.qt/rcc/qrc_PREFIX.cpp",
+  "file": "/home/neo/Gits/navi/.qt/rcc/qrc_PREFIX.cpp",
+  "output": "CMakeFiles/navi.dir/.qt/rcc/qrc_PREFIX.cpp.o"
+}
+]

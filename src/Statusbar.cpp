@@ -2,7 +2,6 @@
 #include <qnamespace.h>
 
 Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
     m_layout->setContentsMargins(10, 0, 10, 10);
     m_vert_layout->setContentsMargins(10, 0, 10, 0);

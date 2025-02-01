@@ -1,17 +1,17 @@
 #include "PreviewPanel.hpp"
 #include <archive.h>
 
-PreviewPanel::PreviewPanel(QWidget *parent) : QDockWidget(parent) {
+PreviewPanel::PreviewPanel(QWidget *parent) : QWidget(parent) {
 
-    this->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    this->setWidget(m_stack_widget);
     // this->setContentsMargins(0, 0, 0, 0);
+    //
+    setLayout(m_layout);
+    m_layout->addWidget(m_stack_widget);
 
     m_img_widget->setHidden(true);
     m_text_preview_widget->setHidden(true);
 
     // m_img_widget->setAlignment(Qt::AlignmentFlag::AlignTop);
-    m_img_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     m_text_preview_widget->setAcceptRichText(true);
     m_text_preview_widget->setReadOnly(true);

@@ -15,8 +15,12 @@ ShortcutsWidget::ShortcutsWidget(const QList<Keybind> &keybinds, QWidget *parent
 
     // When the search button is clicked, update the filter on the proxy model
     connect(m_line_edit, &QLineEdit::textChanged, [this](const QString &text) {
-        proxyModel->setFilterRegularExpression(
-                                               QRegularExpression(text, QRegularExpression::CaseInsensitiveOption));
+        proxyModel->setFilterRegularExpression(QRegularExpression(text, QRegularExpression::CaseInsensitiveOption));
     });
+
+
+    m_table_view->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+    m_table_view->setSelectionBehavior(QTableView::SelectionBehavior::SelectRows);
+
     this->setLayout(m_layout);
 }

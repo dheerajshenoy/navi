@@ -52,6 +52,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Network)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 find_package(Lua REQUIRED)
+find_package(KDDockWidgets-qt6 REQUIRED)
 
 qt_standard_project_setup()
 # define an executable built from a source file
@@ -104,9 +105,8 @@ qt_add_executable(${PROJECT_NAME}
   src/FilePanelDelegate.hpp
 )
 
-
 # tell cmake to link the executable to the Qt 6 core and test modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
 
 set(RESOURCE_FILES
     resources/images/clock.svg

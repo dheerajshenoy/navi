@@ -10,7 +10,7 @@
 #include "Thumbnailer.hpp"
 #include "utils.hpp"
 
-class PreviewPanel : public QDockWidget {
+class PreviewPanel : public QWidget {
     Q_OBJECT
 
 signals:
@@ -84,6 +84,7 @@ private:
         return QMimeDatabase().mimeTypeForFile( filePath ).name();
     }
 
+    QVBoxLayout *m_layout = new QVBoxLayout();
     QStackedWidget *m_stack_widget = new QStackedWidget(this);
     ImageWidget *m_img_widget = new ImageWidget();
     TextEdit *m_text_preview_widget = new TextEdit();

@@ -1,6 +1,5 @@
 #include "Navi.hpp"
 
-Navi::Navi(QWidget *parent) : QMainWindow(parent) {}
 
 // Run the function if there is any error due to ``reason``.
 void Navi::Error(const QString &reason) noexcept {
@@ -20,12 +19,6 @@ void Navi::initThings() noexcept {
     init_default_options();
 
     m_file_panel->tableView()->setIconSize(QSize(64, 64));
-
-    /*if (m_load_config)*/
-    /*    initConfiguration();*/
-    /*else {*/
-    /*    initKeybinds();*/
-    /*}*/
 
     if (m_default_dir == ".")
         m_default_dir = QDir::currentPath();
@@ -67,7 +60,6 @@ void Navi::generateKeybinds() noexcept {
 }
 
 void Navi::initBookmarks() noexcept {
-
     m_bookmark_manager = new BookmarkManager(this);
 
     try {
@@ -95,7 +87,6 @@ void Navi::initBookmarks() noexcept {
         }
         m_bookmark_manager->setBookmarks(bookmarks_hash);
     }
-
     m_bookmarks_buffer = new BookmarkWidget(m_bookmark_manager, this);
 }
 
@@ -304,7 +295,7 @@ void Navi::setupCommandMap() noexcept {
 
     commandMap["shortcuts-pane"] = [this](const QStringList &args) {
         UNUSED(args);
-        ToggleShortcutsBuffer();
+        ShortcutsBuffer();
     };
 
     commandMap["up-directory"] = [this](const QStringList &args) {
@@ -880,19 +871,14 @@ void Navi::ToggleBookmarksBuffer(const bool &state) noexcept {
     }
 }
 
-void Navi::ToggleShortcutsBuffer() noexcept {
+void Navi::ShortcutsBuffer() noexcept {
     if (m_widget_hash.contains(Widget::Shortcuts)) {
         auto widget = m_widget_hash[Widget::Shortcuts];
-        if (widget->isVisible()) {
-            widget->close();
-            m_widget_hash.remove(Widget::Shortcuts);
-            delete widget;
-        }
+        widget->show();
     } else {
         auto widget = new ShortcutsWidget(m_keybind_list, this);
-        m_widget_hash.insert(Widget::Shortcuts, widget);
         widget->show();
-
+        m_widget_hash[Widget::Shortcuts] = widget;
     }
 }
 
@@ -1001,138 +987,112 @@ QString Navi::getCurrentFile() noexcept {
 }
 
 void Navi::initLayout() noexcept {
-
-    m_toolbar = new QToolBar(this);
+    m_toolbar = new QToolBar();
     addToolBar(m_toolbar);
-    m_tasks_widget = new TasksWidget(m_task_manager, this);
+    m_tasks_widget = new TasksWidget(m_task_manager);
     m_hook_manager = new HookManager();
-    m_inputbar = new Inputbar(this);
-    m_statusbar = new Statusbar(this);
+    m_inputbar = new Inputbar();
+    m_statusbar = new Statusbar();
     m_file_panel = new FilePanel(m_inputbar, m_statusbar, m_hook_manager, m_task_manager, this);
-
 
     auto table = m_file_panel->tableView();
     m_table_delegate = new FilePanelDelegate(table);
     table->setItemDelegate(m_table_delegate);
 
+    m_preview_panel = new PreviewPanel();
+    m_file_path_widget = new FilePathWidget();
+    m_log_buffer = new MessagesBuffer();
+    m_marks_buffer = new MarksBuffer();
 
+    KDDockWidget::DockWidget *filePanelDock = new KDDockWidget::DockWidget("File Panel");
+    filePanelDock->setWidget(m_file_panel);
 
-
-    m_preview_panel = new PreviewPanel(this);
-    m_file_path_widget = new FilePathWidget(this);
-    m_log_buffer = new MessagesBuffer(this);
-    m_marks_buffer = new MarksBuffer(this);
+    KDDockWidget::DockWidget *previewDock = new KDDockWidget::DockWidget("Preview Panel");
+    previewDock->setWidget(m_preview_panel);
 
     m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
-    m_file_panel->setFocus();
+    /*m_file_panel->setFocus();*/
     m_inputbar->hide();
 
-    m_file_path_widget->setContentsMargins(0, 0, 0, 0);
-    this->setContentsMargins(0, 0, 0, 0);
     m_layout->addWidget(m_file_path_widget);
-    m_layout->addWidget(m_splitter);
     m_layout->addWidget(m_inputbar);
     m_layout->addWidget(m_statusbar);
-    m_splitter->addWidget(m_file_panel);
-    m_splitter->addWidget(m_preview_panel);
-    m_widget->setLayout(m_layout);
-    this->setCentralWidget(m_widget);
+    previewDock->open();
+
+    this->addDockWidget("File Panel", KDDockWidgets::Location::Location_OnLeft);
+    this->addDockWidget("Preview Panel", KDDockWidgets::Location::Location_OnRight);
+    /*this->setCentralWidget(m_widget);*/
     this->show();
 }
 
 void Navi::initKeybinds() noexcept {
 
-    QShortcut *kb_up_directory = new QShortcut(QKeySequence("h"), this);
-    QShortcut *kb_next_item = new QShortcut(QKeySequence("j"), this);
-    QShortcut *kb_prev_item = new QShortcut(QKeySequence("k"), this);
-    QShortcut *kb_select_item = new QShortcut(QKeySequence("l"), this);
-    QShortcut *kb_goto_first_item = new QShortcut(QKeySequence("g,g"), this);
-    QShortcut *kb_goto_last_item = new QShortcut(QKeySequence("Shift+g"), this);
+    Keybind kb_up = { "h", "up-directory", "Go to the parent directory"  };
+    Keybind kb_down = { "j", "next-item", "Go to the next item" };
+    Keybind kb_prev = { "k", "prev-item", "Go to the previous item" };
+    Keybind kb_select = { "l", "select-item", "Select item" };
+    Keybind kb_filter = { "f", "filter", "Filter item visibility" };
+    Keybind kb_first_item = { "g,g", "first-item", "Go to the first item" };
+    Keybind kb_middle_item = { "z,z", "middle-item", "Go to middle item" };
+    Keybind kb_last_item = { "Shift+g", "last-item", "Go to the last item" };
+    Keybind kb_rename = { "Shift+r", "rename-dwim", "Rename item(s)" };
+    Keybind kb_delete = { "Shift+d", "delete-dwim", "Delete item(s)" };
+    Keybind kb_mark = { "Space", "toggle-mark-dwim", "Mark item(s)" };
+    Keybind kb_refresh = { "F5", "refresh", "Refresh current directory" };
+    Keybind kb_inverse_mark = { "Shift+Space", "mark-inverse", "Mark inverse item(s)" };
+    Keybind kb_visual_mode = { "Shift+v", "visual-select", "Visual selection mode" };
+    Keybind kb_extended_command = { ":", "execute-extended-command", "Execute extended command" };
+    Keybind kb_copy = { "y,y", "copy-dwim", "Copy item(s)" };
+    Keybind kb_paste = { "p", "paste", "Paste item(s)" };
+    Keybind kb_unmark_all = { "Shift+u", "unmark-local", "Unmark all item(s)" };
+    Keybind kb_search_regex = { "/", "search", "Search (regex)" };
+    Keybind kb_search_next = { "n", "search-next", "Search next" };
+    Keybind kb_search_prev = { "Shift+n", "search-prev", "Search previous" };
+    Keybind kb_toggle_menubar = { "Ctrl+m", "menu-bar", "Toggle menu bar" };
+    Keybind kb_toggle_preview_pane = { "Ctrl+p", "preview-pane", "Toggle preview pane" };
+    Keybind kb_focus_path_bar = { "Ctrl+l", "focus-path", "Focus path bar" };
+    Keybind kb_trash = { "Shift+t", "trash-dwim", "Trash item(s)" };
+    Keybind kb_toggle_hidden_files = { ".", "hidden-files", "Toggle hidden items" };
+    Keybind kb_record_macro = { "q", "macro-record", "Record or Finish recording macro" };
+    Keybind kb_copy_path = { "Shift+c", "copy-path", "Copy path(s)" };
+    Keybind kb_scroll_up_page = { "Ctrl+u", "scroll-up", "Scroll up a page" };
+    Keybind kb_scroll_down_page = { "Ctrl+d", "scroll-down", "Scroll down a page" };
 
-    QShortcut *kb_mark_item = new QShortcut(QKeySequence("Space"), this);
-    QShortcut *kb_mark_inverse = new QShortcut(QKeySequence("Shift+Space"), this);
-    QShortcut *kb_mark_all = new QShortcut(QKeySequence("Ctrl+a"), this);
+    m_keybind_list = {
+        kb_up,
+        kb_down,
+        kb_prev,
+        kb_select,
+        kb_filter,
+        kb_first_item,
+        kb_middle_item,
+        kb_last_item,
+        kb_rename,
+        kb_delete,
+        kb_mark,
+        kb_refresh,
+        kb_inverse_mark,
+        kb_visual_mode,
+        kb_extended_command,
+        kb_copy,
+        kb_paste,
+        kb_unmark_all,
+        kb_search_regex,
+        kb_search_next,
+        kb_search_prev,
+        kb_toggle_menubar,
+        kb_toggle_preview_pane,
+        kb_focus_path_bar,
+        kb_trash,
+        kb_toggle_hidden_files,
+        kb_record_macro,
+        kb_copy_path,
+        kb_scroll_up_page,
+        kb_scroll_down_page,
+    };
 
-    QShortcut *kb_command = new QShortcut(QKeySequence(":"), this);
-    QShortcut *kb_rename_items = new QShortcut(QKeySequence("Shift+r"), this);
-    QShortcut *kb_delete_items = new QShortcut(QKeySequence("Shift+d"), this);
-    QShortcut *kb_copy_items = new QShortcut(QKeySequence("y,y"), this);
-    QShortcut *kb_paste_items = new QShortcut(QKeySequence("p"), this);
-    QShortcut *kb_unmark_items_local =
-        new QShortcut(QKeySequence("Shift+u"), this);
-    QShortcut *kb_toggle_hidden_files = new QShortcut(QKeySequence("."), this);
-
-    QShortcut *kb_search = new QShortcut(QKeySequence("/"), this);
-    QShortcut *kb_search_next = new QShortcut(QKeySequence("n"), this);
-    QShortcut *kb_search_prev = new QShortcut(QKeySequence("Shift+n"), this);
-    QShortcut *kb_toggle_menubar = new QShortcut(QKeySequence("Ctrl+m"), this);
-    QShortcut *kb_toggle_preview_panel =
-        new QShortcut(QKeySequence("Ctrl+p"), this);
-    QShortcut *kb_focus_file_path_widget =
-        new QShortcut(QKeySequence("Ctrl+l"), this);
-
-    QShortcut *kb_visual_line = new QShortcut(QKeySequence("Shift+v"), this);
-
-    connect(kb_visual_line, &QShortcut::activated, this,
-            [&]() { ToggleVisualLine(); });
-
-    connect(kb_mark_item, &QShortcut::activated, this,
-            [&]() { ToggleMarkDWIM(); });
-
-    connect(kb_mark_inverse, &QShortcut::activated, this,
-            [&]() { MarkInverse(); });
-
-    connect(kb_mark_all, &QShortcut::activated, this, [&]() { MarkAllItems(); });
-
-    connect(kb_next_item, &QShortcut::activated, this, [&]() { NextItem(); });
-
-    connect(kb_prev_item, &QShortcut::activated, this, [&]() { PrevItem(); });
-
-    connect(kb_select_item, &QShortcut::activated, this, [&]() { SelectItem(); });
-
-    connect(kb_up_directory, &QShortcut::activated, this,
-            [&]() { UpDirectory(); });
-
-    connect(kb_goto_last_item, &QShortcut::activated, this,
-            [&]() { GotoLastItem(); });
-
-    connect(kb_goto_first_item, &QShortcut::activated, this,
-            [&]() { GotoFirstItem(); });
-
-    connect(kb_command, &QShortcut::activated, this,
-            &Navi::ExecuteExtendedCommand);
-
-    connect(kb_rename_items, &QShortcut::activated, this,
-            [&]() { RenameDWIM(); });
-
-    connect(kb_delete_items, &QShortcut::activated, this,
-            [&]() { DeleteDWIM(); });
-
-    connect(kb_search, &QShortcut::activated, this, [&]() { Search(QString()); });
-
-    connect(kb_search_next, &QShortcut::activated, this, [&]() { SearchNext(); });
-
-    connect(kb_search_prev, &QShortcut::activated, this, [&]() { SearchPrev(); });
-
-    connect(kb_toggle_menubar, &QShortcut::activated, this,
-            [this]() { ToggleMenuBar(); });
-
-    connect(kb_toggle_preview_panel, &QShortcut::activated, this,
-            [this]() { TogglePreviewPanel(); });
-
-    connect(kb_focus_file_path_widget, &QShortcut::activated, this,
-            [this]() { m_file_path_widget->FocusLineEdit(); });
-
-    connect(kb_paste_items, &QShortcut::activated, this, [&]() { PasteItems(); });
-
-    connect(kb_copy_items, &QShortcut::activated, this, [&]() { CopyItem(); });
-
-    connect(kb_unmark_items_local, &QShortcut::activated, this,
-            [&]() { m_file_panel->UnmarkItemsLocal(); });
-
-    connect(kb_toggle_hidden_files, &QShortcut::activated, this,
-            [&]() { ToggleHiddenFiles(); });
+    generateKeybinds();
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
@@ -1294,8 +1254,6 @@ void Navi::initMenubar() noexcept {
     m_tools_menu->addAction(m_tools_menu__find_files);
     m_tools_menu->addAction(m_tools_menu__search);
 
-
-
     m_edit_menu = new QMenu("&Edit");
 
     m_edit_menu__open = new QAction("Open");
@@ -1348,6 +1306,7 @@ void Navi::initMenubar() noexcept {
             &Navi::SelectInverse);
     connect(m_edit_menu__copy_to, &QAction::triggered, this, &Navi::copy_to);
     connect(m_edit_menu__move_to, &QAction::triggered, this, &Navi::move_to);
+
 
     m_go_menu = new QMenu("&Go");
 
@@ -1413,6 +1372,10 @@ void Navi::initMenubar() noexcept {
 
     connect(m_viewmenu__headers, &QAction::triggered, this,
             [&](const bool &state) { m_file_panel->ToggleHeaders(state); });
+
+    connect(m_viewmenu__shortcuts_widget, &QAction::triggered, [&]() {
+        ShortcutsBuffer();
+    });
 
     connect(m_viewmenu__sort_ascending, &QAction::triggered, this, &Navi::SortAscending);
 
@@ -2891,11 +2854,11 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
 }
 
 void Navi::Set_preview_pane_fraction(const double &fraction) noexcept {
-    auto totalSize = m_splitter->width();
-    m_preview_pane_fraction = fraction;
-    QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),
-        static_cast<int>(totalSize * fraction)};
-    m_splitter->setSizes(sizes);
+    /*auto totalSize = m_splitter->width();*/
+    /*m_preview_pane_fraction = fraction;*/
+    /*QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),*/
+    /*    static_cast<int>(totalSize * fraction)};*/
+    /*m_splitter->setSizes(sizes);*/
 }
 
 double Navi::Preview_pane_fraction() noexcept {

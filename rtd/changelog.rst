@@ -3,6 +3,13 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.2.9 (1 February 2025)
+------------------------
+
++ Added dock widgets to panels
++ Added KDDockWidgets as submodule as a replacement for the Qt dock widget.
++ Default shortcuts when no user config is found.
+
 v1.2.8 (29 January 2024)
 ------------------------
 
@@ -12,13 +19,13 @@ v1.2.8 (29 January 2024)
 + Vertical header cursor color support
 + Added vertical header lua customizing options
 
-v1.2.7 (25 January 2024)
+v1.2.7 (25 January 2025)
 ------------------------
 
 + Ability to check for updates
 + Scrolling up and down unusual visual highlight bug fixed.
 
-v1.2.6 (21 January 2024)
+v1.2.6 (21 January 2025)
 ------------------------
 
 + Added context menu support different for file and folder.
@@ -26,13 +33,13 @@ v1.2.6 (21 January 2024)
 + Scroll up and down like C+u and C+d
 + Fixed thumbnail caching parellization
 
-v1.2.5 (11 January 2024)
+v1.2.5 (11 January 2025)
 -----------------------
 
 + Added cursor. Cursor shows the current row in a different color (if you choose to) than the rest of the items. This is important during visual selection of files since previously the last item in the selection was assumed to be the position of the cursor in the file panel.
 + Optimized data calls from the model and view using separate roles for filename, filepath and symlink names.
 
-v1.2.4 (8 January 2024)
+v1.2.4 (8 January 2025)
 -----------------------
 
 + Symlink item property
@@ -40,7 +47,7 @@ v1.2.4 (8 January 2024)
 + **Fixed**: dragging file from navi when file_panel contained more than one column resulted in dragging files equal to the number of columns.
 + **Fixed**: File preview doesn't work after directory change.
 
-v1.2.3 (6 January 2024)
+v1.2.3 (6 January 2025)
 -----------------------
 
 + Added copy-to, move-to command to copy and move marked files to a location using a file choosing dialog.
@@ -48,14 +55,14 @@ v1.2.3 (6 January 2024)
 + Utils table to navi global namespace.
 + Fixed default directory bug.
 
-v1.2.2 (5 January 2024)
+v1.2.2 (5 January 2025)
 -----------------------
 
 + Added symlink styling support (italic, bold, underline, separator selection, background and foreground)
 + Lua API functions for symlink
 + Pre-compiled headers addition in source code for faster code compilation
 
-v1.2.1 (2 January 2024)
+v1.2.1 (2 January 2025)
 -----------------------
 
 + Added set lua API functions for ui elements to set options together in one go.

@@ -16,7 +16,6 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
             m_model->set_cursor_row(row);
             });
 
-
     initSignalsSlots();
     initContextMenu();
     m_file_name_column_index = m_model->fileNameColumnIndex();

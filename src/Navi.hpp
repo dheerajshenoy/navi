@@ -32,6 +32,8 @@
 #include "Statusbar.hpp"
 #include "UpdateDialog.hpp"
 
+namespace KDDockWidget = KDDockWidgets::QtWidgets;
+
 class Menubar : public QMenuBar {
     Q_OBJECT
 
@@ -53,10 +55,10 @@ public:
     }
 };
 
-class Navi : public QMainWindow {
+class Navi : public KDDockWidget::MainWindow {
 
 public:
-    Navi(QWidget *parent = nullptr);
+    Navi(QWidget *parent = nullptr) : KDDockWidget::MainWindow(QStringLiteral("MyMainWindow")) {}
     ~Navi();
 
     inline void set_version(const QString &version) noexcept {
@@ -296,8 +298,7 @@ public:
     void ToggleMarksBuffer() noexcept;
     void ToggleBookmarksBuffer(const bool &state) noexcept;
     void ToggleBookmarksBuffer() noexcept;
-    void ToggleShortcutsBuffer(const bool &state) noexcept;
-    void ToggleShortcutsBuffer() noexcept;
+    void ShortcutsBuffer() noexcept;
     void ToggleHiddenFiles(const bool &state) noexcept;
     void ToggleHiddenFiles() noexcept;
     void ToggleDotDot(const bool &state) noexcept;
@@ -1050,9 +1051,7 @@ private:
     void addCommandToMacroRegister(const QString &command) noexcept;
     void cacheThumbnails() noexcept;
 
-    QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
-    QSplitter *m_splitter = new QSplitter();
     Menubar *m_menubar = nullptr;
 
     // Menubar stuff
@@ -1339,7 +1338,7 @@ private:
     sol::state *m_lua;
     QStringList m_navi_lua_api_list;
     FilePanelDelegate *m_table_delegate;
-    QHash<Widget, QWidget *> m_widget_hash;
     Thumbnailer *m_thumbnailer = new Thumbnailer();
     QString m_version;
+    QHash<Widget, QWidget*> m_widget_hash;
 };

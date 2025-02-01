@@ -12,7 +12,6 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     m_line_edit->setCompleter(m_line_edit_completer);
     m_layout->addWidget(m_prompt_label);
     m_layout->addWidget(m_line_edit);
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
     connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
     connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {

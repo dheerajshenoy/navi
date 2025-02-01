@@ -4,6 +4,7 @@ static const QString VERSION = "v1.2.8";
 
 #include <QFile>
 #include <QStandardPaths>
+#include <QStyleFactory>
 #include "argparse.hpp"
 #include "utils.hpp"
 #include "API.hpp"
@@ -132,7 +133,11 @@ int main(int argc, char *argv[]) {
         lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
     } catch (sol::error &e) {
         std::cerr << "Could not load user config file: " << e.what() << "\n";
+        qDebug() << "Loading default keybindings";
+        navi->initKeybinds();
     }
+
+    qApp->setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
     app.exec();
 }

@@ -43,3 +43,5 @@
 #include <QUrl>
 #include "../sol/sol.hpp"
 #include "../argparse.hpp"
+#include <kddockwidgets/MainWindow.h>
+#include <kddockwidgets/DockWidget.h>
