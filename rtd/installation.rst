@@ -24,7 +24,13 @@ If you're on Ubuntu/Debian based distribution, you can paste the following `apt`
 
 **NOTE**: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.
 
-After installing these dependencies on your system and cloning this project repository, you can build navi by using the following command (inside the project’s directory):
+After installing these dependencies on your system, clone the reposity and it's submodules using the following command:
+
+.. code-block:: bash
+
+    git clone --recursive https://github.com/dheerajshenoy/navi
+
+you can build navi by using the following command (inside the project’s directory):
 
 .. code-block:: bash
 
