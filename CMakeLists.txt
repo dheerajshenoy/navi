@@ -99,6 +99,7 @@ qt_add_executable(${PROJECT_NAME}
   src/UpdateDialog.cpp
   src/WaitingSpinnerWidget.cpp
   src/CustomInputDialog.cpp
+  src/CollapsibleWidget.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp

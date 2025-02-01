@@ -9,6 +9,7 @@ v1.2.9 (1 February 2025)
 + Added dock widgets to panels
 + Added KDDockWidgets as submodule as a replacement for the Qt dock widget.
 + Default shortcuts when no user config is found.
++ Disable closing file panel dock widget.
 
 v1.2.8 (29 January 2024)
 ------------------------
