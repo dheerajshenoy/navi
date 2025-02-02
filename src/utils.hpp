@@ -61,4 +61,6 @@ public:
                             const QString &default_text = QString(),
                             const QString &selection_text = QString()) noexcept;
 
+    static QStringList savedLayouts() noexcept;
+
 };

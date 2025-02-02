@@ -374,3 +374,8 @@ QString utils::getInput(QWidget *parent,
 
     return dialog.textValue();
 }
+
+QStringList utils::savedLayouts() noexcept {
+    QDir dir(utils::joinPaths(CONFIG_DIR_PATH, "layouts"));
+    return dir.entryList();
+}

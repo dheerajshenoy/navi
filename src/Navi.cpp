@@ -98,19 +98,15 @@ void Navi::initSignalsSlots() noexcept {
             m_statusbar->Message(error, MessageType::ERROR);
             });
 
-    connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
-            this, [&]() {
+    connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished, [&]() {
             LogMessage("Thumbnail caching finished");
             });
 
-    connect(m_file_panel, &FilePanel::currentItemChanged, this,
-            [&]() { m_hook_manager->triggerHook("item_changed"); });
+    connect(m_file_panel, &FilePanel::currentItemChanged, [&]() { m_hook_manager->triggerHook("item_changed"); });
 
-    connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, this,
-            [&]() { m_bookmarks_buffer->loadBookmarks(); });
+    connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, [&]() { m_bookmarks_buffer->loadBookmarks(); });
 
-    connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, this,
-            [&](const QString &name) {
+    connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, [&](const QString &name) {
             GoBookmark(name);
             });
 
@@ -1219,18 +1215,27 @@ void Navi::initMenubar() noexcept {
     m_viewmenu->addAction(m_viewmenu__shortcuts_widget);
     m_viewmenu->addAction(m_viewmenu__tasks_widget);
 
+    m_layoutmenu = new QMenu("Layout");
+
+    m_layoutmenu__load_layout = new QAction("Load Layout");
+    m_layoutmenu__save_layout = new QAction("Save Layout");
+    m_layoutmenu__delete_layout = new QAction("Delete Layout");
+
+    m_layoutmenu->addActions({
+        m_layoutmenu__load_layout,
+        m_layoutmenu__save_layout,
+        m_layoutmenu__delete_layout
+    });
+
     m_bookmarks_menu = new QMenu("&Bookmarks");
 
     m_bookmarks_menu__add = new QAction("Add bookmark");
     m_bookmarks_menu__remove = new QAction("Remove bookmark");
 
-
     m_bookmarks_menu__bookmarks_list_menu = new QMenu("Bookmarks");
     m_bookmarks_menu->addMenu(m_bookmarks_menu__bookmarks_list_menu);
     m_bookmarks_menu->addAction(m_bookmarks_menu__add);
     m_bookmarks_menu->addAction(m_bookmarks_menu__remove);
-
-
 
     auto bookmarks = m_bookmark_manager->getBookmarkNames();
     if (!bookmarks.empty()) {
@@ -1291,7 +1296,6 @@ void Navi::initMenubar() noexcept {
     m_edit_menu->addAction(m_edit_menu__select_all);
     m_edit_menu->addAction(m_edit_menu__select_inverse);
 
-
     connect(m_edit_menu__link_to, &QAction::triggered, this, &Navi::link_to);
     connect(m_edit_menu__open, &QAction::triggered, this, &Navi::SelectItem);
     connect(m_edit_menu__copy_path, &QAction::triggered, this, [&]() {
@@ -1319,7 +1323,6 @@ void Navi::initMenubar() noexcept {
     m_go_menu__previous_folder = new QAction("Previous Folder");
     m_go_menu__next_folder = new QAction("Next Folder");
     m_go_menu__connect_to_server = new QAction("Connect to Server");
-
 
     m_go_menu->addActions({
         m_go_menu__previous_folder,
@@ -1350,10 +1353,15 @@ void Navi::initMenubar() noexcept {
     m_menubar->addMenu(m_filemenu);
     m_menubar->addMenu(m_edit_menu);
     m_menubar->addMenu(m_viewmenu);
+    m_menubar->addMenu(m_layoutmenu);
     m_menubar->addMenu(m_bookmarks_menu);
     m_menubar->addMenu(m_go_menu);
     m_menubar->addMenu(m_tools_menu);
     m_menubar->addMenu(m_help_menu);
+
+    connect(m_layoutmenu__save_layout, &QAction::triggered, &Navi::saveLayout);
+    connect(m_layoutmenu__load_layout, &QAction::triggered, &Navi::loadLayout);
+    connect(m_layoutmenu__delete_layout, &QAction::triggered, &Navi::deleteLayout);
 
     connect(m_viewmenu__refresh, &QAction::triggered, this,
             [&](const bool &state) { ForceUpdate(); });
@@ -3126,4 +3134,51 @@ sol::table Navi::get_vheader_props() noexcept {
     table["border"] = vheader->hasBorder();
 
     return table;
+}
+
+void Navi::loadLayout() noexcept {
+
+}
+
+void Navi::deleteLayout() noexcept {
+
+}
+
+void Navi::saveLayout() noexcept {
+    KDDockWidgets::LayoutSaver saver;
+
+    QStringList savedLayouts = utils::savedLayouts();
+
+    bool fine = false;
+    bool ok;
+
+    QString layoutName;
+
+    while (!fine) {
+
+        layoutName = QInputDialog::getText(nullptr,
+                                           "Save Layout",
+                                           "Enter layout name",
+                                           QLineEdit::Normal,
+                                           "",
+                                           &ok);
+
+        if (!ok || layoutName.isEmpty())
+            return;
+
+        if (savedLayouts.contains(layoutName)) {
+            QMessageBox::warning(nullptr,
+                "Layout Name Exists",
+                QString(
+                    "Layout with the name '%1' already exists. Please try saving "
+                    "the layout with a unique name")
+                .arg(layoutName)).exec();
+        } else {
+            fine = true;
+        }
+    }
+
+    layoutName += ".json";
+    QString path = utils::joinPaths(LAYOUT_PATH, layoutName);
+    saver.saveToFile(path);
 }

@@ -43,7 +43,8 @@
 #include <QUrl>
 #include "../sol/sol.hpp"
 #include "../argparse.hpp"
-#include <kddockwidgets-qt6/kddockwidgets/MainWindow.h>
-#include <kddockwidgets-qt6/kddockwidgets/DockWidget.h>
-#include <kddockwidgets-qt6/kddockwidgets/Config.h>
-#include <kddockwidgets-qt6/kddockwidgets/core/TitleBar.h>
+#include "../../KDDockWidgets/src/core/MainWindow.h"
+#include "../../KDDockWidgets/src/core/DockWidget.h"
+#include "../../KDDockWidgets/src/Config.h"
+#include "../../KDDockWidgets/src/core/TitleBar.h"
+#include "../../KDDockWidgets/src/LayoutSaver.h"

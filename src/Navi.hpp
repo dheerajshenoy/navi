@@ -1029,6 +1029,10 @@ public:
     void set_vheader_props(const sol::table &table) noexcept;
     sol::table get_vheader_props() noexcept;
 
+    void loadLayout() noexcept;
+    void deleteLayout() noexcept;
+    void saveLayout() noexcept;
+
 protected:
     bool event(QEvent *e) override;
 
@@ -1074,7 +1078,6 @@ private:
     QAction *m_filemenu__close_window;
     QAction *m_filemenu__folder_properties;
 
-
     QAction *m_viewmenu__refresh;
     QAction *m_viewmenu__filter;
     QAction *m_viewmenu__preview_panel;
@@ -1090,6 +1093,12 @@ private:
     QAction *m_viewmenu__tasks_widget;
 
     QMenu *m_viewmenu__sort_menu;
+
+    QMenu *m_layoutmenu;
+
+    QAction *m_layoutmenu__save_layout;
+    QAction *m_layoutmenu__load_layout;
+    QAction *m_layoutmenu__delete_layout;
 
     QActionGroup *m_viewmenu__sort_by_group;
     QAction *m_viewmenu__sort_by_name;
