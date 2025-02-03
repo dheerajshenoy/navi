@@ -47,7 +47,7 @@ package() {
 
     # Install shared resources
     install -d "$pkgdir/usr/share/navi"
-    cp -r "$srcdir/$pkgname-$pkgver/data/" "$pkgdir/usr/share/navi/"
+    cp -r "$srcdir/$pkgname-$pkgver/data/_lua/" "$pkgdir/usr/share/navi/"
 
     # Install icons (if available)
     # install -d "$pkgdir/usr/share/icons/hicolor/scalable/apps"
