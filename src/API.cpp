@@ -41,6 +41,7 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_default_dir", &Navi::Get_default_directory,
                            "get_cycle", &Navi::get_cycle,
                            "set_cycle", &Navi::set_cycle,
+                           "screenshot", &Navi::screenshot,
 
                            // Headers
                            "set_header_visible", &Navi::set_header_visible,
