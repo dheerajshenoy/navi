@@ -8,6 +8,11 @@ project(navi VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
 set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "C++ standard required")
 
+set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+set(CMAKE_HAVE_THREADS_LIBRARY 1)
+set(CMAKE_USE_PTHREADS_INIT 1)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
 find_program(SCCACHE sccache)
 find_program(CCACHE ccache)
 
