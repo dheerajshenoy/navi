@@ -60,7 +60,7 @@ public:
                                                   KDDockWidgets::MainWindowOption_HasCentralWidget) {}
     ~Navi();
 
-    void screenshot(const std::string &path = std::string()) noexcept;
+    void screenshot(const std::string &path = "") noexcept;
 
     inline void set_version(const QString &version) noexcept {
         m_version = version;
