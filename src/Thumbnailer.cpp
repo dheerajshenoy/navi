@@ -69,14 +69,17 @@ QString Thumbnailer::file_uri_from_path(const QString &path) noexcept {
 QImage Thumbnailer::get_image_from_cache(const QString &file_name) noexcept {
     QString path_uri = file_uri_from_path(file_name);
     QFileInfo f(path_uri);
+    QImage image;
     if (f.exists()) {
         if (QFileInfo(file_name).lastModified() > f.lastModified()) {
             generate_thumbnail_for_image(file_name, path_uri);
         }
-        return QImage(path_uri);
+    } else {
+        generate_thumbnail_for_image(file_name, path_uri);
     }
 
-    return QImage();
+    image = QImage(path_uri);
+    return image;
 }
 
 void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const QString &path_uri) noexcept {
@@ -133,7 +136,7 @@ void Thumbnailer::generate_thumbnail_for_video(const QString &file_name, const Q
         QStringList arguments;
         arguments << "-i" << file_name
             << "-o" << path_uri
-            << "-s" << "256";  // Thumbnail size 128x128
+            << "-s" << "256";
 
         // Execute the command
         QProcess process;

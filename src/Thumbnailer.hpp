@@ -24,6 +24,5 @@ private:
     void generate_thumbnail_for_pdf(const QString &filePath, const QString &path_uri) noexcept;
     void generate_thumbnail_for_video(const QString &filePath, const QString &path_uri) noexcept;
 
-    QHash<QCryptographicHash, QImage> m_image_hash;
     qint64 m_thumbnail_threshold = utils::parseFileSize("10M");
 };
