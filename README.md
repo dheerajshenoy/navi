@@ -11,7 +11,9 @@ A file manager for the minimalist & impatient
 
 # Introduction
 
-This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++. Check out <a href="https://dheerajshenoy.github.io/navi">navi homepage</a> for latest documentation.
+This is a file manager written using the Qt GUI framework leveraging the performance and robustness of C++. Check out <a href="https://dheerajshenoy.github.io/navi">navi homepage</a> for the homepage.
+
+For in detailed documentation, please visit <a href="https://navi.readthedocs.io">navi.readthedocs.io</a>.
 
 <a id="org326bc2f"></a>
 
