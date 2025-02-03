@@ -34,3 +34,5 @@
 .cache/
 build/
 bin/
+
+KDDockWidgets/
