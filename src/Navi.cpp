@@ -3272,7 +3272,7 @@ void Navi::screenshot(const std::string &_path) noexcept {
 
     auto geom = win->geometry();
 
-    QPixmap pix = screen->grabWindow(0);
+    QPixmap pix = screen->grabWindow(0, geom.x(), geom.y(), geom.width(), geom.height());
 
     if (pix.isNull())
         return;
