@@ -1426,7 +1426,7 @@ void FilePanel::CopyDWIM() noexcept {
 
 void FilePanel::CopyItem() noexcept {
     m_file_op_type = FileWorker::FileOPType::COPY;
-    m_register_files_list = {getCurrentItem()};
+    m_register_files_list = { getCurrentItem() };
 }
 
 void FilePanel::CopyItemsLocal() noexcept {
