@@ -791,7 +791,7 @@ api
 
     :return: ``str[]``
 
-.. function:: register_function(name: str, func: sol::function)
+.. function:: create_user_command(name: str, func: sol::function)
 
    Registers a Lua function with the specified name.
 
@@ -801,7 +801,7 @@ api
 
    .. note:: Registering a function means to expose the user defined lua function to be used inside navi by allowing user to call the function using the ``lua`` command followed by the function name.
 
-.. function:: unregister_function(name: str)
+.. function:: remove_user_command(name: str)
 
    Unregisters a previously registered Lua function.
 
