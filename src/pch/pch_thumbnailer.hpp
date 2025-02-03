@@ -19,3 +19,4 @@
 #include <QPromise>
 #include <QFuture>
 #include <QThread>
+#include <QCache>

@@ -333,20 +333,20 @@ QString utils::getInput(QWidget *parent,
                         const QString &default_text,
                         const QString &selection_text) noexcept {
 
-    CustomInputDialog dialog(parent);
+    QInputDialog dialog(parent);
     dialog.setTextValue(default_text);
     dialog.setWindowTitle(title);
 
     dialog.show();
 
-    if (!selection_text.isEmpty()) {
-        int startPos = default_text.indexOf(selection_text);
-        qDebug() << selection_text;
-        if (startPos != -1)
-            dialog.lineEdit()->setSelection(0, 5);
-    }
+    /*if (!selection_text.isEmpty()) {*/
+    /*    int startPos = default_text.indexOf(selection_text);*/
+    /*    qDebug() << selection_text;*/
+    /*    if (startPos != -1)*/
+    /*        dialog.lineEdit()->setSelection(0, 5);*/
+    /*}*/
 
-    if (dialog.exec() == static_cast<int>(CustomInputDialog::DialogCode::Accepted))
+    if (dialog.exec() == QInputDialog::DialogCode::Accepted)
         return dialog.textValue();
 
     return QString();
@@ -359,15 +359,15 @@ QString utils::getInput(QWidget *parent,
                         const QString &default_text,
                         const QString &selection_text) noexcept {
 
-    CustomInputDialog dialog(parent);
+    QInputDialog dialog(parent);
     dialog.setWindowTitle(title);
     dialog.setTextValue(default_text);
     dialog.show();
 
-    if (!selection_text.isEmpty())
-        dialog.findChild<QLineEdit*>()->setSelection(0, default_text.indexOf(selection_text) + selection_text.size());
+    /*if (!selection_text.isEmpty())*/
+    /*    dialog.findChild<QLineEdit*>()->setSelection(0, default_text.indexOf(selection_text) + selection_text.size());*/
 
-    if (dialog.exec() == static_cast<int>(CustomInputDialog::DialogCode::Accepted))
+    if (dialog.exec() == QInputDialog::DialogCode::Accepted)
         ok = true;
     else
         ok = false;

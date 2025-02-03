@@ -47,3 +47,6 @@
 #include <kddockwidgets/Config.h>
 #include <kddockwidgets/LayoutSaver.h>
 #include <kddockwidgets/core/TitleBar.h>
+#include <kddockwidgets/core/MainWindow.h>
+#include <QScreen>
+#include <QUuid>
