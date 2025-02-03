@@ -10,11 +10,28 @@ Navi can be built from source. The following libraries are dependencies for navi
 - `Poppler (Poppler-Qt6) <https://poppler.freedesktop.org/api/qt6/>`_
 - `Udisks <https://www.freedesktop.org/wiki/Software/udisks/>`_
 
-If you're on ArchLinux you can copy paste the following `pacman` code to install these dependencies:
+If you're on ArchLinux:
+
+Install using PKGBUILD
+~~~~~~~~~~~~~~~~~~~~~~
+
+1. Download `PKGBUILD <https://raw.githubusercontent.com/dheerajshenoy/navi/refs/heads/main/packages/PKGBUILD>`_ file
+2. Run ``makepkg -si`` command and it should install navi for you
+
+Building manually
+~~~~~~~~~~~~~~~~~
+
+ArchLinux
+=========
+
+You can copy paste the following `pacman` code to install these dependencies:
 
 .. code-block:: bash
 
     sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6 udisks2 libarchive
+
+Debian/Ubuntu
+=============
 
 If you're on Ubuntu/Debian based distribution, you can paste the following `apt` code to install the dependencies:
 
@@ -24,7 +41,13 @@ If you're on Ubuntu/Debian based distribution, you can paste the following `apt`
 
 **NOTE**: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.
 
-After installing these dependencies on your system and cloning this project repository, you can build navi by using the following command (inside the project’s directory):
+After installing these dependencies on your system, clone the reposity and it's submodules using the following command:
+
+.. code-block:: bash
+
+    git clone --recursive https://github.com/dheerajshenoy/navi
+
+you can build navi by using the following command (inside the project’s directory):
 
 .. code-block:: bash
 

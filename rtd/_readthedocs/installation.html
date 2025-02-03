@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.8
+                1.2.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,12 +51,21 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-using-pkgbuild">Install using PKGBUILD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-manually">Building manually</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#archlinux">ArchLinux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-ubuntu">Debian/Ubuntu</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lua_scripting.html">Lua scripting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Navi Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Issues</a></li>
 </ul>
 
         </div>
@@ -93,16 +102,35 @@
 <li><p><a class="reference external" href="https://poppler.freedesktop.org/api/qt6/">Poppler (Poppler-Qt6)</a></p></li>
 <li><p><a class="reference external" href="https://www.freedesktop.org/wiki/Software/udisks/">Udisks</a></p></li>
 </ul>
-<p>If you’re on ArchLinux you can copy paste the following <cite>pacman</cite> code to install these dependencies:</p>
+<p>If you’re on ArchLinux:</p>
+<section id="install-using-pkgbuild">
+<h2>Install using PKGBUILD<a class="headerlink" href="#install-using-pkgbuild" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Download <a class="reference external" href="https://raw.githubusercontent.com/dheerajshenoy/navi/refs/heads/main/packages/PKGBUILD">PKGBUILD</a> file</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">makepkg</span> <span class="pre">-si</span></code> command and it should install navi for you</p></li>
+</ol>
+</section>
+<section id="building-manually">
+<h2>Building manually<a class="headerlink" href="#building-manually" title="Link to this heading"></a></h2>
+<section id="archlinux">
+<h3>ArchLinux<a class="headerlink" href="#archlinux" title="Link to this heading"></a></h3>
+<p>You can copy paste the following <cite>pacman</cite> code to install these dependencies:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>qt6-base<span class="w"> </span>lua<span class="w"> </span>imagemagick<span class="w"> </span>poppler<span class="w"> </span>poppler-qt6<span class="w"> </span>udisks2<span class="w"> </span>libarchive
 </pre></div>
 </div>
+</section>
+<section id="debian-ubuntu">
+<h3>Debian/Ubuntu<a class="headerlink" href="#debian-ubuntu" title="Link to this heading"></a></h3>
 <p>If you’re on Ubuntu/Debian based distribution, you can paste the following <cite>apt</cite> code to install the dependencies:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>qt6-base-dev<span class="w"> </span>lua5.4<span class="w"> </span>libmagick++-dev<span class="w"> </span>libpoppler-dev<span class="w"> </span>libpoppler-cpp-dev<span class="w"> </span>libpoppler-qt6-dev<span class="w"> </span>udisks2<span class="w"> </span>libarchive
 </pre></div>
 </div>
 <p><strong>NOTE</strong>: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.</p>
-<p>After installing these dependencies on your system and cloning this project repository, you can build navi by using the following command (inside the project’s directory):</p>
+<p>After installing these dependencies on your system, clone the reposity and it’s submodules using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>https://github.com/dheerajshenoy/navi
+</pre></div>
+</div>
+<p>you can build navi by using the following command (inside the project’s directory):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
 cmake<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>..
 make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
@@ -115,6 +143,8 @@ sudo<span class="w"> </span>make<span class="w"> </span>install
 </div>
 <p>If everything went well, you should have navi installed on your system. You can launch navi using the command <cite>navi</cite>.</p>
 <p>Next, you can check out <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> to know more about the configuration options and customizations in navi.</p>
+</section>
+</section>
 </section>
 
 

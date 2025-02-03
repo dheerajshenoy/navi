@@ -54,7 +54,7 @@ package() {
     # install -Dm644 "$srcdir/$pkgname-$pkgver/resources/images/menu.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/navi.svg"
 
     # Install .desktop entry (if available)
-    install -Dm644 "$srcdir/$pkgname-$pkgver/navi.desktop" "$pkgdir/usr/share/applications/navi.desktop"
+    install -Dm644 "$srcdir/$pkgname-$pkgver/resources/navi.desktop" "$pkgdir/usr/share/applications/navi.desktop"
 
     # Install man pages (if available)
     # install -d "$pkgdir/usr/share/man/man1"

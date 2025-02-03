@@ -10,11 +10,28 @@ Navi can be built from source. The following libraries are dependencies for navi
 - `Poppler (Poppler-Qt6) <https://poppler.freedesktop.org/api/qt6/>`_
 - `Udisks <https://www.freedesktop.org/wiki/Software/udisks/>`_
 
-If you're on ArchLinux you can copy paste the following `pacman` code to install these dependencies:
+If you're on ArchLinux:
+
+Install using PKGBUILD
+~~~~~~~~~~~~~~~~~~~~~~
+
+1. Download `PKGBUILD <https://raw.githubusercontent.com/dheerajshenoy/navi/refs/heads/main/packages/PKGBUILD>`_ file
+2. Run ``makepkg -si`` command and it should install navi for you
+
+Building manually
+~~~~~~~~~~~~~~~~~
+
+ArchLinux
+=========
+
+You can copy paste the following `pacman` code to install these dependencies:
 
 .. code-block:: bash
 
-    sudo pacman -S qt6-base lua imagemagick poppler poppler-qt6 udisks2 libarchive
+    sudo pacman -S make ninja cmake qt6-base lua imagemagick poppler poppler-qt6 udisks2 libarchive
+
+Debian/Ubuntu
+=============
 
 If you're on Ubuntu/Debian based distribution, you can paste the following `apt` code to install the dependencies:
 
@@ -29,21 +46,17 @@ After installing these dependencies on your system, clone the reposity and it's 
 .. code-block:: bash
 
     git clone --recursive https://github.com/dheerajshenoy/navi
+    cd navi
+    git submodule update --init --recursive
 
 you can build navi by using the following command (inside the project’s directory):
 
 .. code-block:: bash
 
     mkdir build && cd build
-    cmake -DCMAKE_BUILD_TYPE=Release ..
-    make -j$(nproc)
-    sudo make install
-
-One liner:
-
-.. code-block:: bash
-
-    mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j $(nproc) && sudo make install
+    cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+    ninja -j$(nproc)
+    sudo ninja install
 
 If everything went well, you should have navi installed on your system. You can launch navi using the command `navi`.
 
