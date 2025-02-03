@@ -40,7 +40,7 @@ void FileWorker::copyFile(const QString &src, QString dest) noexcept {
         }
     }
 
-    QFuture<void> future = QtConcurrent::run([=]() {
+    QFuture<void> future = QtConcurrent::run([this, &src, &dest]() {
         offloadOperation(std::ref(src), std::ref(dest));
         decrement_and_check_operations();
     });
@@ -138,7 +138,7 @@ void FileWorker::cutFile(const QString &src, QString dest) noexcept {
         }
     }
 
-    QFuture<void> future = QtConcurrent::run([=]() {
+    QFuture<void> future = QtConcurrent::run([this, &src, &dest]() {
         offloadOperation(std::ref(src), std::ref(dest));
         decrement_and_check_operations();
     });

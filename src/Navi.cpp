@@ -1,5 +1,4 @@
 #include "Navi.hpp"
-#include <kddockwidgets/KDDockWidgets.h>
 
 // Run the function if there is any error due to ``reason``.
 void Navi::Error(const QString &reason) noexcept {
@@ -1003,7 +1002,6 @@ void Navi::initLayout() noexcept {
     m_log_buffer = new MessagesBuffer();
     m_marks_buffer = new MarksBuffer();
 
-    m_preview_panel_dock = new KDDockWidget::DockWidget("Preview Panel");
     m_preview_panel_dock->setWidget(m_preview_panel);
     m_preview_panel->setContentsMargins(0, 0, 0, 0);
 
@@ -1012,7 +1010,6 @@ void Navi::initLayout() noexcept {
     m_file_panel->setFocus();
     m_inputbar->hide();
 
-    m_dock_container = new KDDockWidgets::QtWidgets::MainWindow("DockContainer");
     m_dock_container->setContentsMargins(0, 0, 0, 0);
 
     m_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -1020,10 +1017,9 @@ void Navi::initLayout() noexcept {
     m_layout->addWidget(m_dock_container);
     /*m_layout->addWidget(m_file_panel);*/
     m_layout->addWidget(m_inputbar);
+    m_layout->addWidget(m_statusbar);
     m_widget->setLayout(m_layout);
 
-    m_file_panel_dock = new KDDockWidgets::QtWidgets::DockWidget("File Panel",
-                                                                 KDDockWidgets::DockWidgetOption::DockWidgetOption_NotClosable);
     m_file_panel_dock->setContentsMargins(0, 0, 0, 0);
     m_file_panel_dock->setWidget(m_file_panel);
     m_preview_panel_dock->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
@@ -1035,7 +1031,6 @@ void Navi::initLayout() noexcept {
                                     s);
 
     this->setPersistentCentralWidget(m_widget);
-    setStatusBar(m_statusbar);
     this->show();
 }
 
@@ -1457,8 +1452,6 @@ void Navi::initMenubar() noexcept {
     // item
 
 }
-
-bool Navi::createEmptyFile(const QString &filePath) noexcept {}
 
 void Navi::ToggleMenuBar(const bool &state) noexcept {
     if (state) {
@@ -3002,31 +2995,31 @@ void Navi::set_toolbar_props(const sol::table &table) noexcept {
 
 
 void Navi::set_symlink_props(const sol::table &table) noexcept {
-    if (table["font"])
+    if (table["font"].valid())
         set_symlink_font(table["font"].get<std::string>());
 
-    if (table["font_size"])
+    if (table["font_size"].valid())
         set_symlink_font_size(table["font_size"].get<int>());
 
-    if (table["foreground"])
+    if (table["foreground"].valid())
         set_symlink_foreground(table["foreground"].get<std::string>());
 
-    if (table["background"])
+    if (table["background"].valid())
         set_symlink_background(table["background"].get<std::string>());
 
-    if (table["visible"])
+    if (table["visible"].valid())
         set_symlink_visible(table["visible"].get<bool>());
 
-    if (table["bold"])
+    if (table["bold"].valid())
         set_symlink_bold(table["bold"].get<bool>());
 
-    if (table["italic"])
+    if (table["italic"].valid())
         set_symlink_italic(table["italic"].get<bool>());
 
-    if (table["underline"])
+    if (table["underline"].valid())
         set_symlink_underline(table["underline"].get<bool>());
 
-    if (table["separator"])
+    if (table["separator"].valid())
         set_symlink_separator(table["separator"].get<std::string>());
 }
 
@@ -3045,22 +3038,22 @@ sol::table Navi::get_symlink_props() noexcept {
 
 void Navi::set_cursor_props(const sol::table &table) noexcept {
 
-    if (table["font"])
+    if (table["font"].valid())
         set_cursor_font(table["font"].get<std::string>());
 
-    if (table["foreground"])
+    if (table["foreground"].valid())
         set_cursor_foreground(table["foreground"].get<std::string>());
 
-    if (table["background"])
+    if (table["background"].valid())
         set_cursor_background(table["background"].get<std::string>());
 
-    if (table["bold"])
+    if (table["bold"].valid())
         set_cursor_bold(table["bold"].get<bool>());
 
-    if (table["italic"])
+    if (table["italic"].valid())
         set_cursor_italic(table["italic"].get<bool>());
 
-    if (table["underline"])
+    if (table["underline"].valid())
         set_cursor_underline(table["underline"].get<bool>());
 }
 

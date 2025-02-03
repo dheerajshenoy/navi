@@ -46,4 +46,4 @@
 #include <kddockwidgets/DockWidget.h>
 #include <kddockwidgets/Config.h>
 #include <kddockwidgets/LayoutSaver.h>
-#include <kddockwidgets/qtwidgets/MDIArea.h>
+#include <kddockwidgets/core/TitleBar.h>

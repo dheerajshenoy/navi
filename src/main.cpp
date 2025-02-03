@@ -139,5 +139,8 @@ int main(int argc, char *argv[]) {
 
     qApp->setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
+    app.setOrganizationName("Navi");
+    app.setApplicationName("navi");
+
     app.exec();
 }

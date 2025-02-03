@@ -32,8 +32,6 @@
 #include "Statusbar.hpp"
 #include "UpdateDialog.hpp"
 
-namespace KDDockWidget = KDDockWidgets::QtWidgets;
-
 class Menubar : public QMenuBar {
     Q_OBJECT
 
@@ -59,7 +57,7 @@ class Navi : public KDDockWidgets::QtWidgets::MainWindow {
 
 public:
     explicit Navi() : KDDockWidgets::QtWidgets::MainWindow("NaviMainWindow",
-                                                  KDDockWidgets::MainWindowOption::MainWindowOption_HasCentralWidget) {}
+                                                  KDDockWidgets::MainWindowOption_HasCentralWidget) {}
     ~Navi();
 
     inline void set_version(const QString &version) noexcept {
@@ -1046,7 +1044,6 @@ private:
     void initSignalsSlots() noexcept;
     void setupCommandMap() noexcept;
     bool isValidPath(QString path);
-    bool createEmptyFile(const QString &filename) noexcept;
     QString getCurrentFile() noexcept;
     void ProcessCommand(const QString &commandtext) noexcept;
     void generateKeybinds() noexcept;
@@ -1351,7 +1348,7 @@ private:
     Thumbnailer *m_thumbnailer = new Thumbnailer();
     QString m_version;
     QHash<Widget, QWidget*> m_widget_hash;
-    KDDockWidget::DockWidget *m_preview_panel_dock = nullptr;
-    KDDockWidget::DockWidget *m_file_panel_dock = nullptr;
-    KDDockWidget::MainWindow *m_dock_container = nullptr;
+    KDDockWidgets::QtWidgets::DockWidget *m_preview_panel_dock = new KDDockWidgets::QtWidgets::DockWidget("Preview Panel");
+    KDDockWidgets::QtWidgets::DockWidget *m_file_panel_dock = new KDDockWidgets::QtWidgets::DockWidget("File Panel");
+    KDDockWidgets::QtWidgets::MainWindow *m_dock_container = new KDDockWidgets::QtWidgets::MainWindow("Container");
 };

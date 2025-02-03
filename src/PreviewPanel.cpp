@@ -52,7 +52,12 @@ void PreviewPanel::showImagePreview(const QImage &image) noexcept {
 void PreviewPanel::showTextPreview() noexcept {
     m_stack_widget->setCurrentIndex(0);
     auto linestrings = utils::readLinesFromFile(m_filepath, m_num_read_lines);
-    m_text_preview_widget->setText(linestrings.join("\n"));
+
+    if (linestrings.empty()) {
+        m_text_preview_widget->clear();
+    } else {
+        m_text_preview_widget->setText(linestrings.join("\n"));
+    }
 }
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
@@ -69,8 +74,12 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
         m_text_file_preview_timer->start(150);
     } else if (m_archive_mimetypes.contains(mimetype)) {
         m_archive_preview_timer->start(150);
-    } else
+    } else if (mimetype == "application/pdf" ||
+        mimetype.startsWith("image")) {
         m_image_preview_timer->start(150);
+    } else {
+        m_stack_widget->setCurrentIndex(2);
+    }
 }
 
 void PreviewPanel::loadImageAfterDelay() noexcept {

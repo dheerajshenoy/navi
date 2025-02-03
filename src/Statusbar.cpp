@@ -1,17 +1,19 @@
 #include "Statusbar.hpp"
 #include <qnamespace.h>
 
-Statusbar::Statusbar(QWidget *parent) : QStatusBar(parent) {
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+Statusbar::Statusbar(QWidget *parent) : QWidget(parent) {
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
-    this->setSizeGripEnabled(false);
+    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_vert_layout->setContentsMargins(10, 0, 10, 0);
 
-    this->addPermanentWidget(m_message_label);
+    m_vert_layout->addLayout(m_layout);
     m_message_label->hide();
 
     m_visual_line_mode_label->setHidden(true);
     m_macro_mode_label->setHidden(true);
 
+    m_vert_layout->addWidget(m_message_label);
     m_filter_label->setHidden(true);
     m_message_timer->setSingleShot(true);
     connect(m_message_timer, &QTimer::timeout, this, [&]() {
@@ -19,6 +21,7 @@ Statusbar::Statusbar(QWidget *parent) : QStatusBar(parent) {
     });
 
     m_message_palette = m_message_label->palette();
+    this->setLayout(m_vert_layout);
 }
 
 void Statusbar::Message(const QString &message, const MessageType type,
@@ -209,48 +212,58 @@ void Statusbar::hide() noexcept {
 
 void Statusbar::addModule(const QString &name) noexcept {
     if (name == "name") {
-        addPermanentWidget(m_file_name_label);
+        m_layout->addWidget(m_file_name_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "stretch") {
-        addPermanentWidget(new QLabel(), 1);
+        m_layout->addStretch();
     }
 
     else if (name == "size") {
-        addPermanentWidget(m_file_size_label);
+        m_layout->addWidget(m_file_size_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "permission") {
-        addPermanentWidget(m_file_perm_label);
+        m_layout->addWidget(m_file_perm_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "count") {
-        addPermanentWidget(new QLabel("Items: "));
-        addPermanentWidget(m_num_items_label);
+        m_layout->addWidget(new QLabel("Items: "));
+        m_layout->addWidget(m_num_items_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "modified_date") {
-        addPermanentWidget(m_file_modified_label);
+        m_layout->addWidget(m_file_modified_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "visual_line") {
-        addPermanentWidget(m_visual_line_mode_label);
+        m_layout->addWidget(m_visual_line_mode_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "macro") {
-        addPermanentWidget(m_macro_mode_label);
+        m_layout->addWidget(m_macro_mode_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "filter") {
-        addPermanentWidget(m_filter_label);
+        m_layout->addWidget(m_filter_label);
+        m_layout->addSpacing(10);
     }
 
     else if (name == "search") {
-        addPermanentWidget(m_search_match_label);
+        m_layout->addWidget(m_search_match_label);
+        m_layout->addSpacing(10);
     } else if (m_module_widget_hash.contains(name)) {
         auto widget = m_module_widget_hash[name];
         if (widget) {
-            addPermanentWidget(widget);
+            m_layout->addWidget(widget);
+            m_layout->addSpacing(10);
         }
     }
 
@@ -286,7 +299,8 @@ void Statusbar::Lua__AddModule(const Statusbar::Module &module) noexcept {
             .arg(QString::fromStdString(bg))
             .arg(QString::fromStdString(fg)));
 
-    addPermanentWidget(label);
+    m_layout->addWidget(label);
+    m_layout->addSpacing(10);
 
     if (!visible)
         label->setHidden(true);
@@ -317,7 +331,8 @@ void Statusbar::Lua__InsertModule(const Statusbar::Module &module,
             .arg(QString::fromStdString(bg))
             .arg(QString::fromStdString(fg)));
 
-    insertWidget(index, label);
+    m_layout->insertWidget(index, label);
+    m_layout->addSpacing(10);
     label->setVisible(!hidden);
 
     m_module_widget_hash.insert(QString::fromStdString(module.name), label);
@@ -335,14 +350,13 @@ void Statusbar::Lua__SetModules(const sol::table &table) noexcept {
     if (table.valid()) {
 
         // If widgets are already present, remove them (not delete)
-        /*while (QLayoutItem *item = layout()->takeAt(0)) {*/
-        /*    if (QWidget *widget = item->widget()) {*/
-        /*        widget->setParent(nullptr);*/
-        /*        widget->deleteLater();*/
-        /*    }*/
-        /*    delete item;*/
-        /*}*/
-        // TODO:
+        while (QLayoutItem *item = m_layout->takeAt(0)) {
+            if (QWidget *widget = item->widget()) {
+                widget->setParent(nullptr);
+                widget->deleteLater();
+            }
+            delete item;
+        }
 
         // Add the modules
         for (const auto &module : table) {

@@ -3,10 +3,11 @@
 #include "pch/pch_statusbar.hpp"
 #include "utils.hpp"
 #include "sol/sol.hpp"
+#include <qboxlayout.h>
 
 enum class MessageType { INFO = 0, WARNING, ERROR };
 
-class Statusbar : public QStatusBar {
+class Statusbar : public QWidget {
     Q_OBJECT
 
 public:
@@ -101,6 +102,8 @@ signals:
     void logMessage(const QString &message, const MessageType &type);
 
 private:
+    QVBoxLayout *m_vert_layout = new QVBoxLayout();
+    QHBoxLayout *m_layout = new QHBoxLayout();
     QLabel *m_message_label = new QLabel();
     QLabel *m_file_name_label = new QLabel();
     QLabel *m_file_size_label = new QLabel();
