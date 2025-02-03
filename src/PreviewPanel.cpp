@@ -93,14 +93,13 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
 
 void PreviewPanel::loadImageAfterDelay() noexcept {
     QImage img;
-    if (m_image_cache_hash.contains(m_filepath)) {
-        img = m_image_cache_hash[m_filepath];
+    if (m_image_cache.contains(m_filepath)) {
+        img = *m_image_cache[m_filepath];
     } else {
         img = m_thumbnailer->get_image_from_cache(m_filepath);
-        if (!img.isNull()) {
-            m_image_cache_hash.insert(m_filepath, img);
-        }
+        m_image_cache.insert(m_filepath, new QImage(img));
     }
+
     showImagePreview(img);
 }
 
@@ -126,7 +125,6 @@ void PreviewPanel::previewArchive() noexcept {
         fileNames.append(archive_entry_pathname(m_archive_entry));
         count++;
     }
-
 
     archive_read_close(m_archive);
     archive_read_free(m_archive);

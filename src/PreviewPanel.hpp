@@ -70,7 +70,7 @@ public:
     // }
 
     void onFileSelected(const QString &filePath) noexcept;
-    inline void clearImageCache() noexcept { m_image_cache_hash.clear(); }
+    inline void clearImageCache() noexcept { m_image_cache.clear(); }
 
     Thumbnailer* thumbnailer() noexcept { return m_thumbnailer; }
 
@@ -97,7 +97,7 @@ private:
     void showTextPreview() noexcept;
     void clearPreview() noexcept;
     bool m_syntax_highlighting_enabled = false;
-    QHash<QString, QImage> m_image_cache_hash;
+    QCache<QString, QImage> m_image_cache;
     Thumbnailer *m_thumbnailer = new Thumbnailer();
 
     struct archive *m_archive;
