@@ -277,6 +277,11 @@ void Navi::setupCommandMap() noexcept {
         ShellCommandAsync();
     };
 
+    commandMap["screenshot"] = [this](const QStringList &args) {
+        UNUSED(args);
+        screenshot();
+    };
+
     commandMap["drives"] = [this](const QStringList &args) {
         UNUSED(args);
         ToggleDrivesWidget();
@@ -1267,9 +1272,11 @@ void Navi::initMenubar() noexcept {
 
     m_tools_menu__search = new QAction("Search");
     m_tools_menu__find_files = new QAction("Find Files");
+    m_tools_menu__screenshot = new QAction("Screenshot");
 
     m_tools_menu->addAction(m_tools_menu__find_files);
     m_tools_menu->addAction(m_tools_menu__search);
+    m_tools_menu->addAction(m_tools_menu__screenshot);
 
     m_edit_menu = new QMenu("&Edit");
 
@@ -1303,6 +1310,11 @@ void Navi::initMenubar() noexcept {
     m_edit_menu->addAction(m_edit_menu__delete);
     m_edit_menu->addAction(m_edit_menu__select_all);
     m_edit_menu->addAction(m_edit_menu__select_inverse);
+
+
+    connect(m_tools_menu__screenshot, &QAction::triggered, this, [&]() {
+        this->screenshot();
+    });
 
     connect(m_edit_menu__link_to, &QAction::triggered, this, &Navi::link_to);
     connect(m_edit_menu__open, &QAction::triggered, this, &Navi::SelectItem);
@@ -3246,4 +3258,31 @@ void Navi::saveLayout() noexcept {
     } else {
         m_statusbar->Message("Error saving the layout", MessageType::ERROR);
     }
+}
+
+void Navi::screenshot(const std::string &_path) noexcept {
+    QScreen *screen = QGuiApplication::primaryScreen();
+
+    if (!screen) {
+        qCritical() << "Unable to find the primary screen";
+        return;
+    }
+
+    QMainWindow* win = qobject_cast<QMainWindow*>(this);
+
+    auto geom = win->geometry();
+
+    QPixmap pix = screen->grabWindow(0);
+
+    if (pix.isNull())
+        return;
+
+    if (_path.empty()) {
+        auto dir = m_file_panel->getCurrentDir();
+        auto filename = QUuid::createUuid().toString() + ".png";
+        pix.save(joinPaths(dir, filename), "PNG");
+    } else {
+        pix.save(QString::fromStdString(_path) + ".png", "PNG");
+    }
+
 }

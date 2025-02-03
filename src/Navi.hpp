@@ -1,5 +1,5 @@
-#pragma once
 
+#pragma once
 #include "utils.hpp"
 
 #define UNUSED(x) (void) x
@@ -59,6 +59,8 @@ public:
     explicit Navi() : KDDockWidgets::QtWidgets::MainWindow("NaviMainWindow",
                                                   KDDockWidgets::MainWindowOption_HasCentralWidget) {}
     ~Navi();
+
+    void screenshot(const std::string &path = std::string()) noexcept;
 
     inline void set_version(const QString &version) noexcept {
         m_version = version;
@@ -1170,6 +1172,7 @@ private:
 
     QAction *m_tools_menu__search;
     QAction *m_tools_menu__find_files;
+    QAction *m_tools_menu__screenshot;
 
     QAction *m_go_menu__previous_folder;
     QAction *m_go_menu__next_folder;
@@ -1312,6 +1315,7 @@ private:
         "echo-error",
 
         // misc
+        "screenshot",
         "update",
         "new-window",
         "goto-symlink-target",
