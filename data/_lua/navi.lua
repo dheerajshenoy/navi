@@ -761,6 +761,14 @@ M.api.count = function ()
     return _navi:count()
 end
 
+
+---Takes the screenshot of the window
+---@param path string
+M.api.screenshot = function (path)
+    path = path or ""
+    _navi:screenshot(path)
+end
+
 ---Searches the current working directory for the item with the provided base name
 ---@param base_name string
 M.api.search = function (base_name)
