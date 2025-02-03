@@ -63,4 +63,6 @@ public:
 
     static QStringList savedLayouts() noexcept;
 
+
+    static bool isBinaryFile(const std::string &filePath) noexcept;
 };

@@ -13,3 +13,4 @@
 #include <fstream>
 #include "../CustomInputDialog.hpp"
 #include "../sol/sol.hpp"
+#include <cctype>

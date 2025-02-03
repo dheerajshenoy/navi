@@ -42,7 +42,6 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_cycle", &Navi::get_cycle,
                            "set_cycle", &Navi::set_cycle,
 
-
                            // Headers
                            "set_header_visible", &Navi::set_header_visible,
                            "get_header_visible", &Navi::get_header_visible,
@@ -56,6 +55,10 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_vheader_border", &Navi::get_vheader_border,
                            "set_vheader_props", &Navi::set_vheader_props,
                            "get_vheader_props", &Navi::get_vheader_props,
+                           "set_vheader_foreground", &Navi::set_vheader_foreground,
+                           "get_vheader_foreground", &Navi::get_vheader_foreground,
+                           "set_vheader_background", &Navi::set_vheader_background,
+                           "get_vheader_background", &Navi::get_vheader_background,
 
                            // Bulk Rename
                            "set_bulk_rename_editor", &Navi::set_bulk_rename_editor,
@@ -97,8 +100,16 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_pathbar_bold", &Navi::get_pathbar_bold,
                            "set_pathbar_italic", &Navi::set_pathbar_italic,
                            "get_pathbar_italic", &Navi::get_pathbar_italic,
+                           "set_pathbar_underline", &Navi::set_pathbar_underline,
+                           "get_pathbar_underline", &Navi::get_pathbar_underline,
                            "set_pathbar_font_size", &Navi::set_pathbar_font_size,
                            "get_pathbar_font_size", &Navi::get_pathbar_font_size,
+                           "set_pathbar_foreground", &Navi::set_pathbar_foreground,
+                           "get_pathbar_foreground", &Navi::get_pathbar_foreground,
+                           "set_pathbar_background", &Navi::set_pathbar_background,
+                           "get_pathbar_background", &Navi::get_pathbar_background,
+                           "set_pathbar_props", &Navi::set_pathbar_props,
+                           "get_pathbar_props", &Navi::get_pathbar_props,
 
                            // Toolbar
                            "toggle_toolbar", &Navi::toggle_toolbar,

@@ -379,3 +379,22 @@ QStringList utils::savedLayouts() noexcept {
     QDir dir(utils::joinPaths(CONFIG_DIR_PATH, "layouts"));
     return dir.entryList();
 }
+
+bool utils::isBinaryFile(const std::string &filePath) noexcept {
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file) return false; // Failed to open file
+
+    constexpr size_t CHECK_SIZE = 512; // Read first 512 bytes
+    char buffer[CHECK_SIZE];
+
+    file.read(buffer, CHECK_SIZE);
+    size_t bytesRead = file.gcount(); // Actual bytes read
+
+    for (size_t i = 0; i < bytesRead; ++i) {
+        if (!isprint(static_cast<unsigned char>(buffer[i])) && buffer[i] != '\n' && buffer[i] != '\r' && buffer[i] != '\t') {
+            return true; // Non-text character found -> Binary file
+        }
+    }
+
+    return false; // No binary content detected
+}

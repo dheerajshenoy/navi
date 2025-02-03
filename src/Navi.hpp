@@ -826,7 +826,7 @@ public:
     void set_api_list(const QStringList &list) noexcept;
 
     inline void set_pathbar_bold(const bool &state) noexcept {
-        m_file_path_widget->setBold(state);
+        m_file_path_widget->set_bold(state);
     }
 
     inline bool get_pathbar_bold() const noexcept {
@@ -834,14 +834,39 @@ public:
     }
 
     inline void set_pathbar_italic(const bool &state) noexcept {
-        m_file_path_widget->setItalic(state);
+        m_file_path_widget->set_italic(state);
     }
 
     inline bool get_pathbar_italic() const noexcept {
         return m_file_path_widget->italic();
     }
 
+    inline void set_pathbar_underline(const bool &state) noexcept {
+        m_file_path_widget->set_underline(state);
+    }
+
+    inline bool get_pathbar_underline() const noexcept {
+        return m_file_path_widget->underline();
+    }
+
+    inline void set_pathbar_foreground(const std::string &fg) noexcept {
+        m_file_path_widget->set_foreground(fg);
+    }
+
+    inline std::string get_pathbar_foreground() const noexcept {
+        return m_file_path_widget->foreground();
+    }
+
+    inline void set_pathbar_background(const std::string &bg) noexcept {
+        m_file_path_widget->set_background(bg);
+    }
+
+    inline std::string get_pathbar_background() const noexcept {
+        return m_file_path_widget->background();
+    }
+
     void set_pathbar_props(const sol::table &table) noexcept;
+    sol::table get_pathbar_props() noexcept;
 
     inline std::string get_symlink_separator() noexcept {
         return m_table_delegate->get_symlink_separator();
@@ -969,6 +994,22 @@ public:
 
     inline void set_vheader_visible(const bool &state) noexcept {
         m_file_panel->tableView()->vheader()->setVisible(state);
+    }
+
+    inline void set_vheader_foreground(const std::string &fg) noexcept {
+        m_file_panel->tableView()->vheader()->set_foreground(QString::fromStdString(fg));
+    }
+
+    inline std::string get_vheader_foreground() noexcept {
+        return m_file_panel->tableView()->vheader()->get_foreground();
+    }
+
+    inline void set_vheader_background(const std::string &bg) noexcept {
+        m_file_panel->tableView()->vheader()->set_background(QString::fromStdString(bg));
+    }
+
+    inline std::string get_vheader_background() noexcept {
+        return m_file_panel->tableView()->vheader()->get_background();
     }
 
     inline bool get_vheader_visible() noexcept { return m_file_panel->tableView()->vheader()->isVisible(); }

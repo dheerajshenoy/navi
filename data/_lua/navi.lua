@@ -188,6 +188,13 @@ setmetatable(M.ui.vheader, {
 
         elseif key == "border" then
             return _navi:get_vheader_border()
+
+        elseif key == "foreground" then
+            return _navi:get_vheader_foreground()
+
+        elseif key == "background" then
+            return _navi:get_vheader_background()
+
         end
     end,
     __newindex = function (_, key, value)
@@ -196,6 +203,14 @@ setmetatable(M.ui.vheader, {
 
         elseif key == "border" then
             _navi:set_vheader_border(value)
+
+        elseif key == "foreground" then
+            _navi:set_vheader_foreground(value)
+
+        elseif key == "background" then
+            _navi:set_vheader_background(value)
+
+
         end
     end
 })
@@ -278,6 +293,86 @@ end
 M.ui.pathbar.focus = function ()
     _navi:focus_pathbar()
 end
+
+
+---@class PathbarWidgetOptions
+---@field visible boolean - visibility of the widget
+---@field font string - font family
+---@field font_size integer - font size
+---@field foreground string - fg color
+---@field background string - bg color
+---@field italic boolean - italicize
+---@field bold boolean - bold
+---@field underline boolean - underline
+
+---Sets the option for the pathbar widget
+---@param opts PathbarWidgetOptions
+M.ui.pathbar.set_props = function (opts)
+    _navi:set_pathbar_props(opts)
+end
+
+---Returns the pathbar options
+---@return PathbarWidgetOptions
+M.ui.pathbar.get_props = function ()
+    return _navi:get_pathbar_props()
+end
+
+setmetatable(M.ui.pathbar, {
+    __index = function (_, key)
+        if key == "visible" then
+            return _navi:get_pathbar_visible()
+
+        elseif key == "foreground" then
+            return _navi:get_pathbar_foreground()
+
+        elseif key == "background" then
+            return _navi:get_pathbar_background()
+
+        elseif key == "bold" then
+            return _navi:get_pathbar_bold()
+
+        elseif key == "italic" then
+            return _navi:get_pathbar_italic()
+
+        elseif key == "underline" then
+            return _navi:get_pathbar_underline()
+
+        elseif key == "font" then
+            return _navi:get_pathbar_font()
+
+        elseif key == "font_size" then
+            return _navi:get_pathbar_font_size()
+
+        end
+    end,
+    __newindex = function (_, key, value)
+
+        if key == "visible" then
+            _navi:set_toolbar_visible(value)
+
+        elseif key == "foreground" then
+            _navi:set_pathbar_foreground(value)
+
+        elseif key == "background" then
+            _navi:set_pathbar_background(value)
+
+        elseif key == "bold" then
+            _navi:set_pathbar_bold(value)
+
+        elseif key == "italic" then
+            _navi:set_pathbar_italic(value)
+
+        elseif key == "underline" then
+            _navi:set_pathbar_underline(value)
+
+        elseif key == "font" then
+            _navi:set_pathbar_font(value)
+
+        elseif key == "font_size" then
+            _navi:set_pathbar_font_size(value)
+        end
+    end
+})
 
 M.ui.statusbar = {}
 
@@ -952,46 +1047,6 @@ setmetatable(M.ui.menubar, {
         end
     end
 })
-
-setmetatable(M.ui.pathbar, {
-
-    __index = function (_, key)
-        if key == "visible" then
-            return _navi:get_pathbar_visible()
-
-        elseif key == "font" then
-            return _navi:get_pathbar_font()
-
-        elseif key == "font_size" then
-            return _navi:get_pathbar_font_size()
-
-        elseif key == "italic" then
-            return _navi:get_pathbar_italic()
-
-        elseif key == "bold" then
-            return _navi:get_pathbar_bold()
-
-        end
-    end,
-    __newindex = function (_, key, value)
-        if key == "visible" then
-            return _navi:set_pathbar_visible(value)
-
-        elseif key == "font" then
-            return _navi:get_pathbar_font()
-
-        elseif key == "font_size" then
-            return _navi:get_pathbar_font_size()
-
-        elseif key == "italic" then
-            return _navi:get_pathbar_italic()
-
-        elseif key == "bold" then
-            return _navi:get_pathbar_bold()
-        end
-    end
-})
-
 
 setmetatable(M.ui.statusbar, {
 

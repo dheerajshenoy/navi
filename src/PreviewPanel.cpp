@@ -68,17 +68,26 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
         resolvedPath = QFile::symLinkTarget(filePath);
     }
 
-    auto mimetype = getMimeType(resolvedPath);
     m_filepath = filePath;
-    if (mimetype.startsWith("text")) {
+
+    if (!utils::isBinaryFile(resolvedPath.toStdString())) {
         m_text_file_preview_timer->start(150);
-    } else if (m_archive_mimetypes.contains(mimetype)) {
-        m_archive_preview_timer->start(150);
-    } else if (mimetype == "application/pdf" ||
-        mimetype.startsWith("image")) {
-        m_image_preview_timer->start(150);
     } else {
-        m_stack_widget->setCurrentIndex(2);
+
+        auto mimetype = getMimeType(resolvedPath);
+
+        if (m_archive_mimetypes.contains(mimetype)) {
+            m_archive_preview_timer->start(150);
+        }
+
+        else if (mimetype == "application/pdf" ||
+            mimetype.startsWith("image") || mimetype.startsWith("video/")) {
+            m_image_preview_timer->start(150);
+        }
+
+        else {
+            m_stack_widget->setCurrentIndex(2);
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 #include <string>
 
-static const QString VERSION = "v1.2.9";
+static const QString VERSION = "v1.3.0";
 
 #include <QFile>
 #include <QStandardPaths>

@@ -3,6 +3,14 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.3.0 (3 February 2025)
+------------------------
+
++ Changed QStatusBar to QWidget for the statusbar.
++ Fixed X11/XCB docking black artifact.
++ Pathbar widget customization Lua API added.
++ Added tag for the release.
+
 v1.2.9 (1 February 2025)
 ------------------------
 

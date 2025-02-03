@@ -2975,7 +2975,47 @@ sol::table Navi::get_preview_panel_props(sol::this_state L) const noexcept {
 }
 
 void Navi::set_pathbar_props(const sol::table &table) noexcept {
-    // TODO:
+    if (table["visible"].valid())
+        m_file_path_widget->setVisible(table["visible"].get<bool>());
+
+    if (table["background"].valid())
+        m_file_path_widget->set_background(table["background"].get<std::string>());
+
+    if (table["foreground"].valid())
+        m_file_path_widget->set_foreground(table["foreground"].get<std::string>());
+
+    if (table["font"].valid())
+        m_file_path_widget->set_font_family(QString::fromStdString(table["font"].get<std::string>()));
+
+    if (table["font_size"].valid())
+        m_file_path_widget->set_font_size(table["font_size"].get<int>());
+
+    if (table["bold"].valid())
+        m_file_path_widget->set_bold(table["bold"].get<bool>());
+
+    if (table["italic"].valid())
+        m_file_path_widget->set_italic(table["italic"].get<bool>());
+
+    if (table["underline"].valid())
+        m_file_path_widget->set_underline(table["underline"].get<bool>());
+
+}
+
+sol::table Navi::get_pathbar_props() noexcept {
+
+    sol::table table = m_lua->create_table();
+
+    table["visible"] = m_file_path_widget->isVisible();
+    table["background"] = m_file_path_widget->background();
+    table["foreground"] = m_file_path_widget->foreground();
+    table["font"] = m_file_path_widget->font_family();
+    table["font_size"] = m_file_path_widget->font_size();
+    table["italic"] = m_file_path_widget->italic();
+    table["bold"] = m_file_path_widget->bold();
+    table["underline"] = m_file_path_widget->underline();
+
+    return table;
+
 }
 
 void Navi::set_api_list(const QStringList &list) noexcept {
@@ -3128,6 +3168,13 @@ void Navi::set_vheader_props(const sol::table &table) noexcept {
 
     if (table["border"].valid())
         vheader->set_border(table["border"].get<bool>());
+
+    if (table["foreground"].valid())
+        vheader->set_foreground(QString::fromStdString(table["foreground"].get<std::string>()));
+
+    if (table["background"].valid())
+        vheader->set_background(QString::fromStdString(table["background"].get<std::string>()));
+
 }
 
 sol::table Navi::get_vheader_props() noexcept {
@@ -3137,6 +3184,8 @@ sol::table Navi::get_vheader_props() noexcept {
 
     table["visible"] = vheader->isVisible();
     table["border"] = vheader->hasBorder();
+    table["foreground"] = vheader->get_foreground();
+    table["background"] = vheader->get_background();
 
     return table;
 }
