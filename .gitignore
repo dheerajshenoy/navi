@@ -34,5 +34,5 @@
 .cache/
 build/
 bin/
-
 KDDockWidgets/
+CMakeFiles/
