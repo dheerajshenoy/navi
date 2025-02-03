@@ -3,10 +3,8 @@
 #include "pch/pch_previewpanel.hpp"
 
 #include "FilePreviewWorker.hpp"
-// #include "TreeSitterTextEdit.hpp"
 #include "TextEdit.hpp"
 #include "ImageWidget.hpp"
-// #include "SyntaxHighlighterTS.hpp"
 #include "Thumbnailer.hpp"
 #include "utils.hpp"
 

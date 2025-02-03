@@ -12,7 +12,6 @@
 #include <QHash>
 #include <QInputDialog>
 #include <QKeySequence>
-#include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
 #include <QShortcut>
@@ -43,8 +42,8 @@
 #include <QUrl>
 #include "../sol/sol.hpp"
 #include "../argparse.hpp"
-#include "../../KDDockWidgets/src/core/MainWindow.h"
-#include "../../KDDockWidgets/src/core/DockWidget.h"
-#include "../../KDDockWidgets/src/Config.h"
-#include "../../KDDockWidgets/src/core/TitleBar.h"
-#include "../../KDDockWidgets/src/LayoutSaver.h"
+#include <kddockwidgets/MainWindow.h>
+#include <kddockwidgets/DockWidget.h>
+#include <kddockwidgets/Config.h>
+#include <kddockwidgets/LayoutSaver.h>
+#include <kddockwidgets/qtwidgets/MDIArea.h>

@@ -6,7 +6,7 @@
 
 enum class MessageType { INFO = 0, WARNING, ERROR };
 
-class Statusbar : public QWidget {
+class Statusbar : public QStatusBar {
     Q_OBJECT
 
 public:
@@ -101,8 +101,6 @@ signals:
     void logMessage(const QString &message, const MessageType &type);
 
 private:
-    QHBoxLayout *m_layout = new QHBoxLayout();
-    QVBoxLayout *m_vert_layout = new QVBoxLayout(this);
     QLabel *m_message_label = new QLabel();
     QLabel *m_file_name_label = new QLabel();
     QLabel *m_file_size_label = new QLabel();

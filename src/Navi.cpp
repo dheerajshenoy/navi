@@ -1,5 +1,5 @@
 #include "Navi.hpp"
-
+#include <kddockwidgets/KDDockWidgets.h>
 
 // Run the function if there is any error due to ``reason``.
 void Navi::Error(const QString &reason) noexcept {
@@ -98,15 +98,19 @@ void Navi::initSignalsSlots() noexcept {
             m_statusbar->Message(error, MessageType::ERROR);
             });
 
-    connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished, [&]() {
+    connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
+            this, [&]() {
             LogMessage("Thumbnail caching finished");
             });
 
-    connect(m_file_panel, &FilePanel::currentItemChanged, [&]() { m_hook_manager->triggerHook("item_changed"); });
+    connect(m_file_panel, &FilePanel::currentItemChanged, this,
+            [&]() { m_hook_manager->triggerHook("item_changed"); });
 
-    connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, [&]() { m_bookmarks_buffer->loadBookmarks(); });
+    connect(m_bookmark_manager, &BookmarkManager::bookmarksChanged, this,
+            [&]() { m_bookmarks_buffer->loadBookmarks(); });
 
-    connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, [&](const QString &name) {
+    connect(m_bookmarks_buffer, &BookmarkWidget::bookmarkGoRequested, this,
+            [&](const QString &name) {
             GoBookmark(name);
             });
 
@@ -960,21 +964,20 @@ void Navi::TogglePreviewPanel(const bool &state) noexcept {
         disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                    &PreviewPanel::onFileSelected);
     }
-    m_preview_panel_dock->setVisible(state);
+        m_preview_panel_dock->toggleAction();
 }
 
 void Navi::TogglePreviewPanel() noexcept {
     bool visible = m_preview_panel_dock->isVisible();
     if (visible) {
-        m_preview_panel_dock->setVisible(false);
         disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                    &PreviewPanel::onFileSelected);
     } else {
-        m_preview_panel_dock->setVisible(true);
         connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                 &PreviewPanel::onFileSelected);
         m_preview_panel->onFileSelected(getCurrentFile());
     }
+    m_preview_panel_dock->toggleAction()->trigger();
 }
 
 QString Navi::getCurrentFile() noexcept {
@@ -1000,29 +1003,39 @@ void Navi::initLayout() noexcept {
     m_log_buffer = new MessagesBuffer();
     m_marks_buffer = new MarksBuffer();
 
-    m_file_panel_dock = new KDDockWidget::DockWidget("File Panel",
-                                                     KDDockWidgets::DockWidgetOption::DockWidgetOption_NotClosable);
-    m_file_panel_dock->setWidget(m_widget);
-
     m_preview_panel_dock = new KDDockWidget::DockWidget("Preview Panel");
     m_preview_panel_dock->setWidget(m_preview_panel);
+    m_preview_panel->setContentsMargins(0, 0, 0, 0);
 
     m_marks_buffer->setMarksSet(m_file_panel->getMarksSetPTR());
 
     m_file_panel->setFocus();
     m_inputbar->hide();
 
-    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_dock_container = new KDDockWidgets::QtWidgets::MainWindow("DockContainer");
+    m_dock_container->setContentsMargins(0, 0, 0, 0);
 
+    m_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_layout->addWidget(m_file_path_widget);
-    m_layout->addWidget(m_file_panel);
+    m_layout->addWidget(m_dock_container);
+    /*m_layout->addWidget(m_file_panel);*/
     m_layout->addWidget(m_inputbar);
-    m_layout->addWidget(m_statusbar);
     m_widget->setLayout(m_layout);
 
-    this->addDockWidget("File Panel", KDDockWidgets::Location::Location_OnLeft);
-    this->addDockWidget("Preview Panel", KDDockWidgets::Location::Location_OnRight);
-    /*this->setCentralWidget(m_widget);*/
+    m_file_panel_dock = new KDDockWidgets::QtWidgets::DockWidget("File Panel",
+                                                                 KDDockWidgets::DockWidgetOption::DockWidgetOption_NotClosable);
+    m_file_panel_dock->setContentsMargins(0, 0, 0, 0);
+    m_file_panel_dock->setWidget(m_file_panel);
+    m_preview_panel_dock->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+
+    m_dock_container->addDockWidget(m_file_panel_dock, KDDockWidgets::Location::Location_OnLeft);
+
+    const QSize s(QSize(400, 0));
+    m_dock_container->addDockWidget(m_preview_panel_dock, KDDockWidgets::Location::Location_OnRight, nullptr,
+                                    s);
+
+    this->setPersistentCentralWidget(m_widget);
+    setStatusBar(m_statusbar);
     this->show();
 }
 
@@ -1359,9 +1372,9 @@ void Navi::initMenubar() noexcept {
     m_menubar->addMenu(m_tools_menu);
     m_menubar->addMenu(m_help_menu);
 
-    connect(m_layoutmenu__save_layout, &QAction::triggered, &Navi::saveLayout);
-    connect(m_layoutmenu__load_layout, &QAction::triggered, &Navi::loadLayout);
-    connect(m_layoutmenu__delete_layout, &QAction::triggered, &Navi::deleteLayout);
+    connect(m_layoutmenu__save_layout, &QAction::triggered, this, &Navi::saveLayout);
+    connect(m_layoutmenu__load_layout, &QAction::triggered, this, &Navi::loadLayout);
+    connect(m_layoutmenu__delete_layout, &QAction::triggered, this, &Navi::deleteLayout);
 
     connect(m_viewmenu__refresh, &QAction::triggered, this,
             [&](const bool &state) { ForceUpdate(); });
@@ -2865,11 +2878,10 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
 }
 
 void Navi::Set_preview_pane_fraction(const double &fraction) noexcept {
-    /*auto totalSize = m_splitter->width();*/
-    /*m_preview_pane_fraction = fraction;*/
-    /*QList<int> sizes = {static_cast<int>(totalSize * (1 - fraction)),*/
-    /*    static_cast<int>(totalSize * fraction)};*/
-    /*m_splitter->setSizes(sizes);*/
+    auto totalSize = m_dock_container->width();
+    m_preview_pane_fraction = fraction;
+    auto width = static_cast<int>(totalSize * fraction);
+    m_preview_panel_dock->setSize(QSize(width, 0));
 }
 
 double Navi::Preview_pane_fraction() noexcept {
@@ -3145,6 +3157,7 @@ void Navi::deleteLayout() noexcept {
 }
 
 void Navi::saveLayout() noexcept {
+
     KDDockWidgets::LayoutSaver saver;
 
     QStringList savedLayouts = utils::savedLayouts();
@@ -3156,29 +3169,39 @@ void Navi::saveLayout() noexcept {
 
     while (!fine) {
 
-        layoutName = QInputDialog::getText(nullptr,
+        layoutName = QInputDialog::getText(this,
                                            "Save Layout",
                                            "Enter layout name",
                                            QLineEdit::Normal,
                                            "",
-                                           &ok);
+                                           &ok) + ".json";
 
         if (!ok || layoutName.isEmpty())
             return;
 
         if (savedLayouts.contains(layoutName)) {
-            QMessageBox::warning(nullptr,
+            QMessageBox::warning(this,
                 "Layout Name Exists",
                 QString(
                     "Layout with the name '%1' already exists. Please try saving "
                     "the layout with a unique name")
-                .arg(layoutName)).exec();
+                .arg(layoutName));
         } else {
             fine = true;
         }
     }
 
-    layoutName += ".json";
-    QString path = utils::joinPaths(LAYOUT_PATH, layoutName);
-    saver.saveToFile(path);
+    QDir dir;
+    if (!dir.exists(LAYOUT_PATH)) {
+        dir.mkdir(LAYOUT_PATH);
+    }
+
+    QString path = joinPaths(LAYOUT_PATH, layoutName);
+
+
+    if (saver.saveToFile(path)) {
+        m_statusbar->Message("Successfully saved the layout");
+    } else {
+        m_statusbar->Message("Error saving the layout", MessageType::ERROR);
+    }
 }

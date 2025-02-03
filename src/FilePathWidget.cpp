@@ -3,7 +3,7 @@
 FilePathWidget::FilePathWidget(QWidget *parent)
 : QWidget(parent) {
 
-    this->setContentsMargins(0, 0, 0, 0);
+    m_layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(m_layout);
     m_path_line->setReadOnly(true);
     m_layout->addWidget(m_path_line);

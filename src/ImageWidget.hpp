@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QImage>
 
+#define UNUSED(x) (void) x
+
 class ImageWidget : public QWidget {
     Q_OBJECT
 
@@ -28,6 +30,8 @@ class ImageWidget : public QWidget {
 
 protected:
     void paintEvent(QPaintEvent *event) override {
+        UNUSED(event);
+
         if (m_image.isNull())
             return;
 

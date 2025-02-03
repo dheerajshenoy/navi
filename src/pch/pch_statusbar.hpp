@@ -11,3 +11,4 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QStatusBar>

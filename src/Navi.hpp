@@ -55,11 +55,11 @@ public:
     }
 };
 
-class Navi : public KDDockWidget::MainWindow {
+class Navi : public KDDockWidgets::QtWidgets::MainWindow {
 
 public:
-    Navi(QWidget *parent = nullptr) : KDDockWidget::MainWindow(QStringLiteral("MyMainWindow"))
-    {}
+    explicit Navi() : KDDockWidgets::QtWidgets::MainWindow("NaviMainWindow",
+                                                  KDDockWidgets::MainWindowOption::MainWindowOption_HasCentralWidget) {}
     ~Navi();
 
     inline void set_version(const QString &version) noexcept {
@@ -532,7 +532,6 @@ public:
     }
 
     inline Statusbar* statusbar() noexcept { return m_statusbar; }
-
 
     inline Statusbar::Module create_statusbar_module(const std::string &name,
                                                      const sol::table &options) noexcept {
@@ -1352,6 +1351,7 @@ private:
     Thumbnailer *m_thumbnailer = new Thumbnailer();
     QString m_version;
     QHash<Widget, QWidget*> m_widget_hash;
-    KDDockWidget::DockWidget *m_file_panel_dock;
-    KDDockWidget::DockWidget *m_preview_panel_dock;
+    KDDockWidget::DockWidget *m_preview_panel_dock = nullptr;
+    KDDockWidget::DockWidget *m_file_panel_dock = nullptr;
+    KDDockWidget::MainWindow *m_dock_container = nullptr;
 };
