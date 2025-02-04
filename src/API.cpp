@@ -35,6 +35,7 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_terminal", &Navi::Get_terminal,
                            "set_terminal", &Navi::Set_terminal,
                            "set_keymap", &Navi::Lua__keymap_set,
+                           "set_keymap_for_function", &Navi::Lua__keymap_set_for_function,
                            "set_copy_path_separator", sol::resolve<void(const std::string &)>(&Navi::Set_copy_path_separator),
                            "get_copy_path_separator", &Navi::Get_copy_path_separator,
                            "set_default_dir", sol::resolve<void(const std::string &)>(&Navi::Set_default_directory),
@@ -148,6 +149,7 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_preview_panel_num_read_lines", &Navi::get_preview_panel_read_num_lines,
                            "set_preview_panel_props", &Navi::set_preview_panel_props,
                            "get_preview_panel_props", &Navi::get_preview_panel_props,
+                           "set_preview_panel_image_rotation", &Navi::set_preview_image_rotation,
 
                            // API
                            "copy_path", &Navi::copy_path,
