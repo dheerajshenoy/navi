@@ -4,7 +4,6 @@
 void Navi::Error(const QString &reason) noexcept {
     m_statusbar->Message(reason);
     m_table_delegate->set_symlink_font(font().family());
-    initKeybinds();
 }
 
 void Navi::initThings() noexcept {
@@ -24,7 +23,7 @@ void Navi::initThings() noexcept {
     else if (m_default_dir.isNull() || m_default_dir.isEmpty())
         m_default_dir = QDir::homePath();
 
-    m_default_dir = QFileInfo(m_default_dir).absoluteFilePath();
+    m_default_dir = QFileInfo(m_default_dir).absolutePath();
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
@@ -2236,7 +2235,7 @@ void Navi::unmark_regex(const std::string &term) noexcept {
 void Navi::ChangeDirectory(const QString &path) noexcept {
     if (path.isEmpty()) {
         QString path = m_inputbar->getInput("Enter path to cd");
-        if (!path.isEmpty())
+        if (!path.isEmpty() && path != m_file_panel->getCurrentDir())
             m_file_panel->setCurrentDir(path);
     } else {
         m_file_panel->setCurrentDir(path);
@@ -2520,23 +2519,23 @@ void Navi::ShowAbout() noexcept {
 
 void Navi::SortAscending(const bool &state) noexcept {
     if (state) {
-        if (m_sort_flags & QDir::SortFlag::Reversed) {
-            QString itemName = m_file_panel->getCurrentItem();
-            m_sort_flags &= ~QDir::SortFlag::Reversed;
-            m_file_panel->model()->setSortBy(m_sort_flags);
-            m_file_panel->HighlightItem(itemName);
-        }
-    }
-}
-
-void Navi::SortDescending(const bool &state) noexcept {
-    if (state) {
         if (m_sort_flags & QDir::SortFlag::Reversed)
             return;
         QString itemName = m_file_panel->getCurrentItem();
         m_sort_flags |= QDir::SortFlag::Reversed;
         m_file_panel->model()->setSortBy(m_sort_flags);
         m_file_panel->HighlightItem(itemName);
+    }
+}
+
+void Navi::SortDescending(const bool &state) noexcept {
+    if (state) {
+        if (m_sort_flags & QDir::SortFlag::Reversed) {
+            QString itemName = m_file_panel->getCurrentItem();
+            m_sort_flags &= ~QDir::SortFlag::Reversed;
+            m_file_panel->model()->setSortBy(m_sort_flags);
+            m_file_panel->HighlightItem(itemName);
+        }
     }
 }
 

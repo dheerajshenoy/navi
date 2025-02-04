@@ -293,29 +293,21 @@ void FilePanel::setCurrentDir(QString path, const bool &SelectFirstItem) noexcep
         path = path.replace("~", QDir::homePath());
     }
 
-    QFileInfo fileinfo(path);
-    if (fileinfo.exists()) {
+    m_model->setRootPath(path);
+    m_previous_dir_path = m_current_dir;
+    m_current_dir = path;
+    m_search_new_directory = true;
 
-        if (fileinfo.isFile()) {
-            path = fileinfo.absolutePath();
-        }
+    if (m_model->rowCount() > 0) {
+        m_table_view->setCurrentIndex(m_model->index(0, 0));
 
-        m_model->setRootPath(path);
-        m_previous_dir_path = m_current_dir;
-        m_current_dir = path;
+        emit currentItemChanged(m_model->data(m_table_view->currentIndex(),
+                                              static_cast<int>(FileSystemModel::Role::FileName)).toString());
 
-        if (SelectFirstItem) {
-            m_table_view->setCurrentIndex(m_model->index(0, 0));
-        }
-
-        m_search_new_directory = true;
-        if (m_model->rowCount() > 0) {
-            emit currentItemChanged(m_model->data(m_table_view->currentIndex(),
-                                                  static_cast<int>(FileSystemModel::Role::FilePath)).toString());
-        }
-
-        emit afterDirChange(m_current_dir);
     }
+
+    emit afterDirChange(m_current_dir);
+
 }
 
 
@@ -1010,7 +1002,7 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
 
     QuestionDialog dialog("Delete Items",
                           QString("Do you want to delete %1 items ?").arg(files.size()),
-                          files.join("\n"),
+                          files.join("\\n"),
                           QuestionDialog::YesNo, this);
 
     auto result = dialog.exec();
@@ -1087,7 +1079,7 @@ void FilePanel::DeleteItemsGlobal() noexcept {
         QuestionDialog dialog("Delete Items Global",
                               QString("Do you want to delete %1 files ? (y/N)")
                               .arg(markedFiles.size()),
-                              markedFiles.join("\n"),
+                              markedFiles.join("\\n"),
                               QuestionDialog::YesNo,
                               this);
 
@@ -1132,7 +1124,7 @@ void FilePanel::DeleteItemsLocal() noexcept {
         QuestionDialog dialog("Delete Items Local",
                               QString("Do you want to delete %1 files ? (y/N)")
                               .arg(markedLocalFiles.size()),
-                              markedLocalFiles.join("\n"),
+                              markedLocalFiles.join("\\n"),
                               QuestionDialog::YesNo,
                               this);
 
