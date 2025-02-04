@@ -34,9 +34,9 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QWidget(parent) {
 
     connect(m_text_file_preview_timer, &QTimer::timeout, this, &PreviewPanel::showTextPreview);
 
-    m_stack_widget->addWidget(m_text_preview_widget);
-    m_stack_widget->addWidget(m_img_widget);
-    m_stack_widget->addWidget(m_empty_widget);
+    m_stack_widget->addWidget(m_text_preview_widget); // 0
+    m_stack_widget->addWidget(m_img_widget); // 1
+    m_stack_widget->addWidget(m_empty_widget); // 2
 }
 
 PreviewPanel::~PreviewPanel() {}
@@ -67,6 +67,7 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
     // Do not preview if it is a directory
     QFileInfo finfo(m_filepath);
     if (finfo.isDir()) {
+        clearPreview();
         return;
     }
 
@@ -114,7 +115,6 @@ void PreviewPanel::loadImageAfterDelay() noexcept {
     showImagePreview(img);
 }
 
-void PreviewPanel::clearPreview() noexcept { m_img_widget->clear(); }
 
 void PreviewPanel::previewArchive() noexcept {
     m_archive = archive_read_new();

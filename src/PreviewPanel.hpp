@@ -78,6 +78,13 @@ public:
         m_img_widget->rotate(angle);
     }
 
+    inline void clearImagePreview() noexcept { m_img_widget->clear(); }
+    inline void clearPreview() noexcept {
+        if (m_stack_widget->currentIndex() != 2) {
+            m_stack_widget->setCurrentIndex(2);
+        }
+    }
+
 private:
     void previewArchive() noexcept;
     void loadImageAfterDelay() noexcept;
@@ -99,7 +106,7 @@ private:
 
     void showImagePreview(const QImage &image) noexcept;
     void showTextPreview() noexcept;
-    void clearPreview() noexcept;
+
     bool m_syntax_highlighting_enabled = false;
     QCache<QString, QImage> m_image_cache;
     Thumbnailer *m_thumbnailer = new Thumbnailer();

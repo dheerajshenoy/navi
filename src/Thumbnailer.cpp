@@ -33,6 +33,7 @@ void Thumbnailer::generate_thumbnails(const QStringList &files) noexcept {
         qDebug() << "All thumbnails generated";
         watcher->deleteLater();
     });
+
 }
 
 void Thumbnailer::generate_thumbnail(const QString &file) noexcept {

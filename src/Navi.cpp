@@ -124,6 +124,7 @@ void Navi::initSignalsSlots() noexcept {
     connect(m_file_panel, &FilePanel::afterDirChange, this,
             [&](const QString &path) {
             m_file_path_widget->setCurrentDir(path);
+            m_preview_panel->clearPreview();
             m_hook_manager->triggerHook("directory_changed");
             m_preview_panel->clearImageCache();
             // TODO: Fix thumbnail caching
@@ -2253,7 +2254,6 @@ void Navi::cacheThumbnails() noexcept {
 
     QStringList files = m_file_panel->model()->files();
     m_thumbnailer->generate_thumbnails(files);
-    /*m_thumbnail_cache_future = QtConcurrent::run(&Thumbnailer::generate_thumbnails, m_preview_panel->thumbnailer(), files);*/
 }
 
 void Navi::LaunchNewInstance() noexcept {
