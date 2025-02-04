@@ -20,12 +20,20 @@ class ImageWidget : public QWidget {
         setFixedSize(this->width(), this->height());
 
         // Request a repaint with the new data
-        update();
+        this->update();
     }
 
     void clear() noexcept {
         m_image = QImage();
-        update();
+        this->update();
+    }
+
+    inline void rotate(const qreal &angle = 0) noexcept {
+        m_rotationAngle = angle;
+        QTransform transform;
+        transform.rotate(angle);
+        m_image = m_image.transformed(transform, Qt::SmoothTransformation);
+        this->update();
     }
 
 protected:
@@ -43,4 +51,5 @@ protected:
 
 private:
     QImage m_image;
+    qreal m_rotationAngle;
 };
