@@ -36,6 +36,14 @@ class FilePanelDelegate : public QStyledItemDelegate {
             painter->fillRect(opt.rect, opt.palette.color(QPalette::Highlight));
         }
 
+        if (index.column() == 1) {
+
+            QRect textRect = opt.rect;
+
+            painter->setPen(opt.palette.color(QPalette::Text));
+            painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, opt.text);
+        }
+
         if (index.column() == 0) {
             // Calculate rectangles
             QRect iconRect = opt.rect;
