@@ -24,7 +24,6 @@ void Navi::initThings() noexcept {
         m_default_dir = QDir::homePath();
 
     m_default_dir = QFileInfo(m_default_dir).absoluteFilePath();
-    qDebug() << m_default_dir;
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
@@ -2665,6 +2664,24 @@ void Navi::Lua__keymap_set(const std::string &key,
             });
 }
 
+void Navi::Lua__keymap_set_for_function(const std::string &key,
+                                  const sol::function &func,
+                                  const std::string &desc) noexcept {
+
+    Keybind kb {
+        .key = QString::fromStdString(key),
+        .command = "lua function",
+        .desc = QString::fromStdString(desc)
+    };
+
+    m_keybind_list.append(kb);
+
+    QShortcut *shortcut = new QShortcut(QKeySequence(kb.key), this);
+    connect(shortcut, &QShortcut::activated, this,
+            [=]() {
+            func();
+            });
+}
 
 void Navi::Lua__register_user_function(const std::string &name, const sol::function &func) noexcept {
     commandMap[QString::fromStdString(name)] = [func](const QStringList &args) {
