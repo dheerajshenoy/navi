@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.9
+                v1.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -139,9 +139,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-navi.api">api</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.list_runtime_paths"><code class="docutils literal notranslate"><span class="pre">list_runtime_paths()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#navi.api.register_function"><code class="docutils literal notranslate"><span class="pre">register_function()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#navi.api.unregister_function"><code class="docutils literal notranslate"><span class="pre">unregister_function()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.api.create_user_command"><code class="docutils literal notranslate"><span class="pre">create_user_command()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.api.remove_user_command"><code class="docutils literal notranslate"><span class="pre">remove_user_command()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.list_registered_functions"><code class="docutils literal notranslate"><span class="pre">list_registered_functions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.api.screenshot"><code class="docutils literal notranslate"><span class="pre">screenshot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.sort_name"><code class="docutils literal notranslate"><span class="pre">sort_name()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.count"><code class="docutils literal notranslate"><span class="pre">count()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
@@ -1392,8 +1393,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="navi.api.register_function">
-<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">register_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func:</span> <span class="pre">sol::function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.register_function" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="navi.api.create_user_command">
+<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">create_user_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func:</span> <span class="pre">sol::function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.create_user_command" title="Link to this definition"></a></dt>
 <dd><p>Registers a Lua function with the specified name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1413,8 +1414,8 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="navi.api.unregister_function">
-<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">unregister_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.unregister_function" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="navi.api.remove_user_command">
+<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">remove_user_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.remove_user_command" title="Link to this definition"></a></dt>
 <dd><p>Unregisters a previously registered Lua function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1433,6 +1434,20 @@ The module thus created can be used in <a class="reference internal" href="#navi
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A table of function names and the corresponding functions (<code class="docutils literal notranslate"><span class="pre">table</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="navi.api.screenshot">
+<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">screenshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">delay</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">path</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.screenshot" title="Link to this definition"></a></dt>
+<dd><p>Takes screenshot of the window</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delay</strong> (<em>integer</em>) – Delay after which the screenshot is taken</p></li>
+<li><p><strong>path</strong> (<em>string</em>) – Path to the file where the screenshot is saved</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

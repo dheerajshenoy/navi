@@ -763,10 +763,12 @@ end
 
 
 ---Takes the screenshot of the window
----@param path string
-M.api.screenshot = function (path)
+---@param path string -- path to save the file to
+---@param delay integer -- delay in seconds
+M.api.screenshot = function (path, delay)
     path = path or ""
-    _navi:screenshot(path)
+    delay = delay or 0
+    _navi:screenshot(path, delay)
 end
 
 ---Searches the current working directory for the item with the provided base name

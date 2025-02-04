@@ -93,20 +93,23 @@
 - [X] Ctrl+click support
 - [X] Drag and drop across multiple panes
 - [X] Wonky file completion in the file path widget when "~" is present
+- [X] Preview image size change
+- [X] Tabs for different panes
+- ~~[ ] Tabs~~
+- [ ] VisibilityChange signal bug
 - [ ] Open with menu
 - [ ] Undo Operations
 - [ ] lua API for custom context menu
 - [ ] Deletion make task if large size
-- [ ] VisibilityChange signal bug
 - [ ] Connect to internet server
 - [ ] Selection wierd behaviour
-- ~~[ ] Tabs~~
 - [ ] view copy/cut file register
 - [ ] Timer api
 - [ ] Sleep api
 - [ ] Inputbar completion like vim/neovim
 - [ ] IPC
 - [ ] New file re-caching thumbnail
-- [ ] Tabs for different panes
 - [ ] Add fits previewing
-- [ ] Preview image size change
+- [ ] Implement Cache Eviction Policy
+- [ ] Lazy loading directory
+- [ ] Optimizations

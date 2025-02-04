@@ -814,6 +814,13 @@ api
 
    :return: A table of function names and the corresponding functions (``table``)
 
+.. function:: screenshot(int delay, [string path])
+
+   Takes screenshot of the window
+
+   :param integer delay: Delay after which the screenshot is taken
+   :param string path: Path to the file where the screenshot is saved
+
 .. function:: sort_name
 
     Sorts the item by name

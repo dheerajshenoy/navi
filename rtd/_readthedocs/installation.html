@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                1.2.9
+                v1.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -96,11 +96,12 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>Navi can be built from source. The following libraries are dependencies for navi:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.qt.io/product/qt6">Qt6</a></p></li>
-<li><p><a class="reference external" href="https://www.lua.org/start.html">Lua</a></p></li>
-<li><p><a class="reference external" href="https://imagemagick.org/script/magick++.php">ImageMagick(Magick++)</a></p></li>
-<li><p><a class="reference external" href="https://poppler.freedesktop.org/api/qt6/">Poppler (Poppler-Qt6)</a></p></li>
-<li><p><a class="reference external" href="https://www.freedesktop.org/wiki/Software/udisks/">Udisks</a></p></li>
+<li><p><a class="reference external" href="https://www.qt.io/product/qt6">Qt6</a> GUI framework</p></li>
+<li><p><a class="reference external" href="https://www.lua.org/start.html">Lua</a> Scripting language</p></li>
+<li><p><a class="reference external" href="https://imagemagick.org/script/magick++.php">ImageMagick(Magick++)</a> Image library (used for preview and thumbnailing image files)</p></li>
+<li><p><a class="reference external" href="https://poppler.freedesktop.org/api/qt6/">Poppler (Poppler-Qt6)</a> PDF library (used for previewing and thumbnailing PDF files)</p></li>
+<li><p><a class="reference external" href="https://www.freedesktop.org/wiki/Software/udisks/">Udisks</a> Disk management</p></li>
+<li><p><a class="reference external" href="https://github.com/dirkvdb/ffmpegthumbnailer">ffmpegthumbnailer</a> Thumbnailing video files</p></li>
 </ul>
 <p>If you’re on ArchLinux:</p>
 <section id="install-using-pkgbuild">
@@ -115,30 +116,28 @@
 <section id="archlinux">
 <h3>ArchLinux<a class="headerlink" href="#archlinux" title="Link to this heading"></a></h3>
 <p>You can copy paste the following <cite>pacman</cite> code to install these dependencies:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>qt6-base<span class="w"> </span>lua<span class="w"> </span>imagemagick<span class="w"> </span>poppler<span class="w"> </span>poppler-qt6<span class="w"> </span>udisks2<span class="w"> </span>libarchive
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>make<span class="w"> </span>ninja<span class="w"> </span>cmake<span class="w"> </span>qt6-base<span class="w"> </span>lua<span class="w"> </span>imagemagick<span class="w"> </span>poppler<span class="w"> </span>poppler-qt6<span class="w"> </span>udisks2<span class="w"> </span>libarchive<span class="w"> </span>ffmpegthumbnailer
 </pre></div>
 </div>
 </section>
 <section id="debian-ubuntu">
 <h3>Debian/Ubuntu<a class="headerlink" href="#debian-ubuntu" title="Link to this heading"></a></h3>
 <p>If you’re on Ubuntu/Debian based distribution, you can paste the following <cite>apt</cite> code to install the dependencies:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>qt6-base-dev<span class="w"> </span>lua5.4<span class="w"> </span>libmagick++-dev<span class="w"> </span>libpoppler-dev<span class="w"> </span>libpoppler-cpp-dev<span class="w"> </span>libpoppler-qt6-dev<span class="w"> </span>udisks2<span class="w"> </span>libarchive
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>qt6-base-dev<span class="w"> </span>lua5.4<span class="w"> </span>libmagick++-dev<span class="w"> </span>libpoppler-dev<span class="w"> </span>libpoppler-cpp-dev<span class="w"> </span>libpoppler-qt6-dev<span class="w"> </span>udisks2<span class="w"> </span>libarchive<span class="w"> </span>ffmpegthumbnailer
 </pre></div>
 </div>
 <p><strong>NOTE</strong>: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.</p>
 <p>After installing these dependencies on your system, clone the reposity and it’s submodules using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>https://github.com/dheerajshenoy/navi
+<span class="nb">cd</span><span class="w"> </span>navi
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
 </pre></div>
 </div>
 <p>you can build navi by using the following command (inside the project’s directory):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>..
-make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
-sudo<span class="w"> </span>make<span class="w"> </span>install
-</pre></div>
-</div>
-<p>One liner:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cmake<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>..<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>-j<span class="w"> </span><span class="k">$(</span>nproc<span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>make<span class="w"> </span>install
+cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>/usr<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+ninja<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+sudo<span class="w"> </span>ninja<span class="w"> </span>install
 </pre></div>
 </div>
 <p>If everything went well, you should have navi installed on your system. You can launch navi using the command <cite>navi</cite>.</p>

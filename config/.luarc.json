@@ -1,7 +1,0 @@
-{
-    "diagnostics.globals": [
-        "vim",
-        "_store_instance",
-        "navi"
-    ]
-}
