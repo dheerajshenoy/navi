@@ -97,9 +97,11 @@ void Thumbnailer::generate_thumbnail_for_image(const QString &file_name, const Q
             if (!image.isValid())
                 return;
 
-            image.scale(Magick::Geometry("256x256>"));
+            image.thumbnail(Magick::Geometry("256x256>"));
             image.quality(85);
-            image.write(path_uri.toStdString());
+            Magick::Blob blob;
+            image.write(&blob, "PNG");
+
         } catch (const Magick::Error &e) {
             qDebug() << e.what();
         }
