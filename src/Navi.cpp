@@ -23,7 +23,8 @@ void Navi::initThings() noexcept {
     else if (m_default_dir.isNull() || m_default_dir.isEmpty())
         m_default_dir = QDir::homePath();
 
-    m_default_dir = QFileInfo(m_default_dir).absolutePath();
+    m_default_dir = QFileInfo(m_default_dir).absoluteFilePath();
+    qDebug() << m_default_dir;
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
