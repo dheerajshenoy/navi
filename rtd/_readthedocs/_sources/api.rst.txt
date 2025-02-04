@@ -814,6 +814,12 @@ api
 
    :return: A table of function names and the corresponding functions (``table``)
 
+.. function:: rotate_preview_image([double angle])
+
+   Rotates the image in the preview panel by an angle. If no angle is provided, the angle defaults to 0.
+
+   :param double angle: Angle by which to rotate the image
+
 .. function:: screenshot(int delay, [string path])
 
    Takes screenshot of the window
@@ -1254,7 +1260,7 @@ keymap
     :table: A table containing the keymap details. The table should include:
 
         :key: The keyboard shortcut (e.g., "Ctrl+C") ``str``.
-        :command: The command to execute (e.g., "copy") ``str``.
+        :action: A command or a lua function.
         :desc (optional): A description of the keymap (e.g., "Copy text") ``str``.
 
     .. note:: You can have shortcuts with repeating keys by separating them with a comma.
@@ -1265,7 +1271,10 @@ keymap
 
     .. code-block:: lua
 
-        navi.keymap.set({ key = "g,z", command = "next-item", desc = "say hello" })
+        navi.keymap.set("g,z", "next-item", "say hello")
+
+        -- Using a lua function
+        navi.keymap.set("a,a", function() navi.io.msg("Hello from lua") end, "some function")
 
 
 .. function:: set(key str, command str, [desc str])

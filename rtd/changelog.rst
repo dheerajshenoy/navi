@@ -46,7 +46,7 @@ v1.2.6 (21 January 2025)
 + Fixed thumbnail caching parellization
 
 v1.2.5 (11 January 2025)
------------------------
+------------------------
 
 + Added cursor. Cursor shows the current row in a different color (if you choose to) than the rest of the items. This is important during visual selection of files since previously the last item in the selection was assumed to be the position of the cursor in the file panel.
 + Optimized data calls from the model and view using separate roles for filename, filepath and symlink names.

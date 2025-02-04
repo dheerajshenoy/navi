@@ -142,6 +142,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.create_user_command"><code class="docutils literal notranslate"><span class="pre">create_user_command()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.remove_user_command"><code class="docutils literal notranslate"><span class="pre">remove_user_command()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.list_registered_functions"><code class="docutils literal notranslate"><span class="pre">list_registered_functions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navi.api.rotate_preview_image"><code class="docutils literal notranslate"><span class="pre">rotate_preview_image()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.screenshot"><code class="docutils literal notranslate"><span class="pre">screenshot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.sort_name"><code class="docutils literal notranslate"><span class="pre">sort_name()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#navi.api.count"><code class="docutils literal notranslate"><span class="pre">count()</span></code></a></li>
@@ -1439,6 +1440,17 @@ The module thus created can be used in <a class="reference internal" href="#navi
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="navi.api.rotate_preview_image">
+<span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">rotate_preview_image</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">angle</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.rotate_preview_image" title="Link to this definition"></a></dt>
+<dd><p>Rotates the image in the preview panel by an angle. If no angle is provided, the angle defaults to 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>angle</strong> (<em>double</em>) – Angle by which to rotate the image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="navi.api.screenshot">
 <span class="sig-prename descclassname"><span class="pre">navi.api.</span></span><span class="sig-name descname"><span class="pre">screenshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">delay</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">path</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#navi.api.screenshot" title="Link to this definition"></a></dt>
 <dd><p>Takes screenshot of the window</p>
@@ -2206,8 +2218,8 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <dt class="field-odd">key<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The keyboard shortcut (e.g., “Ctrl+C”) <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
 </dd>
-<dt class="field-even">command<span class="colon">:</span></dt>
-<dd class="field-even"><p>The command to execute (e.g., “copy”) <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+<dt class="field-even">action<span class="colon">:</span></dt>
+<dd class="field-even"><p>A command or a lua function.</p>
 </dd>
 <dt class="field-odd">desc (optional)<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A description of the keymap (e.g., “Copy text”) <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
@@ -2221,7 +2233,10 @@ Returns <code class="docutils literal notranslate"><span class="pre">true</span>
 <p><strong>Example</strong>: g,g ; this is activated when you press g followed by another g.</p>
 </div>
 <p><strong>Example</strong></p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">keymap</span><span class="p">.</span><span class="nf">set</span><span class="p">({</span><span class="w"> </span><span class="nv">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;g,z&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;next-item&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;say hello&quot;</span><span class="w"> </span><span class="p">})</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nv">navi</span><span class="p">.</span><span class="py">keymap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="s2">&quot;g,z&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;next-item&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;say hello&quot;</span><span class="p">)</span>
+
+<span class="c1">-- Using a lua function</span>
+<span class="nv">navi</span><span class="p">.</span><span class="py">keymap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="s2">&quot;a,a&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="nv">navi</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">msg</span><span class="p">(</span><span class="s2">&quot;Hello from lua&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">end</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;some function&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

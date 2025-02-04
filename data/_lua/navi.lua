@@ -110,11 +110,17 @@ setmetatable(M.opt, {
 
 ---Set the keymap
 ---@param key string
----@param command string
+---@param action string|function command to execute or a lua function
 ---@param desc string
-M.keymap.set = function (key, command, desc)
-    _navi:set_keymap(key, command, desc)
+M.keymap.set = function (key, action, desc)
+    if type(action) == "string" then
+        _navi:set_keymap(key, action, desc)
+
+    elseif type(action) == "function" then
+        _navi:set_keymap_for_function(key, action, desc)
+    end
 end
+
 
 M.ui.header = {}
 
@@ -753,6 +759,12 @@ end
 ---@param name string
 M.api.remove_user_command = function (name)
     _navi:remove_user_command(name)
+end
+
+---Rotate the preview panel image by an angle
+---@param angle decimal
+M.api.rotate_preview_image = function (angle)
+    _navi:set_preview_panel_image_rotation(angle)
 end
 
 ---Returns the number of item(s) in the current working directory
