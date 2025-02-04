@@ -28,26 +28,8 @@ void Navi::initThings() noexcept {
     m_file_panel->setCurrentDir(m_default_dir, true);
     m_thumbnail_cache_future_watcher->setFuture(m_thumbnail_cache_future);
 
-    this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    m_file_panel->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 }
-
-// Function to get all global Lua function names using Sol2
-/*QStringList Navi::getLuaFunctionNames() noexcept {*/
-/**/
-/*    // Access the global Lua table*/
-/*    sol::table function_table = lua.globals();*/
-/**/
-/*    if (!function_table.empty()) {*/
-/*        QStringList luaFunctions;*/
-/*        for (const auto &[key, value] : function_table) {*/
-/*            if (value.get_type() == sol::type::function) {*/
-/*                luaFunctions << QString::fromStdString(key.as<std::string>());*/
-/*            }*/
-/*        }*/
-/*        return luaFunctions;*/
-/*    } else*/
-/*    return {};*/
-/*}*/
 
 // Function to create Qt keybindings from list of ‘Keybinds’ struct
 void Navi::generateKeybinds() noexcept {
@@ -359,10 +341,10 @@ void Navi::setupCommandMap() noexcept {
     };
 
     /*
-    commandMap["reload-config"] = [this](const QStringList &args) {
-        initConfiguration();
-    };
-    */
+      commandMap["reload-config"] = [this](const QStringList &args) {
+      initConfiguration();
+      };
+     */
 
     commandMap["sort-name"] = [this](const QStringList &args) {
         UNUSED(args);
@@ -968,7 +950,7 @@ void Navi::TogglePreviewPanel(const bool &state) noexcept {
         disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                    &PreviewPanel::onFileSelected);
     }
-        m_preview_panel_dock->toggleAction();
+    m_preview_panel_dock->toggleAction();
 }
 
 void Navi::TogglePreviewPanel() noexcept {
@@ -2261,13 +2243,7 @@ void Navi::ChangeDirectory(const QString &path) noexcept {
 }
 
 void Navi::change_directory(const std::string &path) noexcept {
-    if (path.empty()) {
-        QString path = m_inputbar->getInput("Enter path to cd");
-        if (!path.isEmpty())
-            m_file_panel->setCurrentDir(path);
-    } else {
-        m_file_panel->setCurrentDir(QString::fromStdString(path));
-    }
+    ChangeDirectory(QString::fromStdString(path));
 }
 
 void Navi::SpawnProcess(const QString &command,
@@ -3235,11 +3211,11 @@ void Navi::saveLayout() noexcept {
 
         if (savedLayouts.contains(layoutName)) {
             QMessageBox::warning(this,
-                "Layout Name Exists",
-                QString(
-                    "Layout with the name '%1' already exists. Please try saving "
-                    "the layout with a unique name")
-                .arg(layoutName));
+                                 "Layout Name Exists",
+                                 QString(
+                                 "Layout with the name '%1' already exists. Please try saving "
+                                 "the layout with a unique name")
+                                 .arg(layoutName));
         } else {
             fine = true;
         }
@@ -3260,7 +3236,7 @@ void Navi::saveLayout() noexcept {
     }
 }
 
-void Navi::screenshot(const std::string &_path) noexcept {
+void Navi::screenshot(const std::string &_path, const int &delay) noexcept {
     QScreen *screen = QGuiApplication::primaryScreen();
 
     if (!screen) {
@@ -3272,17 +3248,29 @@ void Navi::screenshot(const std::string &_path) noexcept {
 
     auto geom = win->geometry();
 
-    QPixmap pix = screen->grabWindow(0, geom.x(), geom.y(), geom.width(), geom.height());
+    auto takeScreenshot =
+        [&]() {
+            QPixmap pix = screen->grabWindow(0, geom.x(), geom.y(), geom.width(),
+                                             geom.height());
 
-    if (pix.isNull())
-        return;
+            if (pix.isNull())
+                return;
 
-    if (_path.empty()) {
-        auto dir = m_file_panel->getCurrentDir();
-        auto filename = QUuid::createUuid().toString() + ".png";
-        pix.save(joinPaths(dir, filename), "PNG");
+            if (_path.empty()) {
+                auto dir = m_file_panel->getCurrentDir();
+                auto filename = QUuid::createUuid().toString() + ".png";
+                pix.save(joinPaths(dir, filename), "PNG");
+            } else {
+                pix.save(QString::fromStdString(_path) + ".png", "PNG");
+            }
+
+            m_statusbar->Message("Screenshot taken!");
+        };
+
+    if (delay > 0) {
+        QTimer::singleShot(delay, takeScreenshot);
     } else {
-        pix.save(QString::fromStdString(_path) + ".png", "PNG");
+        takeScreenshot();
     }
 
 }
