@@ -68,13 +68,13 @@ class QuestionDialog : public QDialog {
 
     }
 
-    void toggleDetails(bool checked) {
+    void toggleDetails(bool checked) noexcept {
         m_extraDescription->setVisible(checked);
         m_detailsButton->setText(checked ? tr("Hide Details") : tr("Show Details"));
         adjustSize();
     }
 
-    void createButtons(ButtonConfiguration config, QHBoxLayout* layout) {
+    void createButtons(ButtonConfiguration config, QHBoxLayout* layout) noexcept {
         switch (config) {
             case YesNo:
                 addButton(layout, tr("Yes"), Result::Yes);
@@ -89,12 +89,16 @@ class QuestionDialog : public QDialog {
         }
     }
 
-    void addButton(QHBoxLayout* layout, const QString& text, Result result) {
+    void addButton(QHBoxLayout* layout, const QString& text, Result result) noexcept {
         QPushButton* btn = new QPushButton(text);
         connect(btn, &QPushButton::clicked, this, [this, result]() {
             done(static_cast<int>(result));
         });
         layout->addWidget(btn);
+    }
+
+    void closeEvent(QCloseEvent *e) noexcept {
+        done(static_cast<int>(Result::No));
     }
 
 private:
