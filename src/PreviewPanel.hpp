@@ -74,6 +74,10 @@ public:
 
     Thumbnailer* thumbnailer() noexcept { return m_thumbnailer; }
 
+    inline void rotateImage(const qreal &angle = 0.0f) noexcept {
+        m_img_widget->rotate(angle);
+    }
+
 private:
     void previewArchive() noexcept;
     void loadImageAfterDelay() noexcept;
@@ -116,7 +120,6 @@ private:
     };
 
     qint64 m_preview_threshold = utils::parseFileSize("10M");
-
     int m_num_read_lines = 50;
 
 };
