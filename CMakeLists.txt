@@ -131,6 +131,7 @@ qt_add_executable(${PROJECT_NAME}
   src/TaskCardTemplate.hpp
   src/OrderlessFilterModel.hpp
   src/FilePanelDelegate.hpp
+  src/QuestionDialog.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
@@ -187,6 +188,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_drivewidget.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_filepaneldelegate.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_mimeutils.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_updatedialog.hpp)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_questiondialog.hpp)
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
