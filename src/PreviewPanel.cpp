@@ -8,7 +8,7 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QWidget(parent) {
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    m_stack_widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
+    m_stack_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 
     m_img_widget->setHidden(true);
     m_text_preview_widget->setHidden(true);
