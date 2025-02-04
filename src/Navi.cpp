@@ -158,6 +158,7 @@ void Navi::ShowHelp() noexcept {}
 
 // Setup the commandMap HashMap with the function calls
 void Navi::setupCommandMap() noexcept {
+
     commandMap["update"] = [this](const QStringList &args) {
         UNUSED(args);
         CheckForUpdates();

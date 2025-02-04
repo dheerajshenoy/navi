@@ -8,26 +8,51 @@ CustomInputDialog::CustomInputDialog(QWidget *parent) : QDialog(parent) {
     m_btn_layout->addWidget(m_ok_btn);
     m_btn_layout->addWidget(m_cancel_btn);
 
-    connect(m_ok_btn, &QPushButton::clicked, [&]() {
-        m_result = CustomInputDialog::DialogCode::Accepted;
-        eventLoop.exit();
-    });
 
-    connect(m_cancel_btn, &QPushButton::clicked, [&]() {
-        m_result = CustomInputDialog::DialogCode::Rejected;
-        this->close();
-        eventLoop.exit();
-    });
 }
 
 QString CustomInputDialog::getText(const QString &title,
-                             const QString &text,
-                             bool &ok,
-                             const QString &selection_text) noexcept {
+                                   const QString &text,
+                                   bool &ok,
+                                   const QString &default_text,
+                                   const QString &selection_text) noexcept {
+    this->show();
     this->setWindowTitle(title);
     m_msg_label->setText(text);
-    eventLoop.exec();
+    auto from = default_text.indexOf(selection_text);
+    auto to = from + selection_text.length();
+    m_line_edit->setText(default_text);
+    m_line_edit->setSelection(from, to);
 
-    return m_line_edit->text();
+    QEventLoop loop;
+
+    connect(m_ok_btn, &QPushButton::clicked, this, [&]() {
+        m_result = CustomInputDialog::DialogCode::Accepted;
+        ok = true;
+        loop.quit();
+    });
+
+    connect(m_cancel_btn, &QPushButton::clicked, this, [&]() {
+        m_result = CustomInputDialog::DialogCode::Rejected;
+        ok = false;
+        loop.quit();
+    });
+
+    connect(this, &CustomInputDialog::escapePressed, this, [&]() {
+        ok = false;
+        m_result = CustomInputDialog::DialogCode::Rejected;
+        loop.quit();
+    });
+
+    connect(this, &CustomInputDialog::returnPressed, this, [&]() {
+        ok = true;
+        m_result = CustomInputDialog::DialogCode::Accepted;
+        loop.quit();
+    });
+
+    // Start the event loop
+    loop.exec();
+
+    return m_line_edit->text();  // Return the captured input
 }
 

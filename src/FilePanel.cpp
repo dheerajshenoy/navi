@@ -1,5 +1,6 @@
 #include "FilePanel.hpp"
 #include "Navi.hpp"
+#include "QuestionDialog.hpp"
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
                      TaskManager *tm, QWidget *parent)
@@ -762,7 +763,8 @@ void FilePanel::RenameItem() noexcept {
                                       oldFileName, fileInfo.baseName());
     }
     else if (fileInfo.isDir())
-        newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldFileName),
+        newFileName = utils::getInput(this, "Rename Item",
+                                      QString("Rename (%1)").arg(oldFileName),
                                       oldFileName,
                                       oldFileName);
 
@@ -820,6 +822,8 @@ void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
     // Step 3: Open the temporary file in the default text editor
     QProcess editor;
 
+    qDebug() << m_bulk_rename_editor;
+
     editor.startDetached();
     if (m_bulk_rename_with_terminal) {
         editor.start(m_terminal,
@@ -875,10 +879,10 @@ void FilePanel::RenameItemsGlobal() noexcept {
             const QString &oldName = fileInfo.fileName();
             QString newFileName;
             if (fileInfo.isFile())
-                newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
                                                    oldName, fileInfo.baseName());
             else if (fileInfo.isDir())
-                newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
                                                    oldName, oldName);
 
             // If user cancels or the new file name is empty
@@ -914,10 +918,10 @@ void FilePanel::RenameItemsLocal() noexcept {
             QString newFileName;
 
             if (fileInfo.isFile())
-                newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
                                                    oldName, fileInfo.baseName());
             else if (fileInfo.isDir())
-                newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
+                newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
                                                    oldName, oldName);
 
             // If user cancels or the new file name is empty
@@ -950,11 +954,11 @@ void FilePanel::RenameItems(const QStringList &files) noexcept {
         QString newFileName;
 
         if (fileInfo.isFile())
-            newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
-                                               oldName, fileInfo.baseName());
+            newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
+                                          oldName, fileInfo.baseName());
         else if (fileInfo.isDir())
-            newFileName = m_inputbar->getInput(QString("Rename (%1)").arg(oldName),
-                                               oldName, oldName);
+            newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
+                                          oldName, oldName);
 
         // If user cancels or the new file name is empty
         if (newFileName.isEmpty() || newFileName.isNull()) {
@@ -1003,11 +1007,19 @@ void FilePanel::DeleteDWIM() noexcept {
 
 void FilePanel::DeleteItems(const QStringList &files) noexcept {
     unsigned int itemsDeleted = 0;
-    QString inputConfirm = m_inputbar->getInput(QString("Do you want to delete %1 items ? (y/N)").arg(files.size()));
-    if (inputConfirm == "n" || inputConfirm.isEmpty() || inputConfirm.isNull()) {
+
+    QuestionDialog dialog("Delete Items",
+                          QString("Do you want to delete %1 items ?").arg(files.size()),
+                          files.join("\n"),
+                          QuestionDialog::YesNo, this);
+
+    auto result = dialog.exec();
+
+    if (result == QuestionDialog::Result::No) {
         m_statusbar->Message("Delete operation cancelled");
         return;
     }
+
     for (const auto &itemPath : files) {
         QFileInfo file(itemPath);
         if (file.isDir()) {
@@ -1072,14 +1084,20 @@ void FilePanel::DeleteItemsGlobal() noexcept {
 
     if (m_model->hasMarks()) {
         auto markedFiles = m_model->getMarkedFiles();
-        QString confirm = m_inputbar->getInput(
-            QString("Do you want to delete %1 files ? (y/N)")
-            .arg(markedFiles.size()))
-            .toLower();
-        if (confirm == "n" || confirm.isEmpty() || confirm.isNull()) {
+        QuestionDialog dialog("Delete Items Global",
+                              QString("Do you want to delete %1 files ? (y/N)")
+                              .arg(markedFiles.size()),
+                              markedFiles.join("\n"),
+                              QuestionDialog::YesNo,
+                              this);
+
+        auto result = dialog.exec();
+
+        if (result == QuestionDialog::Result::No) {
             m_statusbar->Message("Delete operation cancelled");
             return;
         }
+
         for (const auto &itemPath : markedFiles) {
             QFileInfo file(itemPath);
             if (file.isDir()) {
@@ -1110,14 +1128,21 @@ void FilePanel::DeleteItemsLocal() noexcept {
 
     if (m_model->hasMarksLocal()) {
         auto markedLocalFiles = m_model->getMarkedFilesLocal();
-        QString confirm = m_inputbar->getInput(
-            QString("Do you want to delete %1 files ? (y/N)")
-            .arg(markedLocalFiles.size()))
-            .toLower();
-        if (confirm == "n" || confirm.isEmpty() || confirm.isNull()) {
+
+        QuestionDialog dialog("Delete Items Local",
+                              QString("Do you want to delete %1 files ? (y/N)")
+                              .arg(markedLocalFiles.size()),
+                              markedLocalFiles.join("\n"),
+                              QuestionDialog::YesNo,
+                              this);
+
+        auto result = dialog.exec();
+
+        if (result == QuestionDialog::Result::No) {
             m_statusbar->Message("Delete operation cancelled");
             return;
         }
+
         for (const auto &itemPath : markedLocalFiles) {
             QFileInfo file(itemPath);
             if (file.isDir()) {
@@ -1185,7 +1210,7 @@ void FilePanel::ToggleDotDot() noexcept {
 void FilePanel::Search(QString searchExpression, const bool &regex) noexcept {
     if (searchExpression.isNull() || searchExpression.isEmpty())
         searchExpression =
-            m_inputbar->getInput("Search", m_search_text, m_search_text);
+            utils::getInput(this, "Search", m_search_text, m_search_text);
 
     if (regex)
         m_search_index_list = m_model->match(m_model->index(0, 0),
@@ -1314,7 +1339,7 @@ bool FilePanel::SetPermissions(const QString &filePath,
 }
 
 void FilePanel::ChmodItem() noexcept {
-    QString permString = m_inputbar->getInput("Enter permission number: ");
+    QString permString = utils::getInput(this, "Chmod Item", "Enter permission number: ");
     QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
     QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
@@ -1337,7 +1362,7 @@ void FilePanel::ChmodItemsLocal() noexcept {
         return;
     }
 
-    QString permString = m_inputbar->getInput("Enter permission number: ");
+    QString permString = utils::getInput(this, "Chmod Items Local", "Enter permission number: ");
     QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
     QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
@@ -1362,7 +1387,7 @@ void FilePanel::ChmodItemsGlobal() noexcept {
         return;
     }
 
-    QString permString = m_inputbar->getInput("Enter permission number: ");
+    QString permString = utils::getInput(this, "Chmod Items Global", "Enter permission number: ");
     QRegularExpression permissionRegex(R"((^[0-7]{3}$)");
     QRegularExpressionMatch permissionMatch = permissionRegex.match(permString);
 
@@ -1569,7 +1594,7 @@ void FilePanel::NewFolder(const QStringList &folderNames) noexcept {
     QDir dir;
 
     if (folderNames.isEmpty()) {
-        QString folderName = m_inputbar->getInput("Enter directory name");
+        QString folderName = utils::getInput(this, "New Folder", "Enter directory name");
         if (folderName.isEmpty() || folderName.isNull()) {
             m_statusbar->Message(QString("Directory name cannot be empty"),
                                  MessageType::WARNING);

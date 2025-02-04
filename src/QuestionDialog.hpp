@@ -1,30 +1,103 @@
-#pragma once
 
-#include <QDialog>
-#include <QWidget>
+#include "pch/pch_questiondialog.hpp"
 
 class QuestionDialog : public QDialog {
+    Q_OBJECT
 
-public:
-    QuestionDialog(QWidget *parent = nullptr);
-
-    enum class Button {
-        Yes = 0,
-        No,
-        YesToAll,
-        NoToAll
+    public:
+    enum ButtonConfiguration {
+        YesNo,
+        YesNoAll
     };
 
-    void set_extra_desc(const QString &str) noexcept;
+    enum Result {
+        Yes = QDialog::Accepted + 1,
+        YesAll,
+        No,
+        NoAll
+    };
 
+    QuestionDialog(const QString& title, const QString& text, const QString& extraDescription, ButtonConfiguration buttonConfig, QWidget* parent = nullptr)
+    : QDialog(parent) {
+        setWindowTitle(title);
 
-    inline void extra_desc_visible(const bool &state) noexcept {
-        m_extra_desc_visible = state;
+        // Main text
+        QLabel* textLabel = new QLabel(text);
+        textLabel->setWordWrap(true);
+
+        // Expandable details
+        m_detailsButton = new QPushButton(tr("Show Details"));
+        m_detailsButton->setCheckable(true);
+        m_detailsButton->setChecked(false);
+
+        m_extraDescription = new QTextEdit(extraDescription);
+        m_extraDescription->setReadOnly(true);
+        m_extraDescription->setVisible(false);
+
+        // Button layout
+        QHBoxLayout* buttonLayout = new QHBoxLayout;
+        createButtons(buttonConfig, buttonLayout);
+
+        // Main layout
+        QVBoxLayout* mainLayout = new QVBoxLayout(this);
+        mainLayout->addWidget(textLabel);
+        mainLayout->addWidget(m_detailsButton);
+        mainLayout->addWidget(m_extraDescription);
+        mainLayout->addLayout(buttonLayout);
+
+        // Connections
+        connect(m_detailsButton, &QPushButton::toggled, this, &QuestionDialog::toggleDetails);
     }
 
-    int exec() noexcept override;
+    QuestionDialog(const QString& title, const QString& text, ButtonConfiguration buttonConfig, QWidget* parent = nullptr)
+    : QDialog(parent) {
+        setWindowTitle(title);
+
+        // Main text
+        QLabel* textLabel = new QLabel(text);
+        textLabel->setWordWrap(true);
+
+        // Button layout
+        QHBoxLayout* buttonLayout = new QHBoxLayout;
+        createButtons(buttonConfig, buttonLayout);
+
+        // Main layout
+        QVBoxLayout* mainLayout = new QVBoxLayout(this);
+        mainLayout->addWidget(textLabel);
+        mainLayout->addLayout(buttonLayout);
+
+    }
+
+    void toggleDetails(bool checked) {
+        m_extraDescription->setVisible(checked);
+        m_detailsButton->setText(checked ? tr("Hide Details") : tr("Show Details"));
+        adjustSize();
+    }
+
+    void createButtons(ButtonConfiguration config, QHBoxLayout* layout) {
+        switch (config) {
+            case YesNo:
+                addButton(layout, tr("Yes"), Result::Yes);
+                addButton(layout, tr("No"), Result::No);
+                break;
+            case YesNoAll:
+                addButton(layout, tr("Yes"), Result::Yes);
+                addButton(layout, tr("Yes All"), Result::YesAll);
+                addButton(layout, tr("No"), Result::No);
+                addButton(layout, tr("No All"), Result::NoAll);
+                break;
+        }
+    }
+
+    void addButton(QHBoxLayout* layout, const QString& text, Result result) {
+        QPushButton* btn = new QPushButton(text);
+        connect(btn, &QPushButton::clicked, this, [this, result]() {
+            done(static_cast<int>(result));
+        });
+        layout->addWidget(btn);
+    }
 
 private:
-
-    bool m_extra_desc_visible = true;
+    QPushButton* m_detailsButton;
+    QTextEdit* m_extraDescription;
 };

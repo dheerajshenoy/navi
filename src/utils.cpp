@@ -326,30 +326,16 @@ void utils::getTableMembers(sol::table tbl, const std::string& prefix,
     }
 }
 
-
 QString utils::getInput(QWidget *parent,
                         const QString &title,
                         const QString &text,
                         const QString &default_text,
                         const QString &selection_text) noexcept {
 
-    QInputDialog dialog(parent);
-    dialog.setTextValue(default_text);
-    dialog.setWindowTitle(title);
-
-    dialog.show();
-
-    /*if (!selection_text.isEmpty()) {*/
-    /*    int startPos = default_text.indexOf(selection_text);*/
-    /*    qDebug() << selection_text;*/
-    /*    if (startPos != -1)*/
-    /*        dialog.lineEdit()->setSelection(0, 5);*/
-    /*}*/
-
-    if (dialog.exec() == QInputDialog::DialogCode::Accepted)
-        return dialog.textValue();
-
-    return QString();
+    CustomInputDialog dialog(parent);
+    bool ok;
+    QString output = dialog.getText(title, text, ok, default_text, selection_text);
+    return output;
 }
 
 QString utils::getInput(QWidget *parent,
@@ -359,20 +345,8 @@ QString utils::getInput(QWidget *parent,
                         const QString &default_text,
                         const QString &selection_text) noexcept {
 
-    QInputDialog dialog(parent);
-    dialog.setWindowTitle(title);
-    dialog.setTextValue(default_text);
-    dialog.show();
-
-    /*if (!selection_text.isEmpty())*/
-    /*    dialog.findChild<QLineEdit*>()->setSelection(0, default_text.indexOf(selection_text) + selection_text.size());*/
-
-    if (dialog.exec() == QInputDialog::DialogCode::Accepted)
-        ok = true;
-    else
-        ok = false;
-
-    return dialog.textValue();
+    CustomInputDialog dialog(parent);
+    return dialog.getText(title, text, ok, default_text, selection_text);
 }
 
 QStringList utils::savedLayouts() noexcept {

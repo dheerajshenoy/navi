@@ -9,20 +9,17 @@
 #include <QEventLoop>
 
 class CustomInputDialog : public QDialog {
-
+Q_OBJECT
 public:
     CustomInputDialog(QWidget *parent = nullptr);
     QString getText(const QString &title,
                     const QString &text,
                     bool &ok,
+                    const QString &default_text,
                     const QString &selection_text) noexcept;
 
     inline void setTextValue(const QString &text) noexcept {
         m_msg_label->setText(text);
-    }
-
-    inline void setWindowTitle(const QString &title) noexcept {
-        this->setWindowTitle(title);
     }
 
     inline QLineEdit* lineEdit() noexcept { return m_line_edit; }
@@ -37,10 +34,22 @@ protected:
 
     void keyPressEvent(QKeyEvent *e) noexcept override {
 
-        if (e->key() == Qt::Key_Escape) {
-            m_result = CustomInputDialog::DialogCode::Rejected;
+        switch(e->key()) {
+
+            case Qt::Key_Escape:
+                emit escapePressed();
+                break;
+
+            case Qt::Key_Enter:
+                emit returnPressed();
+                break;
         }
+
     }
+
+signals:
+    void escapePressed();
+    void returnPressed();
 
 private:
     QVBoxLayout *m_layout = new QVBoxLayout();
@@ -49,6 +58,5 @@ private:
     QLabel *m_msg_label = new QLabel();
     QPushButton *m_cancel_btn = new QPushButton("Cancel");
     QHBoxLayout *m_btn_layout = new QHBoxLayout();
-    QEventLoop eventLoop;
     CustomInputDialog::DialogCode m_result;
 };
