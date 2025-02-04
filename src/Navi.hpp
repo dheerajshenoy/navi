@@ -63,6 +63,12 @@ public:
     void screenshot(const std::string &path = "",
                     const int &delay = 0) noexcept;
 
+    inline void set_preview_image_rotation(const double &angle = 0.0f) noexcept {
+        qDebug() << angle;
+        m_preview_panel->rotateImage(static_cast<qreal>(angle));
+    }
+
+
     inline void set_version(const QString &version) noexcept {
         m_version = version;
     }
@@ -349,6 +355,11 @@ public:
     void Lua__keymap_set(const std::string &key,
                          const std::string &command,
                          const std::string &desc) noexcept;
+
+    void Lua__keymap_set_for_function(const std::string &key,
+                         const sol::function &func,
+                         const std::string &desc) noexcept;
+
     void Lua__register_user_function(const std::string &name,
                                     const sol::function &func) noexcept;
     void Lua__unregister_user_function(const std::string &name) noexcept;
