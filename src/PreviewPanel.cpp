@@ -61,20 +61,24 @@ void PreviewPanel::showTextPreview() noexcept {
 }
 
 void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
-    m_img_widget->clear();
-    QString resolvedPath = filePath;
-
-    if (QFile::exists(filePath) && QFile::symLinkTarget(filePath).isEmpty() == false) {
-        resolvedPath = QFile::symLinkTarget(filePath);
-    }
 
     m_filepath = filePath;
 
-    if (!utils::isBinaryFile(resolvedPath.toStdString())) {
+    // Do not preview if it is a directory
+    QFileInfo finfo(m_filepath);
+    if (finfo.isDir()) {
+        return;
+    }
+
+    if (finfo.exists() && (finfo.isSymLink() || finfo.isSymbolicLink()) && !finfo.symLinkTarget().isEmpty()) {
+        m_filepath = QFile::symLinkTarget(filePath);
+    }
+
+    if (!utils::isBinaryFile(m_filepath.toStdString())) {
         m_text_file_preview_timer->start(150);
     } else {
 
-        auto mimetype = getMimeType(resolvedPath);
+        auto mimetype = getMimeType(m_filepath);
 
         if (m_archive_mimetypes.contains(mimetype)) {
             m_archive_preview_timer->start(150);
