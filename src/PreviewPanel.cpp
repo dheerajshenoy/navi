@@ -80,8 +80,15 @@ void PreviewPanel::onFileSelected(const QString &filePath) noexcept {
             m_archive_preview_timer->start(150);
         }
 
-        else if (mimetype == "application/pdf" ||
-            mimetype.startsWith("image") || mimetype.startsWith("video/")) {
+        else if (mimetype == "application/pdf") {
+            m_image_preview_timer->start(150);
+        }
+
+        else if (mimetype.startsWith("video/")) {
+            m_image_preview_timer->start(150);
+        }
+
+        else if (mimetype.startsWith("image/") && !mimetype.contains("gif")) {
             m_image_preview_timer->start(150);
         }
 
