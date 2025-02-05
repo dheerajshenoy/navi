@@ -1,50 +1,38 @@
 #pragma once
 
-#include <QTextEdit>
-#include <QWidget>
+#include "../KDDockWidgets/src/qtwidgets/views/DockWidget.h"
 #include <QPushButton>
+#include <QTextEdit>
 #include <QVBoxLayout>
+#include <QWidget>
 
-class MessagesBuffer : public QWidget {
-    Q_OBJECT
+class MessagesBuffer : public KDDockWidgets::QtWidgets::DockWidget {
+  Q_OBJECT
 
 signals:
-void visibilityChanged(const bool& state);
+  void visibilityChanged(const bool &state);
 
 public:
-    explicit MessagesBuffer(QWidget *parent = nullptr) : QWidget(parent) {
-        m_layout->addWidget(m_text_edit);
-        this->setLayout(m_layout);
-        QPushButton *m_close_btn = new QPushButton("Close");
-        connect(m_close_btn, &QPushButton::clicked, this, [&]() { this->close(); });
-        m_layout->addWidget(m_close_btn);
-        this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+  explicit MessagesBuffer()
+      : KDDockWidgets::QtWidgets::DockWidget("Messages Pane") {
+    m_layout->addWidget(m_text_edit);
+    this->setLayout(m_layout);
+    QPushButton *m_clear_btn = new QPushButton("Clear");
+    connect(m_clear_btn, &QPushButton::clicked, this,
+            [&]() { m_text_edit->clear(); });
+    m_layout->addWidget(m_clear_btn);
 
-        m_text_edit->setAcceptRichText(true);
-        m_text_edit->setReadOnly(true);
+    m_text_edit->setAcceptRichText(true);
+    m_text_edit->setReadOnly(true);
+    m_widget->setLayout(m_layout);
+    this->setWidget(m_widget);
+    this->setFloating(true);
+  }
 
-    }
-
-    void AppendText(const QString &text) noexcept {
-        m_text_edit->append(text);
-    }
-
-    void show() noexcept {
-        emit visibilityChanged(true);
-        QWidget::show();
-    }
-
-    void hide() noexcept {
-        emit visibilityChanged(false);
-        QWidget::hide();
-    }
-
-    void close() noexcept {
-        emit visibilityChanged(false);
-        QWidget::close();
-    }
+  void AppendText(const QString &text) noexcept { m_text_edit->append(text); }
 
 private:
-    QTextEdit *m_text_edit = new QTextEdit();
-    QVBoxLayout *m_layout = new QVBoxLayout();
+  QWidget *m_widget = new QWidget();
+  QTextEdit *m_text_edit = new QTextEdit();
+  QVBoxLayout *m_layout = new QVBoxLayout();
 };
