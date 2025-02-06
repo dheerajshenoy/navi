@@ -27,3 +27,4 @@
 #include <QApplication>
 #include <QUrl>
 #include <QCryptographicHash>
+#include <QHeaderView>

@@ -42,11 +42,5 @@
 #include <QUrl>
 #include "../sol/sol.hpp"
 #include "../argparse.hpp"
-#include <kddockwidgets/MainWindow.h>
-#include <kddockwidgets/DockWidget.h>
-#include <kddockwidgets/Config.h>
-#include <kddockwidgets/LayoutSaver.h>
-#include <kddockwidgets/core/TitleBar.h>
-#include <kddockwidgets/core/MainWindow.h>
 #include <QScreen>
 #include <QUuid>
