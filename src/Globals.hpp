@@ -38,4 +38,4 @@ static const QStringList PRIVATE_API_FILE_PATH = { joinPaths( PRIVATE_API_FOLDER
 
 static const QString MIME_CACHE_FILE_PATH = joinPaths(CONFIG_DIR_PATH, "mime.cache");
 static const QString DESKTOP_FILE_DIR = "/usr/share/applications";
-static const QString LAYOUT_PATH = joinPaths(CONFIG_DIR_PATH, "layout");
+static const QString LAYOUT_PATH = joinPaths(CONFIG_DIR_PATH, "layouts");
