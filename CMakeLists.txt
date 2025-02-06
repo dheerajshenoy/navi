@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.16.0)
 
 # defines a project with a version
-project(navi VERSION 1.0.0 LANGUAGES CXX)
+project(navifm VERSION 1.0.0 LANGUAGES CXX)
 
 # pick the C++ standard to use, in this case C++20
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
