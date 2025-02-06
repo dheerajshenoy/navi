@@ -23,7 +23,7 @@ void read_lua_file(sol::state &lua) {
 
         sol::protected_function_result result = script();
 
-        lua.script("navi = require('navi')");
+        lua.script("navi = require('navifm')");
         lua.script(R"(
             function getTableMembers(tbl, prefix)
             prefix = prefix or "" -- Initialize prefix if not provided
