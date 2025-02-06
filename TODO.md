@@ -95,6 +95,7 @@
 - [X] Wonky file completion in the file path widget when "~" is present
 - [X] Preview image size change
 - [X] Tabs for different panes
+- [X] Notification
 - ~~[ ] Tabs~~
 - [ ] VisibilityChange signal bug
 - [ ] Open with menu

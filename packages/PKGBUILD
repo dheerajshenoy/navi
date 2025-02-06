@@ -1,6 +1,6 @@
 # Maintainer: Dheeraj Vittal Shenoy <dheerajshenoy22@gmail.com>
 pkgname=navi
-pkgver=r288.7c91bb9
+pkgver=r290.e8a209f
 pkgrel=1
 pkgdesc="Highly customizable and extensible modern file manager"
 arch=('x86_64')
