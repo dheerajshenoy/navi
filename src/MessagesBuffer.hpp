@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../KDDockWidgets/src/qtwidgets/views/DockWidget.h"
 #include <QPushButton>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <kddockwidgets/qtwidgets/DockWidget.h>
 
 class MessagesBuffer : public KDDockWidgets::QtWidgets::DockWidget {
   Q_OBJECT
@@ -14,7 +14,7 @@ signals:
 
 public:
   explicit MessagesBuffer()
-      : KDDockWidgets::QtWidgets::DockWidget("Messages Pane") {
+    : KDDockWidgets::QtWidgets::DockWidget(QStringLiteral("Messages Pane")) {
     m_layout->addWidget(m_text_edit);
     this->setLayout(m_layout);
     QPushButton *m_clear_btn = new QPushButton("Clear");
