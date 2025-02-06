@@ -39,4 +39,4 @@ The file managers for linux aren’t that great for me. So I decided to write my
 
 # Installation
 
-Go to `this <https://navi.readthedocs.io/en/latest/installation.html`_ link in the documentation to install navi
+Go to [this](https://navi.readthedocs.io/en/latest/installation.html) link in the documentation to install navi
