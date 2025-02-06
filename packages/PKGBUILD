@@ -1,4 +1,5 @@
 # Maintainer: Dheeraj Vittal Shenoy <dheerajshenoy22@gmail.com>
+
 pkgname=navi
 pkgver=1.3.0
 pkgrel=1
@@ -12,6 +13,11 @@ provides=('navi')
 source=("${pkgname}-${pkgver}::git+https://github.com/dheerajshenoy/navi.git")
 sha256sums=('SKIP')
 install=navi.install
+
+pkgver() {
+    cd "$srcdir/$pkgname"
+    cat latest-version.txt | tr -d 'v'
+}
 
 build() {
     cd "$pkgname-$pkgver"
