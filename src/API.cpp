@@ -29,9 +29,13 @@ void init_lua_api(sol::state &lua) noexcept {
 
     // Bind MyClass to Lua
     lua.new_usertype<Navi>("Navi", sol::constructors<Navi()>(),
+
+                           // LAYOUT
                            "load_layout", &Navi::loadLayout,
                            "save_layout", &Navi::saveLayout,
                            "delete_layout", &Navi::deleteLayout,
+                           "list_layout", &Navi::listLayout,
+
                            "set_hidden_files_visible", sol::resolve<void(const bool &)>(&Navi::ToggleHiddenFiles),
                            "get_hidden_files_visible", &Navi::get_hidden_files_visible,
                            "get_terminal", &Navi::Get_terminal,

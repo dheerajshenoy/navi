@@ -3348,3 +3348,12 @@ void Navi::screenshot(const std::string &_path, const int &delay) noexcept {
         takeScreenshot();
     }
 }
+
+
+std::vector<std::string> Navi::listLayout() noexcept {
+    auto savedLayouts = utils::savedLayouts();
+    if (savedLayouts.empty())
+        return;
+
+    return utils::convertToStdVector(savedLayouts);
+}
