@@ -15,7 +15,7 @@ sha256sums=('SKIP')
 install=navi.install
 
 pkgver() {
-    cd "$srcdir/$pkgname"
+    cd "$srcdir/$pkgname-$pkgver"
     cat latest-version.txt | tr -d 'v'
 }
 
