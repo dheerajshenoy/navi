@@ -351,7 +351,7 @@ QString utils::getInput(QWidget *parent,
 
 QStringList utils::savedLayouts() noexcept {
     QDir dir(utils::joinPaths(CONFIG_DIR_PATH, "layouts"));
-    return dir.entryList();
+    return dir.entryList(QDir::Filter::NoDotAndDotDot | QDir::Filter::Files);
 }
 
 bool utils::isBinaryFile(const std::string &filePath) noexcept {
