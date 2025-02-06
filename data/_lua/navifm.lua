@@ -131,6 +131,7 @@ M.ui.header = {}
 ---@class HeaderOptions
 ---@field visible boolean
 ---@field columns HeaderColumn
+---@field stylesheet string - QSS stylesheet to add to the widget
 
 ---Set option for header
 ---@param opts HeaderOptions
@@ -152,7 +153,11 @@ setmetatable(M.ui.header, {
             return _navi:get_header_visible()
 
         elseif key == "columns" then
-            return _navi:get_header_columns()
+           return _navi:get_header_columns()
+
+        elseif key == "stylesheet" then
+           return _navi:get_header_stylesheet()
+
         end
     end,
     __newindex = function (_, key, value)
@@ -161,8 +166,12 @@ setmetatable(M.ui.header, {
 
         elseif key == "columns" then
             if type(value) == "table" then
-                return _navi:set_header_columns(value)
+                _navi:set_header_columns(value)
             end
+
+        elseif key == "stylesheet" then
+           _navi:set_header_stylesheet(value)
+
         end
     end
 
@@ -180,6 +189,7 @@ end
 ---@class VheaderOptions
 ---@field visible boolean - visibility of the vertical header
 ---@field border boolean - borders for vertical header cells
+---@field stylesheet string - QSS stylesheet to add to the widget
 
 ---Sets options for the vertical header
 ---@param opts VheaderOptions
@@ -199,7 +209,10 @@ setmetatable(M.ui.vheader, {
             return _navi:get_vheader_foreground()
 
         elseif key == "background" then
-            return _navi:get_vheader_background()
+           return _navi:get_vheader_background()
+
+        elseif key == "stylesheet" then
+           return _navi:get_vheader_stylesheet()
 
         end
     end,
@@ -216,6 +229,8 @@ setmetatable(M.ui.vheader, {
         elseif key == "background" then
             _navi:set_vheader_background(value)
 
+        elseif key == "stylesheet" then
+            _navi:set_vheader_stylesheet(value)
 
         end
     end
