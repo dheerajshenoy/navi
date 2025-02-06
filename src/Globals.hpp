@@ -20,7 +20,7 @@ inline QString joinPaths(const QString& first, const Args&... args) noexcept {
     }
 }
 
-static const QString APP_NAME = "navi";
+static const QString APP_NAME = "navifm";
 static const QString CONFIG_DIR_PATH = joinPaths(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation), APP_NAME);
 static const QString CONFIG_FILE_NAME = "init.lua";
 static const QString CONFIG_FILE_PATH = joinPaths(CONFIG_DIR_PATH, CONFIG_FILE_NAME);
