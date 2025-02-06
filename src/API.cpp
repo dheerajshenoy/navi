@@ -329,6 +329,6 @@ void update_lua_package_path(sol::state &lua) noexcept {
     };
 
     iterateDir(CONFIG_DIR_PATH);
-    iterateDir("/usr/share/navi");
-    iterateDir("~/.local/share/navi");
+    iterateDir(QString("/usr/share/%1").arg(APP_NAME));
+    iterateDir(QString("~/.local/share/%1").arg(APP_NAME));
 }

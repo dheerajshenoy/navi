@@ -67,7 +67,7 @@ void read_lua_file(sol::state &lua) {
 }
 
 int main(int argc, char *argv[]) {
-    argparse::ArgumentParser parser("navi", VERSION.toStdString());
+    argparse::ArgumentParser parser(APP_NAME.toStdString(), VERSION.toStdString());
     QApplication app(argc, argv);
 
     //////////////////////
@@ -140,8 +140,8 @@ int main(int argc, char *argv[]) {
 
     qApp->setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
-    app.setOrganizationName("Navi");
-    app.setApplicationName("navi");
+    app.setOrganizationName("NaviFM");
+    app.setApplicationName("navifm");
 
     app.exec();
 }

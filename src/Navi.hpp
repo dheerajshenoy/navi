@@ -66,7 +66,7 @@ inline void notify(NotificationDialog::NotificationType type,
 				   const bool &icon = true) noexcept {
 	m_notification_manager->showMessage(this, type, message, icon);
 }
-                   
+
 inline void set_preview_image_rotation(const double &angle = 0.0f) noexcept {
     m_preview_panel->rotateImage(static_cast<qreal>(angle));
 }
