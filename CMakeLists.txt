@@ -17,11 +17,11 @@ find_program(SCCACHE sccache)
 find_program(CCACHE ccache)
 
 if(CCACHE)
-    set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE} CACHE STRING "CCache program for C")
-    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE} CACHE STRING "CCache program for C++")
+  set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE} CACHE STRING "CCache program for C")
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE} CACHE STRING "CCache program for C++")
 elseif(SCCACHE)
-    set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C")
-    set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C++")
+  set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C")
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C++")
 endif()
 
 
@@ -40,15 +40,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands")
 # Set flags for compilers
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Building in Debug Mode")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
+  message(STATUS "Building in Debug Mode")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Building in Release Mode")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3" CACHE STRING "C++ flags")  # Add more flags as necessary
+  message(STATUS "Building in Release Mode")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3" CACHE STRING "C++ flags")  # Add more flags as necessary
 else()
-    message(STATUS "Building in Debug Mode since no build mode was specified")
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build Type" FORCE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
+  message(STATUS "Building in Debug Mode since no build mode was specified")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build Type" FORCE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
 endif()
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
@@ -69,8 +69,8 @@ find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 find_package(Lua REQUIRED)
 
 execute_process(
-    COMMAND git submodule update --init --recursive
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMAND git submodule update --init --recursive
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 set(KDDockWidgets_QT6 "ON" CACHE STRING "Use qt6 with KDDockWidgets")
@@ -115,6 +115,8 @@ qt_add_executable(${PROJECT_NAME}
   src/WaitingSpinnerWidget.cpp
   src/CustomInputDialog.cpp
   src/CollapsibleWidget.cpp
+  src/NotificationDialog.cpp
+  src/NotificationManager.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp
@@ -132,6 +134,8 @@ qt_add_executable(${PROJECT_NAME}
   src/OrderlessFilterModel.hpp
   src/FilePanelDelegate.hpp
   src/QuestionDialog.hpp
+  src/NotificationDialog.hpp
+  src/NotificationManager.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
@@ -139,21 +143,21 @@ qt_add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
 
 set(RESOURCE_FILES
-    resources/images/clock.svg
-    resources/images/location.svg
-    resources/images/messages.svg
-    resources/images/pencil-icon.svg
-    resources/images/plus.svg
-    resources/images/reverse.svg
-    resources/images/sort.svg
-    resources/images/menu.svg
-    resources/images/preview.svg
-    resources/images/update.svg
+  resources/images/clock.svg
+  resources/images/location.svg
+  resources/images/messages.svg
+  resources/images/pencil-icon.svg
+  resources/images/plus.svg
+  resources/images/reverse.svg
+  resources/images/sort.svg
+  resources/images/menu.svg
+  resources/images/preview.svg
+  resources/images/update.svg
 )
 
 qt_add_resources(${PROJECT_NAME}
- PREFIX "resources"
- FILES ${RESOURCE_FILES})
+  PREFIX "resources"
+  FILES ${RESOURCE_FILES})
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LIBARCHIVE_INCLUDE_DIRS})
