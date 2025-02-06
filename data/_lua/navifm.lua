@@ -798,6 +798,32 @@ M.api.screenshot = function (path, delay)
     _navi:screenshot(path, delay)
 end
 
+---Saves the current layout
+---@param name - unique name that does not already exist (overwrites otherwise)
+M.api.layout_save = function (name)
+    name = name or ""
+    _navi:save_layout(name)
+end
+
+---Loads the specified layout (if it exists)
+---@param name - name of the layout to be loaded
+M.api.layout_load = function (name)
+    name = name or ""
+    _navi:load_layout(name)
+end
+
+---Deletes the specified layout (if it exists)
+---@param name - name of the layout to be deleted
+M.api.layout_delete = function (name)
+    name = name or ""
+    _navi:delete_layout(name)
+end
+
+---Lists all the saved layouts
+M.api.layout_list = function ()
+    _navi:list_layout()
+end
+
 ---Searches the current working directory for the item with the provided base name
 ---@param base_name string
 M.api.search = function (base_name)
