@@ -28,8 +28,10 @@ void init_lua_api(sol::state &lua) noexcept {
                                         "options", &Statusbar::Module::options);
 
     // Bind MyClass to Lua
-    lua.new_usertype<Navi>("Navi",
-                           sol::constructors<Navi>(),
+    lua.new_usertype<Navi>("Navi", sol::constructors<Navi()>(),
+                           "load_layout", &Navi::loadLayout,
+                           "save_layout", &Navi::saveLayout,
+                           "delete_layout", &Navi::deleteLayout,
                            "set_hidden_files_visible", sol::resolve<void(const bool &)>(&Navi::ToggleHiddenFiles),
                            "get_hidden_files_visible", &Navi::get_hidden_files_visible,
                            "get_terminal", &Navi::Get_terminal,
@@ -49,6 +51,8 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_header_visible", &Navi::get_header_visible,
                            "set_header_columns", &Navi::set_header_columns,
                            "get_header_columns", &Navi::get_header_columns,
+                           "set_header_stylesheet", &Navi::set_header_stylesheet,
+                           "get_header_stylesheet", &Navi::get_header_stylesheet,
 
                            // Vertical header
                            "set_vheader_visible", &Navi::set_vheader_visible,
@@ -61,6 +65,8 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_vheader_foreground", &Navi::get_vheader_foreground,
                            "set_vheader_background", &Navi::set_vheader_background,
                            "get_vheader_background", &Navi::get_vheader_background,
+                           "set_vheader_stylesheet", &Navi::set_vheader_stylesheet,
+                           "get_vheader_stylesheet", &Navi::get_vheader_stylesheet,
 
                            // Bulk Rename
                            "set_bulk_rename_editor", &Navi::set_bulk_rename_editor,
@@ -299,8 +305,6 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_cursor_props", &Navi::set_cursor_props
 
                            );
-
-
 }
 
 void update_lua_package_path(sol::state &lua) noexcept {
