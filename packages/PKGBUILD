@@ -1,6 +1,6 @@
 # Maintainer: Dheeraj Vittal Shenoy <dheerajshenoy22@gmail.com>
 pkgname=navi
-pkgver=r290.e8a209f
+pkgver=r291.f616c33
 pkgrel=1
 pkgdesc="Highly customizable and extensible modern file manager"
 arch=('x86_64')
@@ -44,7 +44,7 @@ package() {
     cd "$pkgname-$pkgver/build"
 
     # Install binary
-    install -Dm755 --force "$srcdir/$pkgname-$pkgver/bin/navi" "$pkgdir/usr/bin/navi"
+    install -Dm755 "$srcdir/$pkgname-$pkgver/bin/navi" "$pkgdir/usr/bin/navi"
 
     # Install shared resources
     install -d "$pkgdir/usr/share/navi"

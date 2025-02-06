@@ -64,7 +64,7 @@ If everything went well, you should have navi installed on your system. You can 
 Next, you can check out :doc:`getting_started` to know more about the configuration options and customizations in navi.
 
 Uninstallation
---------------
+~~~~~~~~~~~~~~
 
 If you have installed navi using PKGBUILD then simply run the following command to uninstall navi and it's related files **except for your configuration files**:
 

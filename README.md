@@ -21,7 +21,6 @@ For in detailed documentation, please visit <a href="https://navi.readthedocs.io
 
 The file managers for linux aren’t that great for me. So I decided to write my own. And this one is inspired by the TUI (terminal UI) keyboard driven file managers like ranger, vifm, lf, yazi etc. I still use them, but I wanted to get past the limitations of the TUI compared to the GUI.
 
-
 <a id="org667977f"></a>
 
 # Features
@@ -37,3 +36,7 @@ The file managers for linux aren’t that great for me. So I decided to write my
 8. Drag and Drop
 9. [Configuration with Lua](./wiki.md#lua-configuration)
 10. [Scripting with Lua](./wiki.md#scripting-with-lua)
+
+# Installation
+
+Go to `this <https://navi.readthedocs.io/en/latest/installation.html`_ link in the documentation to install navi
