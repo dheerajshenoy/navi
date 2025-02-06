@@ -1,11 +1,11 @@
 [Desktop Entry]
 Version=v1.4.0
 Type=Application
-Name=Navi
+Name=NaviFM
 GenericName=File Manager
 Comment=Highly customizable and extensible modern file manager
-Exec=navi %U
-Icon=navi
+Exec=navifm %U
+Icon=navifm
 Terminal=false
 Categories=Utility;FileManager;
 MimeType=inode/directory;
