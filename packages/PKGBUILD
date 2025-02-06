@@ -1,6 +1,6 @@
 # Maintainer: Dheeraj Vittal Shenoy <dheerajshenoy22@gmail.com>
 pkgname=navi
-pkgver=r236.0511dff
+pkgver=r288.7c91bb9
 pkgrel=1
 pkgdesc="Highly customizable and extensible modern file manager"
 arch=('x86_64')
@@ -11,13 +11,14 @@ makedepends=('cmake' 'ninja' 'git' 'pkgconf' 'sccache' 'ccache')
 provides=('navi')
 source=("${pkgname}-${pkgver}::git+https://github.com/dheerajshenoy/navi.git")
 sha256sums=('SKIP')
+install=navi.install
 
 pkgver() {
-  cd "$pkgname-$pkgver"
-  ( set -o pipefail
-    git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
-    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
-  )
+    cd "$pkgname-$pkgver"
+    ( set -o pipefail
+      git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+          printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+    )
 }
 
 build() {
@@ -31,9 +32,9 @@ build() {
 
     # Run CMake with Ninja
     cmake .. \
-        -G Ninja \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Release
+          -G Ninja \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_BUILD_TYPE=Release
 
     # Compile using all available cores
     ninja -j$(nproc)
@@ -43,7 +44,7 @@ package() {
     cd "$pkgname-$pkgver/build"
 
     # Install binary
-    install -Dm755 "$srcdir/$pkgname-$pkgver/bin/navi" "$pkgdir/usr/bin/navi"
+    install -Dm755 --force "$srcdir/$pkgname-$pkgver/bin/navi" "$pkgdir/usr/bin/navi"
 
     # Install shared resources
     install -d "$pkgdir/usr/share/navi"
