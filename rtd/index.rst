@@ -36,6 +36,7 @@ Navi is ideal for users seeking a streamlined file management experience without
     api.rst
     gallery.rst
     changelog.rst
+    working.rst
     issues.rst
 
 Acknowledgement
