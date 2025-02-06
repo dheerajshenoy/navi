@@ -1,7 +1,7 @@
 #include "NotificationManager.hpp"
 
 NotificationManager::NotificationManager(QObject *parent) : QObject{parent} {
-	timer = new QTimer(this);
+    timer = new QTimer(this);
 }
 
 bool NotificationManager::eventFilter(QObject *watched, QEvent *event) {
@@ -21,27 +21,27 @@ bool NotificationManager::eventFilter(QObject *watched, QEvent *event) {
 }
 
 void NotificationManager::showMessage(QWidget *widget,
-									  NotificationDialog::NotificationType type,
-									  const QString &message,
-									  const bool &icon) noexcept
+                                      NotificationDialog::NotificationType type,
+                                      const QString &message,
+                                      const bool &icon) noexcept
 {
     int duration = 0;
 
     switch (static_cast<int>(type)) {
-	case static_cast<int>(NotificationDialog::NotificationType::WARNING):
-        duration = 5000;
-        break;
+        case static_cast<int>(NotificationDialog::NotificationType::WARNING):
+            duration = 5000;
+            break;
 
-    case static_cast<int>(NotificationDialog::NotificationType::INFO):
-        duration = 3000;
-        break;
+        case static_cast<int>(NotificationDialog::NotificationType::INFO):
+            duration = 3000;
+            break;
 
-    case static_cast<int>(NotificationDialog::NotificationType::ERROR):
-        duration = 7000;
-        break;
+        case static_cast<int>(NotificationDialog::NotificationType::ERROR):
+            duration = 7000;
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 
     parentSize = widget->size();
@@ -68,7 +68,7 @@ void NotificationManager::showMessage(QWidget *widget,
 
 void NotificationManager::positionNotifications() noexcept {
     for (int i = 0; i < activeNotifications.count(); i++) {
-		auto notification = activeNotifications.at(i);
+        auto notification = activeNotifications.at(i);
 
         int x = parentSize.width() - (notification->width() + 20);
         int y = parentSize.height() - ((i + 1) * (notification->height() + 20));
