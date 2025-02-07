@@ -71,6 +71,18 @@ public:
 
     ~Navi();
 
+    using CompletionType =
+        std::variant<QStringList,
+                     std::function<QStringList()>>;
+
+    // This stores the number of arguments taken by an interactive command.
+    // And also list of completions used for suggesting the user.
+    struct CommandInfo {
+        int minArgs;
+        int maxArgs;
+        QList<CompletionType> argCompletions;  // Can be static list or function-based
+    };
+
     void screenshot(const std::string &path = "", const int &delay = 0) noexcept;
 
     inline void notify(NotificationDialog::NotificationType type,
@@ -1108,9 +1120,9 @@ public:
 protected:
     bool event(QEvent *e) override;
 
-private:
-
-
+  private:
+    void initValidCommandsList() noexcept;
+    void initCompletion() noexcept;
     void init_default_options() noexcept;
     void initToolbar() noexcept;
     void onQuit() noexcept;
@@ -1128,6 +1140,9 @@ private:
     void addCommandToMacroRegister(const QStringList &commandlist) noexcept;
     void addCommandToMacroRegister(const QString &command) noexcept;
     void cacheThumbnails() noexcept;
+
+    QStringList getCompletionsForCommand(const QString &command,
+                                         const int &argIndex) noexcept;
 
     QWidget *m_widget = new QWidget();
     QVBoxLayout *m_layout = new QVBoxLayout();
@@ -1226,160 +1241,7 @@ private:
     // Hashmap for storing the commands and the corresponding function calls
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
-    QStringList m_valid_command_list = {
-        // Shell command
-        "shell",
-
-        // Mark
-        "mark",
-        "toggle-mark",
-        "toggle-mark-dwim",
-        "mark-inverse",
-        "mark-all",
-        "mark-dwim",
-        "mark-regex",
-
-        // Unmark
-        "unmark",
-        "unmark-global",
-        "unmark-local",
-        "unmark-dwim",
-        "unmark-regex",
-
-        // Chmod
-        "chmod",
-        "chmod-global",
-        "chmod-local",
-        "chmod-dwim",
-
-        // Rename
-        "rename",
-        "rename-global",
-        "rename-local",
-        "rename-dwim",
-
-        // Cut
-        "cut",
-        "move-to",
-        "cut-local",
-        "cut-global",
-        "cut-dwim",
-
-        // Copy
-        "copy",
-        "copy-to",
-        "copy-local",
-        "copy-global",
-        "copy-dwim",
-
-        // Paste
-        "paste",
-
-        // Delete
-        "delete",
-        "delete-local",
-        "delete-global",
-        "delete-dwim",
-
-        // Trash
-        "trash",
-        "trash-local",
-        "trash-global",
-        "trash-dwim",
-
-        // Task
-        "tasks",
-
-        // Bookmarks
-        "bookmark-add",
-        "bookmark-remove",
-        "bookmark-edit-name",
-        "bookmark-edit-path",
-        "bookmark-go",
-        "bookmarks-save",
-
-        // Creation
-        "new-file",
-        "new-folder",
-
-        // Panes
-        "messages-pane",
-        "preview-pane",
-        "marks-pane",
-        "bookmarks-pane",
-        "shortcuts-pane",
-
-        // Search
-        "search",
-        "search-regex",
-        "search-next",
-        "search-prev",
-
-        // Sort
-        "sort-name",
-        "sort-name-desc",
-        "sort-date",
-        "sort-date-desc",
-        "sort-size",
-        "sort-size-desc",
-
-        // Navigation
-        "next-item",
-        "prev-item",
-        "first-item",
-        "last-item",
-        "middle-item",
-        "up-directory",
-        "select-item",
-
-        "macro-play",
-        "macro-record",
-        "macro-delete",
-        "macro-list",
-        "macro-edit",
-        "macro-save-to-file",
-
-        "scroll-down",
-        "scroll-up",
-
-        // Echo
-        "echo-info",
-        "echo-warn",
-        "echo-error",
-
-        // misc
-        "notify",
-        "screenshot",
-        "update",
-        "new-window",
-        "goto-symlink-target",
-        "exit",
-        "filter",
-        "reset-filter",
-        "refresh",
-        "hidden-files",
-        "dot-dot",
-        "menu-bar",
-        "focus-path",
-        "item-property",
-        "cycle",
-        "header",
-        "reload-config",
-        "execute-extended-command",
-        "visual-select",
-        "mouse-scroll",
-        "drives",
-        // "syntax-highlight",
-        "lua",
-        "register",
-        "repeat-last-command",
-        "cd",
-        "terminal",
-        "folder-property",
-        "copy-path",
-        "fullscreen",
-        "about",
-    };
+    QStringList m_valid_command_list;
 
     MessagesBuffer *m_log_buffer = nullptr;
     MarksBuffer *m_marks_buffer = nullptr;
@@ -1435,4 +1297,8 @@ private:
     KDDockWidgets::QtWidgets::MainWindow *m_dock_container =
     new KDDockWidgets::QtWidgets::MainWindow(QStringLiteral("Container"));
     NotificationManager *m_notification_manager = new NotificationManager(this);
+
+    // This is used to store the valid commands along with their
+    // number of arguments accepted and completion functions
+    QHash<QString, CommandInfo> m_commands;
 };

@@ -8,8 +8,9 @@ void Navi::Error(const QString &reason) noexcept {
 }
 
 void Navi::initThings() noexcept {
-
+    initValidCommandsList();
     initLayout();
+    initCompletion();
     initBookmarks();
     initMenubar();
     initToolbar();
@@ -704,8 +705,6 @@ void Navi::setupCommandMap() noexcept {
         SearchPrev();
     };
 
-    m_inputbar->addCompletionStringList(Inputbar::CompletionModelType::COMMAND,
-                                        m_valid_command_list);
 }
 
 void Navi::EditBookmarkName(const QStringList &args) noexcept {
@@ -1117,9 +1116,6 @@ void Navi::initKeybinds() noexcept {
 }
 
 void Navi::ExecuteExtendedCommand() noexcept {
-    m_inputbar->enableCommandCompletions();
-    m_inputbar->currentCompletionStringList(
-        Inputbar::CompletionModelType::COMMAND);
     QString command = m_inputbar->getInput("Command");
     ProcessCommand(command);
 }
@@ -1907,7 +1903,6 @@ bool Navi::unmount_drive(const std::string &drive_name) noexcept {
 }
 
 void Navi::Search(const QString &term) noexcept {
-    m_inputbar->disableCommandCompletions();
     if (!(term.isEmpty() || term.isNull())) {
         m_file_panel->Search(term);
         m_search_history_list.append(term);
@@ -1916,11 +1911,9 @@ void Navi::Search(const QString &term) noexcept {
         m_file_panel->Search(searchText);
         m_search_history_list.append(searchText);
     }
-    m_inputbar->enableCommandCompletions();
 }
 
 void Navi::Search(const std::string &_term) noexcept {
-    m_inputbar->disableCommandCompletions();
     QString term = QString::fromStdString(_term);
     if (!(term.isNull() || term.isEmpty())) {
         m_file_panel->Search(term);
@@ -1930,11 +1923,9 @@ void Navi::Search(const std::string &_term) noexcept {
         m_file_panel->Search(searchText);
         m_search_history_list.append(searchText);
     }
-    m_inputbar->enableCommandCompletions();
 }
 
 void Navi::SearchRegex() noexcept {
-    m_inputbar->disableCommandCompletions();
     QString searchText = m_inputbar->getInput("Search");
     m_file_panel->Search(searchText, true);
     m_search_history_list.append(searchText);
@@ -3353,7 +3344,209 @@ void Navi::screenshot(const std::string &_path, const int &delay) noexcept {
 std::vector<std::string> Navi::listLayout() noexcept {
     auto savedLayouts = utils::savedLayouts();
     if (savedLayouts.empty())
-        return;
+        return {};
 
     return utils::convertToStdVector(savedLayouts);
+}
+
+void Navi::initValidCommandsList() noexcept {
+    m_valid_command_list = {
+        // Shell command
+        "shell",
+
+        // Mark
+        "mark",
+        "toggle-mark",
+        "toggle-mark-dwim",
+        "mark-inverse",
+        "mark-all",
+        "mark-dwim",
+        "mark-regex",
+
+        // Unmark
+        "unmark",
+        "unmark-global",
+        "unmark-local",
+        "unmark-dwim",
+        "unmark-regex",
+
+        // Chmod
+        "chmod",
+        "chmod-global",
+        "chmod-local",
+        "chmod-dwim",
+
+        // Rename
+        "rename",
+        "rename-global",
+        "rename-local",
+        "rename-dwim",
+
+        // Cut
+        "cut",
+        "move-to",
+        "cut-local",
+        "cut-global",
+        "cut-dwim",
+
+        // Copy
+        "copy",
+        "copy-to",
+        "copy-local",
+        "copy-global",
+        "copy-dwim",
+
+        // Paste
+        "paste",
+
+        // Delete
+        "delete",
+        "delete-local",
+        "delete-global",
+        "delete-dwim",
+
+        // Trash
+        "trash",
+        "trash-local",
+        "trash-global",
+        "trash-dwim",
+
+        // Task
+        "tasks",
+
+        // Bookmarks
+        "bookmark-add",
+        "bookmark-remove",
+        "bookmark-edit-name",
+        "bookmark-edit-path",
+        "bookmark-go",
+        "bookmarks-save",
+
+        // Creation
+        "new-file",
+        "new-folder",
+
+        // Panes
+        "messages-pane",
+        "preview-pane",
+        "marks-pane",
+        "bookmarks-pane",
+        "shortcuts-pane",
+
+        // Search
+        "search",
+        "search-regex",
+        "search-next",
+        "search-prev",
+
+        // Sort
+        "sort-name",
+        "sort-name-desc",
+        "sort-date",
+        "sort-date-desc",
+        "sort-size",
+        "sort-size-desc",
+
+        // Navigation
+        "next-item",
+        "prev-item",
+        "first-item",
+        "last-item",
+        "middle-item",
+        "up-directory",
+        "select-item",
+
+        "macro-play",
+        "macro-record",
+        "macro-delete",
+        "macro-list",
+        "macro-edit",
+        "macro-save-to-file",
+
+        "scroll-down",
+        "scroll-up",
+
+        // Echo
+        "echo-info",
+        "echo-warn",
+        "echo-error",
+
+        // misc
+        "notify",
+        "screenshot",
+        "update",
+        "new-window",
+        "goto-symlink-target",
+        "exit",
+        "filter",
+        "reset-filter",
+        "refresh",
+        "hidden-files",
+        "dot-dot",
+        "menu-bar",
+        "focus-path",
+        "item-property",
+        "cycle",
+        "header",
+        "reload-config",
+        "execute-extended-command",
+        "visual-select",
+        "mouse-scroll",
+        "drives",
+        // "syntax-highlight",
+        "lua",
+        "register",
+        "repeat-last-command",
+        "cd",
+        "terminal",
+        "folder-property",
+        "copy-path",
+        "fullscreen",
+        "about",
+    };
+}
+
+void Navi::initCompletion() noexcept {
+
+  m_commands = {
+      {"com1",
+       {0,
+        2,
+        {QStringList{"arg1_value1", "arg1_value2"},
+         QStringList{"arg2_value1", "arg2_value2"}}}},
+      {"com2", {0, 0, {}}}, // No arguments
+  };
+
+  auto lineEdit = m_inputbar->lineEdit();
+  auto compPopup = m_inputbar->completionPopup();
+
+  m_inputbar->enableCompletion();
+  compPopup->setInitialCompletions({"com1", "com2"});
+
+  connect(lineEdit, &LineEdit::spacePressed, this, [&, lineEdit, compPopup]() {
+    auto text = lineEdit->text();
+    auto split = text.split(' ', Qt::SkipEmptyParts);
+    QString command = split.first();
+    int index = split.size() - 1;
+    QStringList completions = getCompletionsForCommand(command, index);
+    qDebug() << completions;
+    compPopup->setCompletions(completions);
+  });
+}
+
+
+// Function to get possible completions for a command's argument
+QStringList Navi::getCompletionsForCommand(const QString &command,
+                                           const int &argIndex) noexcept {
+    if (!m_commands.contains(command) ||
+        argIndex >= m_commands[command].argCompletions.size())
+        return {};  // Return empty if command or argument index is invalid
+
+    const CompletionType& completionSource = m_commands[command].argCompletions[argIndex];
+
+    if (std::holds_alternative<QStringList>(completionSource)) {
+        return std::get<QStringList>(completionSource);
+    } else {
+        return std::get<std::function<QStringList()>>(completionSource)();
+    }
 }
