@@ -9,41 +9,41 @@ UseTab: Never                  # Always use spaces instead of tabs
 # Braces and Control Statements
 BreakBeforeBraces: Custom       # Custom brace style
 BraceWrapping:
-AfterClass: true              # Open class braces on new line
-AfterFunction: true           # Open function braces on new line
-AfterNamespace: true          # Keep braces open on a new line
-AfterStruct: true             # Open struct braces on new line
-BeforeElse: true              # Align else statements properly
-BeforeCatch: true             # Align catch blocks properly
+    AfterClass: true              # Open class braces on new line
+    AfterFunction: true           # Open function braces on new line
+    AfterNamespace: true          # Keep braces open on a new line
+    AfterStruct: true             # Open struct braces on new line
+    BeforeElse: true              # Align else statements properly
+    BeforeCatch: true             # Align catch blocks properly
 
-# Namespace indentation
-NamespaceIndentation: All       # Indent inside namespaces
+    # Namespace indentation
+    NamespaceIndentation: All       # Indent inside namespaces
 
-# Formatting for function signatures
-AlignTrailingComments: true     # Align trailing comments neatly
-AlwaysBreakAfterReturnType: None  # Keeps function return types on the same line
-AlignAfterOpenBracket: Align    # Align function params after '('
-AllowShortFunctionsOnASingleLine: None  # Always expand functions into multiple lines
+    # Formatting for function signatures
+    AlignTrailingComments: true     # Align trailing comments neatly
+    AlwaysBreakAfterReturnType: None  # Keeps function return types on the same line
+    AlignAfterOpenBracket: Align    # Align function params after '('
+    AllowShortFunctionsOnASingleLine: None  # Always expand functions into multiple lines
 
-# Pointer and Reference Style
-PointerAlignment: Left          # int* ptr instead of int *ptr
-ReferenceAlignment: Left        # int& ref instead of int &ref
+    # Pointer and Reference Style
+    PointerAlignment: Left          # int* ptr instead of int *ptr
+    ReferenceAlignment: Left        # int& ref instead of int &ref
 
-# Column Widths & Wrapping
-ColumnLimit: 100                # Limit line width
-MaxEmptyLinesToKeep: 1          # Avoid excessive blank lines
-ReflowComments: true            # Auto-wrap comments to ColumnLimit
+    # Column Widths & Wrapping
+    ColumnLimit: 100                # Limit line width
+    MaxEmptyLinesToKeep: 1          # Avoid excessive blank lines
+    ReflowComments: true            # Auto-wrap comments to ColumnLimit
 
-# Operator Formatting
-BreakBeforeBinaryOperators: NonAssignment  # Keep math operators at the end of lines
-SpacesInAngles: false           # No spaces in template brackets: vector<int>
-SpaceBeforeParens: ControlStatements  # `if (x)` instead of `if(x)`
+    # Operator Formatting
+    BreakBeforeBinaryOperators: NonAssignment  # Keep math operators at the end of lines
+    SpacesInAngles: false           # No spaces in template brackets: vector<int>
+    SpaceBeforeParens: ControlStatements  # `if (x)` instead of `if(x)`
 
-# C++ Specific
-Standard: Auto                  # Auto-detects C++ standard
-SortIncludes: true              # Auto-sort includes
-IncludeBlocks: Preserve         # Preserve include ordering inside blocks
-KeepEmptyLinesAtTheStartOfBlocks: false  # Remove empty lines at block start
+    # C++ Specific
+    Standard: Auto                  # Auto-detects C++ standard
+    SortIncludes: true              # Auto-sort includes
+    IncludeBlocks: Preserve         # Preserve include ordering inside blocks
+    KeepEmptyLinesAtTheStartOfBlocks: false  # Remove empty lines at block start
 
-# Loop Formatting
-AllowShortLoopsOnASingleLine: false  # Expand loops properly
+    # Loop Formatting
+    AllowShortLoopsOnASingleLine: false  # Expand loops properly

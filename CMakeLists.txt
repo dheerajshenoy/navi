@@ -117,6 +117,7 @@ qt_add_executable(${PROJECT_NAME}
   src/CollapsibleWidget.cpp
   src/NotificationDialog.cpp
   src/NotificationManager.cpp
+  src/CompletionPopup.cpp
 
   src/Globals.hpp
   src/TextEdit.hpp
@@ -136,6 +137,8 @@ qt_add_executable(${PROJECT_NAME}
   src/QuestionDialog.hpp
   src/NotificationDialog.hpp
   src/NotificationManager.hpp
+  src/CompletionPopup.hpp
+  src/LineEdit.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules

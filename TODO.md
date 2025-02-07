@@ -96,8 +96,8 @@
 - [X] Preview image size change
 - [X] Tabs for different panes
 - [X] Notification
+- [X] VisibilityChange signal bug
 - ~~[ ] Tabs~~
-- [ ] VisibilityChange signal bug
 - [ ] Open with menu
 - [ ] Undo Operations
 - [ ] lua API for custom context menu
