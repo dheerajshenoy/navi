@@ -6,33 +6,38 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
 
     m_layout->setContentsMargins(0, 0, 0, 0);
 
-    m_line_edit_completer = new InputbarCompleter(this);
-    m_line_edit_completer->setCaseSensitivity(Qt::CaseInsensitive);
-    m_line_edit_completer->setFilterMode(Qt::MatchFlag::MatchContains);
-    m_line_edit_completer->setCompletionPrefix(" ");
-    m_line_edit_completer->setCompletionColumn(0);
-    m_line_edit->setCompleter(m_line_edit_completer);
     m_layout->addWidget(m_prompt_label);
     m_layout->addWidget(m_line_edit);
-
-    connect(m_line_edit, &LineEdit::tabPressed, this, &Inputbar::suggestionComplete);
-    connect(m_line_edit, &LineEdit::hideRequested, this, [&]() {
-        this->hide();
-    });
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
-void Inputbar::suggestionComplete() noexcept {
-    auto index = m_line_edit_completer->currentIndex();
-    m_line_edit_completer->popup()->setCurrentIndex(index);
-    auto start = m_line_edit_completer->currentRow();
-    if (!m_line_edit_completer->setCurrentRow(start++))
-        m_line_edit_completer->setCurrentRow(0);
+// Enables completions (if it exists)
+void Inputbar::enableCompletion() noexcept {
+
+  connect(m_line_edit, &LineEdit::tabPressed, m_completion,
+          &CompletionPopup::showPopup);
+
+  // connect(m_line_edit, &LineEdit::textChanged, m_completion,
+  //         &CompletionPopup::updateCompletions);
+
+  connect(m_line_edit, &LineEdit::hideRequested, m_line_edit, &LineEdit::hide);
+    
 }
 
-QString Inputbar::getInput(const QString &prompt,
-                           const QString &defaultValue, const QString &selectionString) noexcept {
+// Disables completions (if it exists)
+void Inputbar::disableCompletion() noexcept {
+  disconnect(m_line_edit, &LineEdit::tabPressed, m_completion,
+          &CompletionPopup::showPopup);
+
+  disconnect(m_line_edit, &LineEdit::textChanged, m_completion,
+          &CompletionPopup::updateCompletions);
+
+  disconnect(m_line_edit, &LineEdit::hideRequested, m_line_edit, &LineEdit::hide);
+}
+
+QString Inputbar::getInput(const QString &prompt, const QString &defaultValue,
+                           const QString &selectionString) noexcept {
     this->show();
     m_prompt_label->setText(prompt);
     m_line_edit->setFocus();
@@ -66,14 +71,6 @@ QString Inputbar::getInput(const QString &prompt,
 }
 
 Inputbar::~Inputbar() {}
-
-void Inputbar::enableCommandCompletions() noexcept {
-    m_line_edit->setCompleter(m_line_edit_completer);
-}
-
-void Inputbar::disableCommandCompletions() noexcept {
-    m_line_edit->setCompleter(nullptr);
-}
 
 void Inputbar::setBackground(const QString &background) noexcept {
     QPalette palette;
@@ -117,21 +114,18 @@ void Inputbar::setFontFamily(const std::string &family) noexcept {
     m_line_edit->setFont(font);
 }
 
-void Inputbar::addCompletionStringList(const CompletionModelType &type,
-                                       const QStringList &list) noexcept {
-    m_completion_list_hash.insert(type, list);
-}
-
-void Inputbar::currentCompletionStringList(const CompletionModelType &type) noexcept {
-    if (m_completion_list_hash.contains(type))
-        m_completer_model->setStringList(m_completion_list_hash[type]);
-    else
-        m_completer_model->setStringList({});
-}
-
-
 void Inputbar::set_font_size(const int &size) noexcept {
     QFont _font = font();
     _font.setPixelSize(size);
     this->setFont(_font);
+}
+
+void Inputbar::keyPressEvent(QKeyEvent *e) {
+  switch (e->key()) {
+  case Qt::Key_Escape:
+      emit m_line_edit->hideRequested();
+    break;
+  }
+
+  QWidget::keyPressEvent(e);
 }

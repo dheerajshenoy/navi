@@ -1,87 +1,13 @@
 #pragma once
 
 #include "pch/pch_inputbar.hpp"
-#include "FilePathWidget.hpp"
+#include <QEvent>
+#include "CompletionPopup.hpp"
 
-class InputbarCompleter : public QCompleter {
-
-public:
-    InputbarCompleter(QWidget *parent = nullptr) : QCompleter(parent) {
-        this->setModel(m_model);
-    }
-
-    void showSuggestions(const QString &text) noexcept {
-
-        auto cmd = text.split(" ", Qt::SkipEmptyParts).at(0);
-
-        if (cmd == "fruit") {
-            m_model = new QStringListModel({ "banana", "apple" });
-        }
-    }
-
-
-protected:
-    QStringList splitPath(const QString &path) const override {
-        QStringList paths = path.split(" ", Qt::SkipEmptyParts);
-        return paths;
-        // return QCompleter::splitPath(path);
-    }
-
-    QString pathFromIndex(const QModelIndex &index) const override {
-        auto dd = QCompleter::pathFromIndex(index);
-        qDebug() << dd;
-        return dd;
-    }
-
-private:
-    QStringListModel *m_model = new QStringListModel({ "color", "fruit" });
-
-};
-
-class LineEdit : public QLineEdit {
-    Q_OBJECT
-
-    public:
-    explicit LineEdit(QWidget *parent = nullptr) : QLineEdit(parent) { setFocusPolicy(Qt::FocusPolicy::ClickFocus); }
-
-signals:
-void hideRequested();
-void tabPressed();
-
-protected:
-void keyPressEvent(QKeyEvent *e) override {
-
-    if (e->key() == Qt::Key_Escape) {
-        this->clearFocus();
-        this->clear();
-        emit hideRequested();
-
-        disconnect(this, &LineEdit::returnPressed, 0, 0);
-    }
-
-    else if (e->key() == Qt::Key_Tab) {
-        dynamic_cast<InputbarCompleter*>(completer())->showSuggestions(this->text());
-    }
-
-    else if (e->type() == QKeyEvent::KeyPress) {
-        switch (e->key()) {
-            case Qt::Key_Tab:
-            emit tabPressed();
-            e->accept();
-            return;
-            break;
-
-        }
-        QLineEdit::keyPressEvent(e);
-    }
-    else
-    QLineEdit::keyPressEvent(e);
-}
-};
 
 class Inputbar : public QWidget {
     Q_OBJECT
-    public:
+public:
     Inputbar(QWidget *parent = nullptr);
     ~Inputbar();
 
@@ -92,8 +18,6 @@ class Inputbar : public QWidget {
         COMMAND = 0,
         LUA_FUNCTIONS
     };
-    void enableCommandCompletions() noexcept;
-    void disableCommandCompletions() noexcept;
     void setFontItalic(const bool &state) noexcept;
     void setFontBold(const bool &state) noexcept;
     void setForeground(const QString &foreground) noexcept;
@@ -102,10 +26,6 @@ class Inputbar : public QWidget {
     void setBackground(const std::string &background) noexcept;
     void setFontFamily(const QString &family) noexcept;
     void setFontFamily(const std::string &family) noexcept;
-    void addCompletionStringList(const CompletionModelType &type,
-                                 const QStringList &stringList) noexcept;
-    void currentCompletionStringList(const CompletionModelType &type) noexcept;
-
     // returns the QLineEdit
     LineEdit *lineEdit() noexcept { return m_line_edit; }
 
@@ -116,28 +36,33 @@ class Inputbar : public QWidget {
     void set_font_size(const int &size = 14) noexcept;
 
     // returns the font pixel size
-    inline int get_font_size() noexcept {
-        return font().pixelSize();
-    }
+    inline int get_font_size() noexcept { return font().pixelSize(); }
+
+    CompletionPopup* completionPopup() noexcept { return m_completion; }
 
     // return the background color
     inline std::string Get_background_color() noexcept { return m_background_color.toStdString(); }
 
     // return the foreground color
-    inline std::string Get_foreground_color() noexcept { return m_foreground_color.toStdString(); }
+    inline std::string Get_foreground_color() noexcept {
+      return m_foreground_color.toStdString();
+    }
 
-    signals:
+    void enableCompletion() noexcept;
+    void disableCompletion() noexcept;
+
+signals:
     void lineEditTextChanged(const QString &text);
+
+protected:
+    void keyPressEvent(QKeyEvent *e) override;
 
 private:
     void suggestionComplete() noexcept;
     QHBoxLayout *m_layout = new QHBoxLayout();
     QLabel *m_prompt_label = new QLabel();
     LineEdit *m_line_edit = new LineEdit();
-    InputbarCompleter *m_line_edit_completer = nullptr;
-    QStringListModel *m_completer_model = new QStringListModel(this);
+    CompletionPopup *m_completion = new CompletionPopup(m_line_edit);
     QStringList m_lua_function_stringlist = {};
-    QHash<CompletionModelType, QStringList> m_completion_list_hash;
-    QString m_background_color,
-    m_foreground_color;
+    QString m_background_color, m_foreground_color;
 };
