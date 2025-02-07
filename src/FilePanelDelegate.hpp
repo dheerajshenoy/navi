@@ -7,12 +7,11 @@
 class FilePanelDelegate : public QStyledItemDelegate {
     Q_OBJECT
 
-    public:
-    FilePanelDelegate(QObject *parent = nullptr) :
-    QStyledItemDelegate(parent),
-    m_symlink_font(QApplication::font()),
-    m_cursor_font(QApplication::font()),
-    m_symlink_foreground("red"){}
+public:
+    FilePanelDelegate(QObject *parent = nullptr)
+        : QStyledItemDelegate(parent), m_symlink_font(QApplication::font()),
+          m_cursor_font(QApplication::font()),
+          m_symlink_foreground("red"){}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override {
@@ -31,7 +30,15 @@ class FilePanelDelegate : public QStyledItemDelegate {
         style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, opt.widget);
 
         if (index.row() == index.data(static_cast<int>(FileSystemModel::Role::Cursor))) {
-            painter->fillRect(opt.rect, m_cursor_background);
+            if (m_cursor_background.isEmpty())
+                painter->fillRect(opt.rect, opt.palette.color(QPalette::Highlight));
+            else
+                painter->fillRect(opt.rect, m_cursor_background);
+            if (m_cursor_foreground.isEmpty())
+                painter->setPen(opt.palette.color(QPalette::Text));
+            else
+                painter->setPen(m_cursor_foreground);
+              
         } else if (option.state & QStyle::State_Selected) {
             painter->fillRect(opt.rect, opt.palette.color(QPalette::Highlight));
         }
@@ -220,6 +227,7 @@ class FilePanelDelegate : public QStyledItemDelegate {
 private:
     QFont m_symlink_font, m_cursor_font;
     QString m_symlink_foreground, m_symlink_background,
-    m_symlink_separator = " ⟶ ", m_cursor_foreground,
-    m_cursor_background = "#444444";
+        m_symlink_separator = " ⟶ ", m_cursor_foreground,
+        m_cursor_background;
+    
 };
