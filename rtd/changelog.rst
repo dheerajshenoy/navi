@@ -3,12 +3,12 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
-v1.3.1 (6 February 2025)
+v1.3.1 (8 February 2025)
 ------------------------
 
 + Changed project name from **navi** to **navifm**
-+ Added project to the archlinux linux user repository (AUR)
-
++ Tried to add project to the archlinux linux user repository (AUR)
++ Replaced the QCompleter terrible no use completion with custom working completion like neovim, emacs etc. for the inputbar
 
 v1.3.0 (3 February 2025)
 ------------------------
