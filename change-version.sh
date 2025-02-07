@@ -7,7 +7,7 @@ if [[ "$NEW_VERSION" == "" ]]; then
 fi
 
 file1="src/main.cpp"
-file2="resources/navi.desktop" 
+file2="resources/navifm.desktop" 
 file3="rtd/conf.py"
 file4="latest-version.txt"
 
