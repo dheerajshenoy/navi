@@ -179,47 +179,47 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["update"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CheckForUpdates();
     };
 
     commandMap["execute-extended-command"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ExecuteExtendedCommand();
     };
 
     commandMap["scroll-down"] = [this](const QStringList &args) noexcept {
-        UNUSED(args);
+        Q_UNUSED(args);
         m_file_panel->NextPage();
     };
 
     commandMap["scroll-up"] = [this](const QStringList &args) noexcept {
-        UNUSED(args);
+        Q_UNUSED(args);
         m_file_panel->PrevPage();
     };
 
     commandMap["about"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ShowAbout();
     };
 
     commandMap["goto-symlink-target"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         m_file_panel->goto_symlink_target();
     };
 
     commandMap["fullscreen"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         FullScreen();
     };
 
     commandMap["copy-to"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         copy_to();
     };
 
     commandMap["move-to"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         move_to();
     };
 
@@ -231,42 +231,42 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["exit"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         Exit();
     };
 
     commandMap["new-window"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         LaunchNewInstance();
     };
 
     commandMap["folder-property"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ShowFolderProperty();
     };
 
     commandMap["cd"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ChangeDirectory();
     };
 
     commandMap["macro-record"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleRecordMacro();
     };
 
     commandMap["macro-play"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         PlayMacro();
     };
 
     commandMap["register"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleRegisterWidget();
     };
 
     commandMap["tasks"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleTasksWidget();
     };
 
@@ -275,67 +275,67 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["shell"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ShellCommandAsync();
     };
 
     commandMap["screenshot"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         screenshot();
     };
 
     commandMap["drives"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleDrivesWidget();
     };
 
     commandMap["mouse-scroll"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleMouseScroll();
     };
 
     commandMap["visual-select"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleVisualLine();
     };
 
     commandMap["shortcuts-pane"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ShortcutsBuffer();
     };
 
     commandMap["up-directory"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         UpDirectory();
     };
 
     commandMap["select-item"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SelectItem();
     };
 
     commandMap["next-item"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         NextItem();
     };
 
     commandMap["prev-item"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         PrevItem();
     };
 
     commandMap["first-item"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         GotoFirstItem();
     };
 
     commandMap["last-item"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         GotoLastItem();
     };
 
     commandMap["middle-item"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         GotoMiddleItem();
     };
 
@@ -367,187 +367,187 @@ void Navi::setupCommandMap() noexcept {
      */
 
     commandMap["sort-name"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SortByName();
     };
 
     commandMap["sort-date"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SortByDate();
     };
 
     commandMap["sort-size"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SortBySize();
     };
 
     commandMap["sort-name-desc"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SortByName(true);
     };
 
     commandMap["sort-date-desc"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SortByDate(true);
     };
 
     commandMap["sort-size-desc"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SortBySize(true);
     };
 
     commandMap["cycle"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleCycle();
     };
 
     commandMap["header"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleHeaders();
     };
 
     commandMap["rename"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         RenameItem();
     };
 
     commandMap["rename-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         RenameItemsGlobal();
     };
 
     commandMap["rename-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         RenameItemsLocal();
     };
 
     commandMap["rename-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         RenameDWIM();
     };
 
     commandMap["help"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ShowHelp();
     };
 
     commandMap["copy"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CopyItem();
     };
 
     commandMap["copy-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CopyItemsGlobal();
     };
 
     commandMap["copy-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CopyItemsLocal();
     };
 
     commandMap["copy-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CopyDWIM();
     };
 
     commandMap["cut"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CutItem();
     };
 
     commandMap["cut-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CutItemsGlobal();
     };
 
     commandMap["cut-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CutItemsLocal();
     };
 
     commandMap["cut-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         CutDWIM();
     };
 
     commandMap["paste"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         PasteItems();
     };
 
     commandMap["delete"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         DeleteItem();
     };
 
     commandMap["delete-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         DeleteItemsGlobal();
     };
 
     commandMap["delete-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         DeleteItemsLocal();
     };
 
     commandMap["delete-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         DeleteDWIM();
     };
 
     commandMap["mark"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         MarkItem();
     };
 
     commandMap["mark-regex"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         MarkRegex();
     };
 
     commandMap["mark-inverse"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         MarkInverse();
     };
 
     commandMap["mark-all"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         MarkAllItems();
     };
 
     commandMap["mark-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         MarkDWIM();
     };
 
     commandMap["toggle-mark"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleMarkItem();
     };
 
     commandMap["toggle-mark-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleMarkDWIM();
     };
 
     commandMap["unmark"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         UnmarkItem();
     };
 
     commandMap["unmark-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         UnmarkItemsLocal();
     };
 
     commandMap["unmark-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         UnmarkItemsGlobal();
     };
 
     commandMap["unmark-regex"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         UnmarkRegex();
     };
 
@@ -558,102 +558,102 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["trash"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         TrashItem();
     };
 
     commandMap["trash-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         TrashItemsLocal();
     };
 
     commandMap["trash-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         TrashItemsGlobal();
     };
 
     commandMap["trash-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         TrashDWIM();
     };
 
     commandMap["messages-pane"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleMessagesBuffer();
     };
 
     commandMap["hidden-files"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleHiddenFiles();
     };
 
     commandMap["dot-dot"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleDotDot();
     };
 
     commandMap["preview-pane"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         TogglePreviewPanel();
     };
 
     commandMap["menu-bar"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleMenuBar();
     };
 
     commandMap["filter"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         Filter();
     };
 
     commandMap["reset-filter"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ResetFilter();
     };
 
     commandMap["refresh"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ForceUpdate();
     };
 
     commandMap["chmod"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ChmodItem();
     };
 
     commandMap["chmod-local"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ChmodItemsLocal();
     };
 
     commandMap["chmod-global"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ChmodItemsGlobal();
     };
 
     commandMap["chmod-dwim"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ChmodDWIM();
     };
 
     commandMap["marks-pane"] = [this](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleMarksBuffer();
     };
 
     commandMap["focus-path"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         m_file_path_widget->FocusLineEdit();
     };
 
     commandMap["item-property"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ShowItemPropertyWidget();
     };
 
     commandMap["bookmarks-pane"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         ToggleBookmarksBuffer();
     };
 
@@ -681,27 +681,27 @@ void Navi::setupCommandMap() noexcept {
     };
 
     commandMap["bookmarks-save"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SaveBookmarkFile();
     };
 
     commandMap["search"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         Search(QString());
     };
 
     commandMap["search-regex"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SearchRegex();
     };
 
     commandMap["search-next"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SearchNext();
     };
 
     commandMap["search-prev"] = [&](const QStringList &args) {
-        UNUSED(args);
+        Q_UNUSED(args);
         SearchPrev();
     };
 
@@ -1557,11 +1557,11 @@ void Navi::LogMessage(const QString &message,
     m_log_buffer->AppendText(coloredMessage);
 }
 
-Navi::~Navi() {
-    if (m_auto_save_bookmarks) {
-        SaveBookmarkFile();
-    }
-}
+/*Navi::~Navi() {*/
+/*    if (m_auto_save_bookmarks) {*/
+/*        SaveBookmarkFile();*/
+/*    }*/
+/*}*/
 
 void Navi::chmodHelper() noexcept {
     QString permString = m_inputbar->getInput("Permission Number");
@@ -3498,30 +3498,28 @@ void Navi::initValidCommandsList() noexcept {
         "register",
         "repeat-last-command",
         "cd",
-        "terminal",
         "folder-property",
         "copy-path",
         "fullscreen",
         "about",
     };
+
+  m_commands = {
+      {"about", {}},
+      {"fullscreen", {0, 0, {}}}, // No arguments
+      {"copy-path", {0, 0, {}}},
+      {"folder-property", {0, 0, {}}},
+      {"cd", {0, 1, {}}},
+  };
 }
 
 void Navi::initCompletion() noexcept {
-
-  m_commands = {
-      {"com1",
-       {0,
-        2,
-        {QStringList{"arg1_value1", "arg1_value2"},
-         QStringList{"arg2_value1", "arg2_value2"}}}},
-      {"com2", {0, 0, {}}}, // No arguments
-  };
 
   auto lineEdit = m_inputbar->lineEdit();
   auto compPopup = m_inputbar->completionPopup();
 
   m_inputbar->enableCompletion();
-  compPopup->setInitialCompletions({"com1", "com2"});
+  compPopup->setInitialCompletions(m_commands.keys());
 
   connect(lineEdit, &LineEdit::spacePressed, this, [&, lineEdit, compPopup]() {
     auto text = lineEdit->text();

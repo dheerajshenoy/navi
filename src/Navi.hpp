@@ -2,7 +2,6 @@
 #pragma once
 #include "utils.hpp"
 
-#define UNUSED(x) (void)x
 #include "Globals.hpp"
 #include "pch/pch.hpp"
 // Local includes
@@ -45,7 +44,8 @@ class Menubar : public QMenuBar {
     signals:
     void visibilityChanged(const bool &state);
 
-public:
+  public:
+
     explicit Menubar(QWidget *parent = nullptr) : QMenuBar(parent) {}
 
     void hide() noexcept {
@@ -62,14 +62,14 @@ public:
 class Navi : public KDDockWidgets::QtWidgets::MainWindow {
 
 public:
+    // Prevent copy/move
+    Navi(const Navi&) = delete;
+    Navi &operator=(const Navi &) = delete;
 
-    explicit Navi() : KDDockWidgets::QtWidgets::MainWindow(
-        QStringLiteral("NaviMainWindow"),
-        KDDockWidgets::MainWindowOption_HasCentralWidget) {
-        qDebug() << "Navi Instance Created ##########################";
+    static Navi& getInstance() {
+        static Navi instance;
+        return instance;
     }
-
-    ~Navi();
 
     using CompletionType =
         std::variant<QStringList,
@@ -1121,6 +1121,13 @@ protected:
     bool event(QEvent *e) override;
 
   private:
+    Navi() : KDDockWidgets::QtWidgets::MainWindow(QStringLiteral("NaviMainWindow"),
+                                                  KDDockWidgets::MainWindowOption_HasCentralWidget) {
+        qDebug() << "Navi Instance Created ##########################";
+    }
+
+    ~Navi() = default;
+
     void initValidCommandsList() noexcept;
     void initCompletion() noexcept;
     void init_default_options() noexcept;
