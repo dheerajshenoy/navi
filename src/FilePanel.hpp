@@ -10,6 +10,7 @@
 #include "TableView.hpp"
 #include "pch/pch_filepanel.hpp"
 #include "utils.hpp"
+#include "QuestionDialog.hpp"
 
 class FilePanel : public QWidget {
   Q_OBJECT
