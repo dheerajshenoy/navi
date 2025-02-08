@@ -106,36 +106,26 @@ int main(int argc, char *argv[]) {
 
     init_lua_api(lua);
 
-    Navi *navi = nullptr;
-
-    lua.set_function("_store_instance", [&navi](Navi *instance) {
-        navi = instance;
-        navi->set_version(VERSION);
-    });
+    Navi &navi = lua["_navi"];
 
     read_lua_file(lua);
-
-    if (!navi) {
-        std::cerr << "Could not create navi on the heap" << "\n";
-        return -1;
-    }
 
     std::vector<std::string> result;
     utils::getTableMembers(lua["navi"], "navi.", result);
     QStringList api_list = utils::stringListFromVector(result);
     api_list.removeAll("");
-    navi->set_api_list(api_list);
-    navi->update_runtime_paths(lua["package"]["path"]);
-    navi->readArgumentParser(parser);
-    navi->initThings();
-    navi->set_lua_state(lua);
+    navi.set_api_list(api_list);
+    navi.update_runtime_paths(lua["package"]["path"]);
+    navi.readArgumentParser(parser);
+    navi.initThings();
+    navi.set_lua_state(lua);
 
     try {
         lua.safe_script_file(CONFIG_FILE_PATH.toStdString(), sol::load_mode::any);
     } catch (sol::error &e) {
         std::cerr << "Could not load user config file: " << e.what() << "\n";
         qDebug() << "Loading default keybindings";
-        navi->initKeybinds();
+        navi.initKeybinds();
     }
 
     qApp->setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
