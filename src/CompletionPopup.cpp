@@ -4,7 +4,7 @@ CompletionPopup::CompletionPopup(LineEdit* parent)
     : QFrame(parent), m_lineEdit(parent) {
     setWindowFlags(Qt::ToolTip);
     setFocusPolicy(Qt::NoFocus);
-        
+
     m_listWidget = new QListWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_listWidget);
