@@ -3,6 +3,11 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.3.3 (8 February 2025)
+------------------------
+
++ Added completion support for lua functions
+
 v1.3.2 (8 February 2025)
 ------------------------
 
