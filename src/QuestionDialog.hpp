@@ -1,4 +1,4 @@
-
+#pragma once
 #include "pch/pch_questiondialog.hpp"
 
 class QuestionDialog : public QDialog {
