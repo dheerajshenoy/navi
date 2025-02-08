@@ -30,13 +30,7 @@
 #include "TasksWidget.hpp"
 #include "UpdateDialog.hpp"
 
-#include <kddockwidgets/Config.h>
-#include <kddockwidgets/LayoutSaver.h>
-#include <kddockwidgets/core/DockWidget.h>
-#include <kddockwidgets/core/MainWindow.h>
-#include <kddockwidgets/core/TitleBar.h>
-#include <kddockwidgets/qtwidgets/DockWidget.h>
-#include <kddockwidgets/qtwidgets/MainWindow.h>
+#include "CustomViewFactory.hpp"
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -71,10 +65,7 @@ public:
         return instance;
     }
 
-    using CompletionType =
-        std::variant<QStringList,
-                     std::function<QStringList()>>;
-
+    using CompletionType = std::variant<QStringList, std::function<QStringList()>>;
     // This stores the number of arguments taken by an interactive command.
     // And also list of completions used for suggesting the user.
     struct CommandInfo {
@@ -512,6 +503,7 @@ public:
             table[i + 1] = files.at(i);
         return table;
     }
+
     inline sol::table local_marks(sol::state &lua) noexcept {
         auto files = m_file_panel->model()->getMarkedFilesLocal();
         sol::table table = lua.create_table();
@@ -521,13 +513,19 @@ public:
             table[i + 1] = files.at(i);
         return table;
     }
+
     inline int local_marks_count() noexcept {
         return m_file_panel->model()->getMarkedFilesCountLocal();
     }
+
     inline int global_marks_count() noexcept {
         return m_file_panel->model()->getMarkedFilesCount();
     }
-    inline bool has_selection() noexcept { return m_file_panel->has_selection(); }
+
+    inline bool has_selection() noexcept {
+      return m_file_panel->has_selection();
+    }
+
     inline sol::table get_inputbar_props(sol::state &lua) noexcept {
         sol::table table = lua.create_table();
         table["font"] = m_inputbar->font().family().toStdString();
@@ -536,22 +534,18 @@ public:
         table["font_size"] = m_inputbar->get_font_size();
         return table;
     }
+
     inline int get_inputbar_font_size() noexcept {
         return m_inputbar->font().pixelSize();
     }
+
     inline void set_inputbar_font_size(const int &pixel_size) noexcept {
         m_inputbar->set_font_size(pixel_size);
     }
+
     inline std::string Get_terminal() noexcept {
         return m_terminal.toStdString();
     }
-
-    void Set_auto_save_bookmarks(const bool &state) noexcept;
-    void Set_toolbar_icons_only() noexcept;
-    void Set_toolbar_text_only() noexcept;
-    void set_toolbar_layout(const sol::table &layout) noexcept;
-    void Error(const QString &reason) noexcept;
-    void update_lua_package_path(sol::state &lua) noexcept;
 
     inline FilePanel::ItemProperty item_property() noexcept {
         return m_file_panel->getItemProperty();
@@ -560,8 +554,6 @@ public:
     inline int count_item() noexcept { return m_file_panel->ItemCount(); }
 
     sol::table list_runtime_paths(sol::this_state L) noexcept;
-
-    void update_runtime_paths(const std::string &rtps) noexcept;
 
     inline std::string current_directory() noexcept {
         return m_file_panel->getCurrentDir().toStdString();
@@ -853,12 +845,6 @@ public:
         return m_file_panel->get_font_family().toStdString();
     }
 
-    void set_file_panel_props(const sol::table &table) noexcept;
-    sol::table get_file_panel_props() noexcept;
-
-    // This is used to set all of navi api to a stringlist which is
-    // then used to lua completions
-    void set_api_list(const QStringList &list) noexcept;
 
     inline void set_pathbar_bold(const bool &state) noexcept {
         m_file_path_widget->set_bold(state);
@@ -899,9 +885,6 @@ public:
     inline std::string get_pathbar_background() const noexcept {
         return m_file_path_widget->background();
     }
-
-    void set_pathbar_props(const sol::table &table) noexcept;
-    sol::table get_pathbar_props() noexcept;
 
     inline std::string get_symlink_separator() noexcept {
         return m_table_delegate->get_symlink_separator();
@@ -980,9 +963,6 @@ public:
     inline void set_symlink_font_size(const int &size) noexcept {
         return m_table_delegate->set_symlink_font_size(size);
     }
-
-    void set_symlink_props(const sol::table &table) noexcept;
-    sol::table get_symlink_props() noexcept;
 
     inline void goto_symlink_target() noexcept {
         m_file_panel->goto_symlink_target();
@@ -1108,14 +1088,33 @@ public:
         return m_file_panel->tableView()->get_grid_style();
     }
 
+    void set_symlink_props(const sol::table &table) noexcept;
+    sol::table get_symlink_props() noexcept;
+    void set_file_panel_props(const sol::table &table) noexcept;
+    sol::table get_file_panel_props() noexcept;
+    void Set_auto_save_bookmarks(const bool &state) noexcept;
+    void Set_toolbar_icons_only() noexcept;
+    void Set_toolbar_text_only() noexcept;
+    void set_toolbar_layout(const sol::table &layout) noexcept;
+    void Error(const QString &reason) noexcept;
+    void update_lua_package_path(sol::state &lua) noexcept;
+    void update_runtime_paths(const std::string &rtps) noexcept;
+    // This is used to set all of navi api to a stringlist which is
+    // then used to lua completions
+    void set_api_list(const QStringList &list) noexcept;
+    void set_pathbar_props(const sol::table &table) noexcept;
+    sol::table get_pathbar_props() noexcept;
     void set_vheader_props(const sol::table &table) noexcept;
     sol::table get_vheader_props() noexcept;
-
     void loadLayout(const std::string &layoutName = std::string()) noexcept;
     void deleteLayout(const std::string &layoutName = std::string()) noexcept;
     void saveLayout(const std::string &layoutName = std::string()) noexcept;
-
     std::vector<std::string> listLayout() noexcept;
+
+    // Returns all the navi api functions defined in lua
+    QStringList traverse_table_iterative(const std::string& root_name = "navi") noexcept;
+
+
 
 protected:
     bool event(QEvent *e) override;
@@ -1308,4 +1307,6 @@ protected:
     // This is used to store the valid commands along with their
     // number of arguments accepted and completion functions
     QHash<QString, CommandInfo> m_commands;
+    QStringList m_lua_apis_list;
+    bool m_lua_apis_fetched = false;
 };
