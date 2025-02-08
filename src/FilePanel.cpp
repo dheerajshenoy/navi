@@ -134,7 +134,7 @@ void FilePanel::initSignalsSlots() noexcept {
 
     connect(m_selection_model, &QItemSelectionModel::currentChanged,
             this, [this](const QModelIndex &current, const QModelIndex &previous) {
-            UNUSED(previous);
+            Q_UNUSED(previous);
             emit currentItemChanged(m_model->data(current,
                                                   static_cast<int>(FileSystemModel::Role::FilePath)).toString());
             });
@@ -1526,7 +1526,7 @@ void FilePanel::dropEvent(QDropEvent *event) {
 }
 
 void FilePanel::startDrag(Qt::DropActions supportedActions) {
-    UNUSED(supportedActions);
+    Q_UNUSED(supportedActions);
 
     QModelIndexList selectedIndexes = m_selection_model->selectedRows();
 
@@ -1736,11 +1736,11 @@ void FilePanel::ToggleVisualLine(const bool &state) noexcept {
 }
 
 void FilePanel::AsyncShellCommand(const QString &command) noexcept {
-    UNUSED(command);
+    Q_UNUSED(command);
 }
 
 void FilePanel::ShellCommand(const QString &command) noexcept {
-    UNUSED(command);
+    Q_UNUSED(command);
 }
 
 const FilePanel::ItemProperty FilePanel::getItemProperty() noexcept {
