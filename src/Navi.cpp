@@ -1510,8 +1510,6 @@ void Navi::Filter(const QString &filter_string) noexcept {
             return;
         }
 
-        qDebug() << "DD";
-
         if (filterString.isEmpty() || filterString.isNull() ||
             filterString == "*") {
             ResetFilter();
@@ -3232,8 +3230,6 @@ void Navi::loadLayout(const std::string &layoutName) noexcept {
         return;
     }
 
-    qDebug() << savedLayouts;
-
     auto loadLayoutFunc = [&](const QString &layout_name) {
         auto fileName = joinPaths(LAYOUT_PATH, layout_name);
         KDDockWidgets::LayoutSaver loader;
@@ -3352,184 +3348,143 @@ std::vector<std::string> Navi::listLayout() noexcept {
 void Navi::initValidCommandsList() noexcept {
     m_valid_command_list = {
         // Shell command
-        "shell",
-
-        // Mark
-        "mark",
-        "toggle-mark",
-        "toggle-mark-dwim",
-        "mark-inverse",
-        "mark-all",
-        "mark-dwim",
-        "mark-regex",
-
-        // Unmark
-        "unmark",
-        "unmark-global",
-        "unmark-local",
-        "unmark-dwim",
-        "unmark-regex",
-
-        // Chmod
-        "chmod",
-        "chmod-global",
-        "chmod-local",
-        "chmod-dwim",
-
-        // Rename
-        "rename",
-        "rename-global",
-        "rename-local",
-        "rename-dwim",
-
-        // Cut
-        "cut",
-        "move-to",
-        "cut-local",
-        "cut-global",
-        "cut-dwim",
-
-        // Copy
-        "copy",
-        "copy-to",
-        "copy-local",
-        "copy-global",
-        "copy-dwim",
-
-        // Paste
-        "paste",
-
-        // Delete
-        "delete",
-        "delete-local",
-        "delete-global",
-        "delete-dwim",
-
-        // Trash
-        "trash",
-        "trash-local",
-        "trash-global",
-        "trash-dwim",
-
-        // Task
-        "tasks",
-
-        // Bookmarks
-        "bookmark-add",
-        "bookmark-remove",
-        "bookmark-edit-name",
-        "bookmark-edit-path",
-        "bookmark-go",
-        "bookmarks-save",
-
-        // Creation
-        "new-file",
-        "new-folder",
-
-        // Panes
-        "messages-pane",
-        "preview-pane",
-        "marks-pane",
-        "bookmarks-pane",
-        "shortcuts-pane",
-
-        // Search
-        "search",
-        "search-regex",
-        "search-next",
-        "search-prev",
-
-        // Sort
-        "sort-name",
-        "sort-name-desc",
-        "sort-date",
-        "sort-date-desc",
-        "sort-size",
-        "sort-size-desc",
-
-        // Navigation
-        "next-item",
-        "prev-item",
-        "first-item",
-        "last-item",
-        "middle-item",
-        "up-directory",
-        "select-item",
-
-        "macro-play",
-        "macro-record",
-        "macro-delete",
-        "macro-list",
-        "macro-edit",
-        "macro-save-to-file",
-
-        "scroll-down",
-        "scroll-up",
 
         // Echo
-        "echo-info",
-        "echo-warn",
-        "echo-error",
-
-        // misc
-        "notify",
-        "screenshot",
-        "update",
-        "new-window",
-        "goto-symlink-target",
-        "exit",
-        "filter",
-        "reset-filter",
-        "refresh",
-        "hidden-files",
-        "dot-dot",
-        "menu-bar",
-        "focus-path",
-        "item-property",
-        "cycle",
-        "header",
-        "reload-config",
-        "execute-extended-command",
-        "visual-select",
-        "mouse-scroll",
-        "drives",
-        // "syntax-highlight",
-        "lua",
-        "register",
-        "repeat-last-command",
-        "cd",
-        "folder-property",
-        "copy-path",
-        "fullscreen",
-        "about",
     };
 
-  m_commands = {
-      {"about", {}},
-      {"fullscreen", {0, 0, {}}}, // No arguments
-      {"copy-path", {0, 0, {}}},
-      {"folder-property", {0, 0, {}}},
-      {"cd", {0, 1, {}}},
-  };
+    m_commands = {
+        {"about", {}},
+        {"fullscreen", {}},
+        {"copy-path", {}},
+        {"folder-property", {}},
+        {"cd", {0, 1, {}}},
+        {"repeat-last-command", {}},
+        {"register", {}},
+        {"lua", {1, 1, {{[this]() { return traverse_table_iterative(); }}}}},
+        {"drives", {}},
+        {"mouse-scroll", {}},
+        {"visual-select", {}},
+        {"execute-extended-command", {}},
+        {"header", {}},
+        {"cycle", {}},
+        {"item-property", {}},
+        {"focus-path", {}},
+        {"menu-bar", {}},
+        {"dot-dot", {}},
+        {"hidden-files", {}},
+        {"refresh", {}},
+        {"reset-filter", {}},
+        {"filter", {}},
+        {"exit", {}},
+        {"goto-symlink-target", {}},
+        {"new-window", {}},
+        {"update", {}},
+        {"screenshot", {}},
+        {"notify", {}},
+        {"echo-info", {}},
+        {"echo-warn", {}},
+        {"echo-error", {}},
+        {"shell", {}},
+        {"mark", {}},
+        {"toggle-mark", {}},
+        {"toggle-mark-dwim", {}},
+        {"mark-inverse", {}},
+        {"mark-all", {}},
+        {"mark-dwim", {}},
+        {"mark-regex", {}},
+        {"unmark", {}},
+        {"unmark-global", {}},
+        {"unmark-local", {}},
+        {"unmark-dwim", {}},
+        {"unmark-regex", {}},
+        {"chmod", {}},
+        {"chmod-global", {}},
+        {"chmod-local", {}},
+        {"chmod-dwim", {}},
+        {"rename", {}},
+        {"rename-global", {}},
+        {"rename-local", {}},
+        {"rename-dwim", {}},
+        {"cut", {}},
+        {"move-to", {}},
+        {"cut-local", {}},
+        {"cut-global", {}},
+        {"cut-dwim", {}},
+        {"copy", {}},
+        {"copy-to", {}},
+        {"copy-local", {}},
+        {"copy-global", {}},
+        {"copy-dwim", {}},
+        {"paste", {}},
+        {"delete", {}},
+        {"delete-local", {}},
+        {"delete-global", {}},
+        {"delete-dwim", {}},
+        {"trash", {}},
+        {"trash-local", {}},
+        {"trash-global", {}},
+        {"trash-dwim", {}},
+        {"tasks", {}},
+        {"bookmark-add", {}},
+        {"bookmark-remove", {}},
+        {"bookmark-edit-name", {}},
+        {"bookmark-edit-path", {}},
+        {"bookmark-go", {1, 1, {{[this]() { return m_bookmark_manager->getBookmarkNames(); }}}}},
+        {"bookmarks-save", {}},
+        {"new-file", {}},
+        {"new-folder", {}},
+        {"messages-pane", {}},
+        {"preview-pane", {}},
+        {"marks-pane", {}},
+        {"bookmarks-pane", {}},
+        {"shortcuts-pane", {}},
+        {"search", {}},
+        {"search-regex", {}},
+        {"search-next", {}},
+        {"search-prev", {}},
+        {"sort-name", {}},
+        {"sort-name-desc", {}},
+        {"sort-date", {}},
+        {"sort-date-desc", {}},
+        {"sort-size", {}},
+        {"sort-size-desc", {}},
+        {"next-item", {}},
+        {"prev-item", {}},
+        {"first-item", {}},
+        {"last-item", {}},
+        {"middle-item", {}},
+        {"up-directory", {}},
+        {"select-item", {}},
+        {"macro-play", {}},
+        {"macro-record", {}},
+        {"macro-delete", {}},
+        {"macro-list", {}},
+        {"macro-edit", {}},
+        {"macro-save-to-file", {}},
+        {"scroll-down", {}},
+        {"scroll-up", {}}
+    };
 }
 
 void Navi::initCompletion() noexcept {
 
-  auto lineEdit = m_inputbar->lineEdit();
-  auto compPopup = m_inputbar->completionPopup();
+    auto lineEdit = m_inputbar->lineEdit();
+    auto compPopup = m_inputbar->completionPopup();
 
-  m_inputbar->enableCompletion();
-  compPopup->setInitialCompletions(m_commands.keys());
+    compPopup->setPopupHeight(400);
 
-  connect(lineEdit, &LineEdit::spacePressed, this, [&, lineEdit, compPopup]() {
-    auto text = lineEdit->text();
-    auto split = text.split(' ', Qt::SkipEmptyParts);
-    QString command = split.first();
-    int index = split.size() - 1;
-    QStringList completions = getCompletionsForCommand(command, index);
-    qDebug() << completions;
-    compPopup->setCompletions(completions);
-  });
+
+    m_inputbar->enableCompletion();
+    compPopup->setInitialCompletions(m_commands.keys());
+
+    connect(lineEdit, &LineEdit::spacePressed, this, [&, lineEdit, compPopup]() {
+        auto text = lineEdit->text();
+        auto split = text.split(' ', Qt::SkipEmptyParts);
+        QString command = split.first();
+        int index = split.size() - 1;
+        QStringList completions = getCompletionsForCommand(command, index);
+        compPopup->setCompletions(completions);
+    });
 }
 
 
@@ -3547,4 +3502,45 @@ QStringList Navi::getCompletionsForCommand(const QString &command,
     } else {
         return std::get<std::function<QStringList()>>(completionSource)();
     }
+}
+
+// Function to traverse a Lua table iteratively and return results as QStringList
+QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcept {
+    if (m_lua_apis_fetched) {
+        return m_lua_apis_list;
+    }
+
+    QStringList result;
+    sol::table root = (*m_lua)[root_name];  // Get the "navi" table
+
+    if (!root.valid()) {
+        return result;  // Return empty if table not found
+    }
+
+    std::stack<std::pair<sol::table, std::string>> stack;
+    stack.push({root, root_name});  // Start with "navi"
+
+    while (!stack.empty()) {
+        auto [tbl, path] = stack.top();
+        stack.pop();
+
+        for (const auto& pair : tbl) {
+            sol::object key = pair.first;
+            sol::object value = pair.second;
+
+            if (key.is<std::string>()) {
+                std::string new_path = path + "." + key.as<std::string>();
+
+                if (value.is<sol::table>()) {
+                    stack.push({value.as<sol::table>(), new_path});  // Push nested tables onto the stack
+                } else {
+                    result.append(QString::fromStdString(new_path));  // Store result in QStringList
+                }
+            }
+        }
+    }
+
+    m_lua_apis_list = result;
+    m_lua_apis_fetched = true;
+    return result;
 }
