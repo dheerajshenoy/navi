@@ -1,6 +1,4 @@
 #include "FilePanel.hpp"
-#include "Navi.hpp"
-#include "QuestionDialog.hpp"
 
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
                      TaskManager *tm, QWidget *parent)
