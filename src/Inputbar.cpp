@@ -18,11 +18,12 @@ void Inputbar::enableCompletion() noexcept {
   connect(m_line_edit, &LineEdit::tabPressed, m_completion,
           &CompletionPopup::showPopup);
 
-  // connect(m_line_edit, &LineEdit::textChanged, m_completion,
-  //         &CompletionPopup::updateCompletions);
+    // TODO: Fix this shit!
+    /*connect(m_line_edit, &LineEdit::textChanged, m_completion,*/
+    /*        &CompletionPopup::updateCompletions);*/
 
-  connect(m_line_edit, &LineEdit::hideRequested, m_line_edit, &LineEdit::hide);
-    
+  connect(m_line_edit, &LineEdit::hideRequested, this, &Inputbar::hide);
+
 }
 
 // Disables completions (if it exists)
@@ -121,11 +122,11 @@ void Inputbar::set_font_size(const int &size) noexcept {
 }
 
 void Inputbar::keyPressEvent(QKeyEvent *e) {
-  switch (e->key()) {
-  case Qt::Key_Escape:
-      emit m_line_edit->hideRequested();
-    break;
-  }
+    switch (e->key()) {
+        case Qt::Key_Escape:
+            emit m_line_edit->hideRequested();
+            break;
+    }
 
   QWidget::keyPressEvent(e);
 }
