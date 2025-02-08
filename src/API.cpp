@@ -28,8 +28,8 @@ void init_lua_api(sol::state &lua) noexcept {
                                         "options", &Statusbar::Module::options);
 
     // Bind MyClass to Lua
-    lua.new_usertype<Navi>("Navi", sol::constructors<Navi()>(),
-
+    lua.new_usertype<Navi>("Navi",
+                           sol::no_constructor,
                            // LAYOUT
                            "load_layout", &Navi::loadLayout,
                            "save_layout", &Navi::saveLayout,
@@ -309,6 +309,8 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_cursor_props", &Navi::set_cursor_props
 
                            );
+
+    lua["_navi"] = &Navi::getInstance();
 }
 
 void update_lua_package_path(sol::state &lua) noexcept {

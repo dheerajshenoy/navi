@@ -1,9 +1,5 @@
 local M = {}
 
-local _navi = Navi.new()
-
-_store_instance(_navi)
-
 if not _navi then
     print("Could not create NAVI instance")
     os.exit(-1)

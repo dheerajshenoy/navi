@@ -97,6 +97,7 @@
 - [X] Tabs for different panes
 - [X] Notification
 - [X] VisibilityChange signal bug
+- [X] Inputbar completion like vim/neovim
 - ~~[ ] Tabs~~
 - [ ] Open with menu
 - [ ] Undo Operations
@@ -107,7 +108,6 @@
 - [ ] view copy/cut file register
 - [ ] Timer api
 - [ ] Sleep api
-- [ ] Inputbar completion like vim/neovim
 - [ ] IPC
 - [ ] New file re-caching thumbnail
 - [ ] Add fits previewing

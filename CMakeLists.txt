@@ -24,7 +24,6 @@ elseif(SCCACHE)
   set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C++")
 endif()
 
-
 set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Install path prefix" FORCE)
 
 # Define the target directory for shared files
@@ -49,6 +48,38 @@ else()
   message(STATUS "Building in Debug Mode since no build mode was specified")
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build Type" FORCE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
+endif()
+
+
+# Enable compiler warnings and optimizations
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "Using Clang, applying best flags")
+
+    add_compile_options(
+        -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion
+        -Wdouble-promotion -Wformat=2 -Wstrict-aliasing=2
+    )
+
+    # Debugging flags
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_options(
+            -O0 -g -fsanitize=address,undefined -fno-omit-frame-pointer
+        )
+    endif()
+
+    # Release flags
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+        add_compile_options(
+            -O3 -march=native -flto -DNDEBUG -ffast-math -funroll-loops
+        )
+    endif()
+
+    # RelWithDebInfo (optimized build with debugging symbols)
+    if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+        add_compile_options(
+            -O2 -g -fno-omit-frame-pointer
+        )
+    endif()
 endif()
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
