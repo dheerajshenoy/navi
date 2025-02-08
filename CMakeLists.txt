@@ -16,13 +16,14 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_program(SCCACHE sccache)
 find_program(CCACHE ccache)
 
-if(CCACHE)
-  set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE} CACHE STRING "CCache program for C")
-  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE} CACHE STRING "CCache program for C++")
+if (CCACHE)
+    message(STATUS "Found cache in ${CCACHE}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CACHE}")
 elseif(SCCACHE)
-  set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C")
-  set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE} CACHE STRING "SCCache program for C++")
+    message(STATUS "Found sccache in ${SCCACHE}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE}")
 endif()
+
 
 set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Install path prefix" FORCE)
 
@@ -35,51 +36,21 @@ set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose Makefile")
 # Export compile_commands.json for IDE integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands")
 
+
 # -O2
 # Set flags for compilers
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  message(STATUS "Building in Debug Mode")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
+    message(STATUS "Building in Debug Mode")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -Og -flto -fuse-ld=lld -fsanitize=address" CACHE STRING "C++ flags")  # Add more flags as necessary
+
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-  message(STATUS "Building in Release Mode")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3" CACHE STRING "C++ flags")  # Add more flags as necessary
+    message(STATUS "Building in Release Mode")
+    set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
 else()
-  message(STATUS "Building in Debug Mode since no build mode was specified")
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build Type" FORCE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -Og -flto" CACHE STRING "C++ flags")  # Add more flags as necessary
-endif()
-
-
-# Enable compiler warnings and optimizations
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    message(STATUS "Using Clang, applying best flags")
-
-    add_compile_options(
-        -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion
-        -Wdouble-promotion -Wformat=2 -Wstrict-aliasing=2
-    )
-
-    # Debugging flags
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_compile_options(
-            -O0 -g -fsanitize=address,undefined -fno-omit-frame-pointer
-        )
-    endif()
-
-    # Release flags
-    if (CMAKE_BUILD_TYPE STREQUAL "Release")
-        add_compile_options(
-            -O3 -march=native -flto -DNDEBUG -ffast-math -funroll-loops
-        )
-    endif()
-
-    # RelWithDebInfo (optimized build with debugging symbols)
-    if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        add_compile_options(
-            -O2 -g -fno-omit-frame-pointer
-        )
-    endif()
+    message(STATUS "Building in Release Mode since no build mode was specified")
+    message(STATUS "Building in Release Mode")
+    set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
 endif()
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
@@ -170,6 +141,7 @@ qt_add_executable(${PROJECT_NAME}
   src/NotificationManager.hpp
   src/CompletionPopup.hpp
   src/LineEdit.hpp
+  src/CustomViewFactory.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
@@ -202,7 +174,8 @@ add_custom_target(run
   WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_UNITY_BUILD ON)
+set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/navifm_autogen/mocs_compilation.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD OFF)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch.hpp)
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/pch_filepanel.hpp)
