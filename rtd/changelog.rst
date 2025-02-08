@@ -3,7 +3,13 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
-v1.3.1 (8 February 2025)
+v1.3.2 (8 February 2025)
+------------------------
+
++ Changed navi instantiation from lua
+
+
+v1.3.1 (6 February 2025)
 ------------------------
 
 + Changed project name from **navi** to **navifm**
