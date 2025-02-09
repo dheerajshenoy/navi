@@ -8,6 +8,7 @@
 #include <QStringListModel>
 #include "LineEdit.hpp"
 #include <QSortFilterProxyModel>
+#include "CompletionDelegate.hpp"
 
 class CompletionFilterModel : public QSortFilterProxyModel {
 public:
@@ -27,31 +28,29 @@ class CompletionPopup : public QFrame {
 
     public:
     explicit CompletionPopup(LineEdit *parent);
-
     inline void setPopupHeight(const int &height) noexcept {
-        m_popupHeight = height;
+        setFixedHeight(height);
+    }
+    inline int popupHeight() noexcept { return this->height(); }
+
+    inline void set_font_family(const std::string &name) noexcept {
+        QFont font = this->font();
+        font.setFamily(QString::fromStdString(name));
+        this->setFont(font);
     }
 
-    inline int popupHeight() noexcept { return m_popupHeight; }
-
-    inline bool itemNumber() noexcept { return m_show_item_numbers; }
-
-    inline void setItemNumbersVisible(const bool &state) noexcept {
-        m_show_item_numbers = state;
+    inline void set_font_size(const int &size) noexcept {
+        QFont font = this->font();
+        font.setPixelSize(size);
+        this->setFont(font);
     }
 
     void showPopup() noexcept;
-
-    void updateAndShowPopup() noexcept;
-
     void updateCompletions(const QString &text) noexcept;
-
     void setCompletions(const QStringList &) noexcept;
-
     inline QStringList completions() noexcept {
         return m_model->stringList();
     }
-
     inline void setCaseSensitivity(const Qt::CaseSensitivity &sensitivity) noexcept {
         m_filter_model->setFilterCaseSensitivity(sensitivity);
     }
@@ -61,20 +60,22 @@ class CompletionPopup : public QFrame {
     }
 
     inline void setLineNumbers(const bool &state) noexcept {
-        m_line_numbers_shown = state;
+        m_completion_delegate->setLineNumbers(state);
     }
+
+    inline bool lineNumbers() noexcept { return m_completion_delegate->lineNumberShown(); }
+
+    void updatePopupGeometry() noexcept;
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
     void selectItem(const QModelIndex &index) noexcept;
-
     LineEdit* m_lineEdit;
     QListView *m_listView;
-    int m_popupHeight = 150;
     bool m_show_item_numbers = false;
-    bool m_line_numbers_shown = false;
     QStringListModel *m_model = nullptr;
     CompletionFilterModel *m_filter_model;
+    CompletionDelegate *m_completion_delegate;
 };

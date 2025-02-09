@@ -1310,4 +1310,6 @@ protected:
     QHash<QString, CommandInfo> m_commands;
     QStringList m_lua_apis_list;
     bool m_lua_apis_fetched = false;
+    LineEdit *m_inputbar_lineEdit;
+    CompletionPopup *m_inputbar_completion;
 };

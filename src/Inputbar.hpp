@@ -48,9 +48,6 @@ public:
       return m_foreground_color.toStdString();
     }
 
-    void enableCompletion() noexcept;
-    void disableCompletion() noexcept;
-
 signals:
     void lineEditTextChanged(const QString &text);
 

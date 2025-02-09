@@ -3,7 +3,8 @@
 CompletionPopup::CompletionPopup(LineEdit* parent)
     : QFrame(parent), m_lineEdit(parent),
     m_model(new QStringListModel(this)),
-    m_filter_model(new CompletionFilterModel(this))
+    m_filter_model(new CompletionFilterModel(this)),
+    m_completion_delegate(new CompletionDelegate(m_lineEdit))
 {
     setWindowFlags(Qt::ToolTip);
     setFocusPolicy(Qt::NoFocus);
@@ -18,8 +19,8 @@ CompletionPopup::CompletionPopup(LineEdit* parent)
 
     m_listView->setModel(m_filter_model);
     m_filter_model->setSourceModel(m_model);
-
     m_lineEdit->installEventFilter(this);
+    m_listView->setItemDelegate(m_completion_delegate);
 
 }
 
@@ -32,21 +33,23 @@ void CompletionPopup::updateCompletions(const QString &text) noexcept {
 
     if (m_filter_model->rowCount() == 0) {
         hide();
-        return;
+    } else {
+        showPopup();
     }
-
-    showPopup();
 }
 
 void CompletionPopup::showPopup() noexcept {
 
-    if (m_model->rowCount() == 0)
-        return;
-
     auto g = m_lineEdit->mapToGlobal(QPoint(0, m_lineEdit->height()));
-    setGeometry(g.x(), g.y() - m_popupHeight - m_lineEdit->height(), m_lineEdit->width(), m_popupHeight);
+    move(g.x(), g.y() - this->height() - m_lineEdit->height());
     show();
     raise();
+}
+
+void CompletionPopup::updatePopupGeometry() noexcept {
+    auto g = m_lineEdit->mapToGlobal(QPoint(0, m_lineEdit->height()));
+    this->setGeometry(g.x(), g.y() - this->height() - m_lineEdit->height(), m_lineEdit->width(),
+                      this->height());
 }
 
 bool CompletionPopup::eventFilter(QObject* obj, QEvent* event) {
@@ -81,7 +84,13 @@ bool CompletionPopup::eventFilter(QObject* obj, QEvent* event) {
                     return true;
                 }
             }
-        } else if (event->type() == QEvent::FocusOut) {
+        }
+
+        else if (event->type() == QEvent::Resize) {
+            updatePopupGeometry();
+        }
+
+        else if (event->type() == QEvent::FocusOut) {
             hide();  // Hide when QLineEdit loses focus
         }
     }
@@ -92,7 +101,7 @@ void CompletionPopup::selectItem(const QModelIndex &index) noexcept {
     if (!index.isValid())
         return;
 
-    QString itemText = m_model->data(index).toString();
+    QString itemText = m_filter_model->data(index).toString();
     QString currentText = m_lineEdit->text();
     int lastSpace = currentText.lastIndexOf(' ');
     if (lastSpace == -1) {
@@ -107,20 +116,8 @@ void CompletionPopup::selectItem(const QModelIndex &index) noexcept {
 void CompletionPopup::setCompletions(const QStringList &completions) noexcept {
     m_model->setStringList(completions);
     m_filter_model->invalidate();
-}
 
-void CompletionPopup::updateAndShowPopup() noexcept {
-    auto text = m_lineEdit->text();
-    if (text.isEmpty()) {
-        updateCompletions("");
-        return;
-    }
-
-    auto split = text.split(" ", Qt::SkipEmptyParts);
-    if (split.length() == 1) {
-        updateCompletions("");
-    } else {
-        auto last = split.last();
-        updateCompletions(last);
+    if (m_filter_model->rowCount() > 0) {
+        m_listView->setCurrentIndex(m_filter_model->index(0, 0));
     }
 }

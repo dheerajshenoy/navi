@@ -3474,29 +3474,50 @@ void Navi::initValidCommandsList() noexcept {
 
 void Navi::initCompletion() noexcept {
 
-    auto lineEdit = m_inputbar->lineEdit();
-    auto compPopup = m_inputbar->completionPopup();
+    m_inputbar_lineEdit = m_inputbar->lineEdit();
+    m_inputbar_completion = m_inputbar->completionPopup();
 
-    compPopup->setPopupHeight(400);
+    m_inputbar_completion->setPopupHeight(400);
+    m_inputbar_completion->setLineNumbers(true);
+    m_inputbar_completion->set_font_size(20);
 
-    connect(lineEdit, &LineEdit::textChanged, compPopup, [&, compPopup](const QString &text) {
+    connect(m_inputbar_lineEdit, &LineEdit::tabPressed, m_inputbar_completion, &CompletionPopup::showPopup);
+
+    connect(m_inputbar_lineEdit, &LineEdit::textChanged, m_inputbar_completion, [&](const QString &text) {
         if (text.isEmpty()) {
-            compPopup->setCompletions(m_commands.keys());
+            m_inputbar_completion->setCompletions(m_commands.keys());
         } else {
-            /*auto _text = text.split(' ', Qt::SkipEmptyParts).last();*/
-            compPopup->updateCompletions("");
+            if (text.endsWith(" ")) {
+                m_inputbar_completion->updateCompletions("");
+            } else {
+                auto split = text.split(' ', Qt::SkipEmptyParts);
+
+                if (split.isEmpty())
+                    return;
+
+                if (split.length() == 1) {
+                    auto _text = split.first();
+                    m_inputbar_completion->updateCompletions(_text);
+                }
+
+                auto last = split.last();
+
+                m_inputbar_completion->updateCompletions(last);
+            }
         }
     });
 
-    m_inputbar->enableCompletion();
-    compPopup->setCompletions(m_commands.keys());
+    m_inputbar_completion->setCompletions(m_commands.keys());
 
-    connect(lineEdit, &LineEdit::spacePressed, this, [&, lineEdit, compPopup]() {
-        auto text = lineEdit->text();
+    connect(m_inputbar_lineEdit, &LineEdit::spacePressed, this, [&]() {
+        auto text = m_inputbar_lineEdit->text().trimmed();
         auto split = text.split(' ', Qt::SkipEmptyParts);
+
+        if (split.isEmpty()) return;
+
         QString command = split.first();
         int index = split.size() - 1;
-        compPopup->setCompletions(getCompletionsForCommand(command, index));
+        m_inputbar_completion->setCompletions(getCompletionsForCommand(command, index));
     });
 }
 
@@ -3517,43 +3538,102 @@ QStringList Navi::getCompletionsForCommand(const QString &command,
     }
 }
 
-// Function to traverse a Lua table iteratively and return results as QStringList
+/*QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcept {*/
+/*    if (m_lua_apis_fetched) {*/
+/*        return m_lua_apis_list;*/
+/*    }*/
+/**/
+/*    QStringList result;*/
+/*    sol::table root = (*m_lua)[root_name];  // Get the "navi" table*/
+/**/
+/*    if (!root.valid()) {*/
+/*        return result;  // Return empty if table not found*/
+/*    }*/
+/**/
+/*    std::stack<std::pair<sol::table, std::string>> stack;*/
+/*    stack.push({root, root_name});  // Start with "navi"*/
+/**/
+/*    while (!stack.empty()) {*/
+/*        auto [tbl, path] = stack.top();*/
+/*        stack.pop();*/
+/**/
+/*        // Ensure table names are stored*/
+/*        result.append(QString::fromStdString(path));*/
+/**/
+/*        for (const auto& pair : tbl) {*/
+/*            sol::object key = pair.first;*/
+/*            sol::object value = pair.second;*/
+/**/
+/*            if (key.is<std::string>()) {*/
+/*                std::string new_path = path + "." + key.as<std::string>();*/
+/**/
+/*                if (value.is<sol::table>()) {*/
+/*                    result.append(QString::fromStdString(new_path));  // Append table name before processing*/
+/*                    stack.push({value.as<sol::table>(), new_path});  // Push nested tables onto the stack*/
+/*                } else if (value.is<sol::function>()) {*/
+/*                    result.append(QString::fromStdString(new_path));  // Store function paths*/
+/*                }*/
+/*            }*/
+/*        }*/
+/**/
+/*        // Process metatable (__index)*/
+/*        sol::object meta = tbl[sol::metatable_key];*/
+/*        if (meta.valid() && meta.get_type() == sol::type::table) {*/
+/*            sol::table metaTable = meta.as<sol::table>();*/
+/*            sol::object indexFunc = metaTable["__index"];*/
+/**/
+/*            if (indexFunc.valid() && indexFunc.get_type() == sol::type::table) {*/
+/*                stack.push({indexFunc.as<sol::table>(), path});  // Treat metatable values as normal table members*/
+/*            }*/
+/*        }*/
+/*    }*/
+/**/
+/*    m_lua_apis_list = result;*/
+/*    m_lua_apis_fetched = true;*/
+/*    return result;*/
+/*}*/
+
 QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcept {
-    if (m_lua_apis_fetched) {
-        return m_lua_apis_list;
-    }
-
     QStringList result;
-    sol::table root = (*m_lua)[root_name];  // Get the "navi" table
+    std::stack<std::pair<sol::table, QString>> stack;
 
-    if (!root.valid()) {
-        return result;  // Return empty if table not found
+    // Get the root table
+    sol::table root_table = (*m_lua)["navi"];
+    if (!root_table.valid()) {
+        return result; // Return empty list if the root table doesn't exist
     }
 
-    std::stack<std::pair<sol::table, std::string>> stack;
-    stack.push({root, root_name});  // Start with "navi"
+    // Start with the root table
+    stack.push({root_table, QString::fromStdString("navi")});
 
     while (!stack.empty()) {
-        auto [tbl, path] = stack.top();
+        auto [current_table, current_prefix] = stack.top();
         stack.pop();
 
-        for (const auto& pair : tbl) {
-            sol::object key = pair.first;
-            sol::object value = pair.second;
-
+        // Iterate over the current table
+        current_table.for_each([&](sol::object key, sol::object value) {
             if (key.is<std::string>()) {
-                std::string new_path = path + "." + key.as<std::string>();
+                QString key_name = QString::fromStdString(key.as<std::string>());
+                QString full_path = current_prefix + "." + key_name;
+                result.append(full_path);
 
+                // If the value is a table, push it onto the stack for further processing
                 if (value.is<sol::table>()) {
-                    stack.push({value.as<sol::table>(), new_path});  // Push nested tables onto the stack
-                } else {
-                    result.append(QString::fromStdString(new_path));  // Store result in QStringList
+                    stack.push({value.as<sol::table>(), full_path});
                 }
+            }
+        });
+
+        // Check for metatable and process its __index table
+        sol::optional<sol::table> metatable = current_table[sol::metatable_key];
+        if (metatable) {
+            sol::optional<sol::table> index_table = (*metatable)["__index"];
+            if (index_table && index_table->valid()) {
+                // Push the __index table onto the stack with the same prefix
+                stack.push({*index_table, current_prefix});
             }
         }
     }
 
-    m_lua_apis_list = result;
-    m_lua_apis_fetched = true;
     return result;
 }

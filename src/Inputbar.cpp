@@ -4,37 +4,13 @@
 Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     this->setLayout(m_layout);
 
+    connect(m_line_edit, &LineEdit::hideRequested, this, &Inputbar::hide);
     m_layout->setContentsMargins(0, 0, 0, 0);
 
     m_layout->addWidget(m_prompt_label);
     m_layout->addWidget(m_line_edit);
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-}
-
-// Enables completions (if it exists)
-void Inputbar::enableCompletion() noexcept {
-
-    connect(m_line_edit, &LineEdit::tabPressed, m_completion,
-            &CompletionPopup::updateAndShowPopup);
-
-    // TODO: Fix this shit!
-    connect(m_line_edit, &LineEdit::textChanged, m_completion,
-            &CompletionPopup::updateCompletions);
-
-    connect(m_line_edit, &LineEdit::hideRequested, this, &Inputbar::hide);
-
-}
-
-// Disables completions (if it exists)
-void Inputbar::disableCompletion() noexcept {
-    disconnect(m_line_edit, &LineEdit::tabPressed, m_completion,
-               &CompletionPopup::updateAndShowPopup);
-
-    disconnect(m_line_edit, &LineEdit::textChanged, m_completion,
-               &CompletionPopup::updateCompletions);
-
-    disconnect(m_line_edit, &LineEdit::hideRequested, m_line_edit, &LineEdit::hide);
 }
 
 QString Inputbar::getInput(const QString &prompt, const QString &defaultValue,
