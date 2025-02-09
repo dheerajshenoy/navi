@@ -15,26 +15,26 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
 // Enables completions (if it exists)
 void Inputbar::enableCompletion() noexcept {
 
-  connect(m_line_edit, &LineEdit::tabPressed, m_completion,
-          &CompletionPopup::showPopup);
+    connect(m_line_edit, &LineEdit::tabPressed, m_completion,
+            &CompletionPopup::updateAndShowPopup);
 
     // TODO: Fix this shit!
-    /*connect(m_line_edit, &LineEdit::textChanged, m_completion,*/
-    /*        &CompletionPopup::updateCompletions);*/
+    connect(m_line_edit, &LineEdit::textChanged, m_completion,
+            &CompletionPopup::updateCompletions);
 
-  connect(m_line_edit, &LineEdit::hideRequested, this, &Inputbar::hide);
+    connect(m_line_edit, &LineEdit::hideRequested, this, &Inputbar::hide);
 
 }
 
 // Disables completions (if it exists)
 void Inputbar::disableCompletion() noexcept {
-  disconnect(m_line_edit, &LineEdit::tabPressed, m_completion,
-          &CompletionPopup::showPopup);
+    disconnect(m_line_edit, &LineEdit::tabPressed, m_completion,
+               &CompletionPopup::updateAndShowPopup);
 
-  disconnect(m_line_edit, &LineEdit::textChanged, m_completion,
-          &CompletionPopup::updateCompletions);
+    disconnect(m_line_edit, &LineEdit::textChanged, m_completion,
+               &CompletionPopup::updateCompletions);
 
-  disconnect(m_line_edit, &LineEdit::hideRequested, m_line_edit, &LineEdit::hide);
+    disconnect(m_line_edit, &LineEdit::hideRequested, m_line_edit, &LineEdit::hide);
 }
 
 QString Inputbar::getInput(const QString &prompt, const QString &defaultValue,
@@ -128,5 +128,5 @@ void Inputbar::keyPressEvent(QKeyEvent *e) {
             break;
     }
 
-  QWidget::keyPressEvent(e);
+    QWidget::keyPressEvent(e);
 }
