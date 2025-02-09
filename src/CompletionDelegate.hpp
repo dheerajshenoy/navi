@@ -13,6 +13,14 @@ public:
 
     inline bool lineNumberShown() noexcept { return m_showLineNumbers; }
 
+    inline void setGrid(const bool &state) noexcept {
+        m_gridLines = state;
+    }
+
+    inline bool grid() noexcept {
+        return m_gridLines;
+    }
+
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override {
         if (!index.isValid()) return;
 
@@ -48,6 +56,13 @@ public:
         painter->setPen(option.palette.color(QPalette::Text));
         painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 
+
+        if (m_gridLines) {
+            // Draw a horizontal line at the bottom of the row
+            painter->setPen(Qt::lightGray); // Set the line color
+            painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+        }
+
         painter->restore();
     }
 
@@ -58,4 +73,5 @@ public:
 
 private:
     bool m_showLineNumbers = false;
+    bool m_gridLines = false;
 };
