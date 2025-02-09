@@ -1,62 +1,80 @@
 #pragma once
 
 #include <QWidget>
-#include <QListWidget>
+#include <QListView>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QKeyEvent>
+#include <QStringListModel>
 #include "LineEdit.hpp"
+#include <QSortFilterProxyModel>
+
+class CompletionFilterModel : public QSortFilterProxyModel {
+public:
+    CompletionFilterModel(QObject *parent = nullptr) : QSortFilterProxyModel(parent) {}
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override {
+        if (filterRegularExpression().pattern().isEmpty()) {
+            return true; // Show all items when filter is empty
+        }
+        return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
+    }
+};
 
 class CompletionPopup : public QFrame {
     Q_OBJECT
 
-public:
+    public:
     explicit CompletionPopup(LineEdit *parent);
+
     inline void setPopupHeight(const int &height) noexcept {
         m_popupHeight = height;
     }
+
     inline int popupHeight() noexcept { return m_popupHeight; }
+
     inline bool itemNumber() noexcept { return m_show_item_numbers; }
-    // TODO: Showing item numbers in the QListWidget
+
     inline void setItemNumbersVisible(const bool &state) noexcept {
         m_show_item_numbers = state;
     }
-    void setCompletions(const QStringList& completions) noexcept;
+
     void showPopup() noexcept;
+
+    void updateAndShowPopup() noexcept;
+
     void updateCompletions(const QString &text) noexcept;
 
+    void setCompletions(const QStringList &) noexcept;
+
+    inline QStringList completions() noexcept {
+        return m_model->stringList();
+    }
+
     inline void setCaseSensitivity(const Qt::CaseSensitivity &sensitivity) noexcept {
-        m_case_sensitivity = sensitivity;
+        m_filter_model->setFilterCaseSensitivity(sensitivity);
     }
 
     inline Qt::CaseSensitivity caseSensitivity() noexcept {
-        return m_case_sensitivity;
+        return m_filter_model->filterCaseSensitivity();
     }
 
-    inline void setInitialCompletions(const QStringList &initial_completions) noexcept {
-      m_initial_completions = initial_completions;
-      this->setCompletions(m_initial_completions);
-    }
-
-    inline QStringList initialCompletion() noexcept {
-      return m_initial_completions;
-    }
-
-    inline QStringList currentCompletion() noexcept {
-        return m_current_completions;
+    inline void setLineNumbers(const bool &state) noexcept {
+        m_line_numbers_shown = state;
     }
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
-    void selectItem(QListWidgetItem* item) noexcept;
+    void selectItem(const QModelIndex &index) noexcept;
 
     LineEdit* m_lineEdit;
-    QListWidget *m_listWidget;
+    QListView *m_listView;
     int m_popupHeight = 150;
     bool m_show_item_numbers = false;
-    Qt::CaseSensitivity m_case_sensitivity = Qt::CaseSensitivity::CaseSensitive;
-    QStringList m_current_completions;
-    QStringList m_initial_completions;
+    bool m_line_numbers_shown = false;
+    QStringListModel *m_model = nullptr;
+    CompletionFilterModel *m_filter_model;
 };
