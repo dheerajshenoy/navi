@@ -2051,7 +2051,13 @@ std::string Navi::Lua__Input(const std::string &prompt,
 
 void Navi::execute_lua_code(const std::string &code) noexcept {
     // TODO: Adding literal ""
-    (*m_lua).script(code);
+    try {
+        (*m_lua).script(code);
+    } catch (sol::error &e) {
+        m_statusbar->Message(QString("Error running lua code: %1")
+                             .arg(QString::fromStdString(e.what())),
+                             MessageType::ERROR);
+    }
 }
 
 QString Navi::GetInput(const QString &prompt, const QString &title,
@@ -3473,17 +3479,24 @@ void Navi::initCompletion() noexcept {
 
     compPopup->setPopupHeight(400);
 
+    connect(lineEdit, &LineEdit::textChanged, compPopup, [&, compPopup](const QString &text) {
+        if (text.isEmpty()) {
+            compPopup->setCompletions(m_commands.keys());
+        } else {
+            /*auto _text = text.split(' ', Qt::SkipEmptyParts).last();*/
+            compPopup->updateCompletions("");
+        }
+    });
 
     m_inputbar->enableCompletion();
-    compPopup->setInitialCompletions(m_commands.keys());
+    compPopup->setCompletions(m_commands.keys());
 
     connect(lineEdit, &LineEdit::spacePressed, this, [&, lineEdit, compPopup]() {
         auto text = lineEdit->text();
         auto split = text.split(' ', Qt::SkipEmptyParts);
         QString command = split.first();
         int index = split.size() - 1;
-        QStringList completions = getCompletionsForCommand(command, index);
-        compPopup->setCompletions(completions);
+        compPopup->setCompletions(getCompletionsForCommand(command, index));
     });
 }
 

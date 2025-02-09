@@ -29,6 +29,7 @@
 #include "TaskManager.hpp"
 #include "TasksWidget.hpp"
 #include "UpdateDialog.hpp"
+#include <QStringListModel>
 
 #include "CustomViewFactory.hpp"
 
