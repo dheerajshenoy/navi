@@ -101,7 +101,9 @@ void CompletionPopup::selectItem(const QModelIndex &index) noexcept {
     if (!index.isValid())
         return;
 
-    QString itemText = m_filter_model->data(index).toString();
+    QModelIndex sourceIndex = m_filter_model->mapToSource(index);
+
+    QString itemText = m_model->data(sourceIndex).toString();
     QString currentText = m_lineEdit->text();
     int lastSpace = currentText.lastIndexOf(' ');
     if (lastSpace == -1) {

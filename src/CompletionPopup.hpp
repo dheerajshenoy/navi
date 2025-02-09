@@ -39,6 +39,12 @@ class CompletionPopup : public QFrame {
         this->setFont(font);
     }
 
+    inline void setGrid(const bool &state) noexcept {
+        m_completion_delegate->setGrid(state);
+    }
+
+    inline bool grid() noexcept { return m_completion_delegate->grid(); }
+
     inline void set_font_size(const int &size) noexcept {
         QFont font = this->font();
         font.setPixelSize(size);

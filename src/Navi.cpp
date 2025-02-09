@@ -3478,6 +3478,7 @@ void Navi::initCompletion() noexcept {
     m_inputbar_completion = m_inputbar->completionPopup();
 
     m_inputbar_completion->setPopupHeight(400);
+    m_inputbar_completion->setGrid(true);
     m_inputbar_completion->setLineNumbers(true);
     m_inputbar_completion->set_font_size(20);
 
