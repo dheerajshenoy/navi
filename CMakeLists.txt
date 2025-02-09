@@ -142,6 +142,7 @@ qt_add_executable(${PROJECT_NAME}
   src/CompletionPopup.hpp
   src/LineEdit.hpp
   src/CustomViewFactory.hpp
+  src/CompletionDelegate.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
