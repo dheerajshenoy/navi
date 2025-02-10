@@ -30,8 +30,13 @@
 #include "TasksWidget.hpp"
 #include "UpdateDialog.hpp"
 #include <QStringListModel>
-
 #include "CustomViewFactory.hpp"
+
+#define ENABLE_LLAMA 1
+
+#ifdef ENABLE_LLAMA
+#include "../external/llama.cpp/include/llama.h"
+#endif
 
 class Menubar : public QMenuBar {
     Q_OBJECT
@@ -82,6 +87,9 @@ public:
         m_notification_manager->showMessage(this, type, message, icon);
     }
 
+    #ifdef ENABLE_LLAMA
+    void ProcessLlamaCommand(const QStringList &args) noexcept;
+    #endif
 
     inline void set_completion_font(const std::string &font) noexcept {
         m_inputbar_completion->set_font_family(font);
@@ -1298,8 +1306,6 @@ protected:
     // Hashmap for storing the commands and the corresponding function calls
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
-    QStringList m_valid_command_list;
-
     MessagesBuffer *m_log_buffer = nullptr;
     MarksBuffer *m_marks_buffer = nullptr;
 
@@ -1362,4 +1368,14 @@ protected:
     bool m_lua_apis_fetched = false;
     LineEdit *m_inputbar_lineEdit;
     CompletionPopup *m_inputbar_completion;
+
+    #ifdef ENABLE_LLAMA
+    llama_context *m_llama_ctx;
+    llama_model *m_llama_model;
+    llama_sampler *m_llama_sampler;
+    llama_batch *m_llama_batch;
+    llama_token *m_llama_token;
+
+    void load_ai_model(const std::string &modelPath) noexcept;
+    #endif
 };

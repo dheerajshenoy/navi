@@ -8,6 +8,7 @@ void Navi::Error(const QString &reason) noexcept {
 }
 
 void Navi::initThings() noexcept {
+
     initValidCommandsList();
     initLayout();
     initCompletion();
@@ -177,6 +178,12 @@ void Navi::setupCommandMap() noexcept {
             notify(type, args.at(0));
         }
     };
+
+#ifdef ENABLE_LLAMA
+    commandMap["llama"] = [this](const QStringList &args) {
+        ProcessLlamaCommand(args);
+    }
+#endif
 
     commandMap["update"] = [this](const QStringList &args) {
         Q_UNUSED(args);
@@ -3353,123 +3360,121 @@ std::vector<std::string> Navi::listLayout() noexcept {
 }
 
 void Navi::initValidCommandsList() noexcept {
-    m_valid_command_list = {
-        // Shell command
-
-        // Echo
-    };
 
     m_commands = {
-        {"about", {}},
-        {"fullscreen", {}},
-        {"copy-path", {}},
-        {"folder-property", {}},
-        {"cd", {0, 1, {}}},
-        {"repeat-last-command", {}},
-        {"register", {}},
-        {"lua", {1, 1, {{[this]() { return traverse_table_iterative(); }}}}},
-        {"drives", {}},
-        {"mouse-scroll", {}},
-        {"visual-select", {}},
-        {"execute-extended-command", {}},
-        {"header", {}},
-        {"cycle", {}},
-        {"item-property", {}},
-        {"focus-path", {}},
-        {"menu-bar", {}},
-        {"dot-dot", {}},
-        {"hidden-files", {}},
-        {"refresh", {}},
-        {"reset-filter", {}},
-        {"filter", {}},
-        {"exit", {}},
-        {"goto-symlink-target", {}},
-        {"new-window", {}},
-        {"update", {}},
-        {"screenshot", {}},
-        {"notify", {}},
-        {"echo-info", {}},
-        {"echo-warn", {}},
-        {"echo-error", {}},
-        {"shell", {}},
-        {"mark", {}},
-        {"toggle-mark", {}},
-        {"toggle-mark-dwim", {}},
-        {"mark-inverse", {}},
-        {"mark-all", {}},
-        {"mark-dwim", {}},
-        {"mark-regex", {}},
-        {"unmark", {}},
-        {"unmark-global", {}},
-        {"unmark-local", {}},
-        {"unmark-dwim", {}},
-        {"unmark-regex", {}},
-        {"chmod", {}},
-        {"chmod-global", {}},
-        {"chmod-local", {}},
-        {"chmod-dwim", {}},
-        {"rename", {}},
-        {"rename-global", {}},
-        {"rename-local", {}},
-        {"rename-dwim", {}},
-        {"cut", {}},
-        {"move-to", {}},
-        {"cut-local", {}},
-        {"cut-global", {}},
-        {"cut-dwim", {}},
-        {"copy", {}},
-        {"copy-to", {}},
-        {"copy-local", {}},
-        {"copy-global", {}},
-        {"copy-dwim", {}},
-        {"paste", {}},
-        {"delete", {}},
-        {"delete-local", {}},
-        {"delete-global", {}},
-        {"delete-dwim", {}},
-        {"trash", {}},
-        {"trash-local", {}},
-        {"trash-global", {}},
-        {"trash-dwim", {}},
-        {"tasks", {}},
-        {"bookmark-add", {}},
-        {"bookmark-remove", {}},
-        {"bookmark-edit-name", {}},
-        {"bookmark-edit-path", {}},
-        {"bookmark-go", {1, 1, {{[this]() { return m_bookmark_manager->getBookmarkNames(); }}}}},
-        {"bookmarks-save", {}},
-        {"new-file", {}},
-        {"new-folder", {}},
-        {"messages-pane", {}},
-        {"preview-pane", {}},
-        {"marks-pane", {}},
-        {"bookmarks-pane", {}},
-        {"shortcuts-pane", {}},
-        {"search", {}},
-        {"search-regex", {}},
-        {"search-next", {}},
-        {"search-prev", {}},
-        {"sort-name", {}},
-        {"sort-name-desc", {}},
-        {"sort-date", {}},
-        {"sort-date-desc", {}},
-        {"sort-size", {}},
-        {"sort-size-desc", {}},
-        {"next-item", {}},
-        {"prev-item", {}},
-        {"first-item", {}},
-        {"last-item", {}},
-        {"middle-item", {}},
-        {"up-directory", {}},
-        {"select-item", {}},
-        {"macro-play", {}},
-        {"macro-record", {}},
-        {"macro-delete", {}},
-        {"macro-list", {}},
-        {"macro-edit", {}},
-        {"macro-save-to-file", {}},
-        {"scroll-down", {}},
-        {"scroll-up", {}}
+        { "about" , {}},
+        { "fullscreen" , {}},
+        { "copy-path" , {}},
+        { "folder-property" , {}},
+        { "cd" , {0, 1, {}}},
+        { "repeat-last-command" , {}},
+        { "register" , {}},
+        { "lua" , {1, 1, {{[this]() { return traverse_table_iterative(); }}}}},
+        { "drives" , {}},
+        { "mouse-scroll" , {}},
+        { "visual-select" , {}},
+        { "execute-extended-command" , {}},
+        { "header" , {}},
+        { "cycle" , {}},
+        { "item-property" , {}},
+        { "focus-path" , {}},
+        { "menu-bar" , {}},
+        { "dot-dot" , {}},
+        { "hidden-files" , {}},
+        { "refresh" , {}},
+        { "reset-filter" , {}},
+        { "filter" , {}},
+        { "exit" , {}},
+        { "goto-symlink-target" , {}},
+        { "new-window" , {}},
+        { "update" , {}},
+        { "screenshot" , {}},
+        { "notify" , {}},
+        { "echo-info" , {}},
+        { "echo-warn" , {}},
+        { "echo-error" , {}},
+        { "shell" , {}},
+        { "mark" , {}},
+        { "toggle-mark" , {}},
+        { "toggle-mark-dwim" , {}},
+        { "mark-inverse" , {}},
+        { "mark-all" , {}},
+        { "mark-dwim" , {}},
+        { "mark-regex" , {}},
+        { "unmark" , {}},
+        { "unmark-global" , {}},
+        { "unmark-local" , {}},
+        { "unmark-dwim" , {}},
+        { "unmark-regex" , {}},
+        { "chmod" , {}},
+        { "chmod-global" , {}},
+        { "chmod-local" , {}},
+        { "chmod-dwim" , {}},
+        { "rename" , {}},
+        { "rename-global" , {}},
+        { "rename-local" , {}},
+        { "rename-dwim" , {}},
+        { "cut" , {}},
+        { "move-to" , {}},
+        { "cut-local" , {}},
+        { "cut-global" , {}},
+        { "cut-dwim" , {}},
+        { "copy" , {}},
+        { "copy-to" , {}},
+        { "copy-local" , {}},
+        { "copy-global" , {}},
+        { "copy-dwim" , {}},
+        { "paste" , {}},
+        { "delete" , {}},
+        { "delete-local" , {}},
+        { "delete-global" , {}},
+        { "delete-dwim" , {}},
+        { "trash" , {}},
+        { "trash-local" , {}},
+        { "trash-global" , {}},
+        { "trash-dwim" , {}},
+        { "tasks" , {}},
+        { "bookmark-add" , {}},
+        { "bookmark-remove" , {}},
+        { "bookmark-edit-name" , {}},
+        { "bookmark-edit-path" , {}},
+        { "bookmark-go" , {1, 1, {{[this]() { return m_bookmark_manager->getBookmarkNames(); }}}}},
+        { "bookmarks-save" , {}},
+        { "new-file" , {}},
+        { "new-folder" , {}},
+        { "messages-pane" , {}},
+        { "preview-pane" , {}},
+        { "marks-pane" , {}},
+        { "bookmarks-pane" , {}},
+        { "shortcuts-pane" , {}},
+        { "search" , {}},
+        { "search-regex" , {}},
+        { "search-next" , {}},
+        { "search-prev" , {}},
+        { "sort-name" , {}},
+        { "sort-name-desc" , {}},
+        { "sort-date" , {}},
+        { "sort-date-desc" , {}},
+        { "sort-size" , {}},
+        { "sort-size-desc" , {}},
+        { "next-item" , {}},
+        { "prev-item" , {}},
+        { "first-item" , {}},
+        { "last-item" , {}},
+        { "middle-item" , {}},
+        { "up-directory" , {}},
+        { "select-item" , {}},
+        { "macro-play" , {}},
+        { "macro-record" , {}},
+        { "macro-delete" , {}},
+        { "macro-list" , {}},
+        { "macro-edit" , {}},
+        { "macro-save-to-file" , {}},
+        { "scroll-down" , {}},
+        { "scroll-up" , {}}
+        #ifdef ENABLE_LLAMA
+        { "llama", {}},
+        #endif
     };
 }
 
@@ -3699,3 +3704,33 @@ void Navi::set_preview_panel_props(const sol::table &table) noexcept {
     if (table["fraction"].valid())
         Set_preview_pane_fraction(table["fraction"].get<float>());
 }
+
+
+#ifdef ENABLE_LLAMA
+
+void Navi::ProcessLlamaCommand(const QStringList &args) noexcept {
+
+}
+
+void Navi::load_ai_model(const std::string &modelPath) noexcept {
+    llama_model_params model_params = llama_model_default_params();
+    m_llama_model = llama_model_load_from_file(modelPath.data(), model_params);
+
+    if (!m_llama_model) {
+        m_statusbar->Message("AI: Could not load model.", MessageType::ERROR);
+        return;
+    }
+
+    llama_context_params ctx_params = llama_context_default_params();
+    ctx_params.n_ctx = 0;
+    ctx_params.no_perf = true;
+    m_llama_ctx = llama_new_context_with_model(m_llama_model, ctx_params);
+
+    if (!m_llama_ctx) {
+        m_statusbar->Message("AI: Could not create context", MessageType::ERROR);
+        return;
+    }
+
+}
+
+#endif

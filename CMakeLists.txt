@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.16.0)
 # defines a project with a version
 project(navifm VERSION 1.0.0 LANGUAGES CXX)
 
+option(ENABLE_LLAMA "Enable llama.cpp AI integration" OFF)
+
 # pick the C++ standard to use, in this case C++20
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
 set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "C++ standard required")
@@ -80,7 +82,11 @@ set(KDDockWidgets_FRONTENDS "qtwidgets" CACHE STRING "Use KDDockWidgets for QtWi
 set(CMAKE_INSTALL_PREFIX "/usr/share/include" CACHE STRING "KDDockWidgets install prefix")
 
 add_subdirectory(external/KDDockWidgets)
-add_subdirectory(external/llama.cpp)
+
+if (ENABLE_LLAMA)
+    add_subdirectory(external/llama.cpp)
+    add_definitions(-DENABLE_LLAMA)
+endif()
 
 qt_standard_project_setup()
 # define an executable built from a source file
@@ -146,7 +152,11 @@ qt_add_executable(${PROJECT_NAME}
 
 # tell cmake to link the executable to the Qt 6 core and test modules
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
+if (ENABLE_LLAMA)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets llama)
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
+endif()
 
 set(RESOURCE_FILES
   resources/images/clock.svg
