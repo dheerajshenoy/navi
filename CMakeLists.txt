@@ -79,9 +79,8 @@ set(KDDockWidgets_QT6 "ON" CACHE STRING "Use qt6 with KDDockWidgets")
 set(KDDockWidgets_FRONTENDS "qtwidgets" CACHE STRING "Use KDDockWidgets for QtWidgets only")
 set(CMAKE_INSTALL_PREFIX "/usr/share/include" CACHE STRING "KDDockWidgets install prefix")
 
-add_subdirectory(KDDockWidgets)
-
-find_package(KDDockWidgets-qt6 REQUIRED)
+add_subdirectory(external/KDDockWidgets)
+add_subdirectory(external/llama.cpp)
 
 qt_standard_project_setup()
 # define an executable built from a source file
