@@ -962,11 +962,12 @@ void Navi::TogglePreviewPanel(const bool &state) noexcept {
         connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                 &PreviewPanel::onFileSelected);
         m_preview_panel->onFileSelected(getCurrentFile());
+        m_preview_panel_dock->open();
     } else {
         disconnect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
                    &PreviewPanel::onFileSelected);
+        m_preview_panel_dock->close();
     }
-    m_preview_panel_dock->toggleAction();
 }
 
 void Navi::TogglePreviewPanel() noexcept {

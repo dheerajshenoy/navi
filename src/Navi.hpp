@@ -695,9 +695,9 @@ public:
     // TODO: Not yet fixed in KDDockWidgets
     inline void set_preview_panel_visible(const bool &state) noexcept {
         if (state)
-            m_preview_panel_dock->show();
+            m_preview_panel_dock->open();
         else
-            m_preview_panel_dock->hide();
+            m_preview_panel_dock->close();
     }
 
     inline bool get_preview_panel_visible() noexcept {
