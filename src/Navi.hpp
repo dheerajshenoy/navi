@@ -82,6 +82,74 @@ public:
         m_notification_manager->showMessage(this, type, message, icon);
     }
 
+
+    inline void set_completion_font(const std::string &font) noexcept {
+        m_inputbar_completion->set_font_family(font);
+    }
+
+    inline std::string get_completion_font() noexcept {
+        return m_inputbar_completion->get_font_family();
+    }
+
+    inline void set_completion_font_size(const int &size) noexcept {
+        m_inputbar_completion->set_font_size(size);
+    }
+
+    inline int get_completion_font_size() noexcept {
+        return m_inputbar_completion->get_font_size();
+    }
+
+    void set_completion_props(const sol::table &table) noexcept;
+    sol::table get_completion_props() noexcept;
+
+    inline void set_completion_grid(const bool &state) noexcept {
+        m_inputbar_completion->setGrid(state);
+    }
+
+    inline bool get_completion_grid() noexcept {
+        return m_inputbar_completion->grid();
+    }
+
+    inline void set_completion_line_numbers(const bool &state) noexcept {
+        m_inputbar_completion->setLineNumbers(state);
+    }
+
+    inline bool get_completion_line_numbers() noexcept {
+        return m_inputbar_completion->lineNumbers();
+    }
+
+    inline void set_completion_count_visible(const bool &state) noexcept {
+        m_inputbar_completion->setMatchCount(state);
+    }
+
+    inline bool get_completion_count_visible() noexcept {
+        return m_inputbar_completion->matchCount();
+    }
+
+    inline void set_statusbar_message_warn_fg(const std::string &fg) noexcept {
+        m_statusbar->set_warning_fg(fg);
+    }
+
+    inline std::string get_statusbar_message_warn_fg() noexcept {
+        return m_statusbar->get_warning_fg();
+    }
+
+    inline void set_statusbar_message_info_fg(const std::string &fg) noexcept {
+        m_statusbar->set_info_fg(fg);
+    }
+
+    inline std::string get_statusbar_message_info_fg() noexcept {
+        return m_statusbar->get_info_fg();
+    }
+
+    inline void set_statusbar_message_error_fg(const std::string &fg) noexcept {
+        m_statusbar->set_error_fg(fg);
+    }
+
+    inline std::string get_statusbar_message_error_fg() noexcept {
+        return m_statusbar->get_error_fg();
+    }
+
     inline void set_header_stylesheet(const std::string &stylesheet) noexcept {
         m_file_panel->set_header_stylesheet(stylesheet);
     }
@@ -624,8 +692,12 @@ public:
         return m_file_path_widget->isVisible();
     }
 
+    // TODO: Not yet fixed in KDDockWidgets
     inline void set_preview_panel_visible(const bool &state) noexcept {
-        TogglePreviewPanel(state);
+        if (state)
+            m_preview_panel_dock->show();
+        else
+            m_preview_panel_dock->hide();
     }
 
     inline bool get_preview_panel_visible() noexcept {
@@ -707,8 +779,7 @@ public:
         }
     }
 
-    inline sol::table
-    get_preview_panel_image_dimension(sol::this_state L) const noexcept {
+    inline sol::table get_preview_panel_image_dimension(sol::this_state L) const noexcept {
         sol::state_view lua(L);
         auto [width, height] = m_preview_panel->get_preview_dimension();
         sol::table table = lua.create_table();
@@ -742,28 +813,7 @@ public:
         return table;
     }
 
-    inline void set_preview_panel_props(const sol::table &table) noexcept {
-
-        if (table["fraction"].valid())
-            Set_preview_pane_fraction(table["fraction"].get<float>());
-
-        if (table["max_file_size"].valid())
-            set_preview_panel_max_file_size(
-                table["max_file_size"].get<std::string>());
-
-        if (table["visible"].valid())
-            set_preview_panel_visible(table["visible"].get<bool>());
-
-        if (table["image_dimension"].valid())
-            set_preview_panel_image_dimension(
-                table["image_dimension"].get<sol::table>());
-
-        if (table["read_num_lines"].valid())
-            set_preview_panel_read_num_lines(table["image_dimension"].get<int>());
-
-        if (table["fraction"].valid())
-            Set_preview_pane_fraction(table["fraction"].get<float>());
-    }
+    void set_preview_panel_props(const sol::table &table) noexcept;
 
     inline void set_preview_panel_read_num_lines(const int &num) noexcept {
         m_preview_panel->set_num_read_lines(num);

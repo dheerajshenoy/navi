@@ -3518,8 +3518,10 @@ void Navi::initCompletion() noexcept {
 
         QString command = split.first();
         int index = split.size() - 1;
-        m_inputbar_completion->setCompletions(getCompletionsForCommand(command, index));
+        QStringList completions = getCompletionsForCommand(command, index);
+        m_inputbar_completion->setCompletions(completions);
     });
+
 }
 
 
@@ -3595,6 +3597,11 @@ QStringList Navi::getCompletionsForCommand(const QString &command,
 /*}*/
 
 QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcept {
+
+    if (m_lua_apis_fetched) {
+        return m_lua_apis_list;
+    }
+
     QStringList result;
     std::stack<std::pair<sol::table, QString>> stack;
 
@@ -3636,5 +3643,58 @@ QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcep
         }
     }
 
+    m_lua_apis_list = result;
+    m_lua_apis_fetched = true;
+
     return result;
+}
+
+
+void Navi::set_completion_props(const sol::table &table) noexcept {
+    if (table["font"].valid())
+        m_inputbar_completion->set_font_family(table["font"]);
+
+    if (table["font_size"].valid())
+        m_inputbar_completion->set_font_size(table["font_size"]);
+
+    if (table["grid"].valid())
+        m_inputbar_completion->setGrid(table["grid"]);
+
+    if (table["line_numbers"].valid())
+        m_inputbar_completion->setLineNumbers(table["line_numbers"]);
+
+    if (table["match_count"].valid())
+        m_inputbar_completion->setMatchCount(table["match_count"]);
+}
+
+sol::table Navi::get_completion_props() noexcept {
+    sol::table table = m_lua->create_table();
+
+    table["font"] = m_inputbar_completion->get_font_family();
+    table["font_size"] = m_inputbar_completion->get_font_size();
+    table["grid"] = m_inputbar_completion->grid();
+    table["line_numbers"] = m_inputbar_completion->lineNumbers();
+    table["match_count"] = m_inputbar_completion->matchCount();
+    return table;
+}
+
+void Navi::set_preview_panel_props(const sol::table &table) noexcept {
+
+    if (table["fraction"].valid())
+        Set_preview_pane_fraction(table["fraction"].get<float>());
+
+    if (table["max_file_size"].valid())
+        set_preview_panel_max_file_size(table["max_file_size"].get<std::string>());
+
+    if (table["visible"].valid())
+        set_preview_panel_visible(table["visible"].get<bool>());
+
+    if (table["image_dimension"].valid())
+        set_preview_panel_image_dimension(table["image_dimension"].get<sol::table>());
+
+    if (table["read_num_lines"].valid())
+        set_preview_panel_read_num_lines(table["read_num_lines"].get<int>());
+
+    if (table["fraction"].valid())
+        Set_preview_pane_fraction(table["fraction"].get<float>());
 }
