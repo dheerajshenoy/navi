@@ -149,10 +149,10 @@ setmetatable(M.ui.header, {
             return _navi:get_header_visible()
 
         elseif key == "columns" then
-           return _navi:get_header_columns()
+            return _navi:get_header_columns()
 
         elseif key == "stylesheet" then
-           return _navi:get_header_stylesheet()
+            return _navi:get_header_stylesheet()
 
         end
     end,
@@ -166,7 +166,7 @@ setmetatable(M.ui.header, {
             end
 
         elseif key == "stylesheet" then
-           _navi:set_header_stylesheet(value)
+            _navi:set_header_stylesheet(value)
 
         end
     end
@@ -205,10 +205,10 @@ setmetatable(M.ui.vheader, {
             return _navi:get_vheader_foreground()
 
         elseif key == "background" then
-           return _navi:get_vheader_background()
+            return _navi:get_vheader_background()
 
         elseif key == "stylesheet" then
-           return _navi:get_vheader_stylesheet()
+            return _navi:get_vheader_stylesheet()
 
         end
     end,
@@ -436,6 +436,95 @@ end
 M.ui.statusbar.add_module = function (module)
     return _navi:add_statusbar_module(module)
 end
+
+M.ui.statusbar.warning = {}
+M.ui.statusbar.error = {}
+M.ui.statusbar.info = {}
+
+setmetatable(M.ui.statusbar.warning, {
+    __index = function (_, key)
+        if key == "foreground" then
+            return _navi:get_statusbar_message_warn_fg()
+        end
+    end,
+    __newindex = function(_, key, value)
+        if key == "foreground" then
+            _navi:set_statusbar_message_warn_fg(value)
+        end
+    end
+})
+
+setmetatable(M.ui.statusbar.error, {
+    __index = function (_, key)
+        if key == "foreground" then
+            return _navi:get_statusbar_message_error_fg()
+        end
+    end,
+    __newindex = function(_, key, value)
+        if key == "foreground" then
+            _navi:set_statusbar_message_error_fg(value)
+        end
+    end
+})
+
+setmetatable(M.ui.statusbar.info, {
+    __index = function (_, key)
+        if key == "foreground" then
+            return _navi:get_statusbar_message_info_fg()
+        end
+    end,
+    __newindex = function(_, key, value)
+        if key == "foreground" then
+            _navi:set_statusbar_message_info_fg(value)
+        end
+    end
+})
+
+setmetatable(M.ui.statusbar, {
+
+    __index = function (_, key)
+
+        if key == "font" then
+            return _navi:get_statusbar_font()
+
+        elseif key == "font_size" then
+            return _navi:get_statusbar_font_size()
+
+        elseif key == "background" then
+            return _navi:get_statusbar_background()
+
+        elseif key == "visible" then
+            return _navi:get_statusbar_visible()
+
+        elseif key == "modules" then
+            return _navi:get_statusbar_modules()
+
+        end
+    end,
+    __newindex = function (_, key, value)
+
+        if key == "font" then
+            _navi:set_statusbar_font(value)
+
+        elseif key == "font_size" then
+            _navi:set_statusbar_font_size(value)
+
+        elseif key == "background" then
+            _navi:set_statusbar_background(value)
+
+        elseif key == "visible" then
+            _navi:set_statusbar_visible(value)
+
+        elseif key == "modules" then
+            if type(value) == "table" then
+                _navi:set_statusbar_modules(value)
+            end
+
+        end
+
+    end
+})
+
 
 M.ui.toolbar = {}
 
@@ -1107,51 +1196,6 @@ setmetatable(M.ui.menubar, {
     end
 })
 
-setmetatable(M.ui.statusbar, {
-
-    __index = function (_, key)
-
-        if key == "font" then
-            return _navi:get_statusbar_font()
-
-        elseif key == "font_size" then
-            return _navi:get_statusbar_font_size()
-
-        elseif key == "background" then
-            return _navi:get_statusbar_background()
-
-        elseif key == "visible" then
-            return _navi:get_statusbar_visible()
-
-        elseif key == "modules" then
-            return _navi:get_statusbar_modules()
-
-        end
-    end,
-    __newindex = function (_, key, value)
-
-        if key == "font" then
-            _navi:set_statusbar_font(value)
-
-        elseif key == "font_size" then
-            _navi:set_statusbar_font_size(value)
-
-        elseif key == "background" then
-            _navi:set_statusbar_background(value)
-
-        elseif key == "visible" then
-            _navi:set_statusbar_visible(value)
-
-        elseif key == "modules" then
-            if type(value) == "table" then
-                _navi:set_statusbar_modules(value)
-            end
-
-        end
-
-    end
-})
-
 M.ui.cursor = {}
 
 ---@class CursorOptions
@@ -1220,6 +1264,45 @@ setmetatable(M.ui.cursor, {
     end
 
 })
+
+M.ui.completion = {}
+
+setmetatable(M.ui.completion, {
+    __index = function (_, key)
+        if key == "grid" then
+            return _navi:get_completion_grid()
+
+        elseif key == "line_numbers" then
+            return _navi:get_completion_line_numbers()
+
+        elseif key == "font" then
+            return _navi:get_completion_font()
+
+        elseif key == "font_size" then
+            return _navi:get_completion_font_size()
+
+        elseif key == "match_count" then
+            return _navi:get_completion_count_visible()
+        end
+    end,
+
+    __newindex = function (_, key, value)
+        if key == "grid" then
+            _navi:set_completion_grid(value)
+
+        elseif key == "line_numbers" then
+            _navi:set_completion_line_numbers(value)
+
+        elseif key == "font" then
+            _navi:set_completion_font(value)
+
+        elseif key == "font_size" then
+            _navi:set_completion_font_size(value)
+
+        elseif key == "match_count" then
+            _navi:set_completion_count_visible(value)
+        end
+    end})
 
 ---Splits a string by a delimiter and returns table of strings
 ---split by the delimiter
