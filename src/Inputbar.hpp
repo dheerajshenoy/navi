@@ -48,6 +48,11 @@ public:
       return m_foreground_color.toStdString();
     }
 
+    inline void set_match_count(const int &count, const int &total) noexcept {
+        m_match_count_label->setText(QString("%1/%2").arg(QString::number(count))
+                                     .arg(QString::number(total)));
+    }
+
 signals:
     void lineEditTextChanged(const QString &text);
 
@@ -62,4 +67,5 @@ private:
     CompletionPopup *m_completion = new CompletionPopup(m_line_edit);
     QStringList m_lua_function_stringlist = {};
     QString m_background_color, m_foreground_color;
+    QLabel *m_match_count_label = new QLabel();
 };
