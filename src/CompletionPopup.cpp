@@ -1,4 +1,5 @@
 #include "CompletionPopup.hpp"
+#include <qobjectdefs.h>
 
 CompletionPopup::CompletionPopup(LineEdit* parent)
     : QFrame(parent), m_lineEdit(parent),
@@ -10,6 +11,7 @@ CompletionPopup::CompletionPopup(LineEdit* parent)
     setFocusPolicy(Qt::NoFocus);
 
     m_listView = new QListView();
+    m_listView->setEditTriggers(QListView::EditTrigger::NoEditTriggers);
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_listView);
     setLayout(layout);
@@ -17,8 +19,8 @@ CompletionPopup::CompletionPopup(LineEdit* parent)
     connect(m_listView, &QListView::clicked, this,
             &CompletionPopup::selectItem);
 
-    m_listView->setModel(m_filter_model);
     m_filter_model->setSourceModel(m_model);
+    m_listView->setModel(m_filter_model);
     m_lineEdit->installEventFilter(this);
     m_listView->setItemDelegate(m_completion_delegate);
 
@@ -31,9 +33,11 @@ void CompletionPopup::updateCompletions(const QString &text) noexcept {
         m_filter_model->setFilterFixedString(text);
     }
 
-    if (m_filter_model->rowCount() == 0) {
+    auto count = m_filter_model->rowCount();
+    if (count == 0) {
         hide();
     } else {
+        emit matchCountSignal(count, m_total_completions_count);
         showPopup();
     }
 }
@@ -98,12 +102,16 @@ bool CompletionPopup::eventFilter(QObject* obj, QEvent* event) {
 }
 
 void CompletionPopup::selectItem(const QModelIndex &index) noexcept {
+
     if (!index.isValid())
         return;
 
-    QModelIndex sourceIndex = m_filter_model->mapToSource(index);
+    QModelIndex sourceIndex = m_filter_model->mapFromSource(index);
 
-    QString itemText = m_model->data(sourceIndex).toString();
+    if (!sourceIndex.isValid())
+        return;
+
+    QString itemText = m_filter_model->data(sourceIndex).toString();
     QString currentText = m_lineEdit->text();
     int lastSpace = currentText.lastIndexOf(' ');
     if (lastSpace == -1) {
@@ -118,8 +126,6 @@ void CompletionPopup::selectItem(const QModelIndex &index) noexcept {
 void CompletionPopup::setCompletions(const QStringList &completions) noexcept {
     m_model->setStringList(completions);
     m_filter_model->invalidate();
+    m_total_completions_count = completions.size();
 
-    if (m_filter_model->rowCount() > 0) {
-        m_listView->setCurrentIndex(m_filter_model->index(0, 0));
-    }
 }
