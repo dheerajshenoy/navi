@@ -39,6 +39,10 @@ class CompletionPopup : public QFrame {
         this->setFont(font);
     }
 
+    inline std::string get_font_family() noexcept {
+        return this->font().family().toStdString();
+    }
+
     inline void setGrid(const bool &state) noexcept {
         m_completion_delegate->setGrid(state);
     }
@@ -49,6 +53,10 @@ class CompletionPopup : public QFrame {
         QFont font = this->font();
         font.setPixelSize(size);
         this->setFont(font);
+    }
+
+    inline int get_font_size() noexcept {
+        return this->font().pixelSize();
     }
 
     void showPopup() noexcept;
@@ -71,10 +79,19 @@ class CompletionPopup : public QFrame {
 
     inline bool lineNumbers() noexcept { return m_completion_delegate->lineNumberShown(); }
 
+    inline void setMatchCount(const bool &state) noexcept {
+        m_match_count_visible = state;
+    }
+
+    inline bool matchCount() noexcept { return m_match_count_visible; }
+
     void updatePopupGeometry() noexcept;
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
+
+signals:
+    void matchCountSignal(int count, int total);
 
 private:
     void selectItem(const QModelIndex &index) noexcept;
@@ -84,4 +101,6 @@ private:
     QStringListModel *m_model = nullptr;
     CompletionFilterModel *m_filter_model;
     CompletionDelegate *m_completion_delegate;
+    bool m_match_count_visible = false;
+    int m_total_completions_count = -1;
 };
