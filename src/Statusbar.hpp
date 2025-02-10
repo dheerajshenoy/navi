@@ -22,6 +22,7 @@ public:
 
     void Message(const QString &message, MessageType type = MessageType::INFO,
                  int ms = 2) noexcept;
+
     void SetFile(const QString &filename) noexcept;
     void UpdateFile() noexcept;
     void SetFilterMode(const bool state) noexcept;
@@ -97,6 +98,30 @@ public:
         return m_visual_line_mode_label_fg.name();
     }
 
+    inline void set_warning_fg(const std::string &fg) noexcept {
+        m_message_warning_fg = QColor(QString::fromStdString(fg));
+    }
+
+    inline std::string get_warning_fg() noexcept {
+        return m_message_warning_fg.name().toStdString();
+    }
+
+    inline void set_info_fg(const std::string &fg) noexcept {
+        m_message_info_fg = QColor(QString::fromStdString(fg));
+    }
+
+    inline std::string get_info_fg() noexcept {
+        return m_message_info_fg.name().toStdString();
+    }
+
+    inline void set_error_fg(const std::string &fg) noexcept {
+        m_message_error_fg = QColor(QString::fromStdString(fg));
+    }
+
+    inline std::string get_error_fg() noexcept {
+        return m_message_error_fg.name().toStdString();
+    }
+
 signals:
     void visibilityChanged(const bool &state);
     void logMessage(const QString &message, const MessageType &type);
@@ -124,8 +149,10 @@ private:
     QString m_visual_line_mode_label_text;
     bool m_visual_line_mode_italic = false, m_visual_line_mode_bold = false;
     QString m_macro_mode_label_text;
-    QColor m_macro_mode_label_fg;
-    QColor m_macro_mode_label_bg;
+    QColor m_macro_mode_label_fg, m_macro_mode_label_bg;
+    QColor m_message_info_fg = Qt::white,
+    m_message_warning_fg = Qt::yellow,
+    m_message_error_fg = Qt::red;
     QString m_macro_mode_label_padding_string;
     QLocale m_locale;
     QString m_file_path;

@@ -31,15 +31,15 @@ void Statusbar::Message(const QString &message, const MessageType type,
 
     switch (type) {
     case MessageType::INFO:
-        m_message_palette.setColor(m_message_label->foregroundRole(), Qt::white);
+        m_message_palette.setColor(m_message_label->foregroundRole(), m_message_info_fg);
         break;
 
     case MessageType::WARNING:
-        m_message_palette.setColor(m_message_label->foregroundRole(), Qt::yellow);
+        m_message_palette.setColor(m_message_label->foregroundRole(), m_message_warning_fg);
         break;
 
     case MessageType::ERROR:
-        m_message_palette.setColor(m_message_label->foregroundRole(), Qt::red);
+        m_message_palette.setColor(m_message_label->foregroundRole(), m_message_error_fg);
         break;
     }
 
