@@ -7,6 +7,9 @@ v1.3.3 (8 February 2025)
 ------------------------
 
 + Added completion support for lua functions
++ Added general command completions
++ Added completion match count indicator
++ Added completion lua API
 
 v1.3.2 (8 February 2025)
 ------------------------
