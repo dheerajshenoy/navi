@@ -8,7 +8,13 @@ Inputbar::Inputbar(QWidget *parent) : QWidget(parent) {
     m_layout->setContentsMargins(0, 0, 0, 0);
 
     m_layout->addWidget(m_prompt_label);
+    m_layout->addWidget(m_match_count_label);
     m_layout->addWidget(m_line_edit);
+
+    connect(m_completion, &CompletionPopup::matchCountSignal, this, [&](int count,
+                                                                        int total) noexcept {
+            set_match_count(count, total);
+            });
 
     this->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
