@@ -93,6 +93,20 @@ void init_lua_api(sol::state &lua) noexcept {
                            "get_inputbar_props", &Navi::get_inputbar_props,
                            "get_inputbar_visible", &Navi::get_inputbar_visible,
 
+                           // Completion Popup
+                           "set_completion_font", &Navi::set_completion_font,
+                           "get_completion_font", &Navi::get_completion_font,
+                           "set_completion_font_size", &Navi::set_completion_font_size,
+                           "get_completion_font_size", &Navi::get_completion_font_size,
+                           "set_completion_grid", &Navi::set_completion_grid,
+                           "get_completion_grid", &Navi::get_completion_grid,
+                           "set_completion_line_numbers", &Navi::set_completion_line_numbers,
+                           "get_completion_line_numbers", &Navi::get_completion_line_numbers,
+                           "set_completion_count_visible", &Navi::set_completion_count_visible,
+                           "get_completion_count_visible", &Navi::get_completion_count_visible,
+                           "set_completion_props", &Navi::set_completion_props,
+                           "get_completion_props", &Navi::get_completion_props,
+
                            // Statusbar
                            "create_statusbar_module", &Navi::create_statusbar_module,
                            "toggle_statusbar", sol::resolve<void()>(&Navi::ToggleStatusBar),
@@ -100,6 +114,12 @@ void init_lua_api(sol::state &lua) noexcept {
                            "set_statusbar_module_text", &Navi::set_statusbar_module_text,
                            "set_statusbar_visible", &Navi::set_statusbar_visible,
                            "get_statusbar_visible", &Navi::get_statusbar_visible,
+                           "set_statusbar_message_warn_fg", &Navi::set_statusbar_message_warn_fg,
+                           "get_statusbar_message_warn_fg", &Navi::get_statusbar_message_warn_fg,
+                           "set_statusbar_message_info_fg", &Navi::set_statusbar_message_info_fg,
+                           "get_statusbar_message_info_fg", &Navi::get_statusbar_message_info_fg,
+                           "set_statusbar_message_error_fg", &Navi::set_statusbar_message_error_fg,
+                           "get_statusbar_message_error_fg", &Navi::get_statusbar_message_error_fg,
 
                            // Pathbar
                            "toggle_pathbar", sol::resolve<void()>(&Navi::ToggleStatusBar),
