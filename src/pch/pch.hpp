@@ -52,3 +52,4 @@
 #include <kddockwidgets/qtwidgets/DockWidget.h>
 #include <kddockwidgets/qtwidgets/MainWindow.h>
 #include <stack>
+#include <vector>

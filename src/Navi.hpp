@@ -32,10 +32,11 @@
 #include <QStringListModel>
 #include "CustomViewFactory.hpp"
 
-#define ENABLE_LLAMA 1
+
+#define ENABLE_LLAMA
 
 #ifdef ENABLE_LLAMA
-#include "../external/llama.cpp/include/llama.h"
+#include "../external/llama.cpp/include/llama-cpp.h"
 #endif
 
 class Menubar : public QMenuBar {

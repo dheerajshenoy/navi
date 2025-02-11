@@ -19,13 +19,12 @@ find_program(SCCACHE sccache)
 find_program(CCACHE ccache)
 
 if (CCACHE)
-    message(STATUS "Found cache in ${CCACHE}")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CACHE}")
+  message(STATUS "Found cache in ${CCACHE}")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CACHE}")
 elseif(SCCACHE)
-    message(STATUS "Found sccache in ${SCCACHE}")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE}")
+  message(STATUS "Found sccache in ${SCCACHE}")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE}")
 endif()
-
 
 set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Install path prefix" FORCE)
 
@@ -38,21 +37,20 @@ set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose Makefile")
 # Export compile_commands.json for IDE integration
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands")
 
-
 # -O2
 # Set flags for compilers
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Building in Debug Mode")
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -Og -flto -fuse-ld=lld -fsanitize=address" CACHE STRING "C++ flags")  # Add more flags as necessary
+  message(STATUS "Building in Debug Mode")
+  set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -Og -flto -fuse-ld=lld -fsanitize=address" CACHE STRING "C++ flags")  # Add more flags as necessary
 
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Building in Release Mode")
-    set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
+  message(STATUS "Building in Release Mode")
+  set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
 else()
-    message(STATUS "Building in Release Mode since no build mode was specified")
-    message(STATUS "Building in Release Mode")
-    set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
+  message(STATUS "Building in Release Mode since no build mode was specified")
+  message(STATUS "Building in Release Mode")
+  set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
 endif()
 
 # tell CMake to run the Qt tools moc, rcc, and uic automatically
@@ -84,8 +82,8 @@ set(CMAKE_INSTALL_PREFIX "/usr/share/include" CACHE STRING "KDDockWidgets instal
 add_subdirectory(external/KDDockWidgets)
 
 if (ENABLE_LLAMA)
-    add_subdirectory(external/llama.cpp)
-    add_definitions(-DENABLE_LLAMA)
+  add_subdirectory(external/llama.cpp)
+  add_definitions(-DENABLE_LLAMA)
 endif()
 
 qt_standard_project_setup()
@@ -146,16 +144,15 @@ qt_add_executable(${PROJECT_NAME}
   src/NotificationManager.hpp
   src/CompletionPopup.hpp
   src/LineEdit.hpp
-  src/CustomViewFactory.hpp
   src/CompletionDelegate.hpp
 )
 
 # tell cmake to link the executable to the Qt 6 core and test modules
 
 if (ENABLE_LLAMA)
-    target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets llama)
+  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets llama)
 else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
+  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
 endif()
 
 set(RESOURCE_FILES

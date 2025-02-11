@@ -80,7 +80,7 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_hook_manager, &HookManager::triggerError, this,
             [&](const QString &error) {
-            m_statusbar->Message(error, MessageType::ERROR);
+                m_statusbar->Message(error, MessageType::ERROR);
             });
 
     connect(m_thumbnail_cache_future_watcher, &QFutureWatcher<void>::finished,
@@ -97,25 +97,25 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_drives_widget, &DriveWidget::driveLoadRequested, this,
             [&](const QString &mountPoint) {
-            m_file_panel->setCurrentDir(mountPoint);
+                m_file_panel->setCurrentDir(mountPoint);
             });
 
     connect(m_drives_widget, &DriveWidget::driveMountRequested, this,
             [&](const QString &driveName) {
-            QString confirm = m_inputbar->getInput(
-            QString("Do you want to mount %1 ? (y, N)").arg(driveName));
-            if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-            return;
-            MountDrive(driveName);
+                QString confirm = m_inputbar->getInput(
+                                                       QString("Do you want to mount %1 ? (y, N)").arg(driveName));
+                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+                    return;
+                MountDrive(driveName);
             });
 
     connect(m_drives_widget, &DriveWidget::driveUnmountRequested, this,
             [&](const QString &driveName) {
-            QString confirm = m_inputbar->getInput(
-            QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
-            if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
-            return;
-            UnmountDrive(driveName);
+                QString confirm = m_inputbar->getInput(
+                                                       QString("Do you want to unmount %1 ? (y, N)").arg(driveName));
+                if (confirm == "n" || confirm.isNull() || confirm.isEmpty())
+                    return;
+                UnmountDrive(driveName);
             });
 
     connect(m_file_panel, &FilePanel::currentItemChanged, m_preview_panel,
@@ -126,27 +126,27 @@ void Navi::initSignalsSlots() noexcept {
 
     connect(m_file_panel, &FilePanel::afterDirChange, this,
             [&](const QString &path) {
-            m_file_path_widget->setCurrentDir(path);
-            m_preview_panel->clearPreview();
-            m_hook_manager->triggerHook("directory_changed");
-            m_preview_panel->clearImageCache();
-            // TODO: Fix thumbnail caching
-            cacheThumbnails();
+                m_file_path_widget->setCurrentDir(path);
+                m_preview_panel->clearPreview();
+                m_hook_manager->triggerHook("directory_changed");
+                m_preview_panel->clearImageCache();
+                // TODO: Fix thumbnail caching
+                cacheThumbnails();
             });
 
     connect(m_file_path_widget, &FilePathWidget::directoryChangeRequested,
             m_file_panel, [&](const QString &dirName) {
-            m_file_panel->setCurrentDir(dirName, true);
+                m_file_panel->setCurrentDir(dirName, true);
             });
 
     connect(m_file_panel, &FilePanel::fileOperationDone, this,
             [&](const bool &state, const QString &reason) {
-            if (state)
-            m_statusbar->Message("Operation Successful");
-            else
-            m_statusbar->Message(
-            QString("Error during file operation! (%1)").arg(reason),
-            MessageType::ERROR, 5);
+                if (state)
+                    m_statusbar->Message("Operation Successful");
+                else
+                    m_statusbar->Message(
+                                         QString("Error during file operation! (%1)").arg(reason),
+                                         MessageType::ERROR, 5);
             });
 
     connect(m_statusbar, &Statusbar::logMessage, this, &Navi::LogMessage);
@@ -182,7 +182,7 @@ void Navi::setupCommandMap() noexcept {
 #ifdef ENABLE_LLAMA
     commandMap["llama"] = [this](const QStringList &args) {
         ProcessLlamaCommand(args);
-    }
+    };
 #endif
 
     commandMap["update"] = [this](const QStringList &args) {
@@ -371,7 +371,7 @@ void Navi::setupCommandMap() noexcept {
       commandMap["reload-config"] = [this](const QStringList &args) {
       initConfiguration();
       };
-     */
+    */
 
     commandMap["sort-name"] = [this](const QStringList &args) {
         Q_UNUSED(args);
@@ -720,7 +720,7 @@ void Navi::EditBookmarkName(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
     } else
-    bookmarkName = args.at(0);
+        bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -756,7 +756,7 @@ void Navi::EditBookmarkFile(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
     } else
-    bookmarkName = args.at(0);
+        bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -796,7 +796,7 @@ void Navi::AddBookmark(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Add bookmark) Bookmark name");
     } else
-    bookmarkName = args.at(0);
+        bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -812,10 +812,10 @@ void Navi::AddBookmark(const QStringList &args) noexcept {
     }
 
     if (m_bookmark_manager->addBookmark(
-        bookmarkName, m_file_panel->getCurrentDir(), highlight)) {
+                                        bookmarkName, m_file_panel->getCurrentDir(), highlight)) {
         m_statusbar->Message("Added bookmark");
     } else
-    m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
+        m_statusbar->Message("Error adding bookmark!", MessageType::ERROR, 5);
 }
 
 void Navi::RemoveBookmark(const QStringList &args) noexcept {
@@ -823,7 +823,7 @@ void Navi::RemoveBookmark(const QStringList &args) noexcept {
     if (args.isEmpty()) {
         bookmarkName = m_inputbar->getInput("(Remove bookmark) Bookmark name");
     } else
-    bookmarkName = args.at(0);
+        bookmarkName = args.at(0);
 
     if (bookmarkName.isEmpty()) {
         m_statusbar->Message("Bookmark name cannot be empty");
@@ -833,9 +833,9 @@ void Navi::RemoveBookmark(const QStringList &args) noexcept {
     if (m_bookmark_manager->removeBookmark(bookmarkName)) {
         m_statusbar->Message(QString("Bookmark %1 removed!").arg(bookmarkName));
     } else
-    m_statusbar->Message(
-        QString("Error removing bookmark %1").arg(bookmarkName),
-        MessageType::ERROR, 5);
+        m_statusbar->Message(
+                             QString("Error removing bookmark %1").arg(bookmarkName),
+                             MessageType::ERROR, 5);
 }
 
 void Navi::GoBookmark(const QString &bookmarkName) noexcept {
@@ -860,7 +860,7 @@ void Navi::GoBookmark(const QString &bookmarkName) noexcept {
             m_file_panel->setCurrentDir(parentDirPath);
             m_file_panel->HighlightItemWithBaseName(f.fileName());
         } else
-        m_file_panel->setCurrentDir(bookmarkPath, true);
+            m_file_panel->setCurrentDir(bookmarkPath, true);
     }
 }
 
@@ -957,9 +957,9 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
 
         } else {
             m_statusbar->Message(
-                QString("Command %1 is not a valid interactive command")
-                .arg(subcommand),
-                MessageType::ERROR);
+                                 QString("Command %1 is not a valid interactive command")
+                                 .arg(subcommand),
+                                 MessageType::ERROR);
         }
     }
 }
@@ -1064,11 +1064,11 @@ void Navi::initKeybinds() noexcept {
     Keybind kb_mark = {"Space", "toggle-mark-dwim", "Mark item(s)"};
     Keybind kb_refresh = {"F5", "refresh", "Refresh current directory"};
     Keybind kb_inverse_mark = {"Shift+Space", "mark-inverse",
-        "Mark inverse item(s)"};
+                               "Mark inverse item(s)"};
     Keybind kb_visual_mode = {"Shift+v", "visual-select",
-        "Visual selection mode"};
+                              "Visual selection mode"};
     Keybind kb_extended_command = {":", "execute-extended-command",
-        "Execute extended command"};
+                                   "Execute extended command"};
     Keybind kb_copy = {"y,y", "copy-dwim", "Copy item(s)"};
     Keybind kb_paste = {"p", "paste", "Paste item(s)"};
     Keybind kb_unmark_all = {"Shift+u", "unmark-local", "Unmark all item(s)"};
@@ -1077,12 +1077,12 @@ void Navi::initKeybinds() noexcept {
     Keybind kb_search_prev = {"Shift+n", "search-prev", "Search previous"};
     Keybind kb_toggle_menubar = {"Ctrl+m", "menu-bar", "Toggle menu bar"};
     Keybind kb_toggle_preview_pane = {"Ctrl+p", "preview-pane",
-        "Toggle preview pane"};
+                                      "Toggle preview pane"};
     Keybind kb_focus_path_bar = {"Ctrl+l", "focus-path", "Focus path bar"};
     Keybind kb_trash = {"Shift+t", "trash-dwim", "Trash item(s)"};
     Keybind kb_toggle_hidden_files = {".", "hidden-files", "Toggle hidden items"};
     Keybind kb_record_macro = {"q", "macro-record",
-        "Record or Finish recording macro"};
+                               "Record or Finish recording macro"};
     Keybind kb_copy_path = {"Shift+c", "copy-path", "Copy path(s)"};
     Keybind kb_scroll_up_page = {"Ctrl+u", "scroll-up", "Scroll up a page"};
     Keybind kb_scroll_down_page = {"Ctrl+d", "scroll-down", "Scroll down a page"};
@@ -1245,8 +1245,8 @@ void Navi::initMenubar() noexcept {
     m_layoutmenu__delete_layout = new QAction("Delete Layout");
 
     m_layoutmenu->addActions({m_layoutmenu__load_layout,
-        m_layoutmenu__save_layout,
-        m_layoutmenu__delete_layout});
+            m_layoutmenu__save_layout,
+            m_layoutmenu__delete_layout});
 
     m_bookmarks_menu = new QMenu("&Bookmarks");
 
@@ -1349,8 +1349,8 @@ void Navi::initMenubar() noexcept {
     m_go_menu__connect_to_server = new QAction("Connect to Server");
 
     m_go_menu->addActions({m_go_menu__previous_folder, m_go_menu__next_folder,
-        m_go_menu__parent_folder, m_go_menu__home_folder,
-        m_go_menu__connect_to_server});
+            m_go_menu__parent_folder, m_go_menu__home_folder,
+            m_go_menu__connect_to_server});
 
     connect(m_go_menu__previous_folder, &QAction::triggered, m_file_panel,
             &FilePanel::PreviousDirectory);
@@ -1399,11 +1399,11 @@ void Navi::initMenubar() noexcept {
 
     connect(m_viewmenu__filter, &QAction::triggered, this,
             [&](const bool &state) {
-            if (state) {
-            Filter();
-            } else {
-            ResetFilter();
-            }
+                if (state) {
+                    Filter();
+                } else {
+                    ResetFilter();
+                }
             });
 
     connect(m_viewmenu__tasks_widget, &QAction::triggered, this,
@@ -1548,17 +1548,17 @@ void Navi::LogMessage(const QString &message,
     QString coloredMessage = message;
     switch (type) {
 
-        case MessageType::INFO:
-            coloredMessage = "<font color='white'>" + message + "</font>";
-            break;
+    case MessageType::INFO:
+        coloredMessage = "<font color='white'>" + message + "</font>";
+        break;
 
-        case MessageType::WARNING:
-            coloredMessage = "<font color='yellow'>" + message + "</font>";
-            break;
+    case MessageType::WARNING:
+        coloredMessage = "<font color='yellow'>" + message + "</font>";
+        break;
 
-        case MessageType::ERROR:
-            coloredMessage = "<font color='red'>" + message + "</font>";
-            break;
+    case MessageType::ERROR:
+        coloredMessage = "<font color='red'>" + message + "</font>";
+        break;
     }
     m_log_buffer->AppendText(coloredMessage);
 }
@@ -1694,7 +1694,7 @@ void Navi::readArgumentParser(argparse::ArgumentParser &parser) {
 
     try {
         Set_default_directory(QString::fromStdString(
-            parser.get<std::vector<std::string>>("files").at(0)));
+                                                     parser.get<std::vector<std::string>>("files").at(0)));
     } catch (std::logic_error &e) {
     }
 }
@@ -1770,8 +1770,8 @@ void Navi::MountDrive(const QString &driveName) noexcept {
     // Wait for the process to finish
     if (!process.waitForFinished()) {
         m_statusbar->Message(
-            QString("Failed to mount device: %1").arg(process.errorString()),
-            MessageType::ERROR);
+                             QString("Failed to mount device: %1").arg(process.errorString()),
+                             MessageType::ERROR);
         return;
     }
 
@@ -1781,7 +1781,7 @@ void Navi::MountDrive(const QString &driveName) noexcept {
 
     if (!output.isEmpty()) {
         m_statusbar->Message(
-            QString("Mount Successful (%1)").arg(output.trimmed()));
+                             QString("Mount Successful (%1)").arg(output.trimmed()));
         return;
     }
 
@@ -1849,8 +1849,8 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
     // Wait for the process to finish
     if (!process.waitForFinished()) {
         m_statusbar->Message(
-            QString("Failed to unmount device: %1").arg(process.errorString()),
-            MessageType::ERROR);
+                             QString("Failed to unmount device: %1").arg(process.errorString()),
+                             MessageType::ERROR);
         return;
     }
 
@@ -1860,7 +1860,7 @@ void Navi::UnmountDrive(const QString &driveName) noexcept {
 
     if (!output.isEmpty()) {
         m_statusbar->Message(
-            QString("Unmount Successful (%1)").arg(output.trimmed()));
+                             QString("Unmount Successful (%1)").arg(output.trimmed()));
         m_hook_manager->triggerHook("drive_unmounted");
         return;
     }
@@ -2028,10 +2028,10 @@ std::string Navi::Lua__Input(const std::string &prompt,
                              const std::string &def_value,
                              const std::string &selection) noexcept {
     return m_inputbar
-    ->getInput(QString::fromStdString(prompt),
-               QString::fromStdString(def_value),
-               QString::fromStdString(selection))
-    .toStdString();
+        ->getInput(QString::fromStdString(prompt),
+                   QString::fromStdString(def_value),
+                   QString::fromStdString(selection))
+        .toStdString();
 }
 
 /*void Navi::ExecuteLuaFunction(const QStringList &args) {*/
@@ -2100,7 +2100,7 @@ void Navi::Lua__CreateFolders(const std::vector<std::string> &paths) noexcept {
 
     QStringList folders;
     for (const auto &path : paths)
-    folders << QString::fromStdString(path);
+        folders << QString::fromStdString(path);
 
     m_file_panel->NewFolder(folders);
 }
@@ -2685,8 +2685,8 @@ void Navi::Lua__keymap_set(const std::string &key, const std::string &command,
                            const std::string &desc) noexcept {
 
     Keybind kb{.key = QString::fromStdString(key),
-        .command = QString::fromStdString(command),
-        .desc = QString::fromStdString(desc)};
+               .command = QString::fromStdString(command),
+               .desc = QString::fromStdString(desc)};
 
     m_keybind_list.append(kb);
 
@@ -2700,8 +2700,8 @@ void Navi::Lua__keymap_set_for_function(const std::string &key,
                                         const std::string &desc) noexcept {
 
     Keybind kb{.key = QString::fromStdString(key),
-        .command = "lua function",
-        .desc = QString::fromStdString(desc)};
+               .command = "lua function",
+               .desc = QString::fromStdString(desc)};
 
     m_keybind_list.append(kb);
 
@@ -2716,7 +2716,7 @@ void Navi::Lua__register_user_function(const std::string &name,
             auto lua_args = utils::convertToStdVector(args);
             func(sol::as_args(lua_args));
         } else
-        func();
+            func();
     };
 }
 
@@ -2773,42 +2773,42 @@ void Navi::set_toolbar_layout(const sol::table &layout) noexcept {
 
         switch (tmp) {
 
-            case (sol::type::string): {
-                auto item = layout[i].get<std::string>();
+        case (sol::type::string): {
+            auto item = layout[i].get<std::string>();
 
-                if (item == "previous_directory") {
-                    m_toolbar->addWidget(m_toolbar__prev_btn);
-                    m_toolbar_layout.push_back("previous_dir");
-                }
+            if (item == "previous_directory") {
+                m_toolbar->addWidget(m_toolbar__prev_btn);
+                m_toolbar_layout.push_back("previous_dir");
+            }
 
-                else if (item == "next_directory") {
-                    m_toolbar->addWidget(m_toolbar__next_btn);
-                    m_toolbar_layout.push_back("next_dir");
-                }
+            else if (item == "next_directory") {
+                m_toolbar->addWidget(m_toolbar__next_btn);
+                m_toolbar_layout.push_back("next_dir");
+            }
 
-                else if (item == "parent_directory") {
-                    m_toolbar->addWidget(m_toolbar__parent_btn);
-                    m_toolbar_layout.push_back("parent_dir");
-                }
+            else if (item == "parent_directory") {
+                m_toolbar->addWidget(m_toolbar__parent_btn);
+                m_toolbar_layout.push_back("parent_dir");
+            }
 
-                else if (item == "home") {
-                    m_toolbar->addWidget(m_toolbar__home_btn);
-                    m_toolbar_layout.push_back("home");
-                }
+            else if (item == "home") {
+                m_toolbar->addWidget(m_toolbar__home_btn);
+                m_toolbar_layout.push_back("home");
+            }
 
-                else if (item == "refresh") {
-                    m_toolbar->addWidget(m_toolbar__refresh_btn);
-                    m_toolbar_layout.push_back("refresh");
-                }
-            } break;
+            else if (item == "refresh") {
+                m_toolbar->addWidget(m_toolbar__refresh_btn);
+                m_toolbar_layout.push_back("refresh");
+            }
+        } break;
 
-            case sol::type::userdata: {
-                auto item = layout[i].get<ToolbarItem>();
-                Lua__AddToolbarButton(item);
-            } break;
+        case sol::type::userdata: {
+            auto item = layout[i].get<ToolbarItem>();
+            Lua__AddToolbarButton(item);
+        } break;
 
-            default:
-                qWarning() << "Not handled toolbar type";
+        default:
+            qWarning() << "Not handled toolbar type";
         }
     }
 }
@@ -2817,57 +2817,57 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
     m_menubar_icons = state;
     if (state) {
         m_filemenu__new_window->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::WindowNew));
+                                        QIcon::fromTheme(QIcon::ThemeIcon::WindowNew));
         m_filemenu__create_new_folder->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::FolderNew));
+                                               QIcon::fromTheme(QIcon::ThemeIcon::FolderNew));
         m_filemenu__create_new_file->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew));
+                                             QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew));
         m_filemenu__close_window->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::WindowClose));
+                                          QIcon::fromTheme(QIcon::ThemeIcon::WindowClose));
         m_filemenu__folder_properties->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
+                                               QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
         m_viewmenu__refresh->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::ViewRefresh));
+                                     QIcon::fromTheme(QIcon::ThemeIcon::ViewRefresh));
         m_viewmenu__fullscreen->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::ViewFullscreen));
+                                        QIcon::fromTheme(QIcon::ThemeIcon::ViewFullscreen));
         m_tools_menu__search->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::SystemSearch));
+                                      QIcon::fromTheme(QIcon::ThemeIcon::SystemSearch));
         m_tools_menu__find_files->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::EditFind));
+                                          QIcon::fromTheme(QIcon::ThemeIcon::EditFind));
         m_edit_menu__open->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen));
+                                   QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen));
         m_edit_menu__copy->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCopy));
         m_edit_menu__paste->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditPaste));
         m_edit_menu__delete->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::EditDelete));
+                                     QIcon::fromTheme(QIcon::ThemeIcon::EditDelete));
         m_edit_menu__item_property->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
+                                            QIcon::fromTheme(QIcon::ThemeIcon::DocumentProperties));
         m_edit_menu__cut->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::EditCut));
         m_edit_menu__select_all->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::EditSelectAll));
+                                         QIcon::fromTheme(QIcon::ThemeIcon::EditSelectAll));
         m_viewmenu__sort_ascending->setIcon(
-            QIcon::fromTheme("view-sort-ascending"));
+                                            QIcon::fromTheme("view-sort-ascending"));
         m_viewmenu__sort_descending->setIcon(
-            QIcon::fromTheme("view-sort-descending"));
+                                             QIcon::fromTheme("view-sort-descending"));
         m_edit_menu__trash->setIcon(QIcon::fromTheme("user-trash"));
         m_bookmarks_menu__bookmarks_list_menu->setIcon(
-            QIcon::fromTheme("user-bookmarks"));
+                                                       QIcon::fromTheme("user-bookmarks"));
         m_bookmarks_menu__add->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
+                                       QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
         m_bookmarks_menu__remove->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::ListRemove));
+                                          QIcon::fromTheme(QIcon::ThemeIcon::ListRemove));
         m_go_menu__connect_to_server->setIcon(QIcon::fromTheme("network-server"));
         m_go_menu__home_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoHome));
         m_go_menu__parent_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoUp));
         m_go_menu__previous_folder->setIcon(
-            QIcon::fromTheme(QIcon::ThemeIcon::GoPrevious));
+                                            QIcon::fromTheme(QIcon::ThemeIcon::GoPrevious));
         m_go_menu__next_folder->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
         m_viewmenu__filter->setIcon(QIcon::fromTheme("view-filter"));
         m_edit_menu__rename->setIcon(QIcon(":resources/images/pencil-icon.svg"));
         m_edit_menu__copy_path->setIcon(QIcon(":resources/images/location.svg"));
         m_filemenu__create_new_menu->setIcon(QIcon(":resources/images/plus.svg"));
         m_edit_menu__select_inverse->setIcon(
-            QIcon(":resources/images/reverse.svg"));
+                                             QIcon(":resources/images/reverse.svg"));
         m_viewmenu__sort_menu->setIcon(QIcon(":resources/images/sort.svg"));
         m_viewmenu__messages->setIcon(QIcon(":resources/images/messages.svg"));
         m_viewmenu__messages->setIcon(QIcon(":resources/images/messages.svg"));
@@ -2877,7 +2877,7 @@ void Navi::set_menubar_icons(const bool &state) noexcept {
         m_viewmenu__preview_panel->setIcon(QIcon(":resources/images/preview.svg"));
         m_help_menu__about->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
         m_help_menu__check_for_updates->setIcon(
-            QIcon(":resources/images/update.svg"));
+                                                QIcon(":resources/images/update.svg"));
     } else {
         m_filemenu__new_window->setIconVisibleInMenu(false);
         m_filemenu__create_new_folder->setIconVisibleInMenu(false);
@@ -2965,7 +2965,7 @@ void Navi::set_inputbar_props(const sol::table &table) noexcept {
 
 void Navi::set_header_columns(const sol::table &columns) noexcept {
     QList<FileSystemModel::Column>
-    columnList; // List to store column configuration
+        columnList; // List to store column configuration
     columnList.reserve(columns.size());
     FileSystemModel::Column column;
     bool file_name_type_check = false;
@@ -3036,7 +3036,7 @@ void Navi::set_pathbar_props(const sol::table &table) noexcept {
 
     if (table["font"].valid())
         m_file_path_widget->set_font_family(
-            QString::fromStdString(table["font"].get<std::string>()));
+                                            QString::fromStdString(table["font"].get<std::string>()));
 
     if (table["font_size"].valid())
         m_file_path_widget->set_font_size(table["font_size"].get<int>());
@@ -3177,7 +3177,7 @@ sol::table Navi::get_menubar_props() noexcept {
 void Navi::set_file_panel_props(const sol::table &table) noexcept {
     if (table["font"].valid())
         m_file_panel->set_font_family(
-            QString::fromStdString(table["font"].get<std::string>()));
+                                      QString::fromStdString(table["font"].get<std::string>()));
 
     if (table["font_size"].valid())
         m_file_panel->set_font_size(table["font_size"].get<int>());
@@ -3216,11 +3216,11 @@ void Navi::set_vheader_props(const sol::table &table) noexcept {
 
     if (table["foreground"].valid())
         vheader->set_foreground(
-            QString::fromStdString(table["foreground"].get<std::string>()));
+                                QString::fromStdString(table["foreground"].get<std::string>()));
 
     if (table["background"].valid())
         vheader->set_background(
-            QString::fromStdString(table["background"].get<std::string>()));
+                                QString::fromStdString(table["background"].get<std::string>()));
 }
 
 sol::table Navi::get_vheader_props() noexcept {
@@ -3286,10 +3286,10 @@ void Navi::saveLayout(const std::string &_layoutName) noexcept {
 
             if (savedLayouts.contains(layoutName)) {
                 QMessageBox::warning(
-                    this, "Layout Name Exists",
-                    QString("Layout with the name '%1' already exists. Please try saving "
-                            "the layout with a unique name")
-                    .arg(layoutName));
+                                     this, "Layout Name Exists",
+                                     QString("Layout with the name '%1' already exists. Please try saving "
+                                             "the layout with a unique name")
+                                     .arg(layoutName));
             } else {
                 fine = true;
             }
@@ -3471,10 +3471,10 @@ void Navi::initValidCommandsList() noexcept {
         { "macro-edit" , {}},
         { "macro-save-to-file" , {}},
         { "scroll-down" , {}},
-        { "scroll-up" , {}}
-        #ifdef ENABLE_LLAMA
+        { "scroll-up" , {}},
+#ifdef ENABLE_LLAMA
         { "llama", {}},
-        #endif
+#endif
     };
 }
 
@@ -3706,12 +3706,17 @@ void Navi::set_preview_panel_props(const sol::table &table) noexcept {
 }
 
 
+#define ENABLE_LLAMA
 #ifdef ENABLE_LLAMA
 
 void Navi::ProcessLlamaCommand(const QStringList &args) noexcept {
 
 }
 
+#endif
+
+
+#ifdef ENABLE_LLAMA
 void Navi::load_ai_model(const std::string &modelPath) noexcept {
     llama_model_params model_params = llama_model_default_params();
     m_llama_model = llama_model_load_from_file(modelPath.data(), model_params);
@@ -3721,16 +3726,34 @@ void Navi::load_ai_model(const std::string &modelPath) noexcept {
         return;
     }
 
+
     llama_context_params ctx_params = llama_context_default_params();
     ctx_params.n_ctx = 0;
     ctx_params.no_perf = true;
-    m_llama_ctx = llama_new_context_with_model(m_llama_model, ctx_params);
+    m_llama_ctx = llama_init_from_model(m_llama_model, ctx_params);
 
     if (!m_llama_ctx) {
         m_statusbar->Message("AI: Could not create context", MessageType::ERROR);
         return;
     }
 
+    /*
+    std::vector<llama_token> tokens = llama_tokenize(m_llama_ctx, prompt);
+
+    llama_batch batch = llama_batch_init(tokens.size(), 0, 1);
+
+    // Fill batch with tokens
+    for (size_t i = 0; i < tokens.size(); i++) {
+        batch.token[i] = tokens[i];
+        batch.pos[i] = i;
+    }
+
+    int status = llama_decode(m_llama_ctx, batch);
+
+    if (status != 0) {
+        qError() << "llama_decode failed!\n";
+    }
+    */
 }
 
 #endif
