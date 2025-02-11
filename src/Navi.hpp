@@ -30,10 +30,6 @@
 #include "TasksWidget.hpp"
 #include "UpdateDialog.hpp"
 #include <QStringListModel>
-#include "CustomViewFactory.hpp"
-
-
-#define ENABLE_LLAMA
 
 #ifdef ENABLE_LLAMA
 #include "../external/llama.cpp/include/llama-cpp.h"
