@@ -84,10 +84,6 @@ public:
         m_notification_manager->showMessage(this, type, message, icon);
     }
 
-    #ifdef ENABLE_LLAMA
-    void ProcessLlamaCommand(const QStringList &args) noexcept;
-    #endif
-
     inline void set_completion_font(const std::string &font) noexcept {
         m_inputbar_completion->set_font_family(font);
     }
@@ -1373,6 +1369,7 @@ protected:
     llama_batch *m_llama_batch;
     llama_token *m_llama_token;
 
+    void ProcessLlamaCommand(const QStringList &args) noexcept;
     void load_ai_model(const std::string &modelPath) noexcept;
     #endif
 };

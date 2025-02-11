@@ -3705,8 +3705,6 @@ void Navi::set_preview_panel_props(const sol::table &table) noexcept {
         Set_preview_pane_fraction(table["fraction"].get<float>());
 }
 
-
-#define ENABLE_LLAMA
 #ifdef ENABLE_LLAMA
 
 void Navi::ProcessLlamaCommand(const QStringList &args) noexcept {
