@@ -579,6 +579,11 @@ void FilePanel::GotoFirstItem() noexcept {
 }
 
 void FilePanel::GotoLastItem() noexcept {
+    auto totalFiles = m_model->totalFilesCount();
+    QModelIndex _index = m_model->index(totalFiles - 1, 0);
+    while (m_model->canFetchMore(_index)) {
+        m_model->fetchMore(_index);
+    }
     QModelIndex index =
         m_model->index(m_model->rowCount(m_table_view->rootIndex()) - 1, 0);
     m_table_view->setCurrentIndex(index);
@@ -811,8 +816,6 @@ void FilePanel::BulkRename(const QStringList &filePaths) noexcept {
 
     // Step 3: Open the temporary file in the default text editor
     QProcess editor;
-
-    qDebug() << m_bulk_rename_editor;
 
     editor.startDetached();
     if (m_bulk_rename_with_terminal) {
