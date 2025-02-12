@@ -1563,11 +1563,12 @@ void Navi::LogMessage(const QString &message,
     m_log_buffer->AppendText(coloredMessage);
 }
 
-/*Navi::~Navi() {*/
-/*    if (m_auto_save_bookmarks) {*/
-/*        SaveBookmarkFile();*/
-/*    }*/
-/*}*/
+Navi::~Navi() {
+    commandMap.clear();
+   if (m_auto_save_bookmarks) {
+       SaveBookmarkFile();
+   }
+}
 
 void Navi::chmodHelper() noexcept {
     QString permString = m_inputbar->getInput("Permission Number");
@@ -2060,7 +2061,7 @@ std::string Navi::Lua__Input(const std::string &prompt,
 void Navi::execute_lua_code(const std::string &code) noexcept {
     // TODO: Adding literal ""
     try {
-        (*m_lua).script(code);
+        get_lua_state().script(code);
     } catch (sol::error &e) {
         m_statusbar->Message(QString("Error running lua code: %1")
                              .arg(QString::fromStdString(e.what())),
@@ -3053,7 +3054,7 @@ void Navi::set_pathbar_props(const sol::table &table) noexcept {
 
 sol::table Navi::get_pathbar_props() noexcept {
 
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
 
     table["visible"] = m_file_path_widget->isVisible();
     table["background"] = m_file_path_widget->background();
@@ -3110,7 +3111,7 @@ void Navi::set_symlink_props(const sol::table &table) noexcept {
 }
 
 sol::table Navi::get_symlink_props() noexcept {
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
     table["underline"] = get_symlink_underline();
     table["italic"] = get_symlink_italic();
     table["font"] = get_symlink_font();
@@ -3144,7 +3145,7 @@ void Navi::set_cursor_props(const sol::table &table) noexcept {
 }
 
 sol::table Navi::get_cursor_props() noexcept {
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
     table["underline"] = get_cursor_underline();
     table["italic"] = get_cursor_italic();
     table["font"] = get_cursor_font();
@@ -3168,7 +3169,7 @@ void Navi::set_menubar_props(const sol::table &table) noexcept {
 }
 
 sol::table Navi::get_menubar_props() noexcept {
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
     table["icons"] = m_menubar_icons;
     table["visible"] = m_menubar->isVisible();
     return table;
@@ -3195,7 +3196,7 @@ void Navi::set_file_panel_props(const sol::table &table) noexcept {
 
 sol::table Navi::get_file_panel_props() noexcept {
 
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
     table["font"] = m_file_panel->get_font_family().toStdString();
     table["font_size"] = m_file_panel->get_font_size();
     table["icons"] = m_file_panel->model()->icons_enabled;
@@ -3224,7 +3225,7 @@ void Navi::set_vheader_props(const sol::table &table) noexcept {
 }
 
 sol::table Navi::get_vheader_props() noexcept {
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
 
     auto vheader = m_file_panel->tableView()->vheader();
 
@@ -3547,61 +3548,6 @@ QStringList Navi::getCompletionsForCommand(const QString &command,
     }
 }
 
-/*QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcept {*/
-/*    if (m_lua_apis_fetched) {*/
-/*        return m_lua_apis_list;*/
-/*    }*/
-/**/
-/*    QStringList result;*/
-/*    sol::table root = (*m_lua)[root_name];  // Get the "navi" table*/
-/**/
-/*    if (!root.valid()) {*/
-/*        return result;  // Return empty if table not found*/
-/*    }*/
-/**/
-/*    std::stack<std::pair<sol::table, std::string>> stack;*/
-/*    stack.push({root, root_name});  // Start with "navi"*/
-/**/
-/*    while (!stack.empty()) {*/
-/*        auto [tbl, path] = stack.top();*/
-/*        stack.pop();*/
-/**/
-/*        // Ensure table names are stored*/
-/*        result.append(QString::fromStdString(path));*/
-/**/
-/*        for (const auto& pair : tbl) {*/
-/*            sol::object key = pair.first;*/
-/*            sol::object value = pair.second;*/
-/**/
-/*            if (key.is<std::string>()) {*/
-/*                std::string new_path = path + "." + key.as<std::string>();*/
-/**/
-/*                if (value.is<sol::table>()) {*/
-/*                    result.append(QString::fromStdString(new_path));  // Append table name before processing*/
-/*                    stack.push({value.as<sol::table>(), new_path});  // Push nested tables onto the stack*/
-/*                } else if (value.is<sol::function>()) {*/
-/*                    result.append(QString::fromStdString(new_path));  // Store function paths*/
-/*                }*/
-/*            }*/
-/*        }*/
-/**/
-/*        // Process metatable (__index)*/
-/*        sol::object meta = tbl[sol::metatable_key];*/
-/*        if (meta.valid() && meta.get_type() == sol::type::table) {*/
-/*            sol::table metaTable = meta.as<sol::table>();*/
-/*            sol::object indexFunc = metaTable["__index"];*/
-/**/
-/*            if (indexFunc.valid() && indexFunc.get_type() == sol::type::table) {*/
-/*                stack.push({indexFunc.as<sol::table>(), path});  // Treat metatable values as normal table members*/
-/*            }*/
-/*        }*/
-/*    }*/
-/**/
-/*    m_lua_apis_list = result;*/
-/*    m_lua_apis_fetched = true;*/
-/*    return result;*/
-/*}*/
-
 QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcept {
 
     if (m_lua_apis_fetched) {
@@ -3612,7 +3558,7 @@ QStringList Navi::traverse_table_iterative(const std::string& root_name) noexcep
     std::stack<std::pair<sol::table, QString>> stack;
 
     // Get the root table
-    sol::table root_table = (*m_lua)["navi"];
+    sol::table root_table = get_lua_state()["navi"];
     if (!root_table.valid()) {
         return result; // Return empty list if the root table doesn't exist
     }
@@ -3674,7 +3620,7 @@ void Navi::set_completion_props(const sol::table &table) noexcept {
 }
 
 sol::table Navi::get_completion_props() noexcept {
-    sol::table table = m_lua->create_table();
+    sol::table table = get_lua_state().create_table();
 
     table["font"] = m_inputbar_completion->get_font_family();
     table["font_size"] = m_inputbar_completion->get_font_size();
