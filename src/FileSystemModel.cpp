@@ -72,51 +72,63 @@ int FileSystemModel::findRow(const QFileInfo &fileInfo) const noexcept {
                                  -1); // Returns -1 if path not found
 }
 
-QModelIndex FileSystemModel::index(const QString &path) const noexcept {
-    // Find the QFileInfo for the given path
-    QFileInfo fileInfo(path);
-    if (!fileInfo.exists())
-        return QModelIndex(); // Return an invalid index if the path doesn't exist
+int FileSystemModel::findRow(const QString &path) const noexcept {
+    return m_path_row_hash.value(path, -1); // Returns -1 if path not found
+}
 
-    // Search for the fileInfo in your data structure and get its row (pseudo-code
-    // here)
-    int row = findRow(fileInfo);
+QModelIndex FileSystemModel::index(const QString &path) const noexcept {
+    int row = findRow(path);
     if (row == -1)
         return QModelIndex(); // Return invalid index if not found
 
     // Assuming `fileInfoList` is organized with parent-child relationships
-    return createIndex(row, 0, &fileInfo); // Adjust the row/column as needed
+    return createIndex(row, 0);
 }
 
 void FileSystemModel::loadDirectory(const QString &path) noexcept {
-    beginResetModel();
-    m_fileInfoList.clear();
+  beginResetModel();
+  m_all_file_paths.clear();
+    m_file_paths.clear();
     m_path_row_hash.clear();
+    m_loaded_files_count = 0;
 
-    QDir dir(path);
+    int row = 0;
 
-    if (dir.exists()) {
-        QFileInfoList allFiles =
-            dir.entryInfoList(m_name_filters, m_dir_filters, m_dir_sort_flags);
-        int totalEntries = allFiles.size();
-        m_fileInfoList.reserve(totalEntries);
-        m_path_row_hash.reserve(totalEntries);
+    QDirIterator it_dir(path, m_name_filters, QDir::Dirs | QDir::NoDotAndDotDot,
+                        QDirIterator::NoIteratorFlags);
 
-        for (int i = 0; i < totalEntries; i++) {
-            const QFileInfo &fileInfo = allFiles.at(i);
-            m_fileInfoList.append(fileInfo);
-            m_path_row_hash.insert(fileInfo.absoluteFilePath(), i);
+    QDirIterator it_file(path, m_name_filters,
+                         QDir::Files | QDir::NoDotAndDotDot,
+                         QDirIterator::NoIteratorFlags);
 
-            emit directoryLoadProgress(static_cast<int>((static_cast<float>(i + 1) / totalEntries) * 100));
-        }
+    while (it_dir.hasNext()) {
+        QString filePath = it_dir.next();
+        m_all_file_paths.append(filePath);
+        m_path_row_hash.insert(filePath, row++);
+        // emit directoryLoadProgress(static_cast<int>((static_cast<float>(row / totalEntries) * 100));
     }
 
+    while (it_file.hasNext()) {
+        QString filePath = it_file.next();
+        m_all_file_paths.append(filePath);
+        m_path_row_hash.insert(filePath, row++);
+    }
+
+    m_total_files_count = m_all_file_paths.size();
     endResetModel();
-    emit directoryLoaded(m_fileInfoList.size());
+
+    fetchMore(QModelIndex());
+    emit directoryLoaded(m_total_files_count);
 }
 
+// int FileSystemModel::rowCount(const QModelIndex &parent) const {
+//     return parent.isValid() ? 0 : m_file_paths.size();
+// }
+
 int FileSystemModel::rowCount(const QModelIndex &parent) const {
-    return parent.isValid() ? 0 : m_fileInfoList.size();
+    if (parent.isValid())
+        return 0;
+    return m_loaded_files_count;  // Only return the number of currently loaded files
 }
 
 int FileSystemModel::columnCount(const QModelIndex &parent) const {
@@ -161,10 +173,10 @@ void FileSystemModel::setMarkFontItalic(const bool &state) noexcept {
 }
 
 QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid())
+    if (!index.isValid() || index.row() >= m_loaded_files_count)
         return QVariant();
 
-    const QFileInfo &fileInfo = m_fileInfoList.at(index.row());
+    const QFileInfo fileInfo(m_file_paths.at(index.row()));
     // Custom background color for marked files
     switch (role) {
 
@@ -175,7 +187,7 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
         case Qt::DecorationRole: {
             if (icons_enabled) {
                 if (index.column() == static_cast<int>(ColumnType::FileName)) {
-                    return get_cached_icon(m_fileInfoList.at(index.row()));
+                    return get_cached_icon(fileInfo);
                 }
             }
         } break;
@@ -317,14 +329,14 @@ void FileSystemModel::setFilter(const QDir::Filters &filters) noexcept {
 }
 
 QModelIndex FileSystemModel::index(int row, int col) const noexcept {
-    if (row < 0 || row >= m_fileInfoList.size() || col < 0 ||
+    if (row < 0 || row >= m_file_paths.size() || col < 0 ||
         col >= columnCount()) {
         return QModelIndex(); // Return an invalid index if out of bounds
     }
 
     // Create the index using the row, column, and a pointer to the QFileInfo
     // object for that row
-    return createIndex(row, col, &m_fileInfoList[row]);
+    return createIndex(row, col);
 }
 
 bool FileSystemModel::removeMarkedFile(const QString &path) noexcept {
@@ -366,21 +378,19 @@ void FileSystemModel::removeMarkedFiles() noexcept {
 QModelIndex
 FileSystemModel::getIndexFromString(const QString &path) const noexcept {
     // Iterate through m_fileInfoList to find the file info matching the given
-    // path
-    for (int i = 0; i < m_fileInfoList.size(); ++i) {
-        if (m_fileInfoList.at(i).absoluteFilePath() == path) {
-            return index(i, 0); // Return the index for the matching item
-        }
-    }
-    return QModelIndex(); // Return an invalid index if not found
+    int pos = m_file_paths.indexOf(path);
+    if (pos == -1)
+        return QModelIndex(); // Return an invalid index if not found
+    
+    return createIndex(pos, 0);
 }
 
 QModelIndexList FileSystemModel::getIndexesFromStrings(const QStringList &paths) const noexcept {
 
     QModelIndexList indexList(paths.size());
-    for (int i = 0; i < m_fileInfoList.size(); ++i) {
+    for (int i = 0; i < m_file_paths.size(); ++i) {
         for (int j = 0; j < paths.size(); j++) {
-            QString fileName = m_fileInfoList.at(i).fileName();
+            QString fileName = QFileInfo(m_file_paths.at(i)).fileName();
             if (paths.at(j) == fileName)
                 indexList.push_back(index(j, 0));
         }
@@ -392,18 +402,20 @@ QModelIndexList FileSystemModel::getIndexesFromStrings(const QStringList &paths)
 QModelIndex FileSystemModel::getIndexFromBaseName(const QString &path) const noexcept {
     // Iterate through m_fileInfoList to find the file info matching the given
     // path
-    for (int i = 0; i < m_fileInfoList.size(); ++i) {
-        if (m_fileInfoList.at(i).fileName() == path) {
+    for (int i = 0; i < m_file_paths.size(); ++i) {
+        if (QFileInfo(m_file_paths.at(i)).fileName() == path) {
             return index(i, 0); // Return the index for the matching item
         }
     }
+
+
     return QModelIndex(); // Return an invalid index if not found
 }
 
 int FileSystemModel::getRowFromBaseName(const QString &path) const noexcept {
 
-    for (int i=0; i < m_fileInfoList.size(); ++i)
-        if (m_fileInfoList.at(i).fileName() == path)
+    for (int i=0; i < m_file_paths.size(); ++i)
+        if (QFileInfo(m_file_paths.at(i)).fileName() == path)
             return i;
 
     return -1;
@@ -541,30 +553,6 @@ QModelIndexList FileSystemModel::getMarkedFilesIndexes() noexcept {
     return list;
 }
 
-// void FileSystemModel::sort(int column, Qt::SortOrder order) {
-//   std::sort(m_fileInfoList.begin(), m_fileInfoList.end(),
-//             [column, order](QFileInfo a, QFileInfo b) {
-//               bool result;
-//               switch (column) {
-//               case static_cast<int>(ColumnType::FileName): // Name
-//                 result = a.fileName() < b.fileName();
-//                 break;
-//               case static_cast<int>(ColumnType::FileSize): // Size
-//                 result = a.size() < b.size();
-//                 break;
-//               case static_cast<int>(
-//                   ColumnType::FileModifiedDate): // Modified Date
-//                 result = a.lastModified() < b.lastModified();
-//                 break;
-//               default:
-//                 return false;
-//               }
-//               return order == Qt::AscendingOrder ? result : !result;
-//             });
-
-//   emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
-// }
-
 void FileSystemModel::setColumns(const QList<Column> &cols) noexcept {
     m_column_list.clear();
 
@@ -641,4 +629,28 @@ QStringList FileSystemModel::get_file_paths_from_rows(const QList<int> &rowList)
         stringList.append(getPathFromRow(row));
     }
     return stringList;
+}
+
+
+void FileSystemModel::fetchMore(const QModelIndex &parent) {
+    if (parent.isValid() || m_loaded_files_count >= m_total_files_count)
+        return;
+
+    const int itemsToLoad = 25;  // Load files in batches
+    int itemsToFetch = qMin(itemsToLoad, m_total_files_count - m_loaded_files_count);
+
+    beginInsertRows(QModelIndex(), m_loaded_files_count, m_loaded_files_count + itemsToFetch - 1);
+    for (int i = 0; i < itemsToFetch; ++i) {
+        QString filePath = m_all_file_paths[m_loaded_files_count];
+        m_file_paths.append(filePath);
+        m_path_row_hash.insert(filePath, m_loaded_files_count);
+        ++m_loaded_files_count;
+    }
+    endInsertRows();
+}
+
+bool FileSystemModel::canFetchMore(const QModelIndex &parent) const {
+    if (parent.isValid())
+        return false;
+    return m_loaded_files_count < m_total_files_count;
 }

@@ -37,11 +37,15 @@ class FileSystemModel : public QAbstractTableModel {
     void setSymlinkSeparator(const QString &separator) noexcept;
     inline void set_symlink_visible(const bool &state) noexcept { m_show_symlink = state; }
     inline QFileInfo file_at(const int &i) noexcept {
-        if (m_fileInfoList.empty() || i >= m_fileInfoList.size() || i < 0)
+        if (m_file_paths.empty() || i >= m_file_paths.size() || i < 0)
             return QFileInfo();
 
-        return m_fileInfoList.at(i);
+        return QFileInfo(m_file_paths.at(i));
     }
+
+    void fetchMore(const QModelIndex &parent) override;
+    bool canFetchMore(const QModelIndex &parent) const override;
+
     void setMarkForegroundColor(const QString &color) noexcept;
     void setMarkBackgroundColor(const QString &color) noexcept;
 
@@ -59,6 +63,8 @@ class FileSystemModel : public QAbstractTableModel {
 
     void addDirFilter(const QDir::Filters &) noexcept;
     void removeDirFilter(const QDir::Filters &) noexcept;
+
+    inline int totalFilesCount() const noexcept { return m_total_files_count; }
 
     QSet<QString> m_markedFiles;
     QFileSystemWatcher* getFileSystemWatcher() noexcept { return m_file_system_watcher; }
@@ -133,17 +139,10 @@ class FileSystemModel : public QAbstractTableModel {
     void setSortBy(const QDir::SortFlags &sortBy) noexcept;
 
     QStringList files() const noexcept {
-        QStringList _files;
-        _files.reserve(m_fileInfoList.size());
-        for (const auto &fileInfo : m_fileInfoList) {
-            _files.append(fileInfo.filePath());
-        }
-        return _files;
+        return m_file_paths;
     }
 
     bool icons_enabled = true;
-
-    inline QList<QFileInfo> entry_info_list() { return m_fileInfoList; }
 
     signals:
     void directoryLoaded(const int &rowCount);
@@ -152,22 +151,25 @@ class FileSystemModel : public QAbstractTableModel {
     void dropCopyRequested(const QStringList &sourceFilePath);
     void dropCutRequested(const QStringList &sourceFilePath);
 
-private:
+  private:
+
     QIcon get_cached_icon(const QFileInfo &finfo) const;
     int indexOfFileNameColumn() const noexcept;
     void initDefaults() noexcept;
     int findRow(const QFileInfo &fileInfo) const noexcept;
+    int findRow(const QString &path) const noexcept;
 
-    QList<QFileInfo> m_fileInfoList;
-    QString m_root_path;
+    QStringList m_file_paths;
+    QStringList m_all_file_paths;
+    int m_total_files_count = 0;
+    int m_loaded_files_count = 0;
     QHash<QString, int> m_path_row_hash;
+    QString m_root_path;
 
-    QDir::Filters m_dir_filters = QDir::Filter::NoDotAndDotDot |
-    QDir::Filter::AllEntries;
-
+    QDir::Filters m_dir_filters = QDir::Filter::NoDotAndDotDot | QDir::Filter::AllEntries;
     QDir::SortFlags m_dir_sort_flags = QDir::SortFlag::DirsFirst;
     QLocale m_locale;
-    QStringList m_name_filters = {"*"};
+    QStringList m_name_filters = { QStringLiteral("*") };
     QFileSystemWatcher *m_file_system_watcher = nullptr;
     QFileIconProvider *m_fileIconProvider = new QFileIconProvider();
 
