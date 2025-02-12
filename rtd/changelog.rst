@@ -3,6 +3,13 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.3.4 (12 February 2025)
+========================
+
++ Optimized directory loading for larger directories
++ Lazy loading directory
++ Changed lua state from raw pointer to unique pointer
+
 v1.3.3 (8 February 2025)
 ========================
 
