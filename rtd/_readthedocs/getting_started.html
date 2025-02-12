@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                v1.4.0
+                1.3.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -53,6 +53,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#launching-navi">Launching Navi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-time-usage">First time usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#configuring-navi">Configuring Navi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-configuration-file">Sample configuration file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#directory-structure">Directory Structure</a></li>
@@ -103,7 +105,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#default-keybindings">Default Keybindings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#theming">Theming</a></li>
 </ul>
 </li>
@@ -111,6 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Navi Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working.html">How does navi work ?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="issues.html">Issues</a></li>
 </ul>
 
@@ -140,14 +142,159 @@
              
   <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
-<p>Take control of your files because they deserve more than just ‘open’ and ‘close’.</p>
+<p>Take control of your files using navi, because they deserve more than just <strong>open</strong> and <strong>close</strong>.</p>
+<section id="launching-navi">
+<h2>Launching Navi<a class="headerlink" href="#launching-navi" title="Link to this heading"></a></h2>
+<p>The navi binary is actually called <code class="docutils literal notranslate"><span class="pre">navifm</span></code> [navi name for a package was already taken :( ]. You can execute the execute this command or if you have a run launcher you can find the program <code class="docutils literal notranslate"><span class="pre">NaviFM</span></code> with no icon [still haven’t gotten to work on the icon yet].</p>
+</section>
+<section id="first-time-usage">
+<span id="default-keybindings"></span><h2>First time usage<a class="headerlink" href="#first-time-usage" title="Link to this heading"></a></h2>
+<p>Now that you have navi opened, have a good look at it. You might or might not like the way the default appearance of navi. Remember that you can configure every part (almost) of the UI through lua (covered in the next section).</p>
+<p>If you have loaded navi without a config file, navi loads the default settings. Here are the default keybindings:</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Keybindings</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Command</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>h</p></td>
+<td><p>up-directory</p></td>
+<td><p>Go to the parent directory</p></td>
+</tr>
+<tr class="row-odd"><td><p>j</p></td>
+<td><p>next-item</p></td>
+<td><p>Go to the next item</p></td>
+</tr>
+<tr class="row-even"><td><p>k</p></td>
+<td><p>prev-item</p></td>
+<td><p>Go to the previous item</p></td>
+</tr>
+<tr class="row-odd"><td><p>l</p></td>
+<td><p>select-item</p></td>
+<td><p>Select item</p></td>
+</tr>
+<tr class="row-even"><td><p>f</p></td>
+<td><p>filter</p></td>
+<td><p>Filter item visibility</p></td>
+</tr>
+<tr class="row-odd"><td><p>g,g</p></td>
+<td><p>first-item</p></td>
+<td><p>Go to the first item</p></td>
+</tr>
+<tr class="row-even"><td><p>z,z</p></td>
+<td><p>middle-item</p></td>
+<td><p>Go to middle item</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+g</p></td>
+<td><p>last-item</p></td>
+<td><p>Go to the last item</p></td>
+</tr>
+<tr class="row-even"><td><p>Shift+r</p></td>
+<td><p>rename-dwim</p></td>
+<td><p>Rename item(s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+d</p></td>
+<td><p>delete-dwim</p></td>
+<td><p>Delete item(s)</p></td>
+</tr>
+<tr class="row-even"><td><p>Space</p></td>
+<td><p>toggle-mark-dwim</p></td>
+<td><p>Mark item(s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>F5</p></td>
+<td><p>refresh</p></td>
+<td><p>Refresh current directory</p></td>
+</tr>
+<tr class="row-even"><td><p>Shift+Space</p></td>
+<td><p>mark-inverse</p></td>
+<td><p>Mark inverse item(s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+v</p></td>
+<td><p>visual-select</p></td>
+<td><p>Visual selection mode</p></td>
+</tr>
+<tr class="row-even"><td><p>:</p></td>
+<td><p>execute-extended-command</p></td>
+<td><p>Execute extended command</p></td>
+</tr>
+<tr class="row-odd"><td><p>y,y</p></td>
+<td><p>copy-dwim</p></td>
+<td><p>Copy item(s)</p></td>
+</tr>
+<tr class="row-even"><td><p>p</p></td>
+<td><p>paste</p></td>
+<td><p>Paste item(s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+u</p></td>
+<td><p>unmark-local</p></td>
+<td><p>Unmark all item(s)</p></td>
+</tr>
+<tr class="row-even"><td><p>/</p></td>
+<td><p>search</p></td>
+<td><p>Search (regex)</p></td>
+</tr>
+<tr class="row-odd"><td><p>n</p></td>
+<td><p>search-next</p></td>
+<td><p>Search next</p></td>
+</tr>
+<tr class="row-even"><td><p>Shift+n</p></td>
+<td><p>search-prev</p></td>
+<td><p>Search previous</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+m</p></td>
+<td><p>menu-bar</p></td>
+<td><p>Toggle menu bar</p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+p</p></td>
+<td><p>preview-pane</p></td>
+<td><p>Toggle preview pane</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+l</p></td>
+<td><p>focus-path</p></td>
+<td><p>Focus path bar</p></td>
+</tr>
+<tr class="row-even"><td><p>Shift+t</p></td>
+<td><p>trash-dwim</p></td>
+<td><p>Trash item(s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>.</p></td>
+<td><p>hidden-files</p></td>
+<td><p>Toggle hidden items</p></td>
+</tr>
+<tr class="row-even"><td><p>q</p></td>
+<td><p>macro-record</p></td>
+<td><p>Record or Finish recording macro</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shift+c</p></td>
+<td><p>copy-path</p></td>
+<td><p>Copy path(s)</p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+u</p></td>
+<td><p>scroll-up</p></td>
+<td><p>Scroll up a page</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+d</p></td>
+<td><p>scroll-down</p></td>
+<td><p>Scroll down a page</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="configuring-navi">
 <h2>Configuring Navi<a class="headerlink" href="#configuring-navi" title="Link to this heading"></a></h2>
-<p>Navi is configured using the <a class="reference external" href="https://www.lua.org/start.html">Lua</a> scripting language. Do not worry if you do not know this programming language as it’s very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <em>~/.config/navi/</em> and the file <em>init.lua</em>. If no such file exists, navi loads with the defaults settings with the vim style <a class="reference internal" href="#default-keybindings"><span class="std std-ref">Default Keybindings</span></a> and sane defaults.</p>
+<p>Navi is configured using the <a class="reference external" href="https://www.lua.org/start.html">Lua</a> scripting language. Do not worry if you do not know this programming language as it’s very easy to understand. Once you get used to the syntax and ideology of lua, you can write your own functions and extend navi. Navi checks for the configuration file in the directory <em>~/.config/navi/</em> and the file <em>init.lua</em>. If no such file exists, navi loads with the defaults settings with the vim style <a class="reference internal" href="#default-keybindings"><span class="std std-ref">First time usage</span></a> and sane defaults.</p>
 </section>
 <section id="sample-configuration-file">
 <h2>Sample configuration file<a class="headerlink" href="#sample-configuration-file" title="Link to this heading"></a></h2>
-<p>Check out the sample <a class="reference download internal" download="" href="_downloads/8752fc5bc3ce9569ac688571f93ef6ce/config.lua"><code class="xref download docutils literal notranslate"><span class="pre">config</span> <span class="pre">file</span></code></a>. Copy this file to the <em>~/.config/navi/</em> directory and relaunch navi to see the new settings.</p>
+<p>Check out the sample <a class="reference download internal" download="" href="_downloads/8752fc5bc3ce9569ac688571f93ef6ce/config.lua"><code class="xref download docutils literal notranslate"><span class="pre">config</span> <span class="pre">file</span></code></a>. Copy this file to the <em>~/.config/navifm/</em> directory and relaunch navi to see the new settings.</p>
 </section>
 <section id="directory-structure">
 <h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
@@ -495,86 +642,6 @@
 <p>Delete macro under a macro key (if it exists).</p>
 </section>
 </section>
-</section>
-<section id="default-keybindings">
-<span id="id2"></span><h2>Default Keybindings<a class="headerlink" href="#default-keybindings" title="Link to this heading"></a></h2>
-<p>Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:</p>
-<p><strong>NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file</strong></p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Action</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>h</p></td>
-<td><p>go to parent directory</p></td>
-</tr>
-<tr class="row-odd"><td><p>j</p></td>
-<td><p>go to next item</p></td>
-</tr>
-<tr class="row-even"><td><p>k</p></td>
-<td><p>go to previous item</p></td>
-</tr>
-<tr class="row-odd"><td><p>l</p></td>
-<td><p>select current item</p></td>
-</tr>
-<tr class="row-even"><td><p>gg</p></td>
-<td><p>go to first item</p></td>
-</tr>
-<tr class="row-odd"><td><p>Shift+g</p></td>
-<td><p>go to last item</p></td>
-</tr>
-<tr class="row-even"><td><p>Space</p></td>
-<td><p>toggle marking</p></td>
-</tr>
-<tr class="row-odd"><td><p>Shift+Space</p></td>
-<td><p>toggle inverse marking</p></td>
-</tr>
-<tr class="row-even"><td><p>Ctrl+a</p></td>
-<td><p>mark all items</p></td>
-</tr>
-<tr class="row-odd"><td><p>Shift+r</p></td>
-<td><p>rename dwim</p></td>
-</tr>
-<tr class="row-even"><td><p>Shift+d</p></td>
-<td><p>delete dwim</p></td>
-</tr>
-<tr class="row-odd"><td><p>yy</p></td>
-<td><p>copy dwim</p></td>
-</tr>
-<tr class="row-even"><td><p>p</p></td>
-<td><p>paste</p></td>
-</tr>
-<tr class="row-odd"><td><p>Shift+u</p></td>
-<td><p>unmark all items</p></td>
-</tr>
-<tr class="row-even"><td><p>.</p></td>
-<td><p>toggle dotfiles</p></td>
-</tr>
-<tr class="row-odd"><td><p>/</p></td>
-<td><p>Search</p></td>
-</tr>
-<tr class="row-even"><td><p>n</p></td>
-<td><p>Go to next search match</p></td>
-</tr>
-<tr class="row-odd"><td><p>Shift+n</p></td>
-<td><p>Go to previous search match</p></td>
-</tr>
-<tr class="row-even"><td><p>Ctrl+m</p></td>
-<td><p>toggle menubar</p></td>
-</tr>
-<tr class="row-odd"><td><p>Ctrl+p</p></td>
-<td><p>toggle preview panel</p></td>
-</tr>
-<tr class="row-even"><td><p>Ctrl+l</p></td>
-<td><p>focus path widget</p></td>
-</tr>
-<tr class="row-odd"><td><p>Shift+v</p></td>
-<td><p>toggle visual selection</p></td>
-</tr>
-</tbody>
-</table>
 </section>
 <section id="theming">
 <h2>Theming<a class="headerlink" href="#theming" title="Link to this heading"></a></h2>

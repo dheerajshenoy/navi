@@ -36,12 +36,15 @@ Navi is ideal for users seeking a streamlined file management experience without
     api.rst
     gallery.rst
     changelog.rst
+    working.rst
     issues.rst
 
 Acknowledgement
 ===============
 
-Navi uses the following header-only C++ libraries. Thanks to the authors of the following libraries:
+Navi uses the following C++ libraries. Thanks to the authors of the following libraries:
 
+- `Qt <https://www.qt.io/product/qt6>`_ (for GUI)
 - `ArgParse <https://github.com/p-ranav/argparse>`_ (for parsing command line arguments)
 - `Sol2 <https://github.com/ThePhD/sol2>`_ (for lua integration)
+- `ffmpegthumbnailer <https://github.com/dirkvdb/ffmpegthumbnailer>`_ (for thumbnailiing video files)

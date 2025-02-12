@@ -40,7 +40,7 @@ If you're on Ubuntu/Debian based distribution, you can paste the following `apt`
 
     sudo apt install qt6-base-dev lua5.4 libmagick++-dev libpoppler-dev libpoppler-cpp-dev libpoppler-qt6-dev udisks2 libarchive ffmpegthumbnailer
 
-**NOTE**: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.
+.. note:: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.
 
 After installing these dependencies on your system, clone the reposity and it's submodules using the following command:
 
@@ -62,3 +62,14 @@ you can build navi by using the following command (inside the project’s direct
 If everything went well, you should have navi installed on your system. You can launch navi using the command `navi`.
 
 Next, you can check out :doc:`getting_started` to know more about the configuration options and customizations in navi.
+
+Uninstallation
+~~~~~~~~~~~~~~
+
+If you have installed navi using PKGBUILD then simply run the following command to uninstall navi and it's related files **except for your configuration files**:
+
+``sudo pacman -R navi``
+
+If you have installed navi by building manually then you have to remove the binary and related files manually using the following commands:
+
+``sudo rm -rf /usr/bin/navi && rm -rf /usr/share/navi/ && rm -rf /usr/share/applications/navi.desktop``

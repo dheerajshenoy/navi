@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Issues" href="issues.html" />
+    <link rel="next" title="How does navi work ?" href="working.html" />
     <link rel="prev" title="Gallery" href="gallery.html" />
     <link href="_static/style.css" rel="stylesheet" type="text/css">
 
@@ -39,7 +39,7 @@
             Navi
           </a>
               <div class="version">
-                v1.4.0
+                1.3.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,6 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">Navi Lua API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Navi Changelogs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v1-3-4-12-february-2025">v1.3.4 (12 February 2025)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-3-3-8-february-2025">v1.3.3 (8 February 2025)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-3-2-8-february-2025">v1.3.2 (8 February 2025)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-3-1-6-february-2025">v1.3.1 (6 February 2025)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-3-0-3-february-2025">v1.3.0 (3 February 2025)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-2-9-1-february-2025">v1.2.9 (1 February 2025)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-2-8-29-january-2024">v1.2.8 (29 January 2024)</a></li>
@@ -72,6 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#v1-0-october-2024">v1.0 (October 2024)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="working.html">How does navi work ?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="issues.html">Issues</a></li>
 </ul>
 
@@ -102,6 +107,37 @@
   <section id="navi-changelogs">
 <h1>Navi Changelogs<a class="headerlink" href="#navi-changelogs" title="Link to this heading"></a></h1>
 <p>The changelogs for Navi along with their version is mentioned in the reverse chronological order below:</p>
+<section id="v1-3-4-12-february-2025">
+<h2>v1.3.4 (12 February 2025)<a class="headerlink" href="#v1-3-4-12-february-2025" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Optimized directory loading for larger directories</p></li>
+<li><p>Lazy loading directory</p></li>
+<li><p>Changed lua state from raw pointer to unique pointer</p></li>
+</ul>
+</section>
+<section id="v1-3-3-8-february-2025">
+<h2>v1.3.3 (8 February 2025)<a class="headerlink" href="#v1-3-3-8-february-2025" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added completion support for lua functions</p></li>
+<li><p>Added general command completions</p></li>
+<li><p>Added completion match count indicator</p></li>
+<li><p>Added completion lua API</p></li>
+</ul>
+</section>
+<section id="v1-3-2-8-february-2025">
+<h2>v1.3.2 (8 February 2025)<a class="headerlink" href="#v1-3-2-8-february-2025" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Changed navi instantiation from lua</p></li>
+</ul>
+</section>
+<section id="v1-3-1-6-february-2025">
+<h2>v1.3.1 (6 February 2025)<a class="headerlink" href="#v1-3-1-6-february-2025" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Changed project name from <strong>navi</strong> to <strong>navifm</strong></p></li>
+<li><p>Tried to add project to the archlinux linux user repository (AUR)</p></li>
+<li><p>Replaced the QCompleter terrible no use completion with custom working completion like neovim, emacs etc. for the inputbar</p></li>
+</ul>
+</section>
 <section id="v1-3-0-3-february-2025">
 <h2>v1.3.0 (3 February 2025)<a class="headerlink" href="#v1-3-0-3-february-2025" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -167,7 +203,7 @@
 <section id="v1-2-3-6-january-2025">
 <h2>v1.2.3 (6 January 2025)<a class="headerlink" href="#v1-2-3-6-january-2025" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Added copy-to, move-to command to copy and move marked files to a location using a file choosing dialog.</p></li>
+<li><p>Added copy=to, move=to command to copy and move marked files to a location using a file choosing dialog.</p></li>
 <li><p>Fixed enabled disable icon in file_panel bug.</p></li>
 <li><p>Utils table to navi global namespace.</p></li>
 <li><p>Fixed default directory bug.</p></li>
@@ -178,7 +214,7 @@
 <ul class="simple">
 <li><p>Added symlink styling support (italic, bold, underline, separator selection, background and foreground)</p></li>
 <li><p>Lua API functions for symlink</p></li>
-<li><p>Pre-compiled headers addition in source code for faster code compilation</p></li>
+<li><p>Pre=compiled headers addition in source code for faster code compilation</p></li>
 </ul>
 </section>
 <section id="v1-2-1-2-january-2025">
@@ -186,13 +222,13 @@
 <ul class="simple">
 <li><p>Added set lua API functions for ui elements to set options together in one go.</p></li>
 <li><p>Fixed toolbar lua <code class="xref py py-func docutils literal notranslate"><span class="pre">set_items()</span></code> causing navi to crash.</p></li>
-<li><p>Read-in all the members defined in the navi table.</p></li>
+<li><p>Read=in all the members defined in the navi table.</p></li>
 </ul>
 </section>
 <section id="v1-2-30-december-2024">
 <h2>v1.2 (30 December 2024)<a class="headerlink" href="#v1-2-30-december-2024" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Re-wrote the entire lua API to support getters and setters for options.</p></li>
+<li><p>Re=wrote the entire lua API to support getters and setters for options.</p></li>
 <li><p>API is written in lua and interfaces to C++ rather than the other way around.</p></li>
 <li><p>removed <code class="xref py py-func docutils literal notranslate"><span class="pre">toggle()</span></code> for UI elements</p></li>
 </ul>
@@ -217,7 +253,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="gallery.html" class="btn btn-neutral float-left" title="Gallery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="issues.html" class="btn btn-neutral float-right" title="Issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="working.html" class="btn btn-neutral float-right" title="How does navi work ?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
