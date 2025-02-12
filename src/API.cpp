@@ -61,6 +61,7 @@ void init_lua_api(sol::state &lua) noexcept {
                            // Vertical header
                            "set_vheader_visible", &Navi::set_vheader_visible,
                            "get_vheader_visible", &Navi::get_vheader_visible,
+                           "vheader_toggle", &Navi::vheader_toggle,
                            "set_vheader_border", &Navi::set_vheader_border,
                            "get_vheader_border", &Navi::get_vheader_border,
                            "set_vheader_props", &Navi::set_vheader_props,
