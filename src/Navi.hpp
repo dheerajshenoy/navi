@@ -169,7 +169,9 @@ public:
 
     inline QString version() noexcept { return m_version; }
 
-    inline void set_lua_state(sol::state &lua) noexcept { m_lua = &lua; }
+    inline void set_lua_state(sol::state &lua) noexcept {
+        m_lua = std::make_unique<sol::state>(std::move(lua));
+    }
 
     enum class Widget {
         Shortcuts = 0,
@@ -1057,6 +1059,11 @@ public:
         m_file_panel->tableView()->vheader()->setVisible(state);
     }
 
+    inline void vheader_toggle() noexcept {
+        auto vheader = m_file_panel->tableView()->vheader();
+        vheader->setVisible(!vheader->isVisible());
+    }
+
     inline void set_vheader_stylesheet(const std::string &s) noexcept {
         m_file_panel->tableView()->vheader()->setStyleSheet(
             QString::fromStdString(s));
@@ -1172,12 +1179,15 @@ protected:
     bool event(QEvent *e) override;
 
   private:
+    sol::state_view get_lua_state() noexcept { return sol::state_view(*m_lua); }
+
+    std::unique_ptr<sol::state> m_lua;
     Navi() : KDDockWidgets::QtWidgets::MainWindow(QStringLiteral("NaviMainWindow"),
                                                   KDDockWidgets::MainWindowOption_HasCentralWidget) {
         qDebug() << "Navi Instance Created ##########################";
     }
 
-    ~Navi() = default;
+    ~Navi();
 
     void initValidCommandsList() noexcept;
     void initCompletion() noexcept;
@@ -1340,7 +1350,6 @@ protected:
     double m_preview_pane_fraction = 0.5f;
     bool m_menubar_icons = true, m_toolbar_icons_only = true;
     std::vector<std::string> m_toolbar_layout;
-    sol::state *m_lua;
     QStringList m_navi_lua_api_list;
     FilePanelDelegate *m_table_delegate;
     Thumbnailer *m_thumbnailer = new Thumbnailer();
