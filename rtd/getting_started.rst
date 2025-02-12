@@ -1,7 +1,119 @@
 Getting Started
 ===============
 
-Take control of your files because they deserve more than just 'open' and 'close'.
+Take control of your files using navi, because they deserve more than just **open** and **close**.
+
+Launching Navi
+++++++++++++++
+
+The navi binary is actually called ``navifm`` [navi name for a package was already taken :( ]. You can execute the execute this command or if you have a run launcher you can find the program ``NaviFM`` with no icon [still haven't gotten to work on the icon yet].
+
+.. _Default_Keybindings:
+
+First time usage
+++++++++++++++++
+
+Now that you have navi opened, have a good look at it. You might or might not like the way the default appearance of navi. Remember that you can configure every part (almost) of the UI through lua (covered in the next section).
+
+If you have loaded navi without a config file, navi loads the default settings. Here are the default keybindings:
+
+.. list-table:: Keybindings
+   :widths: 20 30 50
+   :header-rows: 1
+
+   * - Key
+     - Command
+     - Description
+   * - h
+     - up-directory
+     - Go to the parent directory
+   * - j
+     - next-item
+     - Go to the next item
+   * - k
+     - prev-item
+     - Go to the previous item
+   * - l
+     - select-item
+     - Select item
+   * - f
+     - filter
+     - Filter item visibility
+   * - g,g
+     - first-item
+     - Go to the first item
+   * - z,z
+     - middle-item
+     - Go to middle item
+   * - Shift+g
+     - last-item
+     - Go to the last item
+   * - Shift+r
+     - rename-dwim
+     - Rename item(s)
+   * - Shift+d
+     - delete-dwim
+     - Delete item(s)
+   * - Space
+     - toggle-mark-dwim
+     - Mark item(s)
+   * - F5
+     - refresh
+     - Refresh current directory
+   * - Shift+Space
+     - mark-inverse
+     - Mark inverse item(s)
+   * - Shift+v
+     - visual-select
+     - Visual selection mode
+   * - :
+     - execute-extended-command
+     - Execute extended command
+   * - y,y
+     - copy-dwim
+     - Copy item(s)
+   * - p
+     - paste
+     - Paste item(s)
+   * - Shift+u
+     - unmark-local
+     - Unmark all item(s)
+   * - /
+     - search
+     - Search (regex)
+   * - n
+     - search-next
+     - Search next
+   * - Shift+n
+     - search-prev
+     - Search previous
+   * - Ctrl+m
+     - menu-bar
+     - Toggle menu bar
+   * - Ctrl+p
+     - preview-pane
+     - Toggle preview pane
+   * - Ctrl+l
+     - focus-path
+     - Focus path bar
+   * - Shift+t
+     - trash-dwim
+     - Trash item(s)
+   * - .
+     - hidden-files
+     - Toggle hidden items
+   * - q
+     - macro-record
+     - Record or Finish recording macro
+   * - Shift+c
+     - copy-path
+     - Copy path(s)
+   * - Ctrl+u
+     - scroll-up
+     - Scroll up a page
+   * - Ctrl+d
+     - scroll-down
+     - Scroll down a page
 
 Configuring Navi
 ++++++++++++++++
@@ -11,7 +123,7 @@ Navi is configured using the `Lua <https://www.lua.org/start.html>`_ scripting l
 Sample configuration file
 +++++++++++++++++++++++++
 
-Check out the sample :download:`config file <./_static/config.lua>`. Copy this file to the *~/.config/navi/* directory and relaunch navi to see the new settings.
+Check out the sample :download:`config file <./_static/config.lua>`. Copy this file to the *~/.config/navifm/* directory and relaunch navi to see the new settings.
 
 Directory Structure
 +++++++++++++++++++
@@ -567,64 +679,6 @@ Saves macro to a file which can be used to load for the next boot of Navi.
 ``macro-delete``
 
 Delete macro under a macro key (if it exists).
-
-.. _Default_Keybindings:
-
-Default Keybindings
-+++++++++++++++++++
-
-Using navi is easy. You have bunch of commands that do certain things and sometimes they depend on the context (see DWIM commands). The default settings are set up for you to use navi without any configurations needed. The default keybindings are listed below:
-
-**NOTE: These keybindings are not loaded if there is a `keybindings` table in the lua configuration file**
-
-+-------------+-----------------------------+
-| Key         | Action                      |
-+=============+=============================+
-| h           | go to parent directory      |
-+-------------+-----------------------------+
-| j           | go to next item             |
-+-------------+-----------------------------+
-| k           | go to previous item         |
-+-------------+-----------------------------+
-| l           | select current item         |
-+-------------+-----------------------------+
-| gg          | go to first item            |
-+-------------+-----------------------------+
-| Shift+g     | go to last item             |
-+-------------+-----------------------------+
-| Space       | toggle marking              |
-+-------------+-----------------------------+
-| Shift+Space | toggle inverse marking      |
-+-------------+-----------------------------+
-| Ctrl+a      | mark all items              |
-+-------------+-----------------------------+
-| Shift+r     | rename dwim                 |
-+-------------+-----------------------------+
-| Shift+d     | delete dwim                 |
-+-------------+-----------------------------+
-| yy          | copy dwim                   |
-+-------------+-----------------------------+
-| p           | paste                       |
-+-------------+-----------------------------+
-| Shift+u     | unmark all items            |
-+-------------+-----------------------------+
-| .           | toggle dotfiles             |
-+-------------+-----------------------------+
-| /           | Search                      |
-+-------------+-----------------------------+
-| n           | Go to next search match     |
-+-------------+-----------------------------+
-| Shift+n     | Go to previous search match |
-+-------------+-----------------------------+
-| Ctrl+m      | toggle menubar              |
-+-------------+-----------------------------+
-| Ctrl+p      | toggle preview panel        |
-+-------------+-----------------------------+
-| Ctrl+l      | focus path widget           |
-+-------------+-----------------------------+
-| Shift+v     | toggle visual selection     |
-+-------------+-----------------------------+
-
 
 Theming
 +++++++
