@@ -114,3 +114,4 @@
 - [ ] Implement Cache Eviction Policy
 - [ ] Lazy loading directory
 - [ ] Optimizations
+- [ ] Fix current cursor foreground text color
