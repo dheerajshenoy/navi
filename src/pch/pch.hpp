@@ -44,12 +44,14 @@
 #include "../argparse.hpp"
 #include <QScreen>
 #include <QUuid>
-#include <kddockwidgets/Config.h>
-#include <kddockwidgets/LayoutSaver.h>
-#include <kddockwidgets/core/DockWidget.h>
-#include <kddockwidgets/core/MainWindow.h>
-#include <kddockwidgets/core/TitleBar.h>
-#include <kddockwidgets/qtwidgets/DockWidget.h>
-#include <kddockwidgets/qtwidgets/MainWindow.h>
+
+#include <kddockwidgets-qt6/kddockwidgets/Config.h>
+#include <kddockwidgets-qt6/kddockwidgets/LayoutSaver.h>
+#include <kddockwidgets-qt6/kddockwidgets/DockWidget.h>
+#include <kddockwidgets-qt6/kddockwidgets/core/MainWindow.h>
+#include <kddockwidgets-qt6/kddockwidgets/core/TitleBar.h>
+#include <kddockwidgets-qt6/kddockwidgets/qtwidgets/DockWidget.h>
+#include <kddockwidgets-qt6/kddockwidgets/qtwidgets/MainWindow.h>
+
 #include <stack>
 #include <vector>

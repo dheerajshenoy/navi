@@ -91,7 +91,8 @@ class FileSystemModel : public QAbstractTableModel {
                   int role = Qt::DisplayRole) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    void loadDirectory(const QString &path) noexcept;
+    void loadDirectory(const QString &path,
+                       const QDir::SortFlags &sort_flags = QDir::SortFlag::DirsFirst) noexcept;
     inline bool hasMarks() noexcept { return m_markedFiles.size() > 0; }
     bool hasMarksLocal() noexcept;
     QStringList getMarkedFiles() noexcept;

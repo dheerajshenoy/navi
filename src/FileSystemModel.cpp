@@ -1,12 +1,12 @@
 #include "FileSystemModel.hpp"
 
 FileSystemModel::FileSystemModel(QObject *parent)
-: QAbstractTableModel(parent) {
+    : QAbstractTableModel(parent) {
     initDefaults();
 }
 
 FileSystemModel::FileSystemModel(const QString &path, QObject *parent)
-: QAbstractTableModel(parent), m_root_path(path) {
+    : QAbstractTableModel(parent), m_root_path(path) {
     initDefaults();
 }
 
@@ -55,8 +55,8 @@ QString FileSystemModel::filePath(const QModelIndex &index) noexcept {
         return QString();
 
     return m_root_path + QDir::separator() +
-    index.data(static_cast<int>(FileSystemModel::Role::FilePath))
-    .toString();
+        index.data(static_cast<int>(FileSystemModel::Role::FilePath))
+        .toString();
 }
 
 bool FileSystemModel::isDir(const QModelIndex &index) noexcept {
@@ -85,12 +85,15 @@ QModelIndex FileSystemModel::index(const QString &path) const noexcept {
     return createIndex(row, 0);
 }
 
-void FileSystemModel::loadDirectory(const QString &path) noexcept {
-  beginResetModel();
-  m_all_file_paths.clear();
+void FileSystemModel::loadDirectory(const QString &path,
+                                    const QDir::SortFlags &sort_flags) noexcept {
+    beginResetModel();
+    m_all_file_paths.clear();
     m_file_paths.clear();
     m_path_row_hash.clear();
     m_loaded_files_count = 0;
+
+    QStringList directories, files;
 
     int row = 0;
 
@@ -103,13 +106,28 @@ void FileSystemModel::loadDirectory(const QString &path) noexcept {
 
     while (it_dir.hasNext()) {
         QString filePath = it_dir.next();
-        m_all_file_paths.append(filePath);
         m_path_row_hash.insert(filePath, row++);
+        directories.append(filePath);
         // emit directoryLoadProgress(static_cast<int>((static_cast<float>(row / totalEntries) * 100));
     }
 
     while (it_file.hasNext()) {
         QString filePath = it_file.next();
+        files.append(filePath);
+    }
+
+    const QStringList &first =
+        (sort_flags & QDir::SortFlag::DirsFirst) ? directories : files;
+
+    const QStringList &second =
+        (sort_flags & QDir::SortFlag::DirsFirst) ? files : directories;
+
+    for (const QString &filePath : first) {
+        m_all_file_paths.append(filePath);
+        m_path_row_hash.insert(filePath, row++);
+    }
+
+    for (const QString &filePath : second) {
         m_all_file_paths.append(filePath);
         m_path_row_hash.insert(filePath, row++);
     }
@@ -133,8 +151,8 @@ int FileSystemModel::rowCount(const QModelIndex &parent) const {
 
 int FileSystemModel::columnCount(const QModelIndex &parent) const {
     return parent.isValid()
-    ? 0
-    : m_column_list.size(); // Three columns: Name, Size, Last Modified
+        ? 0
+        : m_column_list.size(); // Three columns: Name, Size, Last Modified
 }
 
 void FileSystemModel::setMarkForegroundColor(const QString &color) noexcept {
@@ -180,87 +198,87 @@ QVariant FileSystemModel::data(const QModelIndex &index, int role) const {
     // Custom background color for marked files
     switch (role) {
 
-        case static_cast<int>(Role::Marked):
-            return m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
-            break;
+    case static_cast<int>(Role::Marked):
+        return m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
+        break;
 
-        case Qt::DecorationRole: {
-            if (icons_enabled) {
-                if (index.column() == static_cast<int>(ColumnType::FileName)) {
-                    return get_cached_icon(fileInfo);
-                }
-            }
-        } break;
-
-        case Qt::ForegroundRole: {
-            bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
-            if (isMarked) {
-                return m_markForegroundColor;
-            }
-            return QVariant();
-        } break;
-
-        case Qt::BackgroundRole: {
-            bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
-            if (isMarked) {
-                return m_markBackgroundColor;
-            }
-
-
-        } break;
-
-        case Qt::FontRole: {
-            bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
-            if (isMarked) {
-                return m_markFont;
-            }
-        } break;
-
-        case static_cast<int>(FileSystemModel::Role::FilePath):
-            return fileInfo.filePath();
-            break;
-
-        case static_cast<int>(FileSystemModel::Role::FileName):
-            return fileInfo.fileName();
-            break;
-
-        case static_cast<int>(FileSystemModel::Role::Symlink):
-            return fileInfo.symLinkTarget();
-            break;
-
-        case Qt::DisplayRole: {
-            switch (m_column_list.at(index.column()).type) {
-                case ColumnType::FileName: {
-                    if (fileInfo.isSymbolicLink()) {
-                        if (m_show_symlink) {
-                            return QString("%1 %2 %3")
-                            .arg(fileInfo.fileName())
-                            .arg(m_symlink_separator)
-                            .arg(fileInfo.symLinkTarget());
-                        } else
-                        return fileInfo.fileName();
-                    } else
-                    return fileInfo.fileName();
-                } break;
-
-                case ColumnType::FileSize: // File Size
-                    return fileInfo.isDir()
-                    ? QVariant()
-                    : QVariant(m_locale.formattedDataSize(fileInfo.size()));
-
-                case ColumnType::FileModifiedDate: // Last Modified Date
-                    return fileInfo.lastModified().toString("yyyy-MM-dd HH:mm:ss");
-
-                case ColumnType::FilePermission:
-                    return utils::getPermString(fileInfo);
-
-                default:
-                    return QVariant();
+    case Qt::DecorationRole: {
+        if (icons_enabled) {
+            if (index.column() == static_cast<int>(ColumnType::FileName)) {
+                return get_cached_icon(fileInfo);
             }
         }
+    } break;
 
-        case static_cast<int>(Role::Cursor):
-            return m_cursor_row;
+    case Qt::ForegroundRole: {
+        bool isMarked = m_markedFiles.contains(getPathFromIndex(index.siblingAtColumn(m_file_name_column_index)));
+        if (isMarked) {
+            return m_markForegroundColor;
+        }
+        return QVariant();
+    } break;
+
+    case Qt::BackgroundRole: {
+        bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
+        if (isMarked) {
+            return m_markBackgroundColor;
+        }
+
+
+    } break;
+
+    case Qt::FontRole: {
+        bool isMarked = m_markedFiles.contains(index.data(static_cast<int>(Role::FilePath)).toString());
+        if (isMarked) {
+            return m_markFont;
+        }
+    } break;
+
+    case static_cast<int>(FileSystemModel::Role::FilePath):
+        return fileInfo.filePath();
+        break;
+
+    case static_cast<int>(FileSystemModel::Role::FileName):
+        return fileInfo.fileName();
+        break;
+
+    case static_cast<int>(FileSystemModel::Role::Symlink):
+        return fileInfo.symLinkTarget();
+        break;
+
+    case Qt::DisplayRole: {
+        switch (m_column_list.at(index.column()).type) {
+        case ColumnType::FileName: {
+            if (fileInfo.isSymbolicLink()) {
+                if (m_show_symlink) {
+                    return QString("%1 %2 %3")
+                        .arg(fileInfo.fileName())
+                        .arg(m_symlink_separator)
+                        .arg(fileInfo.symLinkTarget());
+                } else
+                    return fileInfo.fileName();
+            } else
+                return fileInfo.fileName();
+        } break;
+
+        case ColumnType::FileSize: // File Size
+            return fileInfo.isDir()
+                ? QVariant()
+                : QVariant(m_locale.formattedDataSize(fileInfo.size()));
+
+        case ColumnType::FileModifiedDate: // Last Modified Date
+            return fileInfo.lastModified().toString("yyyy-MM-dd HH:mm:ss");
+
+        case ColumnType::FilePermission:
+            return utils::getPermString(fileInfo);
+
+        default:
+            return QVariant();
+        }
+    }
+
+    case static_cast<int>(Role::Cursor):
+        return m_cursor_row;
     }
 
     return QVariant();
@@ -271,32 +289,32 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation,
     if (orientation == Qt::Vertical) {
         switch (role) {
 
-            case Qt::BackgroundRole: {
-                bool isMarked = m_markedFiles.contains(getPathFromRow(section));
-                if (isMarked)
-                    return m_markHeaderBackgroundColor;
-            } break;
+        case Qt::BackgroundRole: {
+            bool isMarked = m_markedFiles.contains(getPathFromRow(section));
+            if (isMarked)
+                return m_markHeaderBackgroundColor;
+        } break;
 
-            case Qt::ForegroundRole: {
-                bool isMarked = m_markedFiles.contains(getPathFromRow(section));
-                if (isMarked)
-                    return m_markHeaderForegroundColor;
-            } break;
+        case Qt::ForegroundRole: {
+            bool isMarked = m_markedFiles.contains(getPathFromRow(section));
+            if (isMarked)
+                return m_markHeaderForegroundColor;
+        } break;
 
-            case Qt::FontRole: {
-                bool isMarked = m_markedFiles.contains(getPathFromRow(section));
-                if (isMarked) {
-                    return m_markHeaderFont;
-                }
-            } break;
+        case Qt::FontRole: {
+            bool isMarked = m_markedFiles.contains(getPathFromRow(section));
+            if (isMarked) {
+                return m_markHeaderFont;
+            }
+        } break;
 
-            case Qt::DisplayRole:
-                return section;
-                break;
+        case Qt::DisplayRole:
+            return section;
+            break;
 
-            default:
-                return QVariant();
-                break;
+        default:
+            return QVariant();
+            break;
         }
 
     } else if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
@@ -557,7 +575,7 @@ void FileSystemModel::setColumns(const QList<Column> &cols) noexcept {
     m_column_list.clear();
 
     for (const auto &col : cols)
-    m_column_list.push_back(col);
+        m_column_list.push_back(col);
 
     m_file_name_column_index = indexOfFileNameColumn();
 
@@ -578,7 +596,7 @@ void FileSystemModel::setSymlinkSeparator(const QString &separator) noexcept {
 
 void FileSystemModel::setSortBy(const QDir::SortFlags &sortFlags) noexcept {
     m_dir_sort_flags = sortFlags;
-    loadDirectory(m_root_path);
+    loadDirectory(m_root_path, m_dir_sort_flags);
 }
 
 void FileSystemModel::addDirFilter(const QDir::Filters &filter) noexcept {
