@@ -1,9 +1,11 @@
 #include "DriveWidget.hpp"
 
-DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
+DriveWidget::DriveWidget() : KDDockWidgets::QtWidgets::DockWidget("Drives") {
+    QWidget *w = new QWidget(this);
+    w->setLayout(m_layout);
+    this->setWidget(w);
     m_layout->addWidget(m_drives_table_widget);
 
-    setModal(false);
     QStorageInfo storageInfo;
     auto mountedVolumes = QStorageInfo::mountedVolumes();
 
@@ -14,7 +16,7 @@ DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
     auto header = m_drives_table_widget->horizontalHeader();
     m_drives_table_widget->setColumnCount(4);
     m_drives_table_widget->setHorizontalHeaderLabels(
-                                                     {"Drive", "FS Type", "Size", "Mount Point"});
+        {"Drive", "FS Type", "Size", "Mount Point"});
 
     header->setSectionResizeMode(0, QHeaderView::ResizeMode::Stretch);
 
@@ -39,7 +41,6 @@ DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
     btn_layout->addWidget(m_mount_btn);
     btn_layout->addWidget(m_unmount_btn);
     btn_layout->addStretch(1);
-    btn_layout->addWidget(m_close_btn);
     m_layout->addWidget(new QLabel("Double click to mount/load a drive"));
     m_layout->addLayout(btn_layout);
 
@@ -47,35 +48,31 @@ DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
     // m_mount_btn->setEnabled(false);
 
     m_drives_table_widget->setSelectionMode(
-                                            QAbstractItemView::SelectionMode::SingleSelection);
-
-    connect(m_close_btn, &QPushButton::clicked, this, [&]() {
-        this->close();
-    });
+        QAbstractItemView::SelectionMode::SingleSelection);
 
     connect(m_drives_table_widget, &QTableWidget::currentCellChanged, this,
             [&](const int &crow, const int &ccol, const int &prow, const int &pcol) {
-                if (crow == -1)
-                    return;
-                auto item = m_drives_table_widget->item(crow, 3);
-                auto isMounted = !item->text().isEmpty();
-                if (isMounted) {
-                    m_unmount_btn->setEnabled(true);
-                    m_mount_btn->setEnabled(false);
-                } else {
-                    m_mount_btn->setEnabled(true);
-                    m_unmount_btn->setEnabled(false);
-                }
+            if (crow == -1)
+            return;
+            auto item = m_drives_table_widget->item(crow, 3);
+            auto isMounted = !item->text().isEmpty();
+            if (isMounted) {
+            m_unmount_btn->setEnabled(true);
+            m_mount_btn->setEnabled(false);
+            } else {
+            m_mount_btn->setEnabled(true);
+            m_unmount_btn->setEnabled(false);
+            }
             });
 
     connect(m_mount_btn, &QPushButton::clicked, this, [&]() {
-      int row = m_drives_table_widget->currentRow();
-      auto mountPoint = m_drives_table_widget->item(row, 3)->text();
-      auto driveName = m_drives_table_widget->item(row, 0)->text();
-      driveName = QString("/dev") + QDir::separator() + driveName;
-      if (mountPoint.isEmpty() || mountPoint.isNull()) {
-        emit driveMountRequested(driveName);
-      } else
+        int row = m_drives_table_widget->currentRow();
+        auto mountPoint = m_drives_table_widget->item(row, 3)->text();
+        auto driveName = m_drives_table_widget->item(row, 0)->text();
+        driveName = QString("/dev") + QDir::separator() + driveName;
+        if (mountPoint.isEmpty() || mountPoint.isNull()) {
+            emit driveMountRequested(driveName);
+        } else
         emit driveLoadRequested(mountPoint);
     });
 
@@ -87,7 +84,7 @@ DriveWidget::DriveWidget(QWidget *parent) : QDialog(parent) {
         if (mountPoint.isEmpty() || mountPoint.isNull()) {
             return;
         } else
-            emit driveUnmountRequested(driveName);
+        emit driveUnmountRequested(driveName);
     });
 }
 
@@ -119,5 +116,5 @@ void DriveWidget::cellDoubleClicked(int row, int col) noexcept {
     if (mountPoint.isEmpty() || mountPoint.isNull()) {
         emit driveMountRequested(driveName);
     } else
-        emit driveLoadRequested(mountPoint);
+    emit driveLoadRequested(mountPoint);
 }
