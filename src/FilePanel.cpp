@@ -3,7 +3,7 @@
 FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
                      TaskManager *tm, QWidget *parent)
     : QWidget(parent), m_inputbar(inputBar), m_statusbar(statusBar),
-    m_task_manager(tm), m_hook_manager(hm) {
+      m_task_manager(tm), m_hook_manager(hm) {
     this->setLayout(m_layout);
     m_layout->addWidget(m_table_view);
     m_table_view->setModel(m_model);
@@ -14,7 +14,7 @@ FilePanel::FilePanel(Inputbar *inputBar, Statusbar *statusBar, HookManager *hm,
 
     connect(m_table_view, &TableView::cursorPositionChanged, this,
             [&](const int &row) {
-            m_model->set_cursor_row(row);
+                m_model->set_cursor_row(row);
             });
 
     initSignalsSlots();
@@ -98,16 +98,16 @@ void FilePanel::initSignalsSlots() noexcept {
 
     connect(this, &FilePanel::dropCopyRequested, this,
             [&](const QStringList &sourceFilePaths) {
-            m_file_op_type = FileWorker::FileOPType::COPY;
-            m_register_files_list = sourceFilePaths;
-            PasteItems();
+                m_file_op_type = FileWorker::FileOPType::COPY;
+                m_register_files_list = sourceFilePaths;
+                PasteItems();
             });
 
     connect(this, &FilePanel::dropCutRequested, this,
             [&](const QStringList &sourceFilePaths) {
-            m_file_op_type = FileWorker::FileOPType::CUT;
-            m_register_files_list = sourceFilePaths;
-            PasteItems();
+                m_file_op_type = FileWorker::FileOPType::CUT;
+                m_register_files_list = sourceFilePaths;
+                PasteItems();
             });
 
     connect(m_table_view, &QTableView::clicked, [&](const QModelIndex &index) {
@@ -132,9 +132,9 @@ void FilePanel::initSignalsSlots() noexcept {
 
     connect(m_selection_model, &QItemSelectionModel::currentChanged,
             this, [this](const QModelIndex &current, const QModelIndex &previous) {
-            Q_UNUSED(previous);
-            emit currentItemChanged(m_model->data(current,
-                                                  static_cast<int>(FileSystemModel::Role::FilePath)).toString());
+                Q_UNUSED(previous);
+                emit currentItemChanged(m_model->data(current,
+                                                      static_cast<int>(FileSystemModel::Role::FilePath)).toString());
             });
 
     connect(this, &FilePanel::dropCopyRequested, this,
@@ -145,68 +145,68 @@ void FilePanel::initSignalsSlots() noexcept {
 
     connect(m_model, &FileSystemModel::directoryLoaded, this,
             [&](const int &rowCount) {
-            m_statusbar->SetNumItems(rowCount);
-            if (rowCount == 0) {
-            m_table_view->clearSelection();
-            return;
-            }
-            if (m_hidden_files_just_toggled) {
-            if (!(m_highlight_text.isEmpty() ||
-            m_highlight_text.isNull())) {
-            QModelIndex index =
-            m_model->getIndexFromBaseName(m_highlight_text);
-            if (index.isValid()) {
-            m_table_view->setCurrentIndex(index);
-            m_table_view->scrollTo(index);
-            }
-            }
-            m_hidden_files_just_toggled = false;
-            } else {
+                m_statusbar->SetNumItems(rowCount);
+                if (rowCount == 0) {
+                    m_table_view->clearSelection();
+                    return;
+                }
+                if (m_hidden_files_just_toggled) {
+                    if (!(m_highlight_text.isEmpty() ||
+                          m_highlight_text.isNull())) {
+                        QModelIndex index =
+                            m_model->getIndexFromBaseName(m_highlight_text);
+                        if (index.isValid()) {
+                            m_table_view->setCurrentIndex(index);
+                            m_table_view->scrollTo(index);
+                        }
+                    }
+                    m_hidden_files_just_toggled = false;
+                } else {
 
-            if (!(m_highlight_text.isEmpty())) {
-            auto row = m_model->getRowFromBaseName(m_highlight_text);
-            if (row == -1) {
-            if (m_model->rowCount() > 0)
-            row = 0;
-            }
-            QModelIndex index = m_model->index(row, 0);
-            m_table_view->setCurrentIndex(index);
-            m_highlight_text.clear();
-            return;
-            }
+                    if (!(m_highlight_text.isEmpty())) {
+                        auto row = m_model->getRowFromBaseName(m_highlight_text);
+                        if (row == -1) {
+                            if (m_model->rowCount() > 0)
+                                row = 0;
+                        }
+                        QModelIndex index = m_model->index(row, 0);
+                        m_table_view->setCurrentIndex(index);
+                        m_highlight_text.clear();
+                        return;
+                    }
 
-            auto highlight_row = m_highlight_index.row();
+                    auto highlight_row = m_highlight_index.row();
 
-            if (highlight_row < rowCount) {
-            QModelIndex index = m_highlight_index;
-            m_table_view->setCurrentIndex(index);
-            } else if (highlight_row > 0) {
-            QModelIndex index = m_model->index(m_highlight_index.row() - 1, 0);
-            m_table_view->setCurrentIndex(index);
-            } else if (highlight_row == -1) {
-            QModelIndex index = m_model->index(0, 0);
-            m_table_view->setCurrentIndex(index);
-            }
-            else
-            m_table_view->clearSelection();
-            }
+                    if (highlight_row < rowCount) {
+                        QModelIndex index = m_highlight_index;
+                        m_table_view->setCurrentIndex(index);
+                    } else if (highlight_row > 0) {
+                        QModelIndex index = m_model->index(m_highlight_index.row() - 1, 0);
+                        m_table_view->setCurrentIndex(index);
+                    } else if (highlight_row == -1) {
+                        QModelIndex index = m_model->index(0, 0);
+                        m_table_view->setCurrentIndex(index);
+                    }
+                    else
+                        m_table_view->clearSelection();
+                }
 
-            QModelIndex current = m_selection_model->currentIndex();
-            if (current.isValid()) {
-            emit currentItemChanged(m_model->data(current,
-                                                  static_cast<int>(FileSystemModel::Role::FilePath))
-                                    .toString()
-                                    );
-            }
-            m_hook_manager->triggerHook("directory_loaded");
+                QModelIndex current = m_selection_model->currentIndex();
+                if (current.isValid()) {
+                    emit currentItemChanged(m_model->data(current,
+                                                          static_cast<int>(FileSystemModel::Role::FilePath))
+                                            .toString()
+                                            );
+                }
+                m_hook_manager->triggerHook("directory_loaded");
             });
 
     // TODO: Partial reload of directory
     connect(m_model->getFileSystemWatcher(),
             &QFileSystemWatcher::directoryChanged, m_model,
             [&](const QString &path) {
-            m_highlight_index = m_table_view->currentIndex();
-            m_model->loadDirectory(path);
+                m_highlight_index = m_table_view->currentIndex();
+                m_model->loadDirectory(path);
             });
 }
 
@@ -270,7 +270,7 @@ void FilePanel::DropCutRequested(const QStringList &sourcePaths) noexcept {
 QString FilePanel::getCurrentItem() noexcept {
     return m_model->data(m_table_view->currentIndex(),
                          static_cast<int>(FileSystemModel::Role::FilePath))
-    .toString();
+        .toString();
 }
 
 QString FilePanel::getCurrentItemFileName() noexcept {
@@ -364,10 +364,10 @@ void FilePanel::PrevItem() noexcept {
             // Update selection to include the new index
             QItemSelection selection(m_visual_start_index, prevIndex);
             m_selection_model->select(
-                selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
-                QItemSelectionModel::SelectionFlag::Rows);
+                                      selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                                      QItemSelectionModel::SelectionFlag::Rows);
             m_selection_model->setCurrentIndex(
-                prevIndex, QItemSelectionModel::NoUpdate);
+                                               prevIndex, QItemSelectionModel::NoUpdate);
             m_table_view->viewport()->update();
         }
     }
@@ -533,14 +533,14 @@ void FilePanel::UnmarkItemsGlobal() noexcept {
         else
             m_statusbar->Message("Unmark cancelled");
     } else
-    m_statusbar->Message("No marks found");
+        m_statusbar->Message("No marks found");
 }
 
 void FilePanel::UnmarkItemsLocal() noexcept {
     if (m_model->hasMarksLocal()) {
         m_model->clearMarkedFilesListLocal();
     } else
-    m_statusbar->Message("No local marks found", MessageType::WARNING);
+        m_statusbar->Message("No local marks found", MessageType::WARNING);
 }
 
 void FilePanel::UnmarkRegex(const QString &regex) noexcept {
@@ -571,10 +571,10 @@ void FilePanel::GotoFirstItem() noexcept {
         // Update selection to include the new index
         QItemSelection selection(m_visual_start_index, index);
         m_selection_model->select(
-            selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
-            QItemSelectionModel::SelectionFlag::Rows);
+                                  selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                                  QItemSelectionModel::SelectionFlag::Rows);
         m_selection_model->setCurrentIndex(
-            index, QItemSelectionModel::NoUpdate);
+                                           index, QItemSelectionModel::NoUpdate);
     }
 }
 
@@ -608,10 +608,10 @@ void FilePanel::GotoItem(const uint &itemNum) noexcept {
             // Update selection to include the new index
             QItemSelection selection(m_visual_start_index, index);
             m_selection_model->select(
-                selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
-                QItemSelectionModel::SelectionFlag::Rows);
+                                      selection, QItemSelectionModel::SelectionFlag::ClearAndSelect |
+                                      QItemSelectionModel::SelectionFlag::Rows);
             m_selection_model->setCurrentIndex(
-                index, QItemSelectionModel::NoUpdate);
+                                               index, QItemSelectionModel::NoUpdate);
         }
     }
 }
@@ -638,8 +638,8 @@ void FilePanel::TrashItem() noexcept {
         m_statusbar->Message(QString("Trashed item %1 successfully!")
                              .arg(QFileInfo(filePath).fileName()));
     } else
-    m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                         .arg(QFileInfo(filePath).fileName()));
+        m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                             .arg(QFileInfo(filePath).fileName()));
 }
 
 void FilePanel::TrashItems(const QStringList &files) noexcept {
@@ -665,8 +665,8 @@ void FilePanel::TrashItems(const QStringList &files) noexcept {
                     m_statusbar->Message(QString("Trashed item %1 successfully!")
                                          .arg(QFileInfo(filePath).fileName()));
                 } else
-                m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                                     .arg(QFileInfo(filePath).fileName()));
+                    m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                                         .arg(QFileInfo(filePath).fileName()));
             } else if (inputConfirm == yes_to_all_btn) {
                 check = false;
                 if (QFile::moveToTrash(filePath)) {
@@ -674,13 +674,13 @@ void FilePanel::TrashItems(const QStringList &files) noexcept {
                     m_statusbar->Message(QString("Trashed item %1 successfully!")
                                          .arg(QFileInfo(filePath).fileName()));
                 } else
-                m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                                     .arg(QFileInfo(filePath).fileName()));
+                    m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                                         .arg(QFileInfo(filePath).fileName()));
             } else if (inputConfirm == no_to_all_btn) {
                 m_statusbar->Message("Trash operation cancelled");
                 return;
             } else
-            continue;
+                continue;
 
         } else {
             if (QFile::moveToTrash(filePath)) {
@@ -688,8 +688,8 @@ void FilePanel::TrashItems(const QStringList &files) noexcept {
                 m_statusbar->Message(QString("Trashed item %1 successfully!")
                                      .arg(QFileInfo(filePath).fileName()));
             } else
-            m_statusbar->Message(QString("Error trashing item %1 successfully!")
-                                 .arg(QFileInfo(filePath).fileName()));
+                m_statusbar->Message(QString("Error trashing item %1 successfully!")
+                                     .arg(QFileInfo(filePath).fileName()));
         }
     }
 }
@@ -873,10 +873,10 @@ void FilePanel::RenameItemsGlobal() noexcept {
             QString newFileName;
             if (fileInfo.isFile())
                 newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
-                                                   oldName, fileInfo.baseName());
+                                              oldName, fileInfo.baseName());
             else if (fileInfo.isDir())
                 newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
-                                                   oldName, oldName);
+                                              oldName, oldName);
 
             // If user cancels or the new file name is empty
             if (newFileName.isEmpty() || newFileName.isNull()) {
@@ -890,7 +890,7 @@ void FilePanel::RenameItemsGlobal() noexcept {
             }
 
             bool state = QFile::rename(
-                oldFilePath, m_current_dir + QDir::separator() + newFileName);
+                                       oldFilePath, m_current_dir + QDir::separator() + newFileName);
             if (state) {
                 m_model->removeMarkedFile(oldFilePath);
             }
@@ -912,10 +912,10 @@ void FilePanel::RenameItemsLocal() noexcept {
 
             if (fileInfo.isFile())
                 newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
-                                                   oldName, fileInfo.baseName());
+                                              oldName, fileInfo.baseName());
             else if (fileInfo.isDir())
                 newFileName = utils::getInput(this, QString("Rename (%1)").arg(oldName),
-                                                   oldName, oldName);
+                                              oldName, oldName);
 
             // If user cancels or the new file name is empty
             if (newFileName.isEmpty() || newFileName.isNull()) {
@@ -929,7 +929,7 @@ void FilePanel::RenameItemsLocal() noexcept {
             }
 
             bool state = QFile::rename(
-                oldFilePath, m_current_dir + QDir::separator() + newFileName);
+                                       oldFilePath, m_current_dir + QDir::separator() + newFileName);
             if (state) {
                 m_model->removeMarkedFile(oldFilePath);
             }
@@ -969,7 +969,7 @@ void FilePanel::RenameItems(const QStringList &files) noexcept {
         if (state) {
             m_model->removeMarkedFile(oldFilePath);
             m_statusbar->Message(
-                QString("Renamed %1 to %2").arg(oldName).arg(newFileName));
+                                 QString("Renamed %1 to %2").arg(oldName).arg(newFileName));
         }
     }
 }
@@ -985,7 +985,7 @@ void FilePanel::RenameDWIM() noexcept {
     if (localMarks.size() > m_bulk_rename_threshold) {
         BulkRename(localMarks);
     } else
-    RenameItems(localMarks);
+        RenameItems(localMarks);
 }
 
 void FilePanel::DeleteDWIM() noexcept {
@@ -1022,7 +1022,7 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                 itemsDeleted++;
                 m_model->removeMarkedFile(itemPath);
             } else
-            m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
+                m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
         } else {
             QFile file(itemPath);
 
@@ -1031,7 +1031,7 @@ void FilePanel::DeleteItems(const QStringList &files) noexcept {
                 m_model->removeMarkedFile(itemPath);
                 itemsDeleted++;
             } else
-            m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
+                m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
         }
     }
 
@@ -1060,7 +1060,7 @@ void FilePanel::DeleteItem() noexcept {
                 m_model->removeMarkedFile(itemPath);
             }
             else
-            m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
+                m_statusbar->Message(QString("Error deleting %1!").arg(itemPath));
         } else {
             m_statusbar->Message("Delete operation cancelled");
             return;
@@ -1100,7 +1100,7 @@ void FilePanel::DeleteItemsGlobal() noexcept {
                     itemsDeleted++;
                     m_model->removeMarkedFile(itemPath);
                 } else
-                m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
+                    m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
             } else {
                 QFile file(itemPath);
 
@@ -1109,7 +1109,7 @@ void FilePanel::DeleteItemsGlobal() noexcept {
                     m_model->removeMarkedFile(itemPath);
                     itemsDeleted++;
                 } else
-                m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
+                    m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
             }
         }
         m_statusbar->Message(QString("%1/%2 items deleted successfully").arg(itemsDeleted).arg(markedFiles.size()));
@@ -1145,7 +1145,7 @@ void FilePanel::DeleteItemsLocal() noexcept {
                     itemsDeleted++;
                     m_model->removeMarkedFile(itemPath);
                 } else
-                m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
+                    m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
             } else {
                 QFile file(itemPath);
 
@@ -1154,7 +1154,7 @@ void FilePanel::DeleteItemsLocal() noexcept {
                     m_model->removeMarkedFile(itemPath);
                     itemsDeleted++;
                 } else
-                m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
+                    m_statusbar->Message(QString("Unable to delete %1").arg(itemPath), MessageType::ERROR);
             }
         }
         m_statusbar->Message(QString("%1/%2 items deleted successfully").arg(itemsDeleted).arg(markedLocalFiles.size()));
@@ -1388,11 +1388,11 @@ void FilePanel::ChmodItemsGlobal() noexcept {
         for (const auto &filePath : localMarkedFiles) {
             if (SetPermissions(filePath, permString)) {
                 m_statusbar->Message(
-                    QString("Permission changed for %1").arg(filePath));
+                                     QString("Permission changed for %1").arg(filePath));
             } else {
                 m_statusbar->Message(
-                    QString("Error setting permission for %1").arg(filePath),
-                    MessageType::ERROR);
+                                     QString("Error setting permission for %1").arg(filePath),
+                                     MessageType::ERROR);
             }
         }
     } else {
@@ -1571,7 +1571,7 @@ void FilePanel::MarkInverse() noexcept {
         if (isMarked) {
             m_model->setData(index, false, static_cast<int>(FileSystemModel::Role::Marked));
         } else
-        m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
+            m_model->setData(index, true, static_cast<int>(FileSystemModel::Role::Marked));
     }
 }
 
@@ -1599,8 +1599,8 @@ void FilePanel::NewFolder(const QStringList &folderNames) noexcept {
             m_highlight_text = folderName;
         }
         else
-        m_statusbar->Message(QString("Error creating %1").arg(folderName),
-                             MessageType::ERROR, 5);
+            m_statusbar->Message(QString("Error creating %1").arg(folderName),
+                                 MessageType::ERROR, 5);
     } else {
         for (const auto &folderName : folderNames) {
             dir.setPath(m_current_dir + QDir::separator() + folderName);
@@ -1636,8 +1636,8 @@ void FilePanel::NewFile(const QStringList &fileNames) noexcept {
             m_statusbar->Message(QString("File %1 created").arg(fileName));
             m_highlight_text = fileName;
         } else
-        m_statusbar->Message(QString("Error creating %1").arg(fileName),
-                             MessageType::ERROR, 5);
+            m_statusbar->Message(QString("Error creating %1").arg(fileName),
+                                 MessageType::ERROR, 5);
     } else {
         for (const auto &fileName : fileNames) {
             file.setFileName(m_current_dir + QDir::separator() + fileName);
@@ -1681,7 +1681,7 @@ void FilePanel::dragRequested() noexcept {
     urls.reserve(filePathList.size());
 
     for (const auto &filePath : filePathList)
-    urls.append(QUrl::fromLocalFile(filePath));
+        urls.append(QUrl::fromLocalFile(filePath));
 
     mimeData->setUrls(urls);
     drag->setMimeData(mimeData);
@@ -1689,13 +1689,13 @@ void FilePanel::dragRequested() noexcept {
     Qt::DropAction dropAction;
     switch (m_file_op_type) {
 
-        case FileWorker::FileOPType::COPY:
-            dropAction = drag->exec(Qt::CopyAction);
-            break;
+    case FileWorker::FileOPType::COPY:
+        dropAction = drag->exec(Qt::CopyAction);
+        break;
 
-        case FileWorker::FileOPType::CUT:
-            dropAction = drag->exec(Qt::MoveAction);
-            break;
+    case FileWorker::FileOPType::CUT:
+        dropAction = drag->exec(Qt::MoveAction);
+        break;
     }
 }
 

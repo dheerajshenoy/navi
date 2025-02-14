@@ -38,7 +38,7 @@ public:
                 painter->setPen(opt.palette.color(QPalette::Text));
             else
                 painter->setPen(m_cursor_foreground);
-              
+
         } else if (option.state & QStyle::State_Selected) {
             painter->fillRect(opt.rect, opt.palette.color(QPalette::Highlight));
         }
@@ -57,7 +57,6 @@ public:
             } else {
                 textRect.setLeft(4);
             }
-
 
             QString symlinkTargetName = index.data(static_cast<int>(FileSystemModel::Role::Symlink)).toString();
 
@@ -229,5 +228,5 @@ private:
     QString m_symlink_foreground, m_symlink_background,
         m_symlink_separator = " ⟶ ", m_cursor_foreground,
         m_cursor_background;
-    
+
 };
