@@ -91,7 +91,10 @@ find_package(KDDockWidgets-qt6 REQUIRED)
 
 
 if (ENABLE_LLAMA)
-  add_subdirectory(external/llama.cpp)
+  ExternalProject_Add(llama.cpp
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/llama.cpp
+    CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
   add_definitions(-DENABLE_LLAMA)
 endif()
 
@@ -165,6 +168,7 @@ else()
 endif()
 
 add_dependencies(${PROJECT_NAME} KDDockWidgets)
+add_dependencies(${PROJECT_NAME} llama.cpp)
 
 
 set(RESOURCE_FILES
