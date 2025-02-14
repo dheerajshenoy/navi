@@ -75,11 +75,20 @@ execute_process(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-set(KDDockWidgets_QT6 "ON" CACHE STRING "Use qt6 with KDDockWidgets")
-set(KDDockWidgets_FRONTENDS "qtwidgets" CACHE STRING "Use KDDockWidgets for QtWidgets only")
-set(CMAKE_INSTALL_PREFIX "/usr/share/include" CACHE STRING "KDDockWidgets install prefix")
+include(ExternalProject)
 
-add_subdirectory(external/KDDockWidgets)
+set(CMAKE_INSTALL_PREFIX "/usr/share/" CACHE STRING "KDDockWidgets install prefix")
+
+ExternalProject_Add(KDDockWidgets
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/KDDockWidgets
+  CMAKE_ARGS
+  -DKDDockWidgets_FRONTENDS=qtwidgets
+  -DKDDockWidgets_QT6=ON
+  -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+)
+
+find_package(KDDockWidgets-qt6 REQUIRED)
+
 
 if (ENABLE_LLAMA)
   add_subdirectory(external/llama.cpp)
@@ -150,10 +159,13 @@ qt_add_executable(${PROJECT_NAME}
 # tell cmake to link the executable to the Qt 6 core and test modules
 
 if (ENABLE_LLAMA)
-  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets llama)
+  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} llama KDAB::kddockwidgets)
 else()
   target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
 endif()
+
+add_dependencies(${PROJECT_NAME} KDDockWidgets)
+
 
 set(RESOURCE_FILES
   resources/images/clock.svg
