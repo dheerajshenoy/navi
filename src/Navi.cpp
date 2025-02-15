@@ -180,12 +180,6 @@ void Navi::setupCommandMap() noexcept {
     }
   };
 
-#ifdef ENABLE_LLAMA
-  commandMap["llama"] = [this](const QStringList &args) {
-    ProcessLlamaCommand(args);
-  };
-#endif
-
   commandMap["update"] = [this](const QStringList &args) {
     Q_UNUSED(args);
     CheckForUpdates();
@@ -3478,9 +3472,6 @@ void Navi::initValidCommandsList() noexcept {
       {"macro-save-to-file", {}},
       {"scroll-down", {}},
       {"scroll-up", {}},
-#ifdef ENABLE_LLAMA
-      {"llama", {}},
-#endif
   };
 }
 
@@ -3659,50 +3650,3 @@ void Navi::set_preview_panel_props(const sol::table &table) noexcept {
   if (table["fraction"].valid())
     Set_preview_pane_fraction(table["fraction"].get<float>());
 }
-
-#ifdef ENABLE_LLAMA
-
-void Navi::ProcessLlamaCommand(const QStringList &args) noexcept {}
-
-#endif
-
-#ifdef ENABLE_LLAMA
-void Navi::load_ai_model(const std::string &modelPath) noexcept {
-  llama_model_params model_params = llama_model_default_params();
-  m_llama_model = llama_model_load_from_file(modelPath.data(), model_params);
-
-  if (!m_llama_model) {
-    m_statusbar->Message("AI: Could not load model.", MessageType::ERROR);
-    return;
-  }
-
-  llama_context_params ctx_params = llama_context_default_params();
-  ctx_params.n_ctx = 0;
-  ctx_params.no_perf = true;
-  m_llama_ctx = llama_init_from_model(m_llama_model, ctx_params);
-
-  if (!m_llama_ctx) {
-    m_statusbar->Message("AI: Could not create context", MessageType::ERROR);
-    return;
-  }
-
-  /*
-    std::vector<llama_token> tokens = llama_tokenize(m_llama_ctx, prompt);
-
-    llama_batch batch = llama_batch_init(tokens.size(), 0, 1);
-
-    // Fill batch with tokens
-    for (size_t i = 0; i < tokens.size(); i++) {
-    batch.token[i] = tokens[i];
-    batch.pos[i] = i;
-    }
-
-    int status = llama_decode(m_llama_ctx, batch);
-
-    if (status != 0) {
-    qError() << "llama_decode failed!\n";
-    }
-  */
-}
-
-#endif

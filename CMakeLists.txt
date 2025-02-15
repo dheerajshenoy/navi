@@ -1,200 +1,158 @@
-# ensure cmake version is at least 3.16.0
 cmake_minimum_required(VERSION 3.16.0)
 
 # defines a project with a version
-project(navifm VERSION 1.0.0 LANGUAGES CXX)
+project(navifm VERSION 1.3.4 LANGUAGES CXX)
 
-option(ENABLE_LLAMA "Enable llama.cpp AI integration" OFF)
-
+# option(ENABLE_LLAMA "Enable llama.cpp AI integration" OFF)
 # pick the C++ standard to use, in this case C++20
+set(QT_MAJOR_VERSION 6)
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
 set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "C++ standard required")
-
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
 set(CMAKE_USE_PTHREADS_INIT 1)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Install path prefix" FORCE)
+set(SHAREDIR "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}" CACHE PATH "/usr/share/ folder")
+set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose Makefile")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands")
+set(CMAKE_AUTOMOC ON CACHE BOOL "CMAKE_AUTOMOC")
+set(CMAKE_AUTORCC ON CACHE BOOL "CMAKE_AUTORCC")
+set(CMAKE_AUTOUIC ON CACHE BOOL "CMAKE_AUTOUIC")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin CACHE PATH "CMAKE runtime output directory")
 
 find_program(SCCACHE sccache)
 find_program(CCACHE ccache)
 
 if (CCACHE)
-  message(STATUS "Found cache in ${CCACHE}")
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CACHE}")
+    message(STATUS "Found cache in ${CCACHE}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CACHE}")
 elseif(SCCACHE)
-  message(STATUS "Found sccache in ${SCCACHE}")
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE}")
+    message(STATUS "Found sccache in ${SCCACHE}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE}")
 endif()
-
-set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Install path prefix" FORCE)
-
-# Define the target directory for shared files
-set(SHAREDIR "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}" CACHE PATH "/usr/share/ folder")
-
-# Enable verbose output during build
-set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose Makefile")
-
-# Export compile_commands.json for IDE integration
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands")
-
-# -O2
-# Set flags for compilers
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  message(STATUS "Building in Debug Mode")
-  set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -Og -flto -fuse-ld=lld -fsanitize=address" CACHE STRING "C++ flags")  # Add more flags as necessary
+    message(STATUS "Building in Debug Mode")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -Og -flto -fuse-ld=lld -fsanitize=address" CACHE STRING "C++ flags")  # Add more flags as necessary
 
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-  message(STATUS "Building in Release Mode")
-  set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
+    message(STATUS "Building in Release Mode")
+    set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
 else()
-  message(STATUS "Building in Release Mode since no build mode was specified")
-  message(STATUS "Building in Release Mode")
-  set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
+    message(STATUS "Building in Release Mode since no build mode was specified")
+    message(STATUS "Building in Release Mode")
+    set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
 endif()
-
-# tell CMake to run the Qt tools moc, rcc, and uic automatically
-set(CMAKE_AUTOMOC ON CACHE BOOL "CMAKE_AUTOMOC")
-set(CMAKE_AUTORCC ON CACHE BOOL "CMAKE_AUTORCC")
-set(CMAKE_AUTOUIC ON CACHE BOOL "CMAKE_AUTOUIC")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin CACHE PATH "CMAKE runtime output directory")
 
 add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
 add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 
+find_package(Qt6 COMPONENTS Core Gui Widgets Network REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(POPPLER REQUIRED poppler poppler-cpp)
 pkg_check_modules(LIBARCHIVE REQUIRED libarchive)
-find_package(Qt6 COMPONENTS Core Widgets Network REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 find_package(Lua REQUIRED)
 
 execute_process(
-  COMMAND git submodule update --init --recursive
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND git submodule update --init --recursive
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 include(ExternalProject)
-
-set(CMAKE_INSTALL_PREFIX "/usr/share/" CACHE STRING "KDDockWidgets install prefix")
-
-ExternalProject_Add(KDDockWidgets
-  SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/KDDockWidgets
-  CMAKE_ARGS
-  -DKDDockWidgets_FRONTENDS=qtwidgets
-  -DKDDockWidgets_QT6=ON
-  -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-)
-
-find_package(KDDockWidgets-qt6 REQUIRED)
-
-
-if (ENABLE_LLAMA)
-  ExternalProject_Add(llama.cpp
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/llama.cpp
-    CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
-    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
-  add_definitions(-DENABLE_LLAMA)
-endif()
+set(CMAKE_PREFIX_PATH "/usr/" CACHE PATH "KDDockWidgets install path")
 
 qt_standard_project_setup()
 # define an executable built from a source file
 qt_add_executable(${PROJECT_NAME}
-  src/main.cpp
-  src/Navi.cpp
-  src/utils.cpp
-  src/FilePanel.cpp
-  src/PreviewPanel.cpp
-  src/TableView.cpp
-  src/FilePathWidget.cpp
-  src/Statusbar.cpp
-  src/Inputbar.cpp
-  src/FilePropertyWidget.cpp
-  src/BookmarkManager.cpp
-  src/BookmarkWidget.cpp
-  src/ShortcutsWidget.cpp
-  src/NaviWindow.cpp
-  src/DriveWidget.cpp
-  src/TasksWidget.cpp
-  src/Task.cpp
-  src/TaskManager.cpp
-  src/RegisterWidget.cpp
-  src/HookManager.cpp
-  src/FileWorker.cpp
-  src/Thumbnailer.cpp
-  src/FolderPropertyWidget.cpp
-  src/AboutWidget.cpp
-  src/API.cpp
-  src/Mimeutils.cpp
-  src/DesktopFile.cpp
-  src/UpdateDialog.cpp
-  src/WaitingSpinnerWidget.cpp
-  src/CustomInputDialog.cpp
-  src/CollapsibleWidget.cpp
-  src/NotificationDialog.cpp
-  src/NotificationManager.cpp
-  src/CompletionPopup.cpp
+    src/main.cpp
+    src/Navi.cpp
+    src/utils.cpp
+    src/FilePanel.cpp
+    src/PreviewPanel.cpp
+    src/TableView.cpp
+    src/FilePathWidget.cpp
+    src/Statusbar.cpp
+    src/Inputbar.cpp
+    src/FilePropertyWidget.cpp
+    src/BookmarkManager.cpp
+    src/BookmarkWidget.cpp
+    src/ShortcutsWidget.cpp
+    src/NaviWindow.cpp
+    src/DriveWidget.cpp
+    src/TasksWidget.cpp
+    src/Task.cpp
+    src/TaskManager.cpp
+    src/RegisterWidget.cpp
+    src/HookManager.cpp
+    src/FileWorker.cpp
+    src/Thumbnailer.cpp
+    src/FolderPropertyWidget.cpp
+    src/AboutWidget.cpp
+    src/API.cpp
+    src/Mimeutils.cpp
+    src/DesktopFile.cpp
+    src/UpdateDialog.cpp
+    src/WaitingSpinnerWidget.cpp
+    src/CustomInputDialog.cpp
+    src/CollapsibleWidget.cpp
+    src/NotificationDialog.cpp
+    src/NotificationManager.cpp
+    src/CompletionPopup.cpp
 
-  src/Globals.hpp
-  src/TextEdit.hpp
-  src/FileSystemModel.cpp
-  src/MessagesBuffer.hpp
-  src/MarksBuffer.hpp
-  src/TableHeaderView.hpp
-  src/VerticalHeaderView.hpp
-  src/argparse.hpp
-  src/TabBarWidget.hpp
-  src/StorageDevice.hpp
-  src/ImageWidget.hpp
-  src/FilePreviewWorker.hpp
-  src/TaskCardTemplate.hpp
-  src/OrderlessFilterModel.hpp
-  src/FilePanelDelegate.hpp
-  src/QuestionDialog.hpp
-  src/NotificationDialog.hpp
-  src/NotificationManager.hpp
-  src/CompletionPopup.hpp
-  src/LineEdit.hpp
-  src/CompletionDelegate.hpp
+    src/Globals.hpp
+    src/TextEdit.hpp
+    src/FileSystemModel.cpp
+    src/MessagesBuffer.hpp
+    src/MarksBuffer.hpp
+    src/TableHeaderView.hpp
+    src/VerticalHeaderView.hpp
+    src/argparse.hpp
+    src/TabBarWidget.hpp
+    src/StorageDevice.hpp
+    src/ImageWidget.hpp
+    src/FilePreviewWorker.hpp
+    src/TaskCardTemplate.hpp
+    src/OrderlessFilterModel.hpp
+    src/FilePanelDelegate.hpp
+    src/QuestionDialog.hpp
+    src/NotificationDialog.hpp
+    src/NotificationManager.hpp
+    src/CompletionPopup.hpp
+    src/LineEdit.hpp
+    src/CompletionDelegate.hpp
 )
 
-# tell cmake to link the executable to the Qt 6 core and test modules
-
-if (ENABLE_LLAMA)
-  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} llama KDAB::kddockwidgets)
-else()
-  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
 endif()
 
 add_dependencies(${PROJECT_NAME} KDDockWidgets)
-add_dependencies(${PROJECT_NAME} llama.cpp)
-
 
 set(RESOURCE_FILES
-  resources/images/clock.svg
-  resources/images/location.svg
-  resources/images/messages.svg
-  resources/images/pencil-icon.svg
-  resources/images/plus.svg
-  resources/images/reverse.svg
-  resources/images/sort.svg
-  resources/images/menu.svg
-  resources/images/preview.svg
-  resources/images/update.svg
+    resources/images/clock.svg
+    resources/images/location.svg
+    resources/images/messages.svg
+    resources/images/pencil-icon.svg
+    resources/images/plus.svg
+    resources/images/reverse.svg
+    resources/images/sort.svg
+    resources/images/menu.svg
+    resources/images/preview.svg
+    resources/images/update.svg
 )
 
 qt_add_resources(${PROJECT_NAME}
-  PREFIX "resources"
-  FILES ${RESOURCE_FILES})
+    PREFIX "resources"
+    FILES ${RESOURCE_FILES})
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LIBARCHIVE_INCLUDE_DIRS})
 
 add_custom_target(run
-  COMMAND ${PROJECT_NAME}
-  DEPENDS ${PROJECT_NAME}
-  WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+    COMMAND ${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/navifm_autogen/mocs_compilation.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)

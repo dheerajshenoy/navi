@@ -30,10 +30,6 @@
 #include "UpdateDialog.hpp"
 #include <QStringListModel>
 
-#ifdef ENABLE_LLAMA
-#include "../external/llama.cpp/include/llama-cpp.h"
-#endif
-
 class Menubar : public QMenuBar {
     Q_OBJECT
 
@@ -1370,14 +1366,4 @@ protected:
     LineEdit *m_inputbar_lineEdit;
     CompletionPopup *m_inputbar_completion;
 
-    #ifdef ENABLE_LLAMA
-    llama_context *m_llama_ctx;
-    llama_model *m_llama_model;
-    llama_sampler *m_llama_sampler;
-    llama_batch *m_llama_batch;
-    llama_token *m_llama_token;
-
-    void ProcessLlamaCommand(const QStringList &args) noexcept;
-    void load_ai_model(const std::string &modelPath) noexcept;
-    #endif
 };
