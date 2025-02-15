@@ -4,7 +4,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <kddockwidgets/qtwidgets/DockWidget.h>
+#include <kddockwidgets-qt6/kddockwidgets/DockWidget.h>
 
 class MessagesBuffer : public KDDockWidgets::QtWidgets::DockWidget {
   Q_OBJECT

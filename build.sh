@@ -26,7 +26,7 @@ if [[ ! -d "external" ]]; then
     mkdir external
 fi
 
-git clone https://github.com/KDAB/KDDockWidgets external/KDDockWidgets
+git clone --depth=1 https://github.com/KDAB/KDDockWidgets external/KDDockWidgets
 cd external/KDDockWidgets
 
 if [[ ! -d "build" ]]; then
@@ -39,7 +39,7 @@ cmake .. -G Ninja -DKDDockWidgets_QT6=ON \
     -DKDDockWidgets_DOCS=false \
     -DKDDockWidgets_FRONTENDS="qtwidgets" \
     -DCMAKE_BUILD_TYPE="Release" \
-    -DCMAKE_INSTALL_PREFIX=/usr/include
+    -DCMAKE_INSTALL_PREFIX=/usr
 
 cmake --build .
 sudo cmake --build . --target install
@@ -51,4 +51,4 @@ fi
 
 cd build
 cmake .. -G Ninja -DCMAKE_BUILD_TYPE="Release"
-sudo ninja
+sudo ninja install
