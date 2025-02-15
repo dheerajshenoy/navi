@@ -35,7 +35,6 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Building in Debug Mode")
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -g -Og -flto -fuse-ld=lld -fsanitize=address" CACHE STRING "C++ flags")  # Add more flags as necessary
-
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Building in Release Mode")
     set(CMAKE_CXX_FLAGS "-O3 -fuse-ld=lld" CACHE STRING "C++ flags")  # Add more flags as necessary
@@ -59,9 +58,6 @@ execute_process(
     COMMAND git submodule update --init --recursive
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
-
-include(ExternalProject)
-set(CMAKE_PREFIX_PATH "/usr/" CACHE PATH "KDDockWidgets install path")
 
 qt_standard_project_setup()
 # define an executable built from a source file
@@ -124,10 +120,9 @@ qt_add_executable(${PROJECT_NAME}
     src/CompletionDelegate.hpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
-endif()
+add_subdirectory(external/KDDockWidgets)
 
-add_dependencies(${PROJECT_NAME} KDDockWidgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Widgets Qt6::Network ${ImageMagick_LIBRARIES} ${LUA_LIBRARIES} poppler poppler-cpp poppler-qt6 ${LIBARCHIVE_LIBRARIES} KDAB::kddockwidgets)
 
 set(RESOURCE_FILES
     resources/images/clock.svg
@@ -147,7 +142,7 @@ qt_add_resources(${PROJECT_NAME}
     FILES ${RESOURCE_FILES})
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LIBARCHIVE_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${ImageMagick_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LIBARCHIVE_INCLUDE_DIRS} ./libs/kddockwidgets-qt6/include)
 
 add_custom_target(run
     COMMAND ${PROJECT_NAME}

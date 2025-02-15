@@ -48,10 +48,8 @@
 #include <kddockwidgets-qt6/kddockwidgets/Config.h>
 #include <kddockwidgets-qt6/kddockwidgets/LayoutSaver.h>
 #include <kddockwidgets-qt6/kddockwidgets/DockWidget.h>
-#include <kddockwidgets-qt6/kddockwidgets/core/MainWindow.h>
+#include <kddockwidgets-qt6/kddockwidgets/MainWindow.h>
 #include <kddockwidgets-qt6/kddockwidgets/core/TitleBar.h>
-#include <kddockwidgets-qt6/kddockwidgets/qtwidgets/DockWidget.h>
-#include <kddockwidgets-qt6/kddockwidgets/qtwidgets/MainWindow.h>
 
 #include <stack>
 #include <vector>
