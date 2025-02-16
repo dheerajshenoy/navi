@@ -119,4 +119,5 @@
 - [ ] Fix completion
 - [ ] Fix ls command not showing up in tasks widget
 - [ ] Messages Pane color
+- [ ] Tasks widget as dockwidget
 

@@ -49,7 +49,6 @@
 #include <kddockwidgets-qt6/kddockwidgets/LayoutSaver.h>
 #include <kddockwidgets-qt6/kddockwidgets/DockWidget.h>
 #include <kddockwidgets-qt6/kddockwidgets/MainWindow.h>
-#include <kddockwidgets-qt6/kddockwidgets/core/TitleBar.h>
 
 #include <stack>
 #include <vector>
