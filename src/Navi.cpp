@@ -1018,7 +1018,6 @@ void Navi::initLayout() noexcept {
 
   m_dock_container->setContentsMargins(0, 0, 0, 0);
 
-  m_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
   m_layout->addWidget(m_file_path_widget);
   m_layout->addWidget(m_dock_container);
   /*m_layout->addWidget(m_file_panel);*/
@@ -1028,8 +1027,6 @@ void Navi::initLayout() noexcept {
 
   m_file_panel_dock->setContentsMargins(0, 0, 0, 0);
   m_file_panel_dock->setWidget(m_file_panel);
-  m_preview_panel_dock->setSizePolicy(QSizePolicy::Maximum,
-                                      QSizePolicy::Expanding);
 
   m_dock_container->addDockWidget(m_file_panel_dock,
                                   KDDockWidgets::Location::Location_OnLeft);
@@ -3273,34 +3270,32 @@ void Navi::saveLayout(const std::string &_layoutName) noexcept {
   QString layoutName;
 
   if (_layoutName.empty()) {
-    bool fine = false;
     bool ok;
 
-    while (!fine) {
+        layoutName =
+            QInputDialog::getText(this, "Save Layout", "Enter layout name",
+                                  QLineEdit::Normal, "", &ok) +
+            ".json";
 
-      layoutName =
-          QInputDialog::getText(this, "Save Layout", "Enter layout name",
-                                QLineEdit::Normal, "", &ok) +
-          ".json";
+        if (!ok || layoutName.isEmpty())
+            return;
 
-      if (!ok || layoutName.isEmpty())
-        return;
-
-      if (savedLayouts.contains(layoutName)) {
-        QMessageBox::warning(
-            this, "Layout Name Exists",
-            QString(
-                "Layout with the name '%1' already exists. Please try saving "
-                "the layout with a unique name")
+        if (savedLayouts.contains(layoutName)) {
+            auto response = QMessageBox::question(
+                this, "Layout Name Exists",
+                QString("Layout with the name '%1' already exists."
+                        "Do you want to overwrite ?")
                 .arg(layoutName));
-      } else {
-        fine = true;
-      }
-    }
 
-  } else {
-    layoutName = QString::fromStdString(_layoutName) + ".json";
-  }
+            if (response != QMessageBox::StandardButton::Yes) {
+                m_statusbar->Message("Layout save unsuccesful!",
+                                     MessageType::WARNING);
+                return;
+            }
+        }
+    } else {
+        layoutName = QString::fromStdString(_layoutName) + ".json";
+    }
 
   QDir dir;
   if (!dir.exists(LAYOUT_PATH)) {
