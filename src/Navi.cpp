@@ -1539,22 +1539,25 @@ void Navi::ResetFilter() noexcept {
 // similar to the `m_statusbar->Message()` function.
 void Navi::LogMessage(const QString &message,
                       const MessageType &type) noexcept {
-  QString coloredMessage = message;
-  switch (type) {
+    QString coloredMessage = message;
+    switch (type) {
 
-  case MessageType::INFO:
-    coloredMessage = "<font color='white'>" + message + "</font>";
-    break;
+        case MessageType::INFO:
+            coloredMessage = QString("<font color='%1'>%2</font>").arg(m_info_color,
+                                                                       message);
+            break;
 
-  case MessageType::WARNING:
-    coloredMessage = "<font color='yellow'>" + message + "</font>";
-    break;
+        case MessageType::WARNING:
+            coloredMessage = QString("<font color='%1'>%2</font>").arg(m_warn_color,
+                                                                       message);
+            break;
 
-  case MessageType::ERROR:
-    coloredMessage = "<font color='red'>" + message + "</font>";
-    break;
-  }
-  m_log_buffer->AppendText(coloredMessage);
+        case MessageType::ERROR:
+            coloredMessage = QString("<font color='%1'>%2</font>").arg(m_error_color,
+                                                                       message);
+            break;
+    }
+    m_log_buffer->AppendText(coloredMessage);
 }
 
 Navi::~Navi() {

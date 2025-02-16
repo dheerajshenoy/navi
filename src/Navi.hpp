@@ -1304,6 +1304,9 @@ protected:
     // Hashmap for storing the commands and the corresponding function calls
     QHash<QString, std::function<void(const QStringList &args)>> commandMap;
 
+    QString m_warn_color = "yellow",
+    m_info_color = palette().color(foregroundRole()).name(),
+    m_error_color = "red";
     MessagesBuffer *m_log_buffer = nullptr;
     MarksBuffer *m_marks_buffer = nullptr;
 
