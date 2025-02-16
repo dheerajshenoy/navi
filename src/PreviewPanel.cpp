@@ -6,8 +6,6 @@ PreviewPanel::PreviewPanel(QWidget *parent) : QWidget(parent) {
 
     m_layout->addWidget(m_stack_widget, 0);
 
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
     m_stack_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 
     m_img_widget->setHidden(true);
