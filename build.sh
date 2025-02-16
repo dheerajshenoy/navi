@@ -14,6 +14,7 @@ cmake .. -G Ninja -DKDDockWidgets_QT6=ON \
     -DKDDockWidgets_FRONTENDS="qtwidgets" \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX=/usr
+
 cmake --build .
 sudo cmake --build . --target install
 cd $root

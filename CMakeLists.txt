@@ -4,8 +4,6 @@ cmake_minimum_required(VERSION 3.16.0)
 project(navifm VERSION 1.3.4 LANGUAGES CXX)
 
 # option(ENABLE_LLAMA "Enable llama.cpp AI integration" OFF)
-# pick the C++ standard to use, in this case C++20
-set(QT_MAJOR_VERSION 6)
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
 set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "C++ standard required")
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
@@ -119,6 +117,12 @@ qt_add_executable(${PROJECT_NAME}
     src/LineEdit.hpp
     src/CompletionDelegate.hpp
 )
+
+set(KDDockWidgets_QT6 true CACHE BOOL "")
+set(KDDockWidgets_EXAMPLES false CACHE BOOL "")
+set(KDDockWidgets_DOCS false CACHE BOOL "")
+set(KDDockWidgets_FRONTENDS "qtwidgets" CACHE STRING "")
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "")
 
 add_subdirectory(external/KDDockWidgets)
 
