@@ -1,5 +1,18 @@
 #!/bin/sh
 
+share_dir="/usr/share/navifm"
+app_file="/usr/share/applications/navifm.desktop"
+
+
+if [[ -d $share_dir ]]; then
+    sudo rm -rf $share_dir
+fi
+
+if [[ -f $app_file ]]; then
+    sudo rm -rf $app_file
+fi
+
+
 root=$(pwd)
 mkdir -p external
 if [[ ! -d "external/KDDockWidgets" ]]; then

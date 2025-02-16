@@ -112,6 +112,11 @@
 - [ ] New file re-caching thumbnail
 - [ ] Add fits previewing
 - [ ] Implement Cache Eviction Policy
-- [ ] Lazy loading directory
+- [X] Lazy loading directory
 - [ ] Optimizations
+
 - [ ] Fix current cursor foreground text color
+- [ ] Fix completion
+- [ ] Fix ls command not showing up in tasks widget
+- [ ] Messages Pane color
+
