@@ -3,6 +3,15 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+v1.3.5 (17 February 2025)
+========================
+
++ Overwrite saved layout
++ Statusbar info color defaults to standard Qt foreground color
++ Messages Pane info color defaults to standard Qt foreground color
++ Tasks Widget is a DockWidget
++ Preview Panel size policy reverted to resizable
+
 v1.3.4 (12 February 2025)
 ========================
 
