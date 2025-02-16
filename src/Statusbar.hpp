@@ -150,7 +150,7 @@ private:
     bool m_visual_line_mode_italic = false, m_visual_line_mode_bold = false;
     QString m_macro_mode_label_text;
     QColor m_macro_mode_label_fg, m_macro_mode_label_bg;
-    QColor m_message_info_fg = Qt::white,
+    QColor m_message_info_fg = palette().color(foregroundRole()),
     m_message_warning_fg = Qt::yellow,
     m_message_error_fg = Qt::red;
     QString m_macro_mode_label_padding_string;
