@@ -26,8 +26,6 @@ DriveWidget::DriveWidget() : KDDockWidgets::QtWidgets::DockWidget("Drives") {
     m_drives_table_widget->setEditTriggers(QTableWidget::EditTrigger::NoEditTriggers);
     // header->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 
-    this->setLayout(m_layout);
-
     connect(m_drives_watcher, &QFileSystemWatcher::directoryChanged, this,
             [&](const QString &path) { loadDrives(); });
 
