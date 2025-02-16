@@ -1,4 +1,3 @@
-
 Installation
 ------------
 
@@ -13,11 +12,10 @@ Navi can be built from source. The following libraries are dependencies for navi
 
 If you're on ArchLinux:
 
-Install using PKGBUILD
-~~~~~~~~~~~~~~~~~~~~~~
+Install from the AUR
+~~~~~~~~~~~~~~~~~~~~
 
-1. Download `PKGBUILD <https://raw.githubusercontent.com/dheerajshenoy/navi/refs/heads/main/packages/PKGBUILD>`_ file
-2. Run ``makepkg -si`` command and it should install navi for you
+You can install navi from the AUR. The package is called ``navifm-git``.
 
 Building manually
 ~~~~~~~~~~~~~~~~~
@@ -42,22 +40,7 @@ If you're on Ubuntu/Debian based distribution, you can paste the following `apt`
 
 .. note:: I have not tested Navi on an Ubuntu machine. If there are any problems, please open an issue.
 
-After installing these dependencies on your system, clone the reposity and it's submodules using the following command:
-
-.. code-block:: bash
-
-    git clone --recursive https://github.com/dheerajshenoy/navi
-    cd navi
-    git submodule update --init --recursive
-
-you can build navi by using the following command (inside the project’s directory):
-
-.. code-block:: bash
-
-    mkdir build && cd build
-    cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-    ninja -j$(nproc)
-    sudo ninja install
+After installing these dependencies on your system, clone the repository and then execute the ``build.sh`` script.
 
 If everything went well, you should have navi installed on your system. You can launch navi using the command `navi`.
 
@@ -68,8 +51,6 @@ Uninstallation
 
 If you have installed navi using PKGBUILD then simply run the following command to uninstall navi and it's related files **except for your configuration files**:
 
-``sudo pacman -R navi``
+``sudo pacman -Rns navi``
 
-If you have installed navi by building manually then you have to remove the binary and related files manually using the following commands:
-
-``sudo rm -rf /usr/bin/navi && rm -rf /usr/share/navi/ && rm -rf /usr/share/applications/navi.desktop``
+Or you can run the ``uninstall.sh`` script if you had cloned the repo and built navi, both of these methods do the same thing.
