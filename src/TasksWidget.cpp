@@ -1,8 +1,13 @@
 #include "TasksWidget.hpp"
 #include <qnamespace.h>
 
-TasksWidget::TasksWidget(TaskManager *taskManager, QWidget *parent)
-: QWidget(parent), m_task_manager(taskManager) {
+TasksWidget::TasksWidget(TaskManager *taskManager)
+    : KDDockWidgets::QtWidgets::DockWidget("Tasks"),
+    m_task_manager(taskManager) {
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(m_layout);
+    this->setWidget(widget);
 
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     taskContainer = new QWidget(this);
@@ -16,7 +21,7 @@ TasksWidget::TasksWidget(TaskManager *taskManager, QWidget *parent)
     taskLayout->addItem(taskSpacer);
     scrollArea->setWidget(taskContainer);
     m_layout->addWidget(scrollArea);
-    this->setLayout(m_layout);
+
     connect(m_task_manager, &TaskManager::taskAdded, this, &TasksWidget::addTaskCard);
     connect(m_task_manager, &TaskManager::taskRemoved, this,
             &TasksWidget::removeTaskCard);
@@ -46,6 +51,7 @@ void TasksWidget::removeTaskCard(Task *task) noexcept {
     if (m_task_cards.contains(task->uuid())) {
         auto card = m_task_cards[task->uuid()];
         m_task_cards.remove(task->uuid());
+        m_task_manager->removeTask(task->uuid());
         delete card;
     }
 

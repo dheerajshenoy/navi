@@ -5,29 +5,19 @@
 #include "Task.hpp"
 #include "TaskManager.hpp"
 #include "TaskCardTemplate.hpp"
+#include <kddockwidgets-qt6/kddockwidgets/DockWidget.h>
 
-class TasksWidget : public QWidget {
-Q_OBJECT
-public:
-  TasksWidget(TaskManager *taskManager, QWidget *parent = nullptr);
+class TasksWidget : public  KDDockWidgets::QtWidgets::DockWidget {
+    Q_OBJECT
+    public:
+    TasksWidget(TaskManager *taskManager);
     void addTask(const Task *task) noexcept;
-
-    inline void show() noexcept {
-        emit visibilityChanged(true);
-        QWidget::show();
-    }
-
-    inline void hide() noexcept {
-        emit visibilityChanged(false);
-        QWidget::show();
-    }
 
     void addTaskCard(Task *task) noexcept;
     void removeTaskCard(Task *task) noexcept;
 
-signals:
+    signals:
     void taskFinished(const Task &task);
-    void visibilityChanged(const bool &state);
 
 private:
     void updateNoTasksLabel() noexcept;
