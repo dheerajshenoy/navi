@@ -3277,7 +3277,39 @@ void Navi::loadLayout(const std::string &layoutName) noexcept {
     }
 }
 
-void Navi::deleteLayout(const std::string &layoutName) noexcept {}
+void Navi::deleteLayout(const std::string &_layoutName) noexcept {
+
+    QStringList savedLayouts = utils::savedLayouts();
+
+    if (savedLayouts.empty()) {
+        QMessageBox::information(this, "Load layout",
+                                 "No saved layouts detected.");
+        return;
+    }
+
+    auto deleteLayoutFunc = [&](const QString &layout_name) {
+        auto filePath = joinPaths(LAYOUT_PATH, layout_name);
+        if (QFile::remove(filePath)) {
+            m_statusbar->Message(QString("Deleted layout %1")
+                .arg(layout_name), MessageType::INFO);
+        } else {
+            m_statusbar->Message(QString("Could not delet layout %1")
+                .arg(layout_name), MessageType::ERROR);
+        }
+
+    };
+
+    if (_layoutName.empty()) {
+        bool ok;
+        QString selectedLayout = QInputDialog::getItem(this, "Delete layout", "Choose a layout to delete", savedLayouts, 0, false, &ok);
+
+        if (ok && !selectedLayout.isEmpty()) {
+            deleteLayoutFunc(selectedLayout);
+        }
+    } else {
+        deleteLayoutFunc(QString::fromStdString(_layoutName));
+    }
+}
 
 void Navi::saveLayout(const std::string &_layoutName) noexcept {
 
@@ -3328,7 +3360,8 @@ void Navi::saveLayout(const std::string &_layoutName) noexcept {
     }
 }
 
-void Navi::screenshot(const std::string &_path, const int &delay) noexcept {
+void Navi::screenshot(const std::string &_path,
+                      const int &delay) noexcept {
     QScreen *screen = QGuiApplication::primaryScreen();
 
     if (!screen) {
@@ -3402,7 +3435,7 @@ void Navi::initValidCommandsList() noexcept {
         {"goto-symlink-target", {}},
         {"new-window", {}},
         {"update", {}},
-        {"screenshot", {}},
+        {"screenshot", { 0, 1, QList<CompletionType>{ QStringList({ "silent" }) } }},
         {"notify", { 2, 2, QList<CompletionType>{
             QStringList{},
             QStringList{ "info", "warn", "error" }
