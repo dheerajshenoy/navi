@@ -1,4 +1,3 @@
-
 # Table of Contents
 
 - [X] Check for Updates
@@ -110,14 +109,12 @@
 - [ ] Sleep api
 - [ ] IPC
 - [ ] New file re-caching thumbnail
-- [ ] Add fits previewing
+- ~~[ ] Add fits previewing~~
 - [ ] Implement Cache Eviction Policy
 - [X] Lazy loading directory
 - [ ] Optimizations
-
-- [ ] Fix current cursor foreground text color
+- [X] Fix current cursor foreground text color
+- [X] Messages Pane color
 - [ ] Fix completion
 - [ ] Fix ls command not showing up in tasks widget
-- [ ] Messages Pane color
-- [ ] Tasks widget as dockwidget
-
+- [X] Tasks widget as dockwidget
