@@ -940,7 +940,7 @@ void Navi::ProcessCommand(const QString &commandtext) noexcept {
         QStringList args = command;
 
         if (commandMap.contains(subcommand)) {
-            if (m_macro_mode && subcommand != "macro-record") {
+            if (m_macro_mode && subcommand != "macro-record" && subcommand != "execute-extended-command") {
                 if (!args.isEmpty())
                     addCommandToMacroRegister(subcommand + " " + args.join(" "));
                 else
@@ -1715,18 +1715,16 @@ void Navi::ToggleRecordMacro() noexcept {
         QString macro_key = m_inputbar->getInput("Enter the macro key");
 
         if (m_macro_hash.contains(macro_key)) {
-            auto reply =
-                QMessageBox::question(this, "Macro exists",
-                                      QString("A macro with the key %1 already "
-                                              "exists. Do you want to overwrite ?")
-                                      .arg(macro_key));
+            auto reply = QMessageBox::question(this, "Macro exists",
+                                               QString("A macro with the key %1 already "
+                                                   "exists. Do you want to overwrite ?")
+                                                   .arg(macro_key));
             if (reply != QMessageBox::Yes) {
                 return;
             }
         }
 
         m_macro_register.append(macro_key);
-
         m_statusbar->SetMacroMode(true);
         m_statusbar->Message(QString("Recording macro for key %1").arg(macro_key));
     } else {
@@ -2246,10 +2244,16 @@ void Navi::addCommandToMacroRegister(const QString &command) noexcept {
 void Navi::GotoItem(const int &num) noexcept { m_file_panel->GotoItem(num); }
 
 void Navi::PlayMacro() noexcept {
-    QString macro_key = m_inputbar->getInput("Enter macro key");
+    QString macro_key = utils::getInput(this,
+                                        "Play Macro",
+                                        "Enter macro key");
+
+    if (macro_key.isEmpty())
+        return;
 
     if (m_macro_hash.contains(macro_key)) {
-        for (const auto &com : m_macro_register) {
+        auto commands = m_macro_hash[macro_key];
+        for (const auto &com : commands) {
             ProcessCommand(com);
         }
     } else {
