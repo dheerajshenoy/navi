@@ -3,6 +3,7 @@ Navi Changelogs
 
 The changelogs for Navi along with their version is mentioned in the reverse chronological order below:
 
+
 v1.3.5 (17 February 2025)
 ========================
 
@@ -11,6 +12,10 @@ v1.3.5 (17 February 2025)
 + Messages Pane info color defaults to standard Qt foreground color
 + Tasks Widget is a DockWidget
 + Preview Panel size policy reverted to resizable
++ Layout deletion
++ Tasks Widget now shows command output after finishing execution
++ Requirement of explicit removal of tasks after finishing execution
++ Macro record works (kind of)
 
 v1.3.4 (12 February 2025)
 ========================
