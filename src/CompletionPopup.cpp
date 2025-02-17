@@ -2,7 +2,7 @@
 #include <qobjectdefs.h>
 
 CompletionPopup::CompletionPopup(LineEdit* parent)
-    : QFrame(parent), m_lineEdit(parent),
+: QFrame(parent), m_lineEdit(parent),
     m_model(new QStringListModel(this)),
     m_filter_model(new CompletionFilterModel(this)),
     m_completion_delegate(new CompletionDelegate(m_lineEdit))
@@ -38,6 +38,7 @@ void CompletionPopup::updateCompletions(const QString &text) noexcept {
         hide();
     } else {
         emit matchCountSignal(count, m_total_completions_count);
+        m_listView->setCurrentIndex(m_filter_model->index(0, 0));
         showPopup();
     }
 }
@@ -123,9 +124,34 @@ void CompletionPopup::selectItem(const QModelIndex &index) noexcept {
     hide();
 }
 
+void CompletionPopup::setCompletions(const QString &mode,
+                                     const QStringList &completions) noexcept {
+    m_completion_hash[mode] = completions;
+    m_model->setStringList(completions);
+    m_filter_model->invalidate();
+    m_total_completions_count = completions.size();
+}
+
 void CompletionPopup::setCompletions(const QStringList &completions) noexcept {
+    m_completion_hash[m_current_mode] = completions;
     m_model->setStringList(completions);
     m_filter_model->invalidate();
     m_total_completions_count = completions.size();
 
+
+}
+
+void CompletionPopup::setMode(const QString &mode) noexcept {
+    m_current_mode = mode;
+    if (!m_completion_hash.contains(mode)) {
+        QStringList list;
+        m_completion_hash[mode] = list;
+        m_model->setStringList(list);
+        m_total_completions_count = 0;
+    } else {
+        QStringList completion = m_completion_hash[mode];
+        m_model->setStringList(completion);
+        m_filter_model->invalidate();
+        m_total_completions_count = completion.size();
+    }
 }

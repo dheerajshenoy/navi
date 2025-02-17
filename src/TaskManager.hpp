@@ -12,6 +12,7 @@ public:
     TaskManager(QObject *object = nullptr);
 
     void addTask(Task *task) noexcept;
+    void cancelTask(const QUuid &uuid) noexcept;
     bool removeTask(const QUuid &uuid) noexcept;
     bool clearTasks() noexcept;
     unsigned int taskCount() const noexcept;
@@ -20,8 +21,9 @@ public:
 
     signals:
     void taskAdded(Task *task);
-    void taskRemoved(Task *task);
+    void taskRemoved(QUuid uuid);
     void tasksCleared();
+    void taskFinished(QUuid uuid);
 
 private:
     QHash<const QUuid, Task*> m_tasks_hash;

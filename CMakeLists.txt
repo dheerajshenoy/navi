@@ -94,6 +94,7 @@ qt_add_executable(${PROJECT_NAME}
     src/NotificationDialog.cpp
     src/NotificationManager.cpp
     src/CompletionPopup.cpp
+    src/TaskCardTemplate.cpp
 
     src/Globals.hpp
     src/TextEdit.hpp
@@ -107,7 +108,6 @@ qt_add_executable(${PROJECT_NAME}
     src/StorageDevice.hpp
     src/ImageWidget.hpp
     src/FilePreviewWorker.hpp
-    src/TaskCardTemplate.hpp
     src/OrderlessFilterModel.hpp
     src/FilePanelDelegate.hpp
     src/QuestionDialog.hpp

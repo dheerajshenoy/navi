@@ -11,10 +11,10 @@
 #include "CompletionDelegate.hpp"
 
 class CompletionFilterModel : public QSortFilterProxyModel {
-public:
+    public:
     CompletionFilterModel(QObject *parent = nullptr) : QSortFilterProxyModel(parent) {}
 
-protected:
+    protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override {
         if (filterRegularExpression().pattern().isEmpty()) {
             return true; // Show all items when filter is empty
@@ -28,9 +28,11 @@ class CompletionPopup : public QFrame {
 
     public:
     explicit CompletionPopup(LineEdit *parent);
+
     inline void setPopupHeight(const int &height) noexcept {
         setFixedHeight(height);
     }
+
     inline int popupHeight() noexcept { return this->height(); }
 
     inline void set_font_family(const std::string &name) noexcept {
@@ -61,10 +63,15 @@ class CompletionPopup : public QFrame {
 
     void showPopup() noexcept;
     void updateCompletions(const QString &text) noexcept;
-    void setCompletions(const QStringList &) noexcept;
+    void setCompletions(const QStringList &completions) noexcept;
+    void setCompletions(const QString &mode,
+                        const QStringList &completions) noexcept;
+
     inline QStringList completions() noexcept {
-        return m_model->stringList();
+        return m_completion_hash[m_current_mode];
+        // return m_model->stringList();
     }
+
     inline void setCaseSensitivity(const Qt::CaseSensitivity &sensitivity) noexcept {
         m_filter_model->setFilterCaseSensitivity(sensitivity);
     }
@@ -85,15 +92,19 @@ class CompletionPopup : public QFrame {
 
     inline bool matchCount() noexcept { return m_match_count_visible; }
 
+    inline QString mode() noexcept { return m_current_mode; }
+
+    void setMode(const QString &mode) noexcept;
+
     void updatePopupGeometry() noexcept;
 
-protected:
+    protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 
-signals:
+    signals:
     void matchCountSignal(int count, int total);
 
-private:
+    private:
     void selectItem(const QModelIndex &index) noexcept;
     LineEdit* m_lineEdit;
     QListView *m_listView;
@@ -103,4 +114,6 @@ private:
     CompletionDelegate *m_completion_delegate;
     bool m_match_count_visible = false;
     int m_total_completions_count = -1;
+    QString m_current_mode = "none";
+    QHash<QString, QStringList> m_completion_hash;
 };

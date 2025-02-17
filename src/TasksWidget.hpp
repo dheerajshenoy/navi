@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pch/pch_taskswidget.hpp"
-
 #include "Task.hpp"
 #include "TaskManager.hpp"
 #include "TaskCardTemplate.hpp"
@@ -14,14 +13,11 @@ class TasksWidget : public  KDDockWidgets::QtWidgets::DockWidget {
     void addTask(const Task *task) noexcept;
 
     void addTaskCard(Task *task) noexcept;
-    void removeTaskCard(Task *task) noexcept;
-
-    signals:
-    void taskFinished(const Task &task);
+    void removeTaskCard(const QUuid &uuid) noexcept;
 
 private:
     void updateNoTasksLabel() noexcept;
-    QVBoxLayout *m_layout = new QVBoxLayout(this);
+    QVBoxLayout *m_layout = new QVBoxLayout();
     QVBoxLayout *taskLayout;
     TaskManager *m_task_manager;
     QHash<const QUuid, TaskCardTemplate*> m_task_cards;

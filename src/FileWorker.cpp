@@ -3,7 +3,7 @@
 
 FileWorker::FileWorker(const QStringList &files, const QString &destDir,
                        const FileOPType &type, TaskManager *taskManager) : m_srcFiles(files), m_destDir(destDir),
-m_type(type), m_task_manager(taskManager) {
+                                                                           m_type(type), m_task_manager(taskManager) {
 
     connect(this, &FileWorker::finished, this, [&]() {
         m_overwrite_confirm_all = false;

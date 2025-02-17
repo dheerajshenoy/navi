@@ -6,8 +6,22 @@ class Task : public QObject {
     Q_OBJECT
 
   public:
-    Task();
-    enum class TaskType { COMMAND = 0, COPY, MOVE, DELETE, TRASH };
+    Task(QObject *parent = nullptr);
+
+    enum class TaskType {
+        COMMAND = 0,
+        COPY,
+        MOVE,
+        DELETE,
+        TRASH
+    };
+
+    enum class TaskStatus {
+        RUNNING = 0,
+        DONE
+    };
+
+    void cancel() noexcept;
     void setTaskType(const TaskType &type) noexcept;
     void setCommandString(const QString &command, const QStringList &args) noexcept;
     void run() noexcept;
@@ -17,10 +31,12 @@ class Task : public QObject {
     QString commandString() const noexcept {
         return m_command + " " + m_command_args_list.join(" ");
     }
+
     void setProgress(const float &_progress) noexcept {
         m_progress = _progress;
         emit progress(_progress);
     }
+
     void setFinished(const bool &state) noexcept {
         if (state)
             emit finished(m_uuid);

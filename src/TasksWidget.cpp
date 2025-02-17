@@ -2,7 +2,7 @@
 #include <qnamespace.h>
 
 TasksWidget::TasksWidget(TaskManager *taskManager)
-    : KDDockWidgets::QtWidgets::DockWidget("Tasks"),
+: KDDockWidgets::QtWidgets::DockWidget("Tasks"),
     m_task_manager(taskManager) {
 
     QWidget *widget = new QWidget(this);
@@ -23,8 +23,9 @@ TasksWidget::TasksWidget(TaskManager *taskManager)
     m_layout->addWidget(scrollArea);
 
     connect(m_task_manager, &TaskManager::taskAdded, this, &TasksWidget::addTaskCard);
-    connect(m_task_manager, &TaskManager::taskRemoved, this,
-            &TasksWidget::removeTaskCard);
+    connect(m_task_manager, &TaskManager::taskRemoved, this, &TasksWidget::removeTaskCard);
+
+
     m_no_tasks_label->setAlignment(Qt::AlignCenter);
     m_layout->addWidget(m_no_tasks_label);
 
@@ -37,22 +38,44 @@ void TasksWidget::updateNoTasksLabel() noexcept {
 }
 
 void TasksWidget::addTaskCard(Task *task) noexcept {
-    auto *taskCard = new TaskCardTemplate(task, this);
+    auto *taskCard = new TaskCardTemplate(task->uuid(), task->commandString(), task->type(), this);
+
     connect(task, &Task::progress, taskCard, &TaskCardTemplate::progressChanged);
+
+    // Connect output signal to update QTextEdit
+    connect(task, &Task::stdout, taskCard, &TaskCardTemplate::appendOutput);
+
+    connect(taskCard, &TaskCardTemplate::taskRemoveRequested, taskCard, [&] (QUuid uuid) {
+        m_task_manager->removeTask(uuid);
+        this->removeTaskCard(uuid);
+    });
+
     m_task_cards[task->uuid()] = taskCard;
     taskLayout->insertWidget(0, taskCard);
     connect(taskCard, &TaskCardTemplate::taskCancelRequested, this,
-            [&](Task *task) { m_task_manager->removeTask(task->uuid()); });
+            [&](QUuid uuid) {
+                m_task_manager->cancelTask(uuid);
+                // m_task_manager->removeTask(task->uuid());
+            });
+
+
+    connect(task, &Task::finished, this, [&](QUuid uuid) {
+        if (m_task_cards.contains(uuid)) {
+            auto card = m_task_cards[uuid];
+            card->setTaskFinished();
+            m_task_manager->removeTask(uuid);
+        }
+    });
+
 
     updateNoTasksLabel();
 }
 
-void TasksWidget::removeTaskCard(Task *task) noexcept {
-    if (m_task_cards.contains(task->uuid())) {
-        auto card = m_task_cards[task->uuid()];
-        m_task_cards.remove(task->uuid());
-        m_task_manager->removeTask(task->uuid());
-        delete card;
+void TasksWidget::removeTaskCard(const QUuid &uuid) noexcept {
+    if (m_task_cards.contains(uuid)) {
+        auto card = m_task_cards.take(uuid);
+        if (card)
+            card->deleteLater();
     }
 
     updateNoTasksLabel();

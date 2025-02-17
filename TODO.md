@@ -103,7 +103,7 @@
 - [ ] lua API for custom context menu
 - [ ] Deletion make task if large size
 - [ ] Connect to internet server
-- [ ] Selection wierd behaviour
+- [X] Selection wierd behaviour
 - [ ] view copy/cut file register
 - [ ] Timer api
 - [ ] Sleep api
@@ -115,6 +115,7 @@
 - [ ] Optimizations
 - [X] Fix current cursor foreground text color
 - [X] Messages Pane color
-- [ ] Fix completion
-- [ ] Fix ls command not showing up in tasks widget
+- [X] Fix completion visible when in search mode
+- [X] Fix ls command not showing up in tasks widget
 - [X] Tasks widget as dockwidget
+- [ ] Fix segmentation error issue on exit

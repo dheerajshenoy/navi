@@ -16,7 +16,6 @@ public:
   explicit MessagesBuffer()
     : KDDockWidgets::QtWidgets::DockWidget(QStringLiteral("Messages Pane")) {
     m_layout->addWidget(m_text_edit);
-    this->setLayout(m_layout);
     QPushButton *m_clear_btn = new QPushButton("Clear");
     connect(m_clear_btn, &QPushButton::clicked, this,
             [&]() { m_text_edit->clear(); });

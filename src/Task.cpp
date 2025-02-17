@@ -1,7 +1,7 @@
 #include "Task.hpp"
 
-Task::Task() : m_uuid(QUuid::createUuid()), process(new QProcess(this)) {
-}
+Task::Task(QObject *parent)
+    : m_uuid(QUuid::createUuid()), process(new QProcess(parent)) {}
 
 void Task::setTaskType(const TaskType &type) noexcept { m_type = type; }
 
@@ -53,4 +53,8 @@ void Task::runCommand() noexcept {
 
     process->start(m_command, m_command_args_list);
 
+}
+
+void Task::cancel() noexcept {
+    process->terminate();
 }
