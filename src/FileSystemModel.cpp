@@ -46,7 +46,7 @@ uint FileSystemModel::getMarkedFilesCountLocal() noexcept {
 void FileSystemModel::setRootPath(const QString &path) noexcept {
     m_file_system_watcher->removePath(m_root_path);
     m_root_path = path;
-    loadDirectory(path);
+    loadDirectory(path, m_dir_sort_flags);
     m_file_system_watcher->addPath(path);
 }
 
@@ -93,35 +93,37 @@ void FileSystemModel::loadDirectory(const QString &path,
     m_path_row_hash.clear();
     m_loaded_files_count = 0;
 
-    QStringList directories, files;
+    // Pre-allocate the necessary space
+    m_all_file_paths.reserve(1000); // Assuming the number of files/directories is large, adjust as needed
+    m_path_row_hash.reserve(1000);  // Adjust for expected number of entries
 
+    QStringList directories, files;
     int row = 0;
 
-    QDirIterator it_dir(path, m_name_filters, QDir::Dirs | QDir::NoDotAndDotDot,
-                        QDirIterator::NoIteratorFlags);
+    // Create a QDirIterator for both directories and files
+    QDirIterator it(path, m_name_filters, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot,
+                    QDirIterator::NoIteratorFlags);
 
-    QDirIterator it_file(path, m_name_filters,
-                         QDir::Files | QDir::NoDotAndDotDot,
-                         QDirIterator::NoIteratorFlags);
-
-    while (it_dir.hasNext()) {
-        QString filePath = it_dir.next();
-        m_path_row_hash.insert(filePath, row++);
-        directories.append(filePath);
-        // emit directoryLoadProgress(static_cast<int>((static_cast<float>(row / totalEntries) * 100));
+    while (it.hasNext()) {
+        QString filePath = it.next();
+        if (it.fileInfo().isDir()) {
+            directories.append(filePath);  // Directories first
+        } else {
+            files.append(filePath);  // Files next
+        }
     }
 
-    while (it_file.hasNext()) {
-        QString filePath = it_file.next();
-        files.append(filePath);
+    QStringList first, second;
+    // Sort directories and files based on the flag
+    if (sort_flags & QDir::SortFlag::DirsFirst) {
+        first = directories;
+        second = files;
+    } else {
+        first = files;
+        second = directories;
     }
 
-    const QStringList &first =
-        (sort_flags & QDir::SortFlag::DirsFirst) ? directories : files;
-
-    const QStringList &second =
-        (sort_flags & QDir::SortFlag::DirsFirst) ? files : directories;
-
+    // Append the sorted lists to the final model
     for (const QString &filePath : first) {
         m_all_file_paths.append(filePath);
         m_path_row_hash.insert(filePath, row++);
@@ -131,6 +133,10 @@ void FileSystemModel::loadDirectory(const QString &path,
         m_all_file_paths.append(filePath);
         m_path_row_hash.insert(filePath, row++);
     }
+
+    qDebug() << first;
+    qDebug() << "------------------";
+    qDebug() << second;
 
     m_total_files_count = m_all_file_paths.size();
     endResetModel();
@@ -399,7 +405,7 @@ FileSystemModel::getIndexFromString(const QString &path) const noexcept {
     int pos = m_file_paths.indexOf(path);
     if (pos == -1)
         return QModelIndex(); // Return an invalid index if not found
-    
+
     return createIndex(pos, 0);
 }
 

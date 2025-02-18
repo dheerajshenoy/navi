@@ -221,13 +221,13 @@ void utils::addTextToFirstLine(QTextEdit *textEdit, const QString &textToAdd) no
 // If nlines is -1, read the whole file
 QStringList utils::readLinesFromFile(const QString &filename,
                                      const int &nlines) noexcept {
-    QStringList lines;
     QFile file(filename);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qCritical() << "Error opening file:" << file.errorString();
         return QStringList();
     }
+    QStringList lines;
 
     int count = 0;
 

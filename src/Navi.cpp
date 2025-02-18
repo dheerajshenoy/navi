@@ -1148,6 +1148,10 @@ void Navi::initMenubar() noexcept {
 
     m_viewmenu = new QMenu("&View");
 
+    m_viewmenu__dirsfirst = new QAction("Directories First");
+    m_viewmenu__dirsfirst->setCheckable(true);
+    m_viewmenu__dirsfirst->setChecked(true);
+
     m_viewmenu__refresh = new QAction("Refresh Folder");
     m_viewmenu__filter = new QAction("Filter");
     m_viewmenu__filter->setCheckable(true);
@@ -1218,6 +1222,7 @@ void Navi::initMenubar() noexcept {
     m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__hidden);
     m_viewmenu__files_menu->addAction(m_viewmenu__files_menu__dotdot);
 
+    m_viewmenu->addAction(m_viewmenu__dirsfirst);
     m_viewmenu->addAction(m_viewmenu__refresh);
     m_viewmenu->addAction(m_viewmenu__filter);
     m_viewmenu->addAction(m_viewmenu__fullscreen);
@@ -1383,6 +1388,11 @@ void Navi::initMenubar() noexcept {
 
     connect(m_layoutmenu__delete_layout, &QAction::triggered, this,
             [&]() { deleteLayout(); });
+
+
+    connect(m_viewmenu__dirsfirst, &QAction::triggered, this, [&](const bool &state) {
+        m_file_panel->model()->setDirsFirst(state);
+    });
 
     connect(m_viewmenu__refresh, &QAction::triggered, this,
             [&](const bool &state) { ForceUpdate(); });

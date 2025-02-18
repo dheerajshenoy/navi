@@ -93,6 +93,15 @@ class FileSystemModel : public QAbstractTableModel {
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     void loadDirectory(const QString &path,
                        const QDir::SortFlags &sort_flags = QDir::SortFlag::DirsFirst) noexcept;
+
+    inline void setDirsFirst(const bool &state) noexcept {
+        if (state)
+            m_dir_sort_flags |= QDir::SortFlag::DirsFirst;
+        else
+            m_dir_sort_flags &= ~QDir::SortFlag::DirsFirst;
+        loadDirectory(m_root_path, m_dir_sort_flags);
+    }
+
     inline bool hasMarks() noexcept { return m_markedFiles.size() > 0; }
     bool hasMarksLocal() noexcept;
     QStringList getMarkedFiles() noexcept;
@@ -144,7 +153,6 @@ class FileSystemModel : public QAbstractTableModel {
     }
 
     bool icons_enabled = true;
-
     signals:
     void directoryLoaded(const int &rowCount);
     void directoryLoadProgress(const int &progress);

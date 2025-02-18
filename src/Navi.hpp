@@ -1213,7 +1213,8 @@ QAction *m_filemenu__create_new_file;
 QAction *m_filemenu__close_window;
 QAction *m_filemenu__folder_properties;
 
-QAction *m_viewmenu__refresh;
+QAction *m_viewmenu__dirsfirst;
+    QAction *m_viewmenu__refresh;
 QAction *m_viewmenu__filter;
 QAction *m_viewmenu__preview_panel;
 QAction *m_viewmenu__menubar;
